@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://b06ufgffwlwjy"]
+
+[node name="Label" type="Label"]
+offset_left = 62.0
+offset_top = 61.0
+offset_right = 143.0
+offset_bottom = 84.0
+text = "Hell World"

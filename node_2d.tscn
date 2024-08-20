@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://bac428gk52ed"]
+
+[ext_resource type="PackedScene" uid="uid://bpyh1p8d5f8pd" path="res://sprite_2d.tscn" id="1_4sjqk"]
+[ext_resource type="Script" path="res://script/MyNode2D.cs" id="1_ep4qr"]
+[ext_resource type="PackedScene" uid="uid://bqcdwn7pgjyp" path="res://script/Input/InputNode.tscn" id="3_jfyo1"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_ep4qr")
+
+[node name="Sprite2D" parent="." node_paths=PackedStringArray("_button", "_inputNode") instance=ExtResource("1_4sjqk")]
+position = Vector2(284, 209)
+_button = NodePath("../Button")
+_inputNode = NodePath("../InputNode")
+
+[node name="Button" type="Button" parent="."]
+offset_left = 217.0
+offset_top = 52.0
+offset_right = 336.0
+offset_bottom = 83.0
+text = "Toggle motion"
+
+[node name="InputNode" parent="." instance=ExtResource("3_jfyo1")]
+
+[connection signal="pressed" from="Button" to="Sprite2D" method="OnButtonPressed"]
