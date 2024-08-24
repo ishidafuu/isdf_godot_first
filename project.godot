@@ -24,6 +24,10 @@ window/size/resizable=false
 
 project/assembly_name="isdf_godot_first"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/my_plugin/plugin.cfg", "res://addons/my_plugin_2/plugin.cfg")
+
 [input]
 
 KeyUp={
