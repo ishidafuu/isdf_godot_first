@@ -17,4 +17,10 @@ public class CharaPadState
 
     public int PadNo;
     // public TMgPad pCharPad_; // パッド
+
+    public void Initialize()
+    {
+        IsManualControl = false;
+        PadNo = 0;
+    }
 }
