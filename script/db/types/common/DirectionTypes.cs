@@ -8,7 +8,7 @@ public enum DirectionX
     Left = -1,
     Neutral = 0,
     Right = +1
-};
+}
 
 /// <summary>
 /// Z軸方向
@@ -18,4 +18,4 @@ public enum DirectionZ
     Forward = -1,
     Neutral = 0,
     Backward = +1
-};
+}

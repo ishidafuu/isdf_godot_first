@@ -10,7 +10,7 @@ public enum DashmanType
     Up, //上ライン
     Down, //下ライン
     Approach, //アプローチ
-};
+}
 
 /// <summary>
 /// コールタイプ
@@ -20,4 +20,14 @@ public enum CallType
     None,
     Pass,
     Dash,
-};
+}
+
+/// <summary>
+/// ターゲット
+/// </summary>
+public enum DashmanTargetType
+{
+    NG,
+    OK,
+    WAIT
+}
