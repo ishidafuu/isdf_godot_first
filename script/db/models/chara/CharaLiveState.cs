@@ -3,7 +3,7 @@
 /// <summary>
 /// 生存・体力・判定に関するステータス
 /// </summary>
-public class CharaLive
+public class CharaLiveState
 {
     // キャラのＩＤ
     public long CharaId { get; set; }

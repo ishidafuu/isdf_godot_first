@@ -3,7 +3,7 @@
 /// <summary>
 /// キャッチングに関するステータス
 /// </summary>
-public class CharaCatch
+public class CharaCatchState
 {
     // ボールをキャッチできるカウンタ
     public int CatchCount { get; set; }

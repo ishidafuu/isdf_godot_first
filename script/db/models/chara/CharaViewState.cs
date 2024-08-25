@@ -3,7 +3,7 @@
 /// <summary>
 /// アニメーション・見た目・セリフに関するステータス
 /// </summary>
-public class CharaView
+public class CharaViewState
 {
     // 息継ぎカウンタ
     public int BreathCount { get; set; }

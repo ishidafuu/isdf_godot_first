@@ -3,7 +3,7 @@
 /// <summary>
 /// 空中・ジャンプ・着地に関するステータス
 /// </summary>
-public class CharaAir
+public class CharaAirState
 {
     // ジャンプしゃがみカウンタ
     public int JumpCrouchCount { get; set; }

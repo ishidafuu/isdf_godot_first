@@ -3,7 +3,7 @@
 /// <summary>
 /// 向き・移動・ダッシュ・汎用アクションに関するステータス
 /// </summary>
-public class CharaMove
+public class CharaMoveState
 {
     // ダッシュ加速カウンタ
     public int DashAccelCount { get; set; }

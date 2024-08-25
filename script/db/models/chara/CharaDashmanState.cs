@@ -3,7 +3,7 @@
 /// <summary>
 /// ダッシュマンに関するステータス
 /// </summary>
-public class CharaDashman
+public class CharaDashmanState
 {
     // ダッシュマン番号
     public int DashmanNo { get; set; }

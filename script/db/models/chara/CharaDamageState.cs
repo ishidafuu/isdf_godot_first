@@ -3,7 +3,7 @@
 /// <summary>
 /// ダメージに関するステータス
 /// </summary>
-public class CharaDamage
+public class CharaDamageState
 {
     // キャッチダメージ顔
     public int DamageAfterCount { get; set; }

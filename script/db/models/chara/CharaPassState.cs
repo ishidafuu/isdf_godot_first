@@ -3,7 +3,7 @@
 /// <summary>
 /// パスに関するステータス
 /// </summary>
-public class CharaPass
+public class CharaPassState
 {
     // 立ちパス待ちカウンタ
     public int PassStandWaitCount { get; set; }

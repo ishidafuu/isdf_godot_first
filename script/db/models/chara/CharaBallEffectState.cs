@@ -3,7 +3,7 @@
 /// <summary>
 /// ボールから受け取る吹っ飛び周りに関するステータス
 /// </summary>
-public class CharaBallEffect
+public class CharaBallEffectState
 {
     //ボールから受け取る吹っ飛び絡みのデータ
     public bool Stick_f { get; set; } //アッパーシュートくっつきフラグ

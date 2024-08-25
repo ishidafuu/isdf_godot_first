@@ -3,7 +3,7 @@
 /// <summary>
 /// 能力値に関するステータス
 /// </summary>
-public class CharaLevel
+public class CharaLevelState
 {
     // レベル（チームレア＋補正）
     public int Level { get; set; }

@@ -3,7 +3,7 @@
 /// <summary>
 /// シュート・ターゲットに関するステータス
 /// </summary>
-public class CharaShoot
+public class CharaShootState
 {
     // シュート待ちカウンタ
     public int ShootWaitCount { get; set; }

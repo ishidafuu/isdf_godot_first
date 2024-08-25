@@ -10,22 +10,21 @@ public class CharaState
     public CharaComAutoState ComAuto { get; set; } = new();
     public CharaPadState Pad { get; set; } = new();
     public CharaGouseiState Gousei { get; set; } = new();
-
-    public CharaLive Live { get; set; } = new();
-    public CharaDamage Damage { get; set; } = new();
-    public CharaLevel Level { get; set; } = new();
-    public CharaPosition Position { get; set; } = new();
-    public CharaMove Move { get; set; } = new();
-    public CharaAir Air { get; set; } = new();
-    public CharaView View { get; set; } = new();
-    public CharaCatch Catch { get; set; } = new();
-    public CharaShoot Shoot { get; set; } = new();
-    public CharaDodge Dodge { get; set; } = new();
-    public CharaCourt Court { get; set; } = new();
-    public CharaPass Pass { get; set; } = new();
-    public CharaDashman Dashman { get; set; } = new();
-    public CharaCom Com { get; set; } = new();
-    public CharaBallEffect BallEffect { get; set; } = new();
+    public CharaLiveState Live { get; set; } = new();
+    public CharaDamageState Damage { get; set; } = new();
+    public CharaLevelState Level { get; set; } = new();
+    public CharaPositionState Position { get; set; } = new();
+    public CharaMoveState Move { get; set; } = new();
+    public CharaAirState Air { get; set; } = new();
+    public CharaViewState View { get; set; } = new();
+    public CharaCatchState Catch { get; set; } = new();
+    public CharaShootState Shoot { get; set; } = new();
+    public CharaDodgeState Dodge { get; set; } = new();
+    public CharaCourtState Court { get; set; } = new();
+    public CharaPassState Pass { get; set; } = new();
+    public CharaDashmanState Dashman { get; set; } = new();
+    public CharaComState Com { get; set; } = new();
+    public CharaBallEffectState BallEffect { get; set; } = new();
 
     public void Initialize()
     {
@@ -37,7 +36,6 @@ public class CharaState
         ComAuto.Initialize();
         Pad.Initialize();
         Gousei.Initialize();
-
         Live.Initialize();
         Damage.Initialize();
         Level.Initialize();
