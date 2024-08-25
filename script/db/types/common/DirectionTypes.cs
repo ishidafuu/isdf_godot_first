@@ -3,7 +3,7 @@
 /// <summary>
 /// X軸方向
 /// </summary>
-public enum DirectionX
+public enum DirectionXType
 {
     Left = -1,
     Neutral = 0,
@@ -13,7 +13,7 @@ public enum DirectionX
 /// <summary>
 /// Z軸方向
 /// </summary>
-public enum DirectionZ
+public enum DirectionZType
 {
     Forward = -1,
     Neutral = 0,

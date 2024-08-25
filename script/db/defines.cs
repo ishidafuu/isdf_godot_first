@@ -64,6 +64,8 @@ public static class Defines
     public const int VjOpenStep = 3;
     public const int VjIconStep = 7;
     public const int SlotNum = 7;
+    
+    public const int BufferPositionMax = 16;
 }
 
 // //グローバル扱いな変数

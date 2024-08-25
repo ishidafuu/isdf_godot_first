@@ -1,6 +1,6 @@
-﻿namespace db.models.ball_state;
+﻿namespace db;
 
-public class ShotState
+public class BallShotState
 {
     public ShotType ShotType { get; set; }
     public int ShotSpeed { get; set; }

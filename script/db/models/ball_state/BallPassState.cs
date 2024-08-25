@@ -1,6 +1,6 @@
-﻿namespace db.models.ball_state;
+﻿namespace db;
 
-public class PassState
+public class BallPassState
 {
     public int DistanceX { get; set; }
     public int DistanceZ { get; set; }
@@ -8,7 +8,7 @@ public class PassState
     public int DistanceXSign { get; set; }
     public int DistanceZSign { get; set; }
     public int DistanceYSign { get; set; }
-    public PassLine PassLine { get; set; }
+    public PassLineType PassLineType { get; set; }
     public int TargetVelocityX { get; set; }
     public int TargetVelocityZ { get; set; }
     public int TargetVelocityY { get; set; }
@@ -48,7 +48,7 @@ public class PassState
         DistanceXSign = 0;
         DistanceZSign = 0;
         DistanceYSign = 0;
-        PassLine = default;
+        PassLineType = default;
         TargetVelocityX = 0;
         TargetVelocityZ = 0;
         TargetVelocityY = 0;

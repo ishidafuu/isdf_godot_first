@@ -5,9 +5,9 @@
 /// </summary>
 public class CoordinateState
 {
-    public DirectionX DirectionX { get; set; }
-    public DirectionZ DirectionZ { get; set; }
-    public DirectionX DashDirection { get; set; }
+    public DirectionXType DirectionXType { get; set; }
+    public DirectionZType DirectionZType { get; set; }
+    public DirectionXType DashDirection { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
     public int Z { get; set; }
@@ -27,8 +27,8 @@ public class CoordinateState
     /// </summary>
     public void Initialize()
     {
-        DirectionX = default;
-        DirectionZ = default;
+        DirectionXType = default;
+        DirectionZType = default;
         DashDirection = default;
         X = 0;
         Y = 0;

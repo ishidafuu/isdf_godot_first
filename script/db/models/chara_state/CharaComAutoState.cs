@@ -12,8 +12,8 @@ public class CharaComAutoState
 
     public int ComMoveCount { get; set; }
     public int KeepDirectionCount { get; set; }
-    public DirectionX MoveDirectionX { get; set; }
-    public DirectionZ MoveDirectionZ { get; set; }
+    public DirectionXType MoveDirectionX { get; set; }
+    public DirectionZType MoveDirectionZ { get; set; }
     public int[] CatchRec { get; set; } = new int[Defines.ComAttackCacheLength];
 
     public void Initialize()

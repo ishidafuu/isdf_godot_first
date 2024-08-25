@@ -16,7 +16,7 @@ public enum PassTargetType
     NDsmn, //最寄りダッシュマン
 }
 
-public enum PassLine
+public enum PassLineType
 {
     plNml,
     pl23,

@@ -12,16 +12,16 @@ public class CharaMoveState
     public bool IsDashAccelIOS { get; set; }
 
     // 最後に向いた向き（２，３番外野パス用）
-    public DirectionX LastKeyDirectionX { get; set; }
+    public DirectionXType LastKeyDirectionX { get; set; }
 
     // 動きなしフラグ
     public bool IsNoMove { get; set; }
 
     // オート向き変えが入る前の向き
-    public DirectionX LastDirectionX { get; set; }
+    public DirectionXType LastDirectionXType { get; set; }
 
     // オート向き変えが入る前の奥行き向き
-    public DirectionZ LastDirectionZ { get; set; }
+    public DirectionZType LastDirectionZType { get; set; }
 
     // フリーアクションフラグ
     public bool IsFreeAction { get; set; }
@@ -32,8 +32,8 @@ public class CharaMoveState
         IsDashAccelIOS = false;
         LastKeyDirectionX = default;
         IsNoMove = false;
-        LastDirectionX = default;
-        LastDirectionZ = default;
+        LastDirectionXType = default;
+        LastDirectionZType = default;
         IsFreeAction = false;
     }
 }

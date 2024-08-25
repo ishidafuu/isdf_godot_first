@@ -1,20 +1,25 @@
 ﻿namespace db;
 
-//ボール状態
-public enum enBallMotion
+/// <summary>
+/// ボール状態
+/// </summary>
+public enum BallMotionType
 {
-    bmFree,
-    bmHold,
-    bmShoot,
-    bmPass,
-    bmBound,
-    bmReferee
+    Free,
+    Hold,
+    Shoot,
+    Pass,
+    Bound,
+    Referee
 }
 
-public enum enJumpBall
+/// <summary>
+/// ジャンプボール状態
+/// </summary>
+public enum JumpBallType
 {
-    jbNormal,
-    jbJpball,
-    jbSide0,
-    jbSide1
+    Normal,
+    Jpball,
+    Side0,
+    Side1
 }
