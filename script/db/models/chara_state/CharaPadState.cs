@@ -1,13 +1,8 @@
 ﻿namespace db;
 
-// //めんばーぱっど情報
-// struct TStChManPad
-// {
-//     BOOL MANChar_f;//キャラ操作
-//     s32 MANCharPadNo;
-//     TMgPad* pCharPad_;//パッド
-// };
-
+/// <summary>
+/// パッド入力に関するステータス
+/// </summary>
 public class CharaPadState
 {
     /// <summary>

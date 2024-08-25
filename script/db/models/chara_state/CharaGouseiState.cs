@@ -1,5 +1,8 @@
 ﻿namespace db;
 
+/// <summary>
+/// 合成シュートに関するステータス
+/// </summary>
 public class CharaGouseiState
 {
     public ShotGouseiState[] GouseiShots { get; set; } = new ShotGouseiState[Defines.StepNum];

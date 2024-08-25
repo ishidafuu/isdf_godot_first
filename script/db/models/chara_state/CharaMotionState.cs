@@ -1,5 +1,8 @@
 ﻿namespace db;
 
+/// <summary>
+/// モーションに関するステータス
+/// </summary>
 public class CharaMotionState
 {
     public CharaMotionType MotionType { get; set; }

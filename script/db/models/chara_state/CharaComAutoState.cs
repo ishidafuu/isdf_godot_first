@@ -2,18 +2,9 @@
 
 namespace db;
 
-// struct TStChCOM
-// {
-//     s32 JpBallStep;
-//     s32 JpBallWait_c;
-//     s32 CatchRec[COMCATCHRECNUM];
-//
-//     s32 COMMv_c;//一定時間その移動をするカウンタ兼フラグ
-//     s32 KeepMuki_c;
-//     enMukiTypeA COMMvAMuki;
-//     enMukiZTypeA COMMvAMukiZ;
-// };
-
+/// <summary>
+/// COMオート動作に関するステータス
+/// </summary>
 public class CharaComAutoState
 {
     public int JumpBallStep { get; set; }
