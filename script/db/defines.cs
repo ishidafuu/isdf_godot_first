@@ -53,6 +53,11 @@ public static class Defines
     /// </summary>
     public const int ComAttackCacheLength = 5;
 
+    
+    public const int MemberCount = 7;
+    public const int SideCount = 2;
+    public const int AllCharaCount = MemberCount * SideCount;
+    
     public const int RarityNum = 7;
     public const int HsElemMax = 8;
     public const int HsElemMaxAdd = HsElemMax - 1;
