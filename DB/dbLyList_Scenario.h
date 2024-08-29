@@ -1,0 +1,17 @@
+﻿#pragma once
+#include "dbLyScGrp.h"
+#include "dbLyScMap.h"
+#include "dbLyScEnemy.h"
+#include "dbLyScTSL.h"
+//#include "dbLyScCSL.h"
+#include "dbLyScVS.h"
+//#include "dbLyScBar.h"
+#include "dbLyScBar.h"
+#include "dbLyTechno.h"
+#include "dbLyProfile.h"
+
+#include "dbLyTuScBar.h"
+#include "dbLyTuScMap.h"
+#include "dbLyTuScEnemy.h"
+#include "dbLyTuScTSL.h"
+#include "dbLyTuScVS.h"
