@@ -1,23 +1,24 @@
 ﻿namespace db;
 
 /// <summary>
-/// 位置、距離に関するステータス
+/// 番号・ポジションに関するステータス
 /// </summary>
 public class CharaPositionState
 {
-    // ボールとの距離
-    public int BallDist { get; set; }
+    // キャラのＩＤ
+    public long CharaId { get; set; }
 
-    // ボール着地地点との距離
-    public int BallLandDist { get; set; }
+    // ポジション番号（0～6）
+    public long PositionIndex { get; set; }
 
-    // ボール着地地点のラインとの距離
-    public int BallLandLineDist { get; set; }
-
-    public void Initialize()
+    public void Initialize(long positionIndex)
     {
-        BallDist = 0;
-        BallLandDist = 0;
-        BallLandLineDist = 0;
+        CharaId = 0;
+        PositionIndex = positionIndex;
+    }
+
+    public void Setup(long charaId)
+    {
+        CharaId = charaId;
     }
 }

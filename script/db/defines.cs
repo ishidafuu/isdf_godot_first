@@ -55,6 +55,7 @@ public static class Defines
 
     
     public const int MemberCount = 7;
+    public const int InfieldCount = 4;
     public const int SideCount = 2;
     public const int AllCharaCount = MemberCount * SideCount;
     

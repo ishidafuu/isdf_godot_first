@@ -5,9 +5,6 @@
 /// </summary>
 public class CharaLiveState
 {
-    // キャラのＩＤ
-    public long CharaId { get; set; }
-
     // 生存
     public bool IsAlive { get; set; }
 
@@ -43,7 +40,6 @@ public class CharaLiveState
 
     public void Initialize()
     {
-        CharaId = 0;
         IsAlive = false;
         IsDead = false;
         IsAngel = false;
