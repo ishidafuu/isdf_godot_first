@@ -53,12 +53,26 @@ public static class Defines
     /// </summary>
     public const int ComAttackCacheLength = 5;
 
-    
+    /// <summary>
+    /// チーム人数
+    /// </summary>
     public const int MemberCount = 7;
+
+    /// <summary>
+    /// 内野人数
+    /// </summary>
     public const int InfieldCount = 4;
+
+    /// <summary>
+    /// サイドの数
+    /// </summary>
     public const int SideCount = 2;
+
+    /// <summary>
+    /// 試合人数
+    /// </summary>
     public const int AllCharaCount = MemberCount * SideCount;
-    
+
     public const int RarityNum = 7;
     public const int HsElemMax = 8;
     public const int HsElemMaxAdd = HsElemMax - 1;
@@ -70,7 +84,7 @@ public static class Defines
     public const int VjOpenStep = 3;
     public const int VjIconStep = 7;
     public const int SlotNum = 7;
-    
+
     public const int BufferPositionMax = 16;
 }
 

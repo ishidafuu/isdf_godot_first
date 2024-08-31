@@ -26,6 +26,9 @@ public class CharaDamageState
     // ヒットストップ
     public bool IsHitStop { get; set; }
 
+    // ファンブルカウンタ
+    public Counter FumbleCount { get; set; }
+
     public void Initialize()
     {
         DamageAfterCount = 0;
@@ -35,5 +38,11 @@ public class CharaDamageState
         KagamiRevCount = 0;
         KagamiRevKgNo = 0;
         IsHitStop = false;
+        FumbleCount.Clear();
+    }
+
+    public void DecrementFumbleCount()
+    {
+        FumbleCount.Subtract();
     }
 }

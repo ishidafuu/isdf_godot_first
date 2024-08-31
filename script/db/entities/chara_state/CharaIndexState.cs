@@ -7,12 +7,12 @@
 public class CharaIndexState
 {
     // サイド番号（0～1）
-    public long SideIndex { get; private set; }
+    public int SideIndex { get; private set; }
 
     // メンバー番号（0～6）
-    public long MemberIndex { get; private set; }
+    public int MemberIndex { get; private set; }
 
-    public void Initialize(long sideIndex, long memberIndex)
+    public void Initialize(int sideIndex, int memberIndex)
     {
         SideIndex = sideIndex;
         MemberIndex = memberIndex;

@@ -17,15 +17,7 @@ public class CharaStateManager
     /// </summary>
     private readonly CharaState[][] _sideCharas = new CharaState[Defines.SideCount][];
 
-    /// <summary>
-    /// 各サイドのキャラ（オーダー順）
-    /// </summary>
-    private readonly CharaState[][] _sideOrders = new CharaState[Defines.SideCount][];
-
-    /// <summary>
-    /// 各サイドの内野キャラ（オーダー順）
-    /// </summary>
-    private readonly CharaState[][] _infieldOrders = new CharaState[Defines.SideCount][];
+    public CharaState[] GetSideCharas(int side) => _sideCharas[side];
 
     /// <summary>
     /// オーダー変更あり
@@ -34,7 +26,10 @@ public class CharaStateManager
 
     public void SetOrderDirty() => _isOrderDirty = true;
 
-    public CharaState[] GetSideCharas(int side) => _sideCharas[side];
+    /// <summary>
+    /// 各サイドのキャラ（オーダー順）
+    /// </summary>
+    private readonly CharaState[][] _sideOrders = new CharaState[Defines.SideCount][];
 
     public CharaState[] GetSideOrders(int side)
     {
@@ -46,7 +41,12 @@ public class CharaStateManager
         return _sideOrders[side];
     }
 
-    public CharaState[] GetSideInfield(int side)
+    /// <summary>
+    /// 各サイドの内野キャラ（オーダー順）
+    /// </summary>
+    private readonly CharaState[][] _infieldOrders = new CharaState[Defines.SideCount][];
+
+    public CharaState[] GetSideInfields(int side)
     {
         if (_isOrderDirty)
         {
@@ -69,8 +69,8 @@ public class CharaStateManager
     {
         for (var i = 0; i < _allCharas.Length; i++)
         {
-            long sideIndex = i / Defines.MemberCount;
-            long memberIndex = i % Defines.MemberCount;
+            var sideIndex = i / Defines.MemberCount;
+            var memberIndex = i % Defines.MemberCount;
             _allCharas[i] = new CharaState(sideIndex, memberIndex);
         }
     }
@@ -94,7 +94,7 @@ public class CharaStateManager
             for (var m = 0; m < Defines.MemberCount; m++)
             {
                 var member = _sideCharas[s][m];
-                var positionIndex = member.Position.PositionIndex;
+                var positionIndex = member.Order.OrderIndex;
                 if (positionIndex < Defines.InfieldCount)
                 {
                     _infieldOrders[s][positionIndex] = member;

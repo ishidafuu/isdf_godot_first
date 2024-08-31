@@ -2,9 +2,8 @@
 
 public class CharaState
 {
-
     public CharaIndexState Index { get; set; } = new();
-    public CharaPositionState Position { get; set; } = new();
+    public CharaOrderState Order { get; set; } = new();
     public CharaPadState Pad { get; set; } = new();
     public CharaLiveState Live { get; set; } = new();
     public CoordinateState Coordinate { get; set; } = new();
@@ -29,7 +28,7 @@ public class CharaState
     public CharaComState Com { get; set; } = new();
     public CharaBallEffectState BallEffect { get; set; } = new();
 
-    public CharaState(long sideIndex, long memberIndex)
+    public CharaState(int sideIndex, int memberIndex)
     {
         Index.Initialize(sideIndex, memberIndex);
         Initialize();
@@ -42,7 +41,7 @@ public class CharaState
     private void Initialize()
     {
         // 初期化時はメンバーIndexをポジション番号とする
-        Position.Initialize(Index.MemberIndex);
+        Order.Initialize(Index.MemberIndex);
         Pad.Initialize();
         Live.Initialize();
         Coordinate.Initialize();

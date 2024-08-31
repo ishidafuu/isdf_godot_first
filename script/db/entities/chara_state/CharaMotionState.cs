@@ -5,16 +5,16 @@
 /// </summary>
 public class CharaMotionState
 {
-    public CharaMotionType MotionType { get; set; }
-    public CharaMotionFlag CharaMotionFlag { get; set; }
-    public int MotionCount { get; set; }
-    public CharaMotionNo MotionNo { get; set; }
+    public CharaMotionType MotionType { get; private set; }
+    public CharaMotionFlag CharaMotionFlag { get; private set; }
+    public Counter MotionCount { get; private set; }
+    public CharaMotionNo MotionNo { get; private set; }
 
     public void Initialize()
     {
         MotionType = default;
         CharaMotionFlag = default;
-        MotionCount = 0;
+        MotionCount.Clear();
         MotionNo = default;
     }
 
@@ -31,6 +31,11 @@ public class CharaMotionState
     public void AddMotionFlag(CharaMotionFlag flag)
     {
         CharaMotionFlag |= flag;
+    }
+
+    public void IncrementMotionCount()
+    {
+        MotionCount.Add();
     }
 
 }

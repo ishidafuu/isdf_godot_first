@@ -65,4 +65,21 @@ public class CoordinateState
             _ => 0
         };
     }
+
+    /// <summary>
+    /// XZ距離
+    /// </summary>
+    public int DistanceXZ(CoordinateState target)
+    {
+        return DistanceXZ(target.X, target.Z);
+    }
+
+    /// <summary>
+    /// XZ距離
+    /// </summary>
+    public int DistanceXZ(int targetX, int targetZ)
+    {
+        return (int)System.Math.Sqrt(System.Math.Pow(X - targetX, 2) + System.Math.Pow(Z - targetZ, 2));
+    }
+
 }
