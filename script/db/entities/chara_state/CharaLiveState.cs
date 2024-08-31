@@ -36,7 +36,7 @@ public class CharaLiveState
     public int LoopCount { get; set; }
 
     // バイオリズム
-    public int BiorhythmCount { get; set; }
+    public Counter BiorhythmCount { get; set; }
 
     public void Initialize()
     {
@@ -50,6 +50,11 @@ public class CharaLiveState
         ReviveCount = 0;
         EtcCount = 0;
         LoopCount = 0;
-        BiorhythmCount = 0;
+        BiorhythmCount.Clear();
+    }
+
+    public void IncrementBiorhythmCount()
+    {
+        BiorhythmCount.Add();
     }
 }

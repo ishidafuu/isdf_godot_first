@@ -9,10 +9,10 @@ public class CharaAirState
     public int JumpCrouchCount { get; set; }
 
     // 滞空時間
-    public int AirCount { get; set; }
+    public Counter AirCount { get; set; }
 
     // シュートタイミング用滞空時間
-    public int ShootAirCount { get; set; }
+    public Counter ShootAirCount { get; set; }
 
     // 頂点の時間
     public int TopTiming { get; set; }
@@ -43,8 +43,8 @@ public class CharaAirState
     public void Initialize()
     {
         JumpCrouchCount = 0;
-        AirCount = 0;
-        ShootAirCount = 0;
+        AirCount.Clear();
+        ShootAirCount.Clear();
         TopTiming = 0;
         IsAirCatch = false;
         IsAirAction = false;
@@ -54,5 +54,14 @@ public class CharaAirState
         LandZ = 0;
         LandRest = 0;
         NowGravity = 0;
+    }
+
+    public void Progress(bool isProgressShootAirCount)
+    {
+        AirCount.Add();
+        if (isProgressShootAirCount)
+        {
+            ShootAirCount.Add();
+        }
     }
 }

@@ -16,7 +16,7 @@ public struct Counter
         Value += step;
     }
 
-    public bool Subtract(int step = 1)
+    public bool Sub(int step = 1)
     {
         if (Value == 0)
         {

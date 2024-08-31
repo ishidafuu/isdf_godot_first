@@ -33,7 +33,7 @@ public class CharaMotionState
         CharaMotionFlag |= flag;
     }
 
-    public void IncrementMotionCount()
+    public void Progress()
     {
         MotionCount.Add();
     }

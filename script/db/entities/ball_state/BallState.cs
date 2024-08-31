@@ -48,8 +48,8 @@ public class BallState
     public int EnemTNo { get; set; }
     public int HitPNo { get; set; }
     public int HitTNo { get; set; }
-    public int HoldPNo { get; set; }
-    public int HoldTNo { get; set; }
+    public int HolderOrder { get; set; }
+    public int HolderSide { get; set; }
     public int LandX { get; set; }
     public int LandXLine { get; set; }
     public int LandZ { get; set; }
@@ -63,13 +63,13 @@ public class BallState
     public int PaETA { get; set; }
     public int PaGrv { get; set; }
     public int PaSelfHit { get; set; }
-    public int PaTgPNo { get; set; }
-    public int PaTgTNo { get; set; }
+    public int PassTargetOrder { get; set; }
+    public int PassTargetSide { get; set; }
     public int PichPNo { get; set; }
     public int PichTNo { get; set; }
     public int RbwTNo { get; set; }
-    public int ShTgPNo { get; set; }
-    public int ShTgTNo { get; set; }
+    public int ShotTargetOrder { get; set; }
+    public int ShotTargetSide { get; set; }
     public int TimerAutoReturn { get; set; }
     public int TimerCrtPos { get; set; }
     public int TimerCrtSide { get; set; }
@@ -127,8 +127,8 @@ public class BallState
         EnemTNo = 0;
         HitPNo = 0;
         HitTNo = 0;
-        HoldPNo = 0;
-        HoldTNo = 0;
+        HolderOrder = 0;
+        HolderSide = 0;
         LandX = 0;
         LandXLine = 0;
         LandZ = 0;
@@ -142,13 +142,13 @@ public class BallState
         PaETA = 0;
         PaGrv = 0;
         PaSelfHit = 0;
-        PaTgPNo = 0;
-        PaTgTNo = 0;
+        PassTargetOrder = 0;
+        PassTargetSide = 0;
         PichPNo = 0;
         PichTNo = 0;
         RbwTNo = 0;
-        ShTgPNo = 0;
-        ShTgTNo = 0;
+        ShotTargetOrder = 0;
+        ShotTargetSide = 0;
         TimerAutoReturn = 0;
         TimerCrtPos = 0;
         TimerCrtSide = 0;
@@ -161,4 +161,33 @@ public class BallState
         Array.Clear(BufZ, 0, BufZ.Length);
     }
 
+    /// <summary>
+    /// ボール保持者かどうか
+    /// </summary>
+    public bool IsBallHolder(int side, int order)
+    {
+        return side == HolderSide
+               && order == HolderOrder;
+    }
+
+    /// <summary>
+    /// シュートターゲットかどうか
+    /// </summary>
+    public bool IsShotTarget(int side, int order)
+    {
+        return MotionType is BallMotionType.Hold or BallMotionType.Shoot
+               && side == ShotTargetSide
+               && order == ShotTargetOrder;
+    }
+
+    /// <summary>
+    /// パスターゲットかどうか
+    /// </summary>
+    public bool IsPassTarget(int side, int order)
+    {
+        return MotionType is BallMotionType.Hold
+               && side == PassTargetSide
+               && order == PassTargetOrder
+               && OvLine == false;
+    }
 }

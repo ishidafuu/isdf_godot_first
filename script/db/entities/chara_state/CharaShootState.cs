@@ -11,14 +11,8 @@ public class CharaShootState
     // シュート終了待ちカウンタ
     public int ShootEndWaitCount { get; set; }
 
-    // シュートターゲット
-    public int ShootTarget { get; set; }
-
     // 必殺タイミング
     public int Step { get; set; }
-
-    // 泥足場ステップ数
-    public int MadStep { get; set; }
 
     // 必殺アシスト状態
     public ShootTiming ShootTiming { get; set; }
@@ -42,9 +36,7 @@ public class CharaShootState
     {
         ShootWaitCount = 0;
         ShootEndWaitCount = 0;
-        ShootTarget = 0;
         Step = 0;
-        MadStep = 0;
         ShootTiming = default;
         Angle12 = 0;
         ShCv = 0;

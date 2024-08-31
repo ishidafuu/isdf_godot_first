@@ -6,7 +6,7 @@
 public class CharaDamageState
 {
     // キャッチダメージ顔
-    public int DamageAfterCount { get; set; }
+    public Counter DamageAfterCount { get; set; }
 
     // ダウンカウンタ
     public int DownCount { get; set; }
@@ -31,7 +31,7 @@ public class CharaDamageState
 
     public void Initialize()
     {
-        DamageAfterCount = 0;
+        DamageAfterCount.Clear();
         DownCount = 0;
         RollCount = 0;
         KagamiCount = 0;
@@ -41,8 +41,9 @@ public class CharaDamageState
         FumbleCount.Clear();
     }
 
-    public void DecrementFumbleCount()
+    public void Progress()
     {
-        FumbleCount.Subtract();
+        FumbleCount.Sub();
+        DamageAfterCount.Sub();
     }
 }

@@ -14,10 +14,24 @@ public class CharaViewState
     // パス待ちセリフ用
     public int PassWaitCount { get; set; }
 
+    // ターゲット
+    public Counter TargetCount { get; set; }
+
     public void Initialize()
     {
         BreathCount = 0;
         LongKeepCount = 0;
         PassWaitCount = 0;
+        TargetCount.Clear();
+    }
+
+    public void IncrementTargetCount()
+    {
+        TargetCount.Add();
+    }
+    
+    public void ResetTargetCount()
+    {
+        TargetCount.Clear();
     }
 }

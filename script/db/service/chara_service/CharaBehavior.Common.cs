@@ -8,6 +8,7 @@ public partial class CharaBehavior
     /// </summary>
     private bool CanControl()
     {
+        // 死亡していない、ダメージ中でない、手動操作中でない
         return MyState.Live.IsDead == false
                && MyState.Motion.HasFlag(CharaMotionFlag.Dam) == false
                && MyState.Pad.IsManualControl == false;
@@ -16,24 +17,24 @@ public partial class CharaBehavior
     /// <summary>
     /// ボールとの距離を計算
     /// </summary>
-    private void CalculateBallDistance()
+    private void UpdateBallDistance()
     {
         var ballDist = 0;
         var ballLandDist = 0;
         var ballLandLineDist = 0;
 
-        //操作可能キャラのみ
+        // 操作可能キャラのみ
         if (CanControl())
         {
             ballDist = MyState.Coordinate.DistanceXZ(BallState.Coordinate);
             ballLandDist = ballDist;
             ballLandLineDist = ballDist;
-            
+
             // 着地予定のみ
             if (BallState.MotionType is BallMotionType.Bound or BallMotionType.Pass)
             {
                 ballLandDist = MyState.Coordinate.DistanceXZ(BallState.LandX, BallState.LandZ);
-                
+
                 // ライン超える場合のみ
                 ballLandLineDist = BallState.LandLine
                     ? MyState.Coordinate.DistanceXZ(BallState.LandXLine, BallState.LandZLine)
@@ -44,5 +45,40 @@ public partial class CharaBehavior
         MyState.Distance.BallDist = ballDist;
         MyState.Distance.BallLandDist = ballLandDist;
         MyState.Distance.BallLandLineDist = ballLandLineDist;
+    }
+
+    /// <summary>
+    /// ボール持ちかどうか
+    /// </summary>
+    private bool IsBallHolder()
+    {
+        return BallState.IsBallHolder(MySide, OrderIndex);
+    }
+
+    /// <summary>
+    /// 自分がシュートターゲット
+    /// </summary>
+    private bool IsShotTarget()
+    {
+        return BallState.IsShotTarget(MySide, OrderIndex);
+    }
+
+    /// <summary>
+    /// 自分がパスターゲット
+    /// </summary>
+    private bool IsPassTarget()
+    {
+        return BallState.IsPassTarget(MySide, OrderIndex);
+    }
+
+    /// <summary>
+    /// パス待ち状態
+    /// </summary>
+    private bool IsPassWait()
+    {
+        return IsPassTarget()
+               && IsBallHolder() == false
+               && MyState.Pad.IsManualControl;
+        // && IsShiai() //試合中チェック
     }
 }

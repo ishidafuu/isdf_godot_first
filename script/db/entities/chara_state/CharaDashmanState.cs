@@ -12,12 +12,17 @@ public class CharaDashmanState
     public int TargetZ { get; set; }
 
     // ダッシュマンにパスを出しても大丈夫な時間
-    public int EnabledPassCount { get; set; }
+    public Counter EnabledPassCount { get; set; }
 
     public void Initialize()
     {
         DashmanNo = 0;
         TargetZ = 0;
-        EnabledPassCount = 0;
+        EnabledPassCount.Clear();
+    }
+    
+    public void DecrementEnabledPassCount()
+    {
+        EnabledPassCount.Sub();
     }
 }
