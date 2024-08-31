@@ -127,4 +127,9 @@ public class RefereeState
         PlayTime_c = 0;
         isTimeAttackMode_ = false;
     }
+
+    public bool IsShiai()
+    {
+        return ShiaiPahse == ShiaiPhase.Shiai;
+    }
 }

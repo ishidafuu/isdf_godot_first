@@ -84,6 +84,7 @@ public static class Defines
     public const int VjOpenStep = 3;
     public const int VjIconStep = 7;
     public const int SlotNum = 7;
+    public const int ComActionPattern = 4;//COM思考分岐
 
     public const int BufferPositionMax = 16;
 }
