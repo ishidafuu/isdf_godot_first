@@ -9,16 +9,19 @@ public class CharaLevelState
     public int Level { get; set; }
 
     // ぱわー
-    public long Power { get; set; }
+    public int Power { get; set; }
 
     // きあい
-    public long Guts { get; set; }
+    public int Guts { get; set; }
 
     // きれ
-    public long Kire { get; set; }
+    public int Kire { get; set; }
 
     // てく
-    public long Tech { get; set; }
+    public int Tech { get; set; }
+
+    // すぴーど（ランク）
+    public int Speed { get; set; }
 
     public void Initialize()
     {
@@ -27,5 +30,6 @@ public class CharaLevelState
         Guts = 0;
         Kire = 0;
         Tech = 0;
+        Speed = 0;
     }
 }

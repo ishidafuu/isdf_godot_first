@@ -20,4 +20,11 @@ public class CharaDistanceState
         BallLandDist = 0;
         BallLandLineDist = 0;
     }
+
+    public void Set(int ballDist, int ballLandDist, int ballLandLineDist)
+    {
+        BallDist = ballDist;
+        BallLandDist = ballLandDist;
+        BallLandLineDist = ballLandLineDist;
+    }
 }

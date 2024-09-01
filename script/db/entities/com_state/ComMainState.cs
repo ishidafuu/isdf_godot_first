@@ -124,6 +124,6 @@ public class ComMainState
 
     public bool Isdm() //ダッシュマン作戦中
     {
-        return (DashmanF || DashmanFmWaitF);
+        return DashmanF || DashmanFmWaitF;
     }
 }

@@ -5,9 +5,9 @@ public class DataManager
     private static DataManager _instance;
     public static DataManager Instance => _instance ??= new DataManager();
 
-    private ComActionData ComActionData { get; } = new();
-    private ComPlanData ComPlanData { get; } = new();
-    private RankData RankData { get; } = new();
+    public ComActionData ComActionData { get; } = new();
+    public ComPlanData ComPlanData { get; } = new();
+    public RankData RankData { get; } = new();
 
     private DataManager()
     {

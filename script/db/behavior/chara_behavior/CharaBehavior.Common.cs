@@ -42,9 +42,7 @@ public partial class CharaBehavior
             }
         }
 
-        MyState.Distance.BallDist = ballDist;
-        MyState.Distance.BallLandDist = ballLandDist;
-        MyState.Distance.BallLandLineDist = ballLandLineDist;
+        MyState.Distance.Set(ballDist, ballLandDist, ballLandLineDist);
     }
 
     /// <summary>
@@ -80,5 +78,33 @@ public partial class CharaBehavior
                && IsBallHolder() == false
                && MyState.Pad.IsManualControl;
         // && IsShiai() //試合中チェック
+    }
+
+    private int GetLevelRank(RankLevelType levelType)
+    {
+        return DataManager.Instance.RankData.GetLevel(levelType, MyState.Level.Level);
+    }
+
+    private int GetSpeedRank(RankSpeedType speedType)
+    {
+        return DataManager.Instance.RankData.GetSpeed(speedType, MyState.Level.Speed);
+    }
+
+    private int GetHpRank(RankHpType hpType)
+    {
+        var hpRateRank = DataManager.Instance.RankData.GetHpRateRank(MyState.Live.Hp, MyState.Live.MaxHp);
+        return DataManager.Instance.RankData.GetHp(hpType, hpRateRank);
+    }
+
+    private int GetTechRank(RankTechType techType, int targetTech)
+    {
+        var techRate = DataManager.Instance.RankData.GetTechRateRank(MyState.Level.Tech, targetTech);
+        return DataManager.Instance.RankData.GetTech(techType, techRate);
+    }
+
+    private int GetPowerRank(RankPowType powType, int targetPower)
+    {
+        var powerRate = DataManager.Instance.RankData.GetPowerRateRank(MyState.Level.Power, targetPower);
+        return DataManager.Instance.RankData.GetPower(powType, powerRate);
     }
 }

@@ -30,7 +30,7 @@ public class RankData
     /// <summary>
     /// レベルランク値取得
     /// </summary>
-    public int Get(RankLevelType levelType, int rank)
+    public int GetLevel(RankLevelType levelType, int rank)
     {
         var index = (int)levelType;
         return Sheet[index][rank];
@@ -39,7 +39,7 @@ public class RankData
     /// <summary>
     /// スピードランク値取得
     /// </summary>
-    public int Get(RankSpeedType speedType, int rank)
+    public int GetSpeed(RankSpeedType speedType, int rank)
     {
         var index = Enum.GetValues<RankLevelType>().Length
                     + (int)speedType;
@@ -49,7 +49,7 @@ public class RankData
     /// <summary>
     /// HPランク値取得
     /// </summary>
-    public int Get(RankHpType hpType, int rank)
+    public int GetHp(RankHpType hpType, int rank)
     {
         var index = Enum.GetValues<RankLevelType>().Length
                     + Enum.GetValues<RankSpeedType>().Length
@@ -60,7 +60,7 @@ public class RankData
     /// <summary>
     /// てくランク値取得
     /// </summary>
-    public int Get(RankTechType techType, int rank)
+    public int GetTech(RankTechType techType, int rank)
     {
         var index = Enum.GetValues<RankLevelType>().Length
                     + Enum.GetValues<RankSpeedType>().Length
@@ -72,7 +72,7 @@ public class RankData
     /// <summary>
     /// ぱわーランク値取得
     /// </summary>
-    public int Get(RankPowType powType, int rank)
+    public int GetPower(RankPowType powType, int rank)
     {
         var index = Enum.GetValues<RankLevelType>().Length
                     + Enum.GetValues<RankSpeedType>().Length
@@ -85,12 +85,12 @@ public class RankData
     /// <summary>
     /// てく比ランク取得
     /// </summary>
-    public int GetTechRank(int tech, int targetTech)
+    public int GetTechRateRank(int tech, int targetTech)
     {
         var rate = tech * Defines.Percent / targetTech;
         for (var i = 0; i < Defines.RANKNUM; i++)
         {
-            if (rate <= Get(RankTechType.TechtoRank, i))
+            if (rate <= GetTech(RankTechType.TechtoRank, i))
             {
                 return i;
             }
@@ -102,12 +102,12 @@ public class RankData
     /// <summary>
     /// ぱわー比ランク取得
     /// </summary>
-    public int GetPowRank(int pow, int targetPow)
+    public int GetPowerRateRank(int pow, int targetPower)
     {
-        var rate = pow * Defines.Percent / targetPow;
+        var rate = pow * Defines.Percent / targetPower;
         for (var i = 0; i < Defines.RANKNUM; i++)
         {
-            if (rate <= Get(RankPowType.PowtoRank, i))
+            if (rate <= GetPower(RankPowType.PowtoRank, i))
             {
                 return i;
             }
@@ -119,12 +119,12 @@ public class RankData
     /// <summary>
     /// HP割合ランク取得
     /// </summary>
-    public int GetHpRank(int hp, int maxHp)
+    public int GetHpRateRank(int hp, int maxHp)
     {
         var rate = hp * Defines.Percent / maxHp;
         for (var i = 0; i < Defines.RANKNUM; i++)
         {
-            if (rate <= Get(RankHpType.HPtoRank, i))
+            if (rate <= GetHp(RankHpType.HPtoRank, i))
             {
                 return i;
             }

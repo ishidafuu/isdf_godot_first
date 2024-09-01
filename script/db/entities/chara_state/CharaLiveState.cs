@@ -21,6 +21,9 @@ public class CharaLiveState
 
     // 体力
     public int Hp { get; set; }
+    
+    // Max体力
+    public int MaxHp { get; set; }
 
     // 体力全快
     public bool IsMaxHp { get; set; }

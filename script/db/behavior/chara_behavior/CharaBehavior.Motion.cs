@@ -92,11 +92,23 @@ public partial class CharaBehavior
                 // SESet(seDownLv0);//SEならす
             }
             
-            if (motionType == CharaMotionType.Sh || motionType == CharaMotionType.RtSh)
+            // シュートモーション時間
+            if (motionType == CharaMotionType.Sh 
+                || motionType == CharaMotionType.RtSh
+                || motionType == CharaMotionType.JSh
+                || motionType == CharaMotionType.RtJSh)
             {
-                // ダウン効果音
-                // SESet(seDownLv0);//SEならす
+                MyState.Shoot.ShootWaitCount = GetLevelRank(RankLevelType.ShStMotion);
+                MyState.Shoot.ShootEndWaitCount = GetLevelRank(RankLevelType.ShEdMotion);
             }
+            
+            // Uターンシュート
+            if (motionType == CharaMotionType.RtSh)
+            {
+                MyState.Coordinate.DirectionZ = DirectionZType.Neutral;
+                MyState.Shoot.IsUTurn = true;
+            }
+
         }
 
         switch (motionType)
