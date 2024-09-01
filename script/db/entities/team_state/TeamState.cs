@@ -2,7 +2,7 @@
 
 public partial class TeamState
 {
-    private int SideIndex { get; }
+    public int SideIndex { get; }
     private int EnemySideIndex => SideIndex == 0 ? 1 : 0;
 
     public TeamOrderState OrderState { get; } = new TeamOrderState();

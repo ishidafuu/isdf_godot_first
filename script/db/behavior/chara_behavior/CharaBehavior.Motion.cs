@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace db;
 
@@ -71,116 +72,279 @@ public partial class CharaBehavior
 
             // 歩数リセット
             // TODO:（ダッシュ以外にしなくてよいか確認）
+            // ダッシュ継続以外
             if (motionType == CharaMotionType.St
-                || motionType == CharaMotionType.Wk)
+                || motionType == CharaMotionType.Wk
+                || (motionType == CharaMotionType.Ds && MyState.Motion.HasFlag(CharaMotionFlag.Ds) == false))
             {
                 MyState.Move.MadStepCount.Clear();
                 MyState.Shoot.Step.Clear();
             }
+
+            if (motionType == CharaMotionType.ARv)
+            {
+                MyState.Air.IsAirAction = true;
+            }
+
+            if (motionType == CharaMotionType.DnF || motionType == CharaMotionType.DnB)
+            {
+                // ダウン効果音
+                // SESet(seDownLv0);//SEならす
+            }
         }
-        
-        
+
+        switch (motionType)
+        {
+            // 立ち
+            case CharaMotionType.St:
+                MyState.Motion.SetMotionNo(motionType, CharaMotionNo.STF,
+                    CharaMotionFlag.JpOK | CharaMotionFlag.Muki | CharaMotionFlag.DmOK | CharaMotionFlag.AtCa,
+                    MyState.Coordinate.DirectionZ);
+                break;
+            // ブレス
+            case CharaMotionType.Breath:
+                // 扱いは立ち状態
+                MyState.Motion.SetMotionNo(CharaMotionType.St, CharaMotionNo.BRF,
+                    CharaMotionFlag.JpOK | CharaMotionFlag.Muki | CharaMotionFlag.DmOK | CharaMotionFlag.AtCa,
+                    MyState.Coordinate.DirectionZ);
+                break;
+            // 歩き
+            case CharaMotionType.Wk:
+                MyState.Motion.SetMotionNo(motionType, CharaMotionNo.WKF,
+                    CharaMotionFlag.JpOK | CharaMotionFlag.Muki | CharaMotionFlag.DmOK | CharaMotionFlag.AtCa,
+                    MyState.Coordinate.DirectionZ);
+                break;
+            // ダッシュ
+            case CharaMotionType.Ds:
+                MyState.Motion.SetMotionNo(motionType, CharaMotionNo.DS,
+                    CharaMotionFlag.Ds | CharaMotionFlag.JpOK | CharaMotionFlag.Muki | CharaMotionFlag.AtCa);
+                break;
+            // ジャンプ前しゃがみ
+            case CharaMotionType.JCr:
+            {
+                var flag = MyState.Motion.HasFlag(CharaMotionFlag.Ds)
+                    ? CharaMotionFlag.Act | CharaMotionFlag.Ar | CharaMotionFlag.Ds
+                    : CharaMotionFlag.Act | CharaMotionFlag.Ar;
+                MyState.Motion.SetMotionNo(motionType, CharaMotionNo.JCF, flag,
+                    MyState.Coordinate.DirectionZ);
+            }
+                break;
+            // キャンセルジャンプ前しゃがみ
+            case CharaMotionType.CJCr:
+                // ダッシュフラグ消す、扱いはジャンプ前しゃがみ
+                MyState.Motion.SetMotionNo(CharaMotionType.JCr, CharaMotionNo.CRF,
+                    CharaMotionFlag.Act | CharaMotionFlag.Ar,
+                    MyState.Coordinate.DirectionZ);
+                break;
+            // ジャンプ
+            case CharaMotionType.JUp:
+            case CharaMotionType.JDn:
+            {
+                var motionNo = motionType is CharaMotionType.JUp
+                    ? CharaMotionNo.AIRUPF
+                    : CharaMotionNo.AIRDNF;
+                var flag = MyState.Motion.HasFlag(CharaMotionFlag.Ds)
+                    ? CharaMotionFlag.Ar | CharaMotionFlag.Muki | CharaMotionFlag.AtCa | CharaMotionFlag.Ds
+                    : CharaMotionFlag.Ar | CharaMotionFlag.Muki | CharaMotionFlag.AtCa;
+                MyState.Motion.SetMotionNo(motionType, motionNo, flag,
+                    MyState.Coordinate.DirectionZ);
+            }
+                break;
+            // 空中復帰
+            case CharaMotionType.ARv:
+                MyState.Motion.SetMotionNo(motionType, CharaMotionNo.AIRDNF,
+                    CharaMotionFlag.Ar | CharaMotionFlag.Muki | CharaMotionFlag.AtCa,
+                    MyState.Coordinate.DirectionZ);
+                break;
+            // しゃがみ
+            case CharaMotionType.Cr:
+                MyState.Motion.SetMotionNo(motionType, CharaMotionNo.CRF,
+                    CharaMotionFlag.Act | CharaMotionFlag.AtCa,
+                    MyState.Coordinate.DirectionZ);
+                break;
+            // ふっとび
+            case CharaMotionType.FlF:
+            case CharaMotionType.FlB:
+            {
+                var motionNo = motionType is CharaMotionType.FlF
+                    ? CharaMotionNo.FLF
+                    : CharaMotionNo.FLB;
+                MyState.Motion.SetMotionNo(motionType, motionNo,
+                    CharaMotionFlag.Ar | CharaMotionFlag.Dam | CharaMotionFlag.MTK);
+            }
+                break;
+            // パスヒット
+            case CharaMotionType.PHF:
+            case CharaMotionType.PHB:
+            {
+                var motionNo = motionType is CharaMotionType.PHF
+                    ? CharaMotionNo.PHF
+                    : CharaMotionNo.PHB;
+                MyState.Motion.SetMotionNo(motionType, motionNo,
+                    CharaMotionFlag.PHit);
+            }
+                break;
+            // ダウンヒット
+            case CharaMotionType.DnHF:
+            case CharaMotionType.DnHB:
+            {
+                var motionNo = motionType is CharaMotionType.DnHF
+                    ? CharaMotionNo.DNHF
+                    : CharaMotionNo.DNHB;
+                MyState.Motion.SetMotionNo(motionType, motionNo,
+                    CharaMotionFlag.Dam | CharaMotionFlag.Dn);
+            }
+                break;
+            // かがみ
+            case CharaMotionType.KG:
+            {
+                var motionNo = MyState.Live.Hp > Defines.KAGAMI2HP
+                    ? CharaMotionNo.KG
+                    : CharaMotionNo.KG2;
+                MyState.Motion.SetMotionNo(motionType, motionNo,
+                    CharaMotionFlag.Dam | CharaMotionFlag.KG);
+            }
+                break;
+            // ダウン
+            case CharaMotionType.DnF:
+            case CharaMotionType.DnB:
+            {
+                var motionNo = motionType is CharaMotionType.DnF
+                    ? CharaMotionNo.DNF
+                    : CharaMotionNo.DNB;
+                MyState.Motion.SetMotionNo(motionType, motionNo,
+                    CharaMotionFlag.Dam | CharaMotionFlag.Dn);
+            }
+                break;
+            // ダウンからの復帰
+            case CharaMotionType.DRv:
+                MyState.Motion.SetMotionNo(motionType, CharaMotionNo.DRVF,
+                    CharaMotionFlag.Dam | CharaMotionFlag.Dn);
+                break;
+            // キャッチモーション
+            case CharaMotionType.CM:
+                MyState.Motion.SetMotionNo(motionType, CharaMotionNo.CMF,
+                    CharaMotionFlag.Act);
+                break;
+            case CharaMotionType.JCM:
+                break;
+            // ファンブル
+            case CharaMotionType.FB:
+                MyState.Motion.SetMotionNo(motionType, CharaMotionNo.FBF,
+                    CharaMotionFlag.Act,
+                    MyState.Coordinate.DirectionZ);
+                break;
+            // ジャンプファンブル
+            case CharaMotionType.JFB:
+                MyState.Motion.SetMotionNo(motionType, CharaMotionNo.JFBF,
+                    CharaMotionFlag.Act,
+                    MyState.Coordinate.DirectionZ);
+                break;
+            // パス待ち
+            case CharaMotionType.PW:
+                MyState.Motion.SetMotionNo(motionType, CharaMotionNo.PWF,
+                    CharaMotionFlag.JpOK | CharaMotionFlag.Muki | CharaMotionFlag.PW | CharaMotionFlag.DmOK,
+                    MyState.Coordinate.DirectionZ);
+                break;
+            // パス待ち歩き
+            case CharaMotionType.PWWk:
+                // 歩き扱い
+                MyState.Motion.SetMotionNo(CharaMotionType.Wk, CharaMotionNo.PWWKF,
+                    CharaMotionFlag.JpOK | CharaMotionFlag.Muki | CharaMotionFlag.PW | CharaMotionFlag.DmOK,
+                    MyState.Coordinate.DirectionZ);
+                break;
+            // パス待ちダッシュ
+            case CharaMotionType.PWDs:
+                // ダッシュ扱い
+                MyState.Motion.SetMotionNo(CharaMotionType.Ds, CharaMotionNo.PWDS,
+                    CharaMotionFlag.Ds | CharaMotionFlag.JpOK | CharaMotionFlag.PW,
+                    MyState.Coordinate.DirectionZ);
+                break;
+            // スリップ
+            case CharaMotionType.Sl:
+                MyState.Motion.SetMotionNo(motionType, CharaMotionNo.SL,
+                    CharaMotionFlag.Act | CharaMotionFlag.JpOK | CharaMotionFlag.Slip | CharaMotionFlag.AtCa);
+                break;
+            // シュート、振り返りシュート
+            case CharaMotionType.Sh:
+            case CharaMotionType.RtSh:
+            {
+                var motionNo = motionType is CharaMotionType.Sh
+                    ? CharaMotionNo.SHF
+                    : CharaMotionNo.RTNSH;
+                var flag = CharaMotionFlag.Act;
+                if (MyState.Motion.HasFlag(CharaMotionFlag.Slip))
+                {
+                    flag |= CharaMotionFlag.Slip;
+                }
+                else if (MyState.Motion.HasFlag(CharaMotionFlag.Ds))
+                {
+                    flag |= CharaMotionFlag.Ds;
+                }
+
+                MyState.Motion.SetMotionNo(CharaMotionType.Sh, motionNo,
+                    flag,
+                    MyState.Coordinate.DirectionZ);
+            }
+                break;
+            case CharaMotionType.Pa:
+                break;
+            case CharaMotionType.JSh:
+                break;
+            case CharaMotionType.RtJSh:
+                break;
+            case CharaMotionType.JPa:
+                break;
+            case CharaMotionType.Ca:
+                break;
+            case CharaMotionType.JCa:
+                break;
+            case CharaMotionType.Dg:
+                break;
+            case CharaMotionType.JDg:
+                break;
+            case CharaMotionType.RoF:
+                break;
+            case CharaMotionType.RoB:
+                break;
+            case CharaMotionType.DRAW:
+                break;
+            case CharaMotionType.WIN:
+                break;
+            case CharaMotionType.LOSE:
+                break;
+            case CharaMotionType.OvL:
+                break;
+            case CharaMotionType.USA:
+                break;
+            case CharaMotionType.USA2:
+                break;
+            case CharaMotionType.IKI:
+                break;
+            case CharaMotionType.LOOK:
+                break;
+            case CharaMotionType.LOOK2:
+                break;
+            case CharaMotionType.FALL:
+                break;
+            case CharaMotionType.AGE2:
+                break;
+            case CharaMotionType.AGE3:
+                break;
+            case CharaMotionType.AGE4:
+                break;
+            case CharaMotionType.AGE5:
+                break;
+            case CharaMotionType.DO1:
+                break;
+            case CharaMotionType.DO2:
+                break;
+            case CharaMotionType.ANG:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(motionType), motionType, null);
+        }
     }
-
-
-    //   //フラグの初期化
-    //   switch (tMtype)
-    //   {
-    //     //立ち
-    //   case dbmtSt:
-    //
-    //     st_.pstMyCh_->Motion.MNo = RevMNoZ(dbmnSTF);
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfJpOK | dbmfMuki | dbmfDmOK | dbmfAtCa);
-    //
-    //     break;
-    //
-    //     //息継ぎ
-    //   case dbmtBreath:
-    //     //Ｚ向きでモーション変える
-    //     st_.pstMyCh_->Motion.MNo = RevMNoZ(dbmnBRF);
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfJpOK | dbmfMuki | dbmfDmOK | dbmfAtCa);
-    //     //建前上、立ちにする
-    //     tMtype = dbmtSt;
-    //     break;
-    //
-    //     //歩き
-    //   case dbmtWk:
-    //
-    //     //st_.pstMyCh_->Motion.MNo = dbmnWK;
-    //     st_.pstMyCh_->Motion.MNo = RevMNoZ(dbmnWKF);
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfJpOK | dbmfMuki | dbmfDmOK | dbmfAtCa);
-    //     break;
-    //
-    //     //ダッシュ
-    //   case dbmtDs:
-    //     //ダッシュ継続以外
-    //     if (lib_num::IsFlags((s32)st_.pstMyCh_->Motion.MFlags, (s32)dbmfDs) == FALSE)
-    //     {
-    //       st_.pstMyCh_->Step_c = 0;//歩数を初期化
-    //       st_.pstMyCh_->MadStep_c = 0;//歩数を初期化
-    //     }
-    //     st_.pstMyCh_->Motion.MNo = dbmnDS;
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfDs | dbmfJpOK | dbmfAtCa);
-    //     break;
-    //
-    //     //ジャンプ前しゃがみ
-    //   case dbmtJCr:
-    //     SetTutoOK(sta_JumpAct);//ジャンプクリア
-    //     st_.pstMyCh_->Motion.MNo = RevMNoZ(dbmnJCF);
-    //     st_.pstMyCh_->Motion.MFlags = (st_.pstMyCh_->Motion.IsMFlags(dbmfDs))
-    //       ? (dbmfAct | dbmfAr | dbmfDs)
-    //       : (dbmfAct | dbmfAr);
-    //     break;
-    //
-    //     //キャンセルジャンプ前しゃがみ（Dsフラグが入らない）
-    //   case dbmtCJCr:
-    //     st_.pstMyCh_->Motion.MNo = RevMNoZ(dbmnCRF);
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfAct | dbmfAr);
-    //     tMtype = dbmtJCr;
-    //     break;
-    //
-    //     //ジャンプ中
-    //   case dbmtJUp:
-    //   case dbmtJDn:
-    //
-    //     if (st_.pstMyCh_->Zahyou.dY < 0) tMtype = dbmtJDn;
-    //
-    //     st_.pstMyCh_->Motion.MNo = (tMtype == dbmtJUp)
-    //       ? RevMNoZ(dbmnAIRUPF)
-    //       : RevMNoZ(dbmnAIRDNF);
-    //
-    //     st_.pstMyCh_->Motion.MFlags = (st_.pstMyCh_->Motion.IsMFlags(dbmfDs))
-    //       ? (dbmfAr | dbmfMuki | dbmfAtCa | dbmfDs)
-    //       : (dbmfAr | dbmfMuki | dbmfAtCa);
-    //
-    //     break;
-    //
-    //     //空中復帰
-    //   case dbmtARv:
-    //     st_.pstMyCh_->Motion.MNo = RevMNoZ(dbmnAIRDNF);
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfAr | dbmfMuki | dbmfAtCa);
-    //     st_.pstMyCh_->AirAct_f = TRUE;//復帰した後やっぱし動けるように→行動不能だけどオートキャッチ
-    //     tMtype = dbmtJDn;
-    //     break;
-    //
-    //     //しゃがみ
-    //   case dbmtCr:
-    //     st_.pstMyCh_->Motion.MNo = RevMNoZ(dbmnCRF);
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfAct | dbmfAtCa);//一応セミオートのためオートキャッチ可能フラグ追加
-    //     break;
-    //
-    //     //吹っ飛ばされ
-    //   case dbmtFlF:
-    //   case dbmtFlB:
-    //     //st_.pstMyCh_->Anime.FrameNo = (tMtype == dbmtFlF)
-    //     //  ? 0 //前向き吹っ飛ばされ
-    //     //  : 1;//後ろ向き吹っ飛ばされ
-    //     st_.pstMyCh_->Motion.MNo = (tMtype == dbmtFlF)
-    //       ? dbmnFLF
-    //       : dbmnFLB;
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfAr | dbmfDam | dbmfMTK);
-    //     break;
-    //
     //     //ごろごろ
     //   case dbmtRoF:
     //   case dbmtRoB:
@@ -190,102 +354,7 @@ public partial class CharaBehavior
     //     st_.pstMyCh_->Motion.MFlags = (dbmfDam | dbmfDn);
     //     SESet(seRoll);//SEならす
     //     break;
-    //
-    //     //パスヒット
-    //   case dbmtPHF:
-    //   case dbmtPHB:
-    //     st_.pstMyCh_->Motion.MNo = (tMtype == dbmtPHF)
-    //       ? dbmnPHF
-    //       : dbmnPHB;
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfPHit);
-    //     break;
-    //
-    //     //かがみ
-    //   case dbmtKG:
-    //     //のこりＨＰでかがみっぷりを変える
-    //
-    //     st_.pstMyCh_->Motion.MNo = (st_.pstMyCh_->HP > KAGAMI2HP)
-    //       ? dbmnKG
-    //       : dbmnKG2;
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfDam | dbmfKG);
-    //
-    //     break;
-    //
-    //     //ダウンヒット
-    //   case dbmtDnHF:
-    //   case dbmtDnHB:
-    //     st_.pstMyCh_->Motion.MNo = (tMtype == dbmtDnHF)
-    //       ? dbmnDNHF
-    //       : dbmnDNHB;
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfDam | dbmfDn);
-    //     break;
-    //
-    //     //ダウン
-    //   case dbmtDnF:
-    //   case dbmtDnB:
-    //     st_.pstMyCh_->Motion.MNo = (tMtype == dbmtDnF)
-    //       ? dbmnDNF
-    //       : dbmnDNB;
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfDam | dbmfDn);
-    //
-    //     //if (pmgEO_->mgStSn_.EtcSS.IceCourt_f())
-    //     //{
-    //     //  s32 spd = (abs(st_.pstMyCh_->Zahyou.dX) > abs(st_.pstMyCh_->Zahyou.dZ))
-    //     //    ? abs(st_.pstMyCh_->Zahyou.dX)
-    //     //    : abs(st_.pstMyCh_->Zahyou.dZ);
-    //
-    //     //  //ダウン滑り効果音
-    //     //  if (spd > 200)
-    //     //  {
-    //     //    SESet(seDownLv3);
-    //     //  }
-    //     //  else if (spd > 100)
-    //     //  {
-    //     //    SESet(seDownLv2);
-    //     //  }
-    //     //  else if (spd > 25)
-    //     //  {
-    //     //    SESet(seDownLv1);
-    //     //  }
-    //     //  else
-    //     //  {
-    //     //    SESet(seDownLv0);
-    //     //  }
-    //     //  //MvDefSl(pmgEO_->mgDt_.dtSet_.GetDtCourt(setDownBrkIce));
-    //     //}
-    //     //else
-    //     {
-    //       SESet(seDownLv0);//SEならす
-    //     }
-    //     //SetSerifu(srfDown);//セリフ
-    //     break;
-    //
-    //     //ダウンからの復帰
-    //   case dbmtDRv:
-    //     st_.pstMyCh_->Motion.MNo = RevMNoZ(dbmnDRVF);
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfDam | dbmfDn);
-    //     break;
-    //
-    //     //キャッチモーション
-    //   case dbmtCM:
-    //     //キャッチクリア
-    //     SetTutoOK(sta_CatchAct);
-    //     st_.pstMyCh_->Motion.MNo = RevMNoZ(dbmnCMF);
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfAct);
-    //     break;
-    //
-    //     //ファンブル
-    //   case dbmtFB:
-    //     st_.pstMyCh_->Motion.MNo = RevMNoZ(dbmnFBF);
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfAct);
-    //     break;
-    //
-    //     //パス待ち
-    //   case dbmtPW:
-    //     st_.pstMyCh_->Motion.MNo = RevMNoZ(dbmnPWF);
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfJpOK | dbmfMuki | dbmfPW | dbmfDmOK);
-    //     break;
-    //
+
     //     //パス待ち歩き
     //   case dbmtPWWk:
     //     //st_.pstMyCh_->Motion.MNo = dbmnPWWK;
@@ -719,9 +788,8 @@ public partial class CharaBehavior
     //     SetFrameData(FALSE);
     //   }
     // }
-    
-    
-        private CharaMotionType ShiftMotionType(CharaMotionType motionType)
+
+    private CharaMotionType ShiftMotionType(CharaMotionType motionType)
     {
         // 空中の場合、地上モーションを空中用に変更
         if (MyState.Motion.HasFlag(CharaMotionFlag.Ar))
@@ -757,6 +825,12 @@ public partial class CharaBehavior
                 : CharaMotionType.DnB;
             // TODO:審判にアクセスするタイミングとしてはここではないので移動する
             //  st_.pmgRf_->SetMotion(dbrfLongWhistle);
+        }
+
+        // 下降中はジャンプ下降中に変更
+        if (motionType == CharaMotionType.JUp && MyState.Coordinate.VelocityY < 0)
+        {
+            motionType = CharaMotionType.JDn;
         }
 
         return motionType;
