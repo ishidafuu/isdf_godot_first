@@ -6,19 +6,19 @@ namespace db;
 public class SettingData
 {
     private static int GravityOffset => 0;
-    private static int DamageOffset => GravityOffset + Enum.GetValues<endtSet_Grv>().Length;
-    private static int JumpOffset => DamageOffset + Enum.GetValues<endtSet_Damage>().Length;
-    private static int CourtOffset => JumpOffset + Enum.GetValues<endtSet_Jump>().Length;
-    private static int BallOffset => CourtOffset + Enum.GetValues<endtSet_Court>().Length;
-    private static int WallOffset => BallOffset + Enum.GetValues<endtSet_Ball>().Length;
-    private static int InfieldOffset => WallOffset + Enum.GetValues<endtSet_Wall>().Length;
-    private static int CatchOffset => InfieldOffset + Enum.GetValues<endtSet_Infield>().Length;
-    private static int ShootOffset => CatchOffset + Enum.GetValues<endtSet_Catch>().Length;
-    private static int PassOffset => ShootOffset + Enum.GetValues<endtSet_Shot>().Length;
-    private static int FormationOffset => PassOffset + Enum.GetValues<endtSet_Pass>().Length;
-    private static int ComOffset => FormationOffset + Enum.GetValues<endtSet_Formation>().Length;
-    private static int InputOffset => ComOffset + Enum.GetValues<endtSet_COM>().Length;
-    private static int AllSettingLength => InputOffset + Enum.GetValues<endtSet_Input>().Length;
+    private static int DamageOffset => GravityOffset + Enum.GetValues<SettingGravityType>().Length;
+    private static int JumpOffset => DamageOffset + Enum.GetValues<SettingDamageType>().Length;
+    private static int CourtOffset => JumpOffset + Enum.GetValues<SettingJumpType>().Length;
+    private static int BallOffset => CourtOffset + Enum.GetValues<SetingCourtType>().Length;
+    private static int WallOffset => BallOffset + Enum.GetValues<SettingBallType>().Length;
+    private static int InfieldOffset => WallOffset + Enum.GetValues<SettingWallType>().Length;
+    private static int CatchOffset => InfieldOffset + Enum.GetValues<SettingInfieldType>().Length;
+    private static int ShootOffset => CatchOffset + Enum.GetValues<SettingCatchType>().Length;
+    private static int PassOffset => ShootOffset + Enum.GetValues<SettingShotType>().Length;
+    private static int FormationOffset => PassOffset + Enum.GetValues<SettingPassType>().Length;
+    private static int ComOffset => FormationOffset + Enum.GetValues<SettingFormationType>().Length;
+    private static int InputOffset => ComOffset + Enum.GetValues<SettingComType>().Length;
+    private static int AllSettingLength => InputOffset + Enum.GetValues<SettingInputType>().Length;
 
     public int[] Sheet { get; private set; } = new int[AllSettingLength];
 
@@ -33,7 +33,7 @@ public class SettingData
     /// <summary>
     /// 重力
     /// </summary>
-    public int GetGravity(endtSet_Grv value)
+    public int GetGravity(SettingGravityType value)
     {
         var index = GravityOffset + (int)value;
         return Sheet[index];
@@ -42,7 +42,7 @@ public class SettingData
     /// <summary>
     /// ダメージ
     /// </summary>
-    public int GetDamage(endtSet_Damage value)
+    public int GetDamage(SettingDamageType value)
     {
         var index = DamageOffset + (int)value;
         return Sheet[index];
@@ -51,7 +51,7 @@ public class SettingData
     /// <summary>
     /// ジャンプ
     /// </summary>
-    public int GetJump(endtSet_Jump value)
+    public int GetJump(SettingJumpType value)
     {
         var index = JumpOffset + (int)value;
         return Sheet[index];
@@ -60,7 +60,7 @@ public class SettingData
     /// <summary>
     /// コート
     /// </summary>
-    public int GetCourt(endtSet_Court value)
+    public int GetCourt(SetingCourtType value)
     {
         var index = CourtOffset + (int)value;
         return Sheet[index];
@@ -69,7 +69,7 @@ public class SettingData
     /// <summary>
     /// ボール
     /// </summary>
-    public int GetBall(endtSet_Ball value)
+    public int GetBall(SettingBallType value)
     {
         var index = BallOffset + (int)value;
         return Sheet[index];
@@ -78,7 +78,7 @@ public class SettingData
     /// <summary>
     /// 壁
     /// </summary>
-    public int GetWall(endtSet_Wall value)
+    public int GetWall(SettingWallType value)
     {
         var index = WallOffset + (int)value;
         return Sheet[index];
@@ -87,7 +87,7 @@ public class SettingData
     /// <summary>
     /// 内野
     /// </summary>
-    public int GetInfield(endtSet_Infield value)
+    public int GetInfield(SettingInfieldType value)
     {
         var index = InfieldOffset + (int)value;
         return Sheet[index];
@@ -96,7 +96,7 @@ public class SettingData
     /// <summary>
     /// キャッチ
     /// </summary>
-    public int GetCatch(endtSet_Catch value)
+    public int GetCatch(SettingCatchType value)
     {
         var index = CatchOffset + (int)value;
         return Sheet[index];
@@ -105,7 +105,7 @@ public class SettingData
     /// <summary>
     /// シュート
     /// </summary>
-    public int GetShoot(endtSet_Shot value)
+    public int GetShoot(SettingShotType value)
     {
         var index = ShootOffset + (int)value;
         return Sheet[index];
@@ -114,7 +114,7 @@ public class SettingData
     /// <summary>
     /// パス
     /// </summary>
-    public int GetPass(endtSet_Pass value)
+    public int GetPass(SettingPassType value)
     {
         var index = PassOffset + (int)value;
         return Sheet[index];
@@ -123,7 +123,7 @@ public class SettingData
     /// <summary>
     /// フォーメーション
     /// </summary>
-    public int GetFormation(endtSet_Formation value)
+    public int GetFormation(SettingFormationType value)
     {
         var index = FormationOffset + (int)value;
         return Sheet[index];
@@ -132,7 +132,7 @@ public class SettingData
     /// <summary>
     /// COM思考
     /// </summary>
-    public int GetCom(endtSet_COM value)
+    public int GetCom(SettingComType value)
     {
         var index = ComOffset + (int)value;
         return Sheet[index];
@@ -141,7 +141,7 @@ public class SettingData
     /// <summary>
     /// 入力
     /// </summary>
-    public int GetInput(endtSet_Input value)
+    public int GetInput(SettingInputType value)
     {
         var index = InputOffset + (int)value;
         return Sheet[index];

@@ -1,169 +1,182 @@
 ﻿namespace db;
 
-//Grv,//
-public enum endtSet_Grv
+/// <summary>
+/// 重力
+/// </summary>
+public enum SettingGravityType
 {
-    setGRV_Y, //重力Y軸重力
-    setFlyGrv, //重力（ふっとび）
-    setFlyGrvLoose, //重力（ゆるふっとび）
-    setPaGrv, //16,パス重力
-    setPaGrv14, //12,１４間パス重力
-    setBoundGrv, //重力（バウンド）
-    setgrEND,
-};
+    GRV_Y, //重力Y軸重力
+    FlyGrv, //重力（ふっとび）
+    FlyGrvLoose, //重力（ゆるふっとび）
+    PaGrv, //16,パス重力
+    PaGrv14, //12,１４間パス重力
+    BoundGrv, //重力（バウンド）
+}
 
-//Damage,//
-public enum endtSet_Damage
+/// <summary>
+/// ダメージ
+/// </summary>
+public enum SettingDamageType
 {
-    setHP, //HP
-    setDeadNum, //昇天数x10
-    setCatchDamPer, //キャッチダメージ率
-    setdmEND,
-};
+    HP, //HP
+    DeadNum, //昇天数x10
+    CatchDamPer, //キャッチダメージ率
+}
 
-//Jump,//
-public enum endtSet_Jump
+/// <summary>
+/// ジャンプ
+/// </summary>
+public enum SettingJumpType
 {
-    setJump_vY0, //JpY初速（通常）
-    setDashJump_vY0, //JpY初速（ダッシュ）
-    setJumpCanselTime, //ジャンプキャンセル時間(f)
-    setJumpLandTime, //ジャンプ着地時間(f)
-    setjpEND,
-};
+    Jump_vY0, //JpY初速（通常）
+    DashJump_vY0, //JpY初速（ダッシュ）
+    JumpCanselTime, //ジャンプキャンセル時間(f)
+    JumpLandTime, //ジャンプ着地時間(f)
+}
 
-//Court,//
-public enum endtSet_Court
+/// <summary>
+/// コート
+/// </summary>
+public enum SetingCourtType
 {
-    setDashX, //ダッシュ速度Ｘ
-    setDashZ, //ダッシュ速度Ｚ
-    setDashJpX, //ダッシュジャンプ速度Ｘ
-    setWkZPer, //奥行き移動速度％
-    setNWkXPer, //斜めＸ移動速度
-    setNWkZPer, //斜めＺ移動速度
-    setDsStopFric, //摩擦係数
-    setDownBrkIce, //氷床ダウンブレーキ係数
-    setDsLossPer, //足取られ
-    setRollSpeed, //転がり速度
-    setctEND,
-};
+    DashX, //ダッシュ速度Ｘ
+    DashZ, //ダッシュ速度Ｚ
+    DashJpX, //ダッシュジャンプ速度Ｘ
+    WkZPer, //奥行き移動速度％
+    NWkXPer, //斜めＸ移動速度
+    NWkZPer, //斜めＺ移動速度
+    DsStopFric, //摩擦係数
+    DownBrkIce, //氷床ダウンブレーキ係数
+    DsLossPer, //足取られ
+    RollSpeed, //転がり速度
+}
 
-//Ball,//
-public enum endtSet_Ball
+/// <summary>
+/// ボール
+/// </summary>
+public enum SettingBallType
 {
-    setBoundDefPer, //バウンド
-    setBoundAbsdX, //バウンド速度減衰率Ｘ(%)
-    setBoundAbsdY, //バウンド速度減衰量Ｙ(%)
-    setBoundAbsdZ, //バウンド速度減衰率Ｚ(%)
-    setBoundStopdY, //これ以下の落下速度の場合バウンドしない
-    setBoundMaxdY, //バウンド最高Ｙ軸速度
-    setBoundMindYpdX, //バウンド最低dY/dX(%)これ以上鋭角のバウンドをしない
-    setAtariWidht, //当たり判定Ｗ
-    setAtariHeight, //当たり判定Ｈ
-    setAtariDepth, //当たり判定Ｄ
-    setZAtariWidht, //Ｚ方向シュート当たり判定Ｗ
-    setZAtariHeight, //Ｚ方向シュート当たり判定Ｈ
-    setZAtariDepth, //Ｚ方向シュート当たり判定Ｄ
-    setFAtariWidht2, //停止ボール当たり判定Ｗ
-    setFAtariHeight2, //停止ボール当たり判定Ｈ
-    setFAtariDepth2, //停止ボール当たり判定Ｄ
-    setBaXWallAbsdX, //左右壁減速率X
-    setBaXWallAbsdZ, //左右壁減速率X
-    setBaZWallAbsdX, //左右壁減速率X
-    setBaZWallAbsdZ, //左右壁減速率X
-    setblEND,
-};
+    BoundDefPer, //バウンド
+    BoundAbsdX, //バウンド速度減衰率Ｘ(%)
+    BoundAbsdY, //バウンド速度減衰量Ｙ(%)
+    BoundAbsdZ, //バウンド速度減衰率Ｚ(%)
+    BoundStopdY, //これ以下の落下速度の場合バウンドしない
+    BoundMaxdY, //バウンド最高Ｙ軸速度
+    BoundMindYpdX, //バウンド最低dY/dX(%)これ以上鋭角のバウンドをしない
+    AtariWidht, //当たり判定Ｗ
+    AtariHeight, //当たり判定Ｈ
+    AtariDepth, //当たり判定Ｄ
+    ZAtariWidht, //Ｚ方向シュート当たり判定Ｗ
+    ZAtariHeight, //Ｚ方向シュート当たり判定Ｈ
+    ZAtariDepth, //Ｚ方向シュート当たり判定Ｄ
+    FAtariWidht2, //停止ボール当たり判定Ｗ
+    FAtariHeight2, //停止ボール当たり判定Ｈ
+    FAtariDepth2, //停止ボール当たり判定Ｄ
+    BaXWallAbsdX, //左右壁減速率X
+    BaXWallAbsdZ, //左右壁減速率X
+    BaZWallAbsdX, //左右壁減速率X
+    BaZWallAbsdZ, //左右壁減速率X
+}
 
-//Wall,//
-public enum endtSet_Wall
+/// <summary>
+/// 壁
+/// </summary>
+public enum SettingWallType
 {
-    setXWallAbsdX, //左右壁減速率X
-    setXWallAbsdZ, //左右壁減速率X
-    setZWallAbsdX, //左右壁減速率X
-    setZWallAbsdZ, //左右壁減速率X
-    setWallBounddY, //壁ぶつかり時跳ね上がり
-    setwlEND,
-};
+    XWallAbsdX, //左右壁減速率X
+    XWallAbsdZ, //左右壁減速率X
+    ZWallAbsdX, //左右壁減速率X
+    ZWallAbsdZ, //左右壁減速率X
+    WallBounddY, //壁ぶつかり時跳ね上がり
+}
 
-//Infield,//
-public enum endtSet_Infield
+/// <summary>
+/// 内野
+/// </summary>
+public enum SettingInfieldType
 {
-    setCrYokeJudgeWidth, //しゃがみ避け判断判定Ｘ幅
-    setCrYokeJudgeDepth, //しゃがみ避け判断判定Ｚ幅
-    setJpYokeJudgeWidth, //ジャンプ避け判断判定Ｘ幅
-    setJpYokeJudgeDepth, //ジャンプ避け判断判定Ｚ幅
-    setShCvJpJudgeWidth, //シュートカバージャンプ判断判定Ｘ幅
-    setShCvJpJudgeDepth, //シュートカバージャンプ判断判定Ｚ幅
-    setEnCourtCrTime, //敵コート避け時間限界(f)
-    setNoJpHeight, //避けない高さ
-    setifEND,
-};
+    CrYokeJudgeWidth, //しゃがみ避け判断判定Ｘ幅
+    CrYokeJudgeDepth, //しゃがみ避け判断判定Ｚ幅
+    JpYokeJudgeWidth, //ジャンプ避け判断判定Ｘ幅
+    JpYokeJudgeDepth, //ジャンプ避け判断判定Ｚ幅
+    ShCvJpJudgeWidth, //シュートカバージャンプ判断判定Ｘ幅
+    ShCvJpJudgeDepth, //シュートカバージャンプ判断判定Ｚ幅
+    EnCourtCrTime, //敵コート避け時間限界(f)
+    NoJpHeight, //避けない高さ
+}
 
-//Catch,//
-public enum endtSet_Catch
+/// <summary>
+/// キャッチ
+/// </summary>
+public enum SettingCatchType
 {
-    setCatchWait, //総キャッチ時間
-    setCaMotionFrm, //キャッチ時間
-    setNiceCatchTime, //ナイスキャッチ時間
-    setDsCatchRev, //ダッシュキャッチのキャッチ時間マイナス
-    setcaEND,
-};
+    CatchWait, //総キャッチ時間
+    CaMotionFrm, //キャッチ時間
+    NiceCatchTime, //ナイスキャッチ時間
+    DsCatchRev, //ダッシュキャッチのキャッチ時間マイナス
+}
 
-//Shot,//
-public enum endtSet_Shot
+/// <summary>
+/// シュート
+/// </summary>
+public enum SettingShotType
 {
-    setRollPow, //ごろごろ閾値
-    setHissatsuShotSpd, //必殺シュートデフォ速度
-    setNormalShotSpd, //普通シュートデフォ速度
-    setPierceDown, //貫通威力減衰
-    setComboDamDownPer, //同一キャラヒット時の威力減衰
-    setStandShotRate, //立ち投げＢＰ→攻撃値倍率
-    setJumpShotRate, //ジャンプＢＰ→攻撃値倍率
-    setDashShotRate, //ダッシュＢＰ→攻撃値倍率
-    setDashJumpShotRate, //ダッシュジャンプＢＰ→攻撃値倍率
-    setHitStartTime, //シュートしてから当たり判定が出るまでの時間(f)
-    setFlyTagHeight, //吹っ飛びでもタゲになる高さ
-    setshEND,
-};
+    RollPow, //ごろごろ閾値
+    HissatsuShotSpd, //必殺シュートデフォ速度
+    NormalShotSpd, //普通シュートデフォ速度
+    PierceDown, //貫通威力減衰
+    ComboDamDownPer, //同一キャラヒット時の威力減衰
+    StandShotRate, //立ち投げＢＰ→攻撃値倍率
+    JumpShotRate, //ジャンプＢＰ→攻撃値倍率
+    DashShotRate, //ダッシュＢＰ→攻撃値倍率
+    DashJumpShotRate, //ダッシュジャンプＢＰ→攻撃値倍率
+    HitStartTime, //シュートしてから当たり判定が出るまでの時間(f)
+    FlyTagHeight, //吹っ飛びでもタゲになる高さ
+}
 
-//Pass,//
-public enum endtSet_Pass
+/// <summary>
+/// パス
+/// </summary>
+public enum SettingPassType
 {
-    setPaSpdAdd14, //50,１４間パス速度追加
-    setDMPaSpd, //ダッシュマンパス速度
-    setNearDistDef, //近距離判定距離
-    setQuickPassTagY, //クイックパスタゲ高さ
-    setTossPassTagY, //トスパスタゲ高さ
-    setDsmnTossCatchTime, //ダッシュマントスキャッチタイム
-    setAlleyoopTime, //アリウープ最低時間
-    setPaHitStartTime, //パスしてから当たり判定が出るまでの時間(f)
-    setPaStWait, //パス開始までのフレーム
-    setpaEND,
-};
+    PaSpdAdd14, //50,１４間パス速度追加
+    DMPaSpd, //ダッシュマンパス速度
+    NearDistDef, //近距離判定距離
+    QuickPassTagY, //クイックパスタゲ高さ
+    TossPassTagY, //トスパスタゲ高さ
+    DsmnTossCatchTime, //ダッシュマントスキャッチタイム
+    AlleyoopTime, //アリウープ最低時間
+    PaHitStartTime, //パスしてから当たり判定が出るまでの時間(f)
+    PaStWait, //パス開始までのフレーム
+}
 
-//Formation,//
-public enum endtSet_Formation
+/// <summary>
+/// フォーメーション
+/// </summary>
+public enum SettingFormationType
 {
-    setAtcLineX, //弱攻撃ライン（ダッシュシュートリリース位置、ダッシュマンがジャンプする位置など）
-    setAtcLineX2, //中攻撃ライン
-    setAtcLineX3, //強攻撃ライン
-    setfmEND,
-};
+    AtcLineX, //弱攻撃ライン（ダッシュシュートリリース位置、ダッシュマンがジャンプする位置など）
+    AtcLineX2, //中攻撃ライン
+    AtcLineX3, //強攻撃ライン
+}
 
-//COM,//
-public enum endtSet_COM
+/// <summary>
+/// COM思考
+/// </summary>
+public enum SettingComType
 {
-    setOpeRev, //作戦設定による補正
-    setNaiyaSteel, //強奪範囲
-    setcmEND,
-};
+    OpeRev, //作戦設定による補正
+    NaiyaSteel, //強奪範囲
+}
 
-//Input,//
-public enum endtSet_Input
+/// <summary>
+/// 入力
+/// </summary>
+public enum SettingInputType
 {
-    setBackDashX, //バックダッシュになる位置
-    setAutoJumpX, //オーバーライン防止ジャンプ位置
-    setSemiCaLen, //セミオートキャッチ長さ
-    setSemiCaBase, //セミオートキャッチ中点
-    setSemiCaNice, //セミオートキャッチナイス
-    setinEND,
-};
+    BackDashX, //バックダッシュになる位置
+    AutoJumpX, //オーバーライン防止ジャンプ位置
+    SemiCaLen, //セミオートキャッチ長さ
+    SemiCaBase, //セミオートキャッチ中点
+    SemiCaNice, //セミオートキャッチナイス
+}
