@@ -1,6 +1,6 @@
 ﻿namespace db;
 
-public class TeamState
+public partial class TeamState
 {
     public int SideIndex { get; }
 
