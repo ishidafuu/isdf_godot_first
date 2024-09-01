@@ -34,3 +34,15 @@ public enum enShChangeType
     scPass,
     scCrv
 };
+
+public enum ResultType
+{
+    rtREADY = 0,
+    rtPLAY = 1,
+    rtWIN = 2,
+    rtLOSE = 3,
+    rtTIMEUPWIN = 4,
+    rtTIMEUPLOSE = 5,
+    rtTIMEUPDRAW = 6,
+    rtRETIRE = 10,
+};

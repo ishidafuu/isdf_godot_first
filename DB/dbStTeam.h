@@ -268,7 +268,6 @@ namespace db
     {
       Zeromem(this);
     }
-    
   };
   
   struct TStTeam

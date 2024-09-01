@@ -5,19 +5,20 @@ namespace db.masters;
 
 public class ComActionData
 {
-    public int[][] NormalSheet;
-    public int[][] PinchSheet;
+    public static int ActionTypeLength => Enum.GetValues<ComActionType>().Length;
+    public int[][] NormalSheet { get; private set; }
+    public int[][] PinchSheet { get; private set; }
 
     public ComActionData()
     {
-        var actionTypeLength = Enum.GetValues<ComActionType>().Length;
+        var actionTypeLength = ActionTypeLength;
         NormalSheet = new int[actionTypeLength][];
         PinchSheet = new int[actionTypeLength][];
 
         for (var i = 0; i < actionTypeLength; i++)
         {
-            NormalSheet[i] = new int[Defines.MemberCount];
-            PinchSheet[i] = new int[Defines.MemberCount];
+            NormalSheet[i] = new int[Defines.ComPattern];
+            PinchSheet[i] = new int[Defines.ComPattern];
         }
     }
 
