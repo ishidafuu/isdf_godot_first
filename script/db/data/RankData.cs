@@ -4,20 +4,20 @@ namespace db;
 
 public class RankData
 {
-    public static int AllRankLength => Enum.GetValues<RankLevelType>().Length
-                                       + Enum.GetValues<RankSpeedType>().Length
-                                       + Enum.GetValues<RankHpType>().Length
-                                       + Enum.GetValues<RankTechType>().Length
-                                       + Enum.GetValues<RankPowType>().Length;
+    private static int LevelOffset => 0;
+    private static int SpeedOffset => LevelOffset + Enum.GetValues<RankLevelType>().Length;
+    private static int HpOffset => SpeedOffset + Enum.GetValues<RankSpeedType>().Length;
+    private static int TechOffset => HpOffset + Enum.GetValues<RankHpType>().Length;
+    private static int PowerOffset => TechOffset + Enum.GetValues<RankTechType>().Length;
+    private static int AllRankLength => PowerOffset + Enum.GetValues<RankPowerType>().Length;
 
     public int[][] Sheet { get; private set; }
 
     public RankData()
     {
-        var allRankLength = AllRankLength;
-        Sheet = new int[allRankLength][];
+        Sheet = new int[AllRankLength][];
 
-        for (var i = 0; i < allRankLength; i++)
+        for (var i = 0; i < AllRankLength; i++)
         {
             Sheet[i] = new int[Defines.RANKNUM];
         }
@@ -32,7 +32,7 @@ public class RankData
     /// </summary>
     public int GetLevel(RankLevelType levelType, int rank)
     {
-        var index = (int)levelType;
+        var index = LevelOffset + (int)levelType;
         return Sheet[index][rank];
     }
 
@@ -41,8 +41,7 @@ public class RankData
     /// </summary>
     public int GetSpeed(RankSpeedType speedType, int rank)
     {
-        var index = Enum.GetValues<RankLevelType>().Length
-                    + (int)speedType;
+        var index = SpeedOffset + (int)speedType;
         return Sheet[index][rank];
     }
 
@@ -51,9 +50,7 @@ public class RankData
     /// </summary>
     public int GetHp(RankHpType hpType, int rank)
     {
-        var index = Enum.GetValues<RankLevelType>().Length
-                    + Enum.GetValues<RankSpeedType>().Length
-                    + (int)hpType;
+        var index = HpOffset + (int)hpType;
         return Sheet[index][rank];
     }
 
@@ -62,23 +59,16 @@ public class RankData
     /// </summary>
     public int GetTech(RankTechType techType, int rank)
     {
-        var index = Enum.GetValues<RankLevelType>().Length
-                    + Enum.GetValues<RankSpeedType>().Length
-                    + Enum.GetValues<RankHpType>().Length
-                    + (int)techType;
+        var index = TechOffset + (int)techType;
         return Sheet[index][rank];
     }
 
     /// <summary>
     /// ぱわーランク値取得
     /// </summary>
-    public int GetPower(RankPowType powType, int rank)
+    public int GetPower(RankPowerType powerType, int rank)
     {
-        var index = Enum.GetValues<RankLevelType>().Length
-                    + Enum.GetValues<RankSpeedType>().Length
-                    + Enum.GetValues<RankHpType>().Length
-                    + Enum.GetValues<RankTechType>().Length
-                    + (int)powType;
+        var index = PowerOffset + (int)powerType;
         return Sheet[index][rank];
     }
 
@@ -107,7 +97,7 @@ public class RankData
         var rate = pow * Defines.Percent / targetPower;
         for (var i = 0; i < Defines.RANKNUM; i++)
         {
-            if (rate <= GetPower(RankPowType.PowtoRank, i))
+            if (rate <= GetPower(RankPowerType.PowtoRank, i))
             {
                 return i;
             }

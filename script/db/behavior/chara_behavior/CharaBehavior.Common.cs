@@ -102,9 +102,9 @@ public partial class CharaBehavior
         return DataManager.Instance.RankData.GetTech(techType, techRate);
     }
 
-    private int GetPowerRank(RankPowType powType, int targetPower)
+    private int GetPowerRank(RankPowerType powerType, int targetPower)
     {
         var powerRate = DataManager.Instance.RankData.GetPowerRateRank(MyState.Level.Power, targetPower);
-        return DataManager.Instance.RankData.GetPower(powType, powerRate);
+        return DataManager.Instance.RankData.GetPower(powerType, powerRate);
     }
 }

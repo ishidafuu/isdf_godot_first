@@ -11,11 +11,10 @@ public class ComActionData
 
     public ComActionData()
     {
-        var actionTypeLength = ActionTypeLength;
-        NormalSheet = new int[actionTypeLength][];
-        PinchSheet = new int[actionTypeLength][];
+        NormalSheet = new int[ActionTypeLength][];
+        PinchSheet = new int[ActionTypeLength][];
 
-        for (var i = 0; i < actionTypeLength; i++)
+        for (var i = 0; i < ActionTypeLength; i++)
         {
             NormalSheet[i] = new int[Defines.ComPattern];
             PinchSheet[i] = new int[Defines.ComPattern];

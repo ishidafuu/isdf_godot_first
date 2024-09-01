@@ -9,10 +9,9 @@ public class ComPlanData
 
     public ComPlanData()
     {
-        var planTypeLength = PlanTypeLength;
-        Sheet = new int[planTypeLength][];
+        Sheet = new int[PlanTypeLength][];
 
-        for (var i = 0; i < planTypeLength; i++)
+        for (var i = 0; i < PlanTypeLength; i++)
         {
             Sheet[i] = new int[Defines.ComPattern];
         }

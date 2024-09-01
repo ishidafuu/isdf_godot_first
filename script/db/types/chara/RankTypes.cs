@@ -48,7 +48,7 @@ public enum RankTechType //技術比
     RefAg, //反射角度
 }
 
-public enum RankPowType //パワー比
+public enum RankPowerType //パワー比
 {
     PowtoRank, //パワー比→ランク
     SlipSp, //スリップ量
