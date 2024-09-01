@@ -5,11 +5,11 @@ public class ComStateManager
     private static ComStateManager _instance;
     public static ComStateManager Instance => _instance ??= new ComStateManager();
 
-    private readonly ComState[] _allTeams = new ComState[Defines.SideCount];
+    private readonly ComState[] _all = new ComState[Defines.SideCount];
 
-    public ComState[] GetAllTeams() => _allTeams;
+    public ComState[] GetAllTeams() => _all;
 
-    public ComState Get(int side) => _allTeams[side];
+    public ComState Get(int side) => _all[side];
 
     private ComStateManager()
     {
@@ -18,9 +18,9 @@ public class ComStateManager
 
     private void Setup()
     {
-        for (var i = 0; i < _allTeams.Length; i++)
+        for (var i = 0; i < _all.Length; i++)
         {
-            _allTeams[i] = new ComState(i);
+            _all[i] = new ComState(i);
         }
     }
 

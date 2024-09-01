@@ -25,6 +25,11 @@ public partial class CharaBehavior
             return;
         }
         
+        if (motionType == CharaMotionType.ANG)
+        {
+            
+        }
+        
     }
 
 
