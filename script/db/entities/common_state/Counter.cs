@@ -11,6 +11,11 @@ public struct Counter
         Value = value;
     }
 
+    public void Set(int value)
+    {
+        Value = value;
+    }
+
     public void Add(int step = 1)
     {
         Value += step;

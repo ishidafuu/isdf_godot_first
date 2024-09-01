@@ -8,6 +8,7 @@ public class DataManager
     public ComActionData ComActionData { get; } = new();
     public ComPlanData ComPlanData { get; } = new();
     public RankData RankData { get; } = new();
+    public SettingData SettingData { get; } = new();
 
     private DataManager()
     {
@@ -19,5 +20,6 @@ public class DataManager
         ComActionData.Load();
         ComPlanData.Load();
         RankData.Load();
+        SettingData.Load();
     }
 }

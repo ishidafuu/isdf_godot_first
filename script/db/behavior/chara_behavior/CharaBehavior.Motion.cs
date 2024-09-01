@@ -91,20 +91,20 @@ public partial class CharaBehavior
                 // ダウン効果音
                 // SESet(seDownLv0);//SEならす
             }
-            
+
             // シュートモーション時間
-            if (motionType == CharaMotionType.Sh 
+            if (motionType == CharaMotionType.Sh
                 || motionType == CharaMotionType.RtSh
                 || motionType == CharaMotionType.JSh
                 || motionType == CharaMotionType.RtJSh)
             {
                 MyState.Shoot.ShootWaitCount = GetLevelRank(RankLevelType.ShStMotion);
                 MyState.Shoot.ShootEndWaitCount = GetLevelRank(RankLevelType.ShEdMotion);
-                
+
                 // TODO:ボール状態の変更位置確認
                 BallState.ShotMotion = true;
             }
-            
+
             // Uターンシュート
             if (motionType == CharaMotionType.RtSh)
             {
@@ -112,6 +112,20 @@ public partial class CharaBehavior
                 MyState.Shoot.IsUTurn = true;
             }
 
+            // Uターンシュート
+            if (motionType == CharaMotionType.Pa || motionType == CharaMotionType.JPa)
+            {
+                var passWait = DataManager.Instance.SettingData.GetPass(SettingPassType.PaStWait);
+                MyState.Pass.ResetPassStandWaitCount(passWait);
+                MyState.Pass.IsTossPass = true;
+            }
+
+            // ごろごろ
+            if (motionType == CharaMotionType.RoF
+                || motionType == CharaMotionType.RoB)
+            {
+                // SESet(seRoll);//SEならす
+            }
         }
 
         switch (motionType)
@@ -286,13 +300,22 @@ public partial class CharaBehavior
                 MyState.Motion.SetMotionNo(motionType, CharaMotionNo.SL,
                     CharaMotionFlag.Act | CharaMotionFlag.JpOK | CharaMotionFlag.Slip | CharaMotionFlag.AtCa);
                 break;
-            // シュート、振り返りシュート
+            // シュート、振り返りシュート、パス
             case CharaMotionType.Sh:
             case CharaMotionType.RtSh:
+            case CharaMotionType.Pa:
             {
-                var motionNo = motionType is CharaMotionType.Sh
-                    ? CharaMotionNo.SHF
-                    : CharaMotionNo.RTNSH;
+                var type = motionType == CharaMotionType.Pa
+                    ? CharaMotionType.Pa
+                    : CharaMotionType.Sh;
+                
+                var motionNo = motionType switch
+                {
+                    CharaMotionType.Sh => CharaMotionNo.SHF,
+                    CharaMotionType.RtSh => CharaMotionNo.RTNSH,
+                    _ => CharaMotionNo.PAF
+                };
+                        
                 var flag = CharaMotionFlag.Act;
                 if (MyState.Motion.HasFlag(CharaMotionFlag.Slip))
                 {
@@ -303,12 +326,9 @@ public partial class CharaBehavior
                     flag |= CharaMotionFlag.Ds;
                 }
 
-                MyState.Motion.SetMotionNo(CharaMotionType.Sh, motionNo,
-                    flag,
+                MyState.Motion.SetMotionNo(type, motionNo, flag,
                     MyState.Coordinate.DirectionZ);
             }
-                break;
-            case CharaMotionType.Pa:
                 break;
             case CharaMotionType.JSh:
                 break;
@@ -325,8 +345,14 @@ public partial class CharaBehavior
             case CharaMotionType.JDg:
                 break;
             case CharaMotionType.RoF:
-                break;
             case CharaMotionType.RoB:
+            {
+                var motionNo = motionType is CharaMotionType.RoF
+                    ? CharaMotionNo.ROF
+                    : CharaMotionNo.ROB;
+                MyState.Motion.SetMotionNo(motionType, motionNo,
+                    CharaMotionFlag.Dam | CharaMotionFlag.Dn);
+            }
                 break;
             case CharaMotionType.DRAW:
                 break;
@@ -366,37 +392,8 @@ public partial class CharaBehavior
                 throw new ArgumentOutOfRangeException(nameof(motionType), motionType, null);
         }
     }
-    //     //ごろごろ
-    //   case dbmtRoF:
-    //   case dbmtRoB:
-    //     st_.pstMyCh_->Motion.MNo = (tMtype == dbmtRoF)
-    //       ? dbmnROF //前転がり
-    //       : dbmnROB;//後ろ転がり
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfDam | dbmfDn);
-    //     SESet(seRoll);//SEならす
-    //     break;
 
-    //     //パス待ち歩き
-    //   case dbmtPWWk:
-    //     //st_.pstMyCh_->Motion.MNo = dbmnPWWK;
-    //     st_.pstMyCh_->Motion.MNo = RevMNoZ(dbmnPWWKF);
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfJpOK | dbmfMuki | dbmfPW | dbmfDmOK);
-    //     tMtype = dbmtWk;
-    //     break;
-    //
-    //     //パス待ちダッシュ★
-    //   case dbmtPWDs:
-    //     st_.pstMyCh_->Motion.MNo = dbmnPWDS;
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfDs | dbmfJpOK | dbmfPW);
-    //     tMtype = dbmtDs;
-    //
-    //     break;
-    //
-    //     //スリップ
-    //   case dbmtSl:
-    //     st_.pstMyCh_->Motion.MNo = dbmnSL;
-    //     st_.pstMyCh_->Motion.MFlags = (dbmfAct | dbmfJpOK | dbmfSlip | dbmfAtCa);
-    //     break;
+
     //
     //     //シュート・パス
     //   case dbmtSh:

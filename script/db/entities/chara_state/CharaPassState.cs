@@ -36,4 +36,9 @@ public class CharaPassState
             MirrorShotCount.Clear();
         }
     }
+
+    public void ResetPassStandWaitCount(int value)
+    {
+        PassStandWaitCount.Set(value);
+    }
 }
