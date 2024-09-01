@@ -100,6 +100,9 @@ public partial class CharaBehavior
             {
                 MyState.Shoot.ShootWaitCount = GetLevelRank(RankLevelType.ShStMotion);
                 MyState.Shoot.ShootEndWaitCount = GetLevelRank(RankLevelType.ShEdMotion);
+                
+                // TODO:ボール状態の変更位置確認
+                BallState.ShotMotion = true;
             }
             
             // Uターンシュート
