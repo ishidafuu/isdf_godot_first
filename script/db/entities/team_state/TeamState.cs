@@ -18,8 +18,6 @@ public class TeamState
 
     public void Initialize()
     {
-        
-        
     }
 
 }

@@ -81,5 +81,60 @@ public class TeamMainState
 
     public void Initialize()
     {
+        RType = ResultType.rtREADY;
+        ComOverTimeF = false;
+        RsvResetComF = false;
+        CallingDmResetF = false;
+        CallingRdCgF = false;
+        CtrlNo = 0;
+        DmCallmanNo = 0;
+        CtrlRsvNo = 0;
+        CvrNo = 0;
+        Cvr2No = 0;
+        GetNo = 0;
+        NoInputC = 0;
+        InputCancelF = false;
+        DrwHsNo = 0;
+        DrwHsC = 0;
+        DrwPosX = 0;
+        BallCrtSideL = 0;
+        BallCrtPosL = 0;
+        BallCrtSideZ = 0;
+        BallCrtPosZ = 0;
+        DashmanCallNo = 0;
+        DashmanAllF = false;
+        DashmanNoBm = 0;
+        DashmanType = DashmanType.None;
+        DashmanCallC = 0;
+        IoChangeC = 0;
+        UseMotoGaiyaC = 0;
+        DeadC = 0;
+        TmUedaC = 0;
+        DbgSerifuPNo = 0;
+        DbgSerifuTypeNo = 0;
+        OfsideF = false;
+        NosideF = false;
+        RandresetF = false;
+        GetJpballF = false;
+        SideMaruhiF = false;
+        MaruhiCallF = false;
+        ManSideF = false;
+        ManSidePadNo = false;
+        OmksSideF = false;
+        OmakaseC = 0;
+        EncrC = 0;
+        TutoWaitC = 0;
+        CallingDashmanF = false;
+        CallingDashmanF2 = false;
+        CallingDashmanF3 = false;
+        CallingNo = 0;
+        RdNo = 0;
+        ComNo = 0;
+        FomNo = 0;
+        LastBallmanNo = 0;
+        NeedTimeRedrawF = false;
+        SmartF = false;
+        DamC = 0;
+        Dampos = 0;
     }
 }
