@@ -9,4 +9,6 @@ public partial class CharaState
     {
         return Live.Hp == 0 || Live.IsAngel;
     }
+    
+    
 }

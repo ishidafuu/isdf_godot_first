@@ -91,6 +91,12 @@ public partial class CharaBehavior
                 // ダウン効果音
                 // SESet(seDownLv0);//SEならす
             }
+            
+            if (motionType == CharaMotionType.Sh || motionType == CharaMotionType.RtSh)
+            {
+                // ダウン効果音
+                // SESet(seDownLv0);//SEならす
+            }
         }
 
         switch (motionType)

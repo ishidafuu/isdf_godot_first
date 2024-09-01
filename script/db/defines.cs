@@ -88,6 +88,8 @@ public static class Defines
 
     public const int BufferPositionMax = 16;
     public const int KAGAMI2HP = 8; //辛息切れボーダーＨＰ
+    public const int RANKNUM = 17; //レベル17段階
+    public const int Percent = 100; 
 }
 
 // //グローバル扱いな変数
