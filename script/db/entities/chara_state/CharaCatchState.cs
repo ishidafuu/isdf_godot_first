@@ -6,7 +6,7 @@
 public class CharaCatchState
 {
     // ボールをキャッチできるカウンタ
-    public int CatchCount { get; set; }
+    public Counter CatchCount { get; set; }
 
     // 次のキャッチまでのラグ
     public Counter CatchWaitCount { get; set; }
@@ -30,7 +30,7 @@ public class CharaCatchState
 
     public void Initialize()
     {
-        CatchCount = 0;
+        CatchCount.Clear();
         CatchWaitCount.Clear();
         BlockCount = 0;
         FricX = 0;
@@ -43,5 +43,12 @@ public class CharaCatchState
     public void Progress()
     {
         CatchWaitCount.Sub();
+    }
+
+    public void ResetCacheWait()
+    {
+        CatchWaitCount.Clear();
+        IsEnabledJump = false;
+        IsEnabledShot = false;
     }
 }

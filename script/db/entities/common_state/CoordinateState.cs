@@ -14,7 +14,7 @@ public class CoordinateState
     public int VelocityX { get; set; }
     public int VelocityY { get; set; }
     public int VelocityZ { get; set; }
-    public int FrictionCount { get; set; }
+    public Counter FrictionCount { get; set; }
     public int Priority { get; set; }
 
     public CoordinateState()
@@ -36,7 +36,7 @@ public class CoordinateState
         VelocityX = 0;
         VelocityY = 0;
         VelocityZ = 0;
-        FrictionCount = 0;
+        FrictionCount.Clear();
         Priority = 0;
     }
 

@@ -1,198 +1,88 @@
-﻿namespace db;
+﻿using System.Diagnostics;
+
+namespace db;
 
 public partial class CharaBehavior
 {
 
     private void SetMotionType(CharaMotionType motionType, bool isForce = false)
     {
-        // 同じモーション間は変更不可
-        if (isForce == false
-            && MyState.Motion.MotionType == motionType)
+        // モーション変更可能チェック
+        if (EnableSetMotion(motionType, isForce) == false)
         {
             return;
         }
 
-        // 天使状態は変更付加
-        if (MyState.Motion.MotionType == CharaMotionType.ANG)
+        // モーション差し替え
+        motionType = ShiftMotionType(motionType);
+
+        // パス待ちモーションの時は絵柄だけ変わるように、それ以外の時は初期化
+        var isSwitchPassWait =
+            (motionType == CharaMotionType.Ds && MyState.Motion.MotionNo == CharaMotionNo.PWDS)
+            || (motionType == CharaMotionType.PWDs && MyState.Motion.MotionNo == CharaMotionNo.DS)
+            || (motionType == CharaMotionType.Wk && MyState.Motion.MotionNo == CharaMotionNo.PWWKF)
+            || (motionType == CharaMotionType.Wk && MyState.Motion.MotionNo == CharaMotionNo.PWWKN)
+            || (motionType == CharaMotionType.Wk && MyState.Motion.MotionNo == CharaMotionNo.PWWKR)
+            || (motionType == CharaMotionType.PWWk && MyState.Motion.MotionNo == CharaMotionNo.WKF)
+            || (motionType == CharaMotionType.PWWk && MyState.Motion.MotionNo == CharaMotionNo.WKN)
+            || (motionType == CharaMotionType.PWWk && MyState.Motion.MotionNo == CharaMotionNo.WKR);
+
+        if (isSwitchPassWait == false)
         {
-            return;
+            MyState.Motion.MotionCount.Clear();
+            MyState.Anime.Initialize();
+            MyState.Catch.CatchCount.Clear();
+            MyState.Dodge.EnemyCortDodgeCount.Clear();
+            MyState.Move.DashAccelCount.Clear();
+            MyState.Coordinate.FrictionCount.Clear();
+            MyState.Air.IsLandSet = false;
+            MyState.Shoot.IsUTurn = false;
+            //     //TODO:地上についたら空中復帰消す これはIsMFlagsが変化したタイミングが適切
+            //     if (st_.pstMyCh_->Motion.IsMFlags(dbmfAr) == FALSE)
+            //     {
+            //       st_.pstMyCh_->AirRev_f = FALSE;
+            //     }
+
+            // キャッチ待ち時間クリア
+            if (motionType != CharaMotionType.St
+                && motionType != CharaMotionType.Wk
+                && motionType != CharaMotionType.Ca
+                && motionType != CharaMotionType.JCa)
+            {
+                MyState.Catch.ResetCacheWait();
+            }
+
+            // 立ちパス待ちカウンタ
+            if (IsPassWait() == false)
+            {
+                MyState.Pass.PassStandWaitCount.Clear();
+            }
+
+            // ダウンカウンタクリア
+            if (motionType != CharaMotionType.FlF
+                && motionType != CharaMotionType.FlB
+                && motionType != CharaMotionType.DnF
+                && motionType != CharaMotionType.DnB
+                && motionType != CharaMotionType.DnHF
+                && motionType != CharaMotionType.DnHB)
+            {
+                MyState.Damage.DownCount.Clear();
+            }
+
+            // 歩数リセット
+            // TODO:（ダッシュ以外にしなくてよいか確認）
+            if (motionType == CharaMotionType.St
+                || motionType == CharaMotionType.Wk)
+            {
+                MyState.Move.MadStepCount.Clear();
+                MyState.Shoot.Step.Clear();
+            }
         }
         
-        // 勝ち負けポーズ同士の変更不可
-        if (MyState.Motion.HasFlag(CharaMotionFlag.RES)
-            && motionType is CharaMotionType.WIN or CharaMotionType.LOSE or CharaMotionType.DRAW)
-        {
-            return;
-        }
-        
-        if (motionType == CharaMotionType.ANG)
-        {
-            
-        }
         
     }
 
 
-    //
-    //   //試合終了してるときは天使にならない→相手が全滅しているとき
-    //   //★これは審判クラスを参照した方がいいか
-    //   if (tMtype == dbmtANG)
-    //   {
-    //     if (st_.pmgEnTm_->IsAllDead()
-    //       || pmgSG_->stRf_.TimeUp_f)
-    //     {
-    //       if (st_.pstMyCh_->Motion.Mtype == dbmtFlF)
-    //       {
-    //         tMtype = dbmtDnF;//ただのダウンに変更
-    //       }
-    //       else
-    //       {
-    //         tMtype = dbmtDnB;//ただのダウンに変更
-    //       }
-    //     }
-    //     else if (st_.pmgMyTm_->IsLastOne() && (pmgSG_->stRf_.Suddun_f == FALSE))
-    //     {
-    //       st_.pmgRf_->SetMotion(dbrfLongWhistle);
-    //     }
-    //   }
-    //
-    //   //かがみは立ち歩き走り以外ではならない
-    //   if (tMtype == dbmtKG)
-    //   {
-    //     if ((st_.pstMyCh_->Motion.Mtype != dbmtSt)
-    //       && (st_.pstMyCh_->Motion.Mtype != dbmtWk)
-    //       && (st_.pstMyCh_->Motion.Mtype != dbmtDs)
-    //       && (st_.pstMyCh_->Motion.Mtype != dbmtKG))
-    //     {
-    //       return;
-    //     }
-    //   }
-    //
-    //   BOOL switchPW_f = ((tMtype == dbmtDs) && (st_.pstMyCh_->Motion.MNo == dbmnPWDS))
-    //     || ((tMtype == dbmtPWDs) && (st_.pstMyCh_->Motion.MNo == dbmnDS))
-    //     || ((tMtype == dbmtWk) && (st_.pstMyCh_->Motion.MNo == dbmnPWWKF))
-    //     || ((tMtype == dbmtWk) && (st_.pstMyCh_->Motion.MNo == dbmnPWWKN))
-    //     || ((tMtype == dbmtWk) && (st_.pstMyCh_->Motion.MNo == dbmnPWWKR))
-    //     || ((tMtype == dbmtPWWk) && (st_.pstMyCh_->Motion.MNo == dbmnWKF))
-    //     || ((tMtype == dbmtPWWk) && (st_.pstMyCh_->Motion.MNo == dbmnWKN))
-    //     || ((tMtype == dbmtPWWk) && (st_.pstMyCh_->Motion.MNo == dbmnWKR))
-    //     ;
-    //
-    //   //パス待ちモーションの時は絵柄だけ変わるように
-    //   //それ以外の時は初期化
-    //   if (switchPW_f == FALSE)
-    //   {
-    //     //初期化
-    //
-    //     st_.pstMyCh_->Motion.M_c = 0;
-    //     st_.pstMyCh_->Anime.FrameNo = 0;
-    //     st_.pstMyCh_->Anime.LoopStNo = 0;
-    //
-    //     //キャッチカウンタＯＦＦ
-    //     st_.pstMyCh_->Catch_c = NGNUM;
-    //
-    //     //敵コート避け時間
-    //     st_.pstMyCh_->ECDdg_c = 0;
-    //
-    //     //ダッシュ加速
-    //     st_.pstMyCh_->DsAcc_c = 0;
-    //     //摩擦係数
-    //     st_.pstMyCh_->Zahyou.Fric_c = 0;
-    //
-    //     //着地計算まだよ
-    //     st_.pstMyCh_->LandSet_f = FALSE;
-    //
-    //     //振り返りフラグ
-    //     st_.pstMyCh_->Utrun_f = FALSE;
-    //
-    //
-    //     //地上についたら空中復帰消す
-    //     if (st_.pstMyCh_->Motion.IsMFlags(dbmfAr) == FALSE)
-    //     {
-    //       st_.pstMyCh_->AirRev_f = FALSE;
-    //     }
-    //
-    //
-    //     
-    //     switch (tMtype)
-    //     {
-    //     case dbmtSt:
-    //     case dbmtWk:
-    //     case dbmtCa:
-    //     case dbmtJCa:
-    //       //キャッチ連打が効いてしまう
-    //       break;
-    //     default:
-    //       //キャッチ待ち時間ゼロにしてみる
-    //       st_.pstMyCh_->CatchW_c = 0;
-    //       //おしっぱジャンプ暴発防ぐフラグ
-    //       st_.pstMyCh_->jumpok_f_ = FALSE;
-    //       st_.pstMyCh_->shotok_f_ = FALSE;
-    //       break;
-    //     }
-    //
-    //
-    //
-    //   }
-    //
-    //   if (PassWait_f() == FALSE)
-    //   {
-    //     st_.pstMyCh_->PassWait_c = 0;
-    //   }
-    //
-    //   //ダウンカウンタのリセット（ここでいいのか怪しい
-    //   if ((tMtype != dbmtFlF)
-    //     && (tMtype != dbmtFlB)
-    //     && (tMtype != dbmtDnF)
-    //     && (tMtype != dbmtDnB)
-    //     && (tMtype != dbmtDnHF)
-    //     && (tMtype != dbmtDnHB)
-    //     )
-    //   {
-    //     st_.pstMyCh_->Down_c = 0;
-    //   }
-    //
-    //   //空中ではあり得ないモーション
-    //   if (st_.pstMyCh_->Motion.IsMFlags(dbmfAr))
-    //   {
-    //     switch (tMtype)
-    //     {
-    //     case dbmtSt: tMtype = dbmtJUp; break;
-    //     case dbmtSh: tMtype = dbmtJSh; break;
-    //     case dbmtRtSh: tMtype = dbmtRtJSh; break;
-    //     case dbmtPa: tMtype = dbmtJPa; break;
-    //     case dbmtCa: tMtype = dbmtJCa; break;
-    //     }
-    //   }
-    //   else//地上ではあり得ないモーション
-    //   {
-    //     switch (tMtype)
-    //     {
-    //     case dbmtJUp: tMtype = dbmtSt; break;
-    //     case dbmtJDn: tMtype = dbmtSt; break;
-    //     case dbmtJSh: tMtype = dbmtSh; break;
-    //     case dbmtRtJSh: tMtype = dbmtRtSh; break;
-    //     case dbmtJPa: tMtype = dbmtPa; break;
-    //     case dbmtJCa: tMtype = dbmtCa; break;
-    //     }
-    //   }
-    //
-    //
-    //   const s32 KAGAMI2HP = 8;//辛息切れボーダーＨＰ
-    //   s32 livenum = st_.pmgMyTm_->GetLiveNum();
-    //
-    //
-    //   //歩数リセット
-    //   switch (tMtype)
-    //   {
-    //   case dbmtSt:
-    //   case dbmtWk:
-    //     st_.pstMyCh_->Step_c = 0;//歩数を初期化
-    //     st_.pstMyCh_->MadStep_c = 0;//歩数を初期化
-    //     break;
-    //   }
-    //
-    //
     //   //フラグの初期化
     //   switch (tMtype)
     //   {
@@ -829,4 +719,84 @@ public partial class CharaBehavior
     //     SetFrameData(FALSE);
     //   }
     // }
+    
+    
+        private CharaMotionType ShiftMotionType(CharaMotionType motionType)
+    {
+        // 空中の場合、地上モーションを空中用に変更
+        if (MyState.Motion.HasFlag(CharaMotionFlag.Ar))
+        {
+            motionType = motionType switch
+            {
+                CharaMotionType.St => CharaMotionType.JUp,
+                CharaMotionType.Sh => CharaMotionType.JSh,
+                CharaMotionType.RtSh => CharaMotionType.RtJSh,
+                CharaMotionType.Pa => CharaMotionType.JPa,
+                CharaMotionType.Ca => CharaMotionType.JCa,
+                _ => motionType
+            };
+        }
+        else
+        {
+            motionType = motionType switch
+            {
+                CharaMotionType.JUp or CharaMotionType.JDn => CharaMotionType.St,
+                CharaMotionType.JSh => CharaMotionType.Sh,
+                CharaMotionType.RtJSh => CharaMotionType.RtSh,
+                CharaMotionType.JPa => CharaMotionType.Pa,
+                CharaMotionType.JCa => CharaMotionType.Ca,
+                _ => motionType
+            };
+        }
+
+        // 試合終了してるときは天使にならないでダウンに変化
+        if (motionType == CharaMotionType.ANG && RefereeState.IsGameSet)
+        {
+            motionType = MyState.Motion.MotionType == CharaMotionType.FlF
+                ? CharaMotionType.DnF
+                : CharaMotionType.DnB;
+            // TODO:審判にアクセスするタイミングとしてはここではないので移動する
+            //  st_.pmgRf_->SetMotion(dbrfLongWhistle);
+        }
+
+        return motionType;
+    }
+
+    private bool EnableSetMotion(CharaMotionType motionType, bool isForce)
+    {
+        // 同じモーション間は変更不可
+        if (isForce == false
+            && MyState.Motion.MotionType == motionType)
+        {
+            return false;
+        }
+
+        // 天使状態は変更付加
+        if (MyState.Motion.MotionType == CharaMotionType.ANG)
+        {
+            return false;
+        }
+
+        // 勝ち負けポーズ同士の変更不可
+        if (MyState.Motion.HasFlag(CharaMotionFlag.RES)
+            && motionType is CharaMotionType.WIN or CharaMotionType.LOSE or CharaMotionType.DRAW)
+        {
+            return false;
+        }
+
+        // かがみは立ち歩き走り以外ではならない
+        if (motionType == CharaMotionType.KG)
+        {
+            if (MyState.Motion.MotionType != CharaMotionType.St
+                && MyState.Motion.MotionType != CharaMotionType.Wk
+                && MyState.Motion.MotionType != CharaMotionType.Ds
+                && MyState.Motion.MotionType != CharaMotionType.KG)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }

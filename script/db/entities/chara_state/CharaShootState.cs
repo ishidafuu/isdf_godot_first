@@ -12,7 +12,7 @@ public class CharaShootState
     public int ShootEndWaitCount { get; set; }
 
     // 必殺タイミング
-    public int Step { get; set; }
+    public Counter Step { get; set; }
 
     // 必殺アシスト状態
     public ShootTiming ShootTiming { get; set; }
@@ -36,7 +36,7 @@ public class CharaShootState
     {
         ShootWaitCount = 0;
         ShootEndWaitCount = 0;
-        Step = 0;
+        Step.Clear();
         ShootTiming = default;
         Angle12 = 0;
         ShCv = 0;

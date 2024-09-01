@@ -52,7 +52,7 @@ public partial class CharaBehavior
     /// </summary>
     private bool IsBallHolder()
     {
-        return BallState.IsBallHolder(MySide, OrderIndex);
+        return BallState.IsBallHolder(MySideIndex, OrderIndex);
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public partial class CharaBehavior
     /// </summary>
     private bool IsShotTarget()
     {
-        return BallState.IsShotTarget(MySide, OrderIndex);
+        return BallState.IsShotTarget(MySideIndex, OrderIndex);
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ public partial class CharaBehavior
     /// </summary>
     private bool IsPassTarget()
     {
-        return BallState.IsPassTarget(MySide, OrderIndex);
+        return BallState.IsPassTarget(MySideIndex, OrderIndex);
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿namespace db;
 
-public class CharaState
+public partial class CharaState
 {
     public CharaIndexState Index { get; set; } = new();
     public CharaOrderState Order { get; set; } = new();

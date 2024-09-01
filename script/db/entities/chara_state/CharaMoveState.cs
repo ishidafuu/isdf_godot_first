@@ -6,7 +6,7 @@
 public class CharaMoveState
 {
     // ダッシュ加速カウンタ
-    public int DashAccelCount { get; set; }
+    public Counter DashAccelCount { get; set; }
 
     // 泥足場ステップ数
     public Counter MadStepCount { get; set; }
@@ -31,7 +31,7 @@ public class CharaMoveState
 
     public void Initialize()
     {
-        DashAccelCount = 0;
+        DashAccelCount.Clear();
         MadStepCount.Clear();
         IsDashAccelIOS = false;
         LastKeyDirectionX = default;

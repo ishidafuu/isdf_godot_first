@@ -40,6 +40,9 @@ public class CharaAirState
     // 現在の重力
     public int NowGravity { get; set; }
 
+    // 着地計算済み
+    public bool IsLandSet { get; set; }
+
     public void Initialize()
     {
         JumpCrouchCount = 0;
@@ -54,6 +57,7 @@ public class CharaAirState
         LandZ = 0;
         LandRest = 0;
         NowGravity = 0;
+        IsLandSet = false;
     }
 
     public void Progress(bool isProgressShootAirCount)

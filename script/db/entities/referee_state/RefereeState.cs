@@ -47,7 +47,7 @@ public class RefereeState
     public bool TutoEnd_f { get; set; }
     public bool Demo_f { get; set; }
     public bool DisCnct_f { get; set; }
-    public bool GameSet_f { get; set; }
+    public bool IsGameSet { get; set; }
     public bool JglSE_f { get; set; }
     public bool NoSE_f { get; set; }
     public bool Option_f { get; set; }
@@ -85,13 +85,14 @@ public class RefereeState
     public int act_c { get; set; }
     public uint PlayTime_c { get; set; }
     public bool isTimeAttackMode_ { get; set; }
+    
 
     public void Initialize()
     {
         TutoEnd_f = false;
         Demo_f = false;
         DisCnct_f = false;
-        GameSet_f = false;
+        IsGameSet = false;
         JglSE_f = false;
         NoSE_f = false;
         Option_f = false;
