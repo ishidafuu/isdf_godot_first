@@ -1,7 +1,7 @@
 ﻿using System;
-using db.types.com;
+using db;
 
-namespace db.masters;
+namespace db;
 
 public class ComActionData
 {
@@ -20,6 +20,11 @@ public class ComActionData
             NormalSheet[i] = new int[Defines.ComPattern];
             PinchSheet[i] = new int[Defines.ComPattern];
         }
+    }
+
+    public void Load()
+    {
+        
     }
 
     //     //読み込み

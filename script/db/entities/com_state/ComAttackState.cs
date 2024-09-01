@@ -1,7 +1,4 @@
-﻿using System;
-using db.masters;
-
-namespace db;
+﻿namespace db;
 
 /// <summary>
 /// COMアクション思考に関するステータス

@@ -1,7 +1,4 @@
-﻿using System;
-using db.masters;
-
-namespace db;
+﻿namespace db;
 
 /// <summary>
 /// マル秘作成に関するステータス

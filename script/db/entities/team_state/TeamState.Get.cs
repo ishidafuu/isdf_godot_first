@@ -9,7 +9,7 @@ public partial class TeamState
     {
         foreach (var mySideChara in MySideCharas)
         {
-            if (mySideChara.Live.IsOut() == false)
+            if (mySideChara.IsOut() == false)
             {
                 return false;
             }

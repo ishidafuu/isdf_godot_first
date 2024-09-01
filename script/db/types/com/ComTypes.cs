@@ -1,4 +1,4 @@
-﻿namespace db.types.com;
+﻿namespace db;
 
 enum enComPlanType //オプション
 {

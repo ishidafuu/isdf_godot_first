@@ -23,12 +23,22 @@ public class RankData
         }
     }
 
+    public void Load()
+    {
+    }
+
+    /// <summary>
+    /// レベルランク値取得
+    /// </summary>
     public int Get(RankLevelType levelType, int rank)
     {
         var index = (int)levelType;
         return Sheet[index][rank];
     }
 
+    /// <summary>
+    /// スピードランク値取得
+    /// </summary>
     public int Get(RankSpeedType speedType, int rank)
     {
         var index = Enum.GetValues<RankLevelType>().Length
@@ -36,6 +46,9 @@ public class RankData
         return Sheet[index][rank];
     }
 
+    /// <summary>
+    /// HPランク値取得
+    /// </summary>
     public int Get(RankHpType hpType, int rank)
     {
         var index = Enum.GetValues<RankLevelType>().Length
@@ -44,6 +57,9 @@ public class RankData
         return Sheet[index][rank];
     }
 
+    /// <summary>
+    /// てくランク値取得
+    /// </summary>
     public int Get(RankTechType techType, int rank)
     {
         var index = Enum.GetValues<RankLevelType>().Length
@@ -53,6 +69,9 @@ public class RankData
         return Sheet[index][rank];
     }
 
+    /// <summary>
+    /// ぱわーランク値取得
+    /// </summary>
     public int Get(RankPowType powType, int rank)
     {
         var index = Enum.GetValues<RankLevelType>().Length
@@ -63,12 +82,15 @@ public class RankData
         return Sheet[index][rank];
     }
 
+    /// <summary>
+    /// てく比ランク取得
+    /// </summary>
     public int GetTechRank(int tech, int targetTech)
     {
-        var techRate = tech * Defines.Percent / targetTech;
+        var rate = tech * Defines.Percent / targetTech;
         for (var i = 0; i < Defines.RANKNUM; i++)
         {
-            if (techRate <= Get(RankTechType.TechtoRank, i))
+            if (rate <= Get(RankTechType.TechtoRank, i))
             {
                 return i;
             }
@@ -77,12 +99,15 @@ public class RankData
         return Defines.RANKNUM - 1;
     }
 
+    /// <summary>
+    /// ぱわー比ランク取得
+    /// </summary>
     public int GetPowRank(int pow, int targetPow)
     {
-        var techRate = pow * Defines.Percent / targetPow;
+        var rate = pow * Defines.Percent / targetPow;
         for (var i = 0; i < Defines.RANKNUM; i++)
         {
-            if (techRate <= Get(RankPowType.PowtoRank, i))
+            if (rate <= Get(RankPowType.PowtoRank, i))
             {
                 return i;
             }
@@ -91,12 +116,15 @@ public class RankData
         return Defines.RANKNUM - 1;
     }
 
+    /// <summary>
+    /// HP割合ランク取得
+    /// </summary>
     public int GetHpRank(int hp, int maxHp)
     {
-        var techRate = hp * Defines.Percent / maxHp;
+        var rate = hp * Defines.Percent / maxHp;
         for (var i = 0; i < Defines.RANKNUM; i++)
         {
-            if (techRate <= Get(RankHpType.HPtoRank, i))
+            if (rate <= Get(RankHpType.HPtoRank, i))
             {
                 return i;
             }

@@ -1,7 +1,6 @@
 ﻿using System;
-using db.types.com;
 
-namespace db.masters;
+namespace db;
 
 public class ComPlanData
 {
@@ -17,6 +16,11 @@ public class ComPlanData
         {
             Sheet[i] = new int[Defines.ComPattern];
         }
+    }
+    
+    public void Load()
+    {
+        
     }
 
     //     //読み込み
