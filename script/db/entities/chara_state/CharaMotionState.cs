@@ -1,4 +1,6 @@
-﻿namespace db;
+﻿using System;
+
+namespace db;
 
 /// <summary>
 /// モーションに関するステータス
@@ -43,18 +45,43 @@ public class CharaMotionState
     {
         MotionType = motionType;
         MotionFlag = motionFlag;
-        MotionNo = directionZType switch
-        {
-            DirectionZType.Neutral => motionNo + 1,
-            DirectionZType.Backward => motionNo + 2,
-            _ => motionNo
-        };
+        MotionNo = ShiftMotionDirectionZ(motionNo, directionZType);
     }
 
-    public void SetMotionNo(CharaMotionType motionType, CharaMotionNo motionNo, CharaMotionFlag motionFlag)
+    public CharaMotionNo ShiftMotionDirectionZ(CharaMotionNo motionNo, DirectionZType directionZType)
     {
-        MotionType = motionType;
-        MotionFlag = motionFlag;
-        MotionNo = motionNo;
+        switch (motionNo)
+        {
+            case CharaMotionNo.DS:
+            case CharaMotionNo.FLF:
+            case CharaMotionNo.FLB:
+            case CharaMotionNo.KG:
+            case CharaMotionNo.KG2:
+            case CharaMotionNo.DNF:
+            case CharaMotionNo.DNB:
+            case CharaMotionNo.SL:
+            case CharaMotionNo.RTNSH:
+            case CharaMotionNo.RTNJSH:
+            case CharaMotionNo.PHF:
+            case CharaMotionNo.PHB:
+            case CharaMotionNo.DNHF:
+            case CharaMotionNo.DNHB:
+            case CharaMotionNo.ROF:
+            case CharaMotionNo.ROB:
+            case CharaMotionNo.PWDS:
+            case CharaMotionNo.ANG:
+            case CharaMotionNo.DRAW:
+            case CharaMotionNo.WIN:
+            case CharaMotionNo.LOSE:
+                return motionNo;
+            default:
+                return directionZType switch
+                {
+                    DirectionZType.Neutral => motionNo + 1,
+                    DirectionZType.Backward => motionNo + 2,
+                    _ => motionNo
+                };
+        }
     }
+
 }

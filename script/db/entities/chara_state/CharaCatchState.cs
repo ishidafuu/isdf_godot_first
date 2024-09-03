@@ -51,4 +51,9 @@ public class CharaCatchState
         IsEnabledJump = false;
         IsEnabledShot = false;
     }
+
+    public void SetCacheWait(int value)
+    {
+        CatchWaitCount.Set(value);
+    }
 }

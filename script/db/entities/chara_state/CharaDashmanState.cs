@@ -2,9 +2,13 @@
 
 /// <summary>
 /// ダッシュマンに関するステータス
+/// ダッシュマン・ダッシュ状態でなくなったらリセット
 /// </summary>
 public class CharaDashmanState
 {
+    // ダッシュマン
+    public bool IsDashman { get; set; }
+
     // ダッシュマン番号
     public int DashmanNo { get; set; }
 
@@ -16,11 +20,12 @@ public class CharaDashmanState
 
     public void Initialize()
     {
+        IsDashman = false;
         DashmanNo = 0;
         TargetZ = 0;
         EnabledPassCount.Clear();
     }
-    
+
     public void DecrementEnabledPassCount()
     {
         EnabledPassCount.Sub();

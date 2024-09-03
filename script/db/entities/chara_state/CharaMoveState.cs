@@ -5,6 +5,9 @@
 /// </summary>
 public class CharaMoveState
 {
+    // ジャンプしゃがみカウンタ
+    public Counter JumpCrouchCount { get; set; }
+
     // ダッシュ加速カウンタ
     public Counter DashAccelCount { get; set; }
 
@@ -25,12 +28,10 @@ public class CharaMoveState
 
     // オート向き変えが入る前の奥行き向き
     public DirectionZType LastDirectionZType { get; set; }
-
-    // フリーアクションフラグ
-    public bool IsFreeAction { get; set; }
-
+    
     public void Initialize()
     {
+        JumpCrouchCount.Clear();
         DashAccelCount.Clear();
         MadStepCount.Clear();
         IsDashAccelIOS = false;
@@ -38,7 +39,6 @@ public class CharaMoveState
         IsNoMove = false;
         LastDirectionXType = default;
         LastDirectionZType = default;
-        IsFreeAction = false;
     }
 
     public void IncrementMadStepCount()

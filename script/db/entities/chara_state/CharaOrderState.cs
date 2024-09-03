@@ -13,4 +13,8 @@ public class CharaOrderState
         OrderIndex = orderIndex;
     }
 
+    public bool IsInfield()
+    {
+        return OrderIndex < Defines.InfieldCount;
+    }
 }

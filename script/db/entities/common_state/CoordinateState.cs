@@ -81,5 +81,28 @@ public class CoordinateState
     {
         return (int)System.Math.Sqrt(System.Math.Pow(X - targetX, 2) + System.Math.Pow(Z - targetZ, 2));
     }
-
+    
+    /// <summary>
+    /// 速度０
+    /// </summary>
+    public void ZeroVelocity()
+    {
+        VelocityX = 0;
+        VelocityY = 0;
+        VelocityZ = 0;
+    }
+    
+    /// <summary>
+    /// ゲームセット時の座標設定
+    /// </summary>
+    public void SetGameOverCoordinate(int sideNo, bool isInfield)
+    {
+        Y = 0;
+        ZeroVelocity();
+        var isRightSide = sideNo == 1;
+        DirectionX = isInfield ^ isRightSide
+            ? DirectionXType.Right
+            : DirectionXType.Left;
+        DirectionZ = DirectionZType.Neutral;
+    }
 }

@@ -2,12 +2,10 @@
 
 /// <summary>
 /// 空中・ジャンプ・着地に関するステータス
+/// 地上についたときにリセットして構わない値のみ
 /// </summary>
 public class CharaAirState
 {
-    // ジャンプしゃがみカウンタ
-    public int JumpCrouchCount { get; set; }
-
     // 滞空時間
     public Counter AirCount { get; set; }
 
@@ -45,7 +43,6 @@ public class CharaAirState
 
     public void Initialize()
     {
-        JumpCrouchCount = 0;
         AirCount.Clear();
         ShootAirCount.Clear();
         TopTiming = 0;

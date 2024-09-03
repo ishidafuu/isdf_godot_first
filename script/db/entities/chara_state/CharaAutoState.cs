@@ -14,6 +14,9 @@ public class CharaAutoState
     // 一旦止まったフラグ
     public bool IsDashStopped { get; set; }
 
+    // フリーアクションフラグ
+    public bool IsFreeAction { get; set; }
+
     public void Initialize()
     {
         AutoTypes = default;
@@ -21,5 +24,6 @@ public class CharaAutoState
         DirectionZ = default;
         IsDash = false;
         IsDashStopped = false;
+        IsFreeAction = false;
     }
 }
