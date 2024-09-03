@@ -199,8 +199,17 @@ public partial class CharaBehavior
         {
             MyState.Dashman.Initialize();
         }
+
+        SetFrameData(false);
     }
 
+
+    public void SetFrameData(bool isInLoop)
+    {
+        
+    }
+    
+    
     // //フレーム情報のセット
     // void TChCommon::SetFrameData(BOOL InLoop_f)
     // {
