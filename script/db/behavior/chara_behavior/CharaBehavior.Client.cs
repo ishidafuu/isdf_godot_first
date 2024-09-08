@@ -4,6 +4,10 @@ public partial class CharaBehavior
 {
     private void PlaySe(SeType seType)
     {
+        if (seType == SeType.None)
+        {
+            return;
+        }
         SoundManager.Instance.PlaySe(seType);
     }
 

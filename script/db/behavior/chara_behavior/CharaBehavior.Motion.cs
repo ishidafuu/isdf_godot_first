@@ -190,7 +190,7 @@ public partial class CharaBehavior
             MyState.Dashman.Initialize();
         }
 
-        SetFrameData(false);
+        SetKomaData(false);
     }
 
     private CharaMotionType ShiftMotionType(CharaMotionType motionType)
@@ -617,18 +617,11 @@ public partial class CharaBehavior
         }
     }
 
-    private void SetFrameData(bool isInLoop)
+    private void SetKomaData(bool isInLoop)
     {
         var komaData = GetBaseMotionKomaData();
 
-        if (isInLoop)
-        {
-            if (komaData.SeLoopF)
-            {
-                QueueBaseMotionKomaSe();
-            }
-        }
-        else
+        if (isInLoop == false)
         {
             switch (komaData.LoopSt)
             {
@@ -641,18 +634,25 @@ public partial class CharaBehavior
                 default:
                     break;
             }
+        }
 
-            QueueBaseMotionKomaSe();
+        if (isInLoop == false || komaData.SeLoopF)
+        {
+            PlayBaseMotionKomaSe();
         }
 
         MyState.Anime.StartKoma(komaData);
-
-        var isAction = MyState.Anime.IsActionPoint && MyState.Anime.AnimationCount == 0;
-
-        if (isAction)
+        
+        if (komaData.IsActionPoint)
         {
             InvokeActionPoint();
         }
+    }
+
+    private void PlayBaseMotionKomaSe()
+    {
+        var se = GetBaseMotionKomaData().Se;
+        PlaySe(se);
     }
 
     private void InvokeActionPoint()

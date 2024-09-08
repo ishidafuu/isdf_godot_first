@@ -2,7 +2,7 @@
 
 public partial class CharaBehavior
 {
-
+    
     /// <summary>
     /// ボールとの距離を計算
     /// </summary>
@@ -32,16 +32,5 @@ public partial class CharaBehavior
         }
 
         MyState.Distance.Set(ballDist, ballLandDist, ballLandLineDist);
-    }
-
-    private void QueueBaseMotionKomaSe()
-    {
-        var se = GetBaseMotionKomaData().Se;
-        if (se == SeType.None)
-        {
-            return;
-        }
-
-        SoundManager.Instance.PlaySe(se);
     }
 }
