@@ -9,7 +9,7 @@ public partial class CharaBehavior
     private void SetMotionType(CharaMotionType motionType, bool isForce = false)
     {
         // モーション変更可能チェック
-        if (EnableSetMotion(motionType, isForce) == false)
+        if (CanSetMotion(motionType, isForce) == false)
         {
             return;
         }
@@ -250,7 +250,7 @@ public partial class CharaBehavior
         return motionType;
     }
 
-    private bool EnableSetMotion(CharaMotionType motionType, bool isForce)
+    private bool CanSetMotion(CharaMotionType motionType, bool isForce)
     {
         // 同じモーション間は変更不可
         if (isForce == false
@@ -627,7 +627,7 @@ public partial class CharaBehavior
         }
     }
 
-    public void SetFrameData(bool isInLoop)
+    private void SetFrameData(bool isInLoop)
     {
         var komaData = GetBaseMotionKomaData();
 
