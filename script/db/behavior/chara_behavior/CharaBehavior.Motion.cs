@@ -275,10 +275,11 @@ public partial class CharaBehavior
                 {
                     
                 }
+
                 break;
         }
     }
-    
+
     //             //オーバーライン
     //             case dbmtOvL:
     //                 if (IsBall())//攻撃時間オーバーとの重なり防止
