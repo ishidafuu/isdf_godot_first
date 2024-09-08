@@ -11,6 +11,7 @@ public class TeamBehaviorManager
     private readonly TeamBehavior[] _allTeams = new TeamBehavior[Defines.SideCount];
 
     public TeamBehavior[] GetAllTeams() => _allTeams;
+    public TeamBehavior Get(int sideIndex) => _allTeams[sideIndex];
 
     private TeamBehaviorManager()
     {

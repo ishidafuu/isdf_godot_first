@@ -46,11 +46,6 @@ public partial class CharaBehavior
         MyState.Coordinate.FrictionCount.Clear();
         MyState.Air.IsLandSet = false;
         MyState.Shoot.IsUTurn = false;
-        //     //TODO:地上についたら空中復帰消す これはIsMFlagsが変化したタイミングが適切
-        //     if (st_.pstMyCh_->Motion.IsMFlags(dbmfAr) == FALSE)
-        //     {
-        //       st_.pstMyCh_->AirRev_f = FALSE;
-        //     }
 
         // キャッチ待ち時間クリア
         if (motionType != CharaMotionType.St
@@ -96,8 +91,7 @@ public partial class CharaBehavior
 
         if (motionType == CharaMotionType.DnF || motionType == CharaMotionType.DnB)
         {
-            // ダウン効果音
-            // SESet(seDownLv0);//SEならす
+            PlaySe(SeType.DownLv0);
         }
 
         // シュートモーション時間
@@ -106,9 +100,7 @@ public partial class CharaBehavior
         {
             MyState.Shoot.ShootWaitCount = GetLevelRank(RankLevelType.ShStMotion);
             MyState.Shoot.ShootEndWaitCount = GetLevelRank(RankLevelType.ShEdMotion);
-
-            // TODO:ボール状態の変更位置確認
-            BallState.ShotMotion = true;
+            CallBallShootMotion();
         }
 
         // Uターンシュート
@@ -145,15 +137,13 @@ public partial class CharaBehavior
         // ごろごろ
         if (motionType is CharaMotionType.RoF or CharaMotionType.RoB)
         {
-            // SESet(seRoll);//SEならす
+            PlaySe(SeType.Roll);
         }
 
         // オーバーライン
         if (motionType is CharaMotionType.OvL)
         {
-            // SESet(seRoll);//SEならす
-            // st_.pmgRf_->RefereeMsg("オーバーライン");
-            // st_.pmgRf_->SetMotion(dbrfShortWhistle);
+            CallRefereeWhistleOverLine();
         }
 
         // 天使
@@ -162,7 +152,7 @@ public partial class CharaBehavior
             MyState.Live.IsDead = true;
             MyState.Coordinate.ZeroVelocity();
             //天使生成
-            // st_.pmgMyTm_->SetAngel(st_.posNo_);
+            CallTeamGenerateAngel();
         }
 
         // ドロー、勝ち、負け
@@ -673,9 +663,8 @@ public partial class CharaBehavior
                 MyState.Shoot.Step.Add();
                 if (MyState.Shoot.Step.Value % 2 == 1)
                 {
-                    SoundManager.Instance.PlaySe(SeType.Dash);
+                    PlaySe(SeType.Dash);
                 }
-
                 break;
             case CharaMotionType.Sh:
                 SetShoot(false);
@@ -697,9 +686,8 @@ public partial class CharaBehavior
             case CharaMotionType.OvL:
                 if (IsBallHolder())
                 {
-                    RefereeBehaviorManager.Instance.Get().CallOverLine(MySideIndex);
+                    CallRefereeResetOverLine();
                 }
-
                 break;
         }
     }

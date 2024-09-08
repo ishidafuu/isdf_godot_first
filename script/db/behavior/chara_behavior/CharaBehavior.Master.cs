@@ -39,5 +39,5 @@ public partial class CharaBehavior
     {
         return GetBaseMotionData().Get(MyState.Motion.MotionKomaNo);
     }
-    
+
 }
