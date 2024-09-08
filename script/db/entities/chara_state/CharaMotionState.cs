@@ -11,6 +11,7 @@ public class CharaMotionState
     public CharaMotionFlag MotionFlag { get; private set; }
     public Counter MotionCount { get; private set; }
     public CharaMotionNo MotionNo { get; private set; }
+    public int MotionKomaNo { get; private set; }
 
     public void Initialize()
     {
@@ -18,6 +19,7 @@ public class CharaMotionState
         MotionFlag = default;
         MotionCount.Clear();
         MotionNo = default;
+        MotionKomaNo = default;
     }
 
     public bool HasFlag(CharaMotionFlag flag)

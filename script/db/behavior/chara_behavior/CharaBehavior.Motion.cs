@@ -203,81 +203,82 @@ public partial class CharaBehavior
         SetFrameData(false);
     }
 
-
     public void SetFrameData(bool isInLoop)
     {
-        
+        var komaData = GetBaseMotionKomaData();
+
+        if (isInLoop)
+        {
+            if (komaData.SeLoopF)
+            {
+                QueueBaseMotionKomaSe();
+            }
+        }
+        else
+        {
+            switch (komaData.LoopSt)
+            {
+                case enBMLoopSt.St:
+                    MyState.Anime.SetLoopStart(komaData);
+                    break;
+                case enBMLoopSt.Ed:
+                    MyState.Anime.SetLoopEnd(komaData);
+                    break;
+                default:
+                    break;
+            }
+
+            QueueBaseMotionKomaSe();
+        }
+
+        MyState.Anime.StartKoma(komaData);
+
+        var isAction = MyState.Anime.IsActionPoint && MyState.Anime.AnimationCount == 0;
+
+        if (isAction)
+        {
+            InvokeActionPoint();
+        }
+    }
+
+    private void InvokeActionPoint()
+    {
+        switch (MyState.Motion.MotionType)
+        {
+            case CharaMotionType.Ds:
+                MyState.Shoot.Step.Add();
+                if (MyState.Shoot.Step.Value % 2 == 1)
+                {
+                    SoundManager.Instance.PlaySe(SeType.Dash);
+                }
+
+                break;
+            case CharaMotionType.Sh:
+                SetShoot(false);
+                break;
+
+            case CharaMotionType.JSh:
+                SetShoot(true);
+                break;
+
+            case CharaMotionType.Pa:
+            case CharaMotionType.JPa:
+                SetPass();
+                break;
+
+            case CharaMotionType.Ca:
+            case CharaMotionType.JCa:
+                MyState.Catch.CatchCount.Clear();
+                break;
+            case CharaMotionType.OvL:
+                if (IsBallHolder())
+                {
+                    
+                }
+                break;
+        }
     }
     
-    
-    // //フレーム情報のセット
-    // void TChCommon::SetFrameData(BOOL InLoop_f)
-    // {
-    //     //ループ始点の場合
-    //     if (InLoop_f == FALSE)
-    //     {
-    //         switch (NowKoma(bmc_loopSt))
-    //         {
-    //             case (s32)bmlp_St:
-    //                 st_.pstMyCh_->Anime.Loop_c = NowKoma(bmc_loopNum);
-    //                 st_.pstMyCh_->Anime.LoopStNo = st_.pstMyCh_->Anime.FrameNo;
-    //                 break;
-    //
-    //             case (s32)bmlp_StEd:
-    //                 st_.pstMyCh_->Anime.Loop_c = NowKoma(bmc_loopNum);
-    //                 break;
-    //         }
-    //         SettingSE();
-    //     }
-    //     else
-    //     {
-    //         if (NowKomaBOOL(bmc_seloop_f))
-    //         {
-    //             SettingSE();
-    //         }
-    //     }
-    //
-    //     //初期化
-    //     st_.pstMyCh_->Anime.Ani_c = 0;
-    //     st_.pstMyCh_->Anime.ActP_f = NowKomaBOOL(bmc_ActP_f);
-    //
-    //
-    //     //アクションポイント
-    //     if ((st_.pstMyCh_->Anime.Ani_c == 0) && (st_.pstMyCh_->Anime.ActP_f))
-    //     {
-    //         switch (st_.pstMyCh_->Motion.Mtype)
-    //         {
-    //             //ダッシュ
-    //             case dbmtDs:
-    //                 ++st_.pstMyCh_->Step_c;
-    //
-    //                 if (st_.pstMyCh_->Step_c % 2 == 1)
-    //                 {
-    //                     SESet(seDash);
-    //                 }
-    //                 break;
-    //             //シュート
-    //             case dbmtSh:
-    //                 SetShoot(FALSE);
-    //                 break;
-    //             //ジャンプシュート
-    //             case dbmtJSh:
-    //                 SetShoot(TRUE);
-    //                 break;
-    //             //パス
-    //             case dbmtPa:
-    //                 SetPass();
-    //                 break;
-    //             //ジャンプパス
-    //             case dbmtJPa:
-    //                 SetPass();
-    //                 break;
-    //
-    //             //キャッチ
-    //             case dbmtCa:
-    //             case dbmtJCa:
-    //                 st_.pstMyCh_->Catch_c = 0;
-    //                 break;
     //             //オーバーライン
     //             case dbmtOvL:
     //                 if (IsBall())//攻撃時間オーバーとの重なり防止

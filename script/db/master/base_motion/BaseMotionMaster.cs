@@ -5,11 +5,11 @@ namespace db;
 
 public class BaseMotionMaster
 {
-    public List<BaseMotionKomaData> BaseMotionKomaDataList { get; private set; }
+    private IReadOnlyList<BaseMotionData> BaseMotionDataList { get; set; }
 
     public BaseMotionMaster()
     {
-        BaseMotionKomaDataList = new List<BaseMotionKomaData>();
+        BaseMotionDataList = new List<BaseMotionData>();
         var charaMotionTypeLength = Enum.GetValues<CharaMotionType>().Length;
         // Sheet = new BaseMotionKomaData[charaMotionTypeLength][];
         //
@@ -21,6 +21,11 @@ public class BaseMotionMaster
 
     public void Load()
     {
+    }
+
+    public BaseMotionData Get(CharaMotionType charaMotionType)
+    {
+        return BaseMotionDataList[(int)charaMotionType];
     }
 
     //     //読み込み

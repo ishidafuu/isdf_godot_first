@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace db;
 
 public class ComPlanMaster
 {
-    public List<ComPlanData> ComPlanDataList { get; private set; }
+    public IReadOnlyList<ComPlanData> ComPlanDataList { get; private set; }
 
     public ComPlanMaster()
     {

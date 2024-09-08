@@ -5,7 +5,7 @@ namespace db;
 
 public class ComActionMaster
 {
-    public List<ComActionData> ComActionDataList { get; private set; }
+    public IReadOnlyList<ComActionData> ComActionDataList { get; private set; }
 
     public ComActionMaster()
     {

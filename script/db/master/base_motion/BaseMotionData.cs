@@ -6,7 +6,7 @@ namespace db;
 public class BaseMotionData
 {
     public int KomaCount { get; private set; }
-    public List<BaseMotionKomaData> BaseMotionKomaDataList { get; private set; }
+    private IReadOnlyList<BaseMotionKomaData> BaseMotionKomaDataList { get; set; }
 
     public BaseMotionData()
     {
@@ -15,6 +15,11 @@ public class BaseMotionData
 
     public void Load()
     {
+    }
+
+    public BaseMotionKomaData Get(int komaNo)
+    {
+        return BaseMotionKomaDataList[komaNo];
     }
 
     //     //読み込み

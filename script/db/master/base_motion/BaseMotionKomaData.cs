@@ -16,7 +16,7 @@ public class BaseMotionKomaData
     public int PosY => _data[(int)enBMCommonDt.posY];
 
     // SE
-    public int Se => _data[(int)enBMCommonDt.se];
+    public SeType Se => (SeType)_data[(int)enBMCommonDt.se];
 
     // ループ回数
     public int LoopNum => _data[(int)enBMCommonDt.loopNum];
@@ -25,7 +25,7 @@ public class BaseMotionKomaData
     public int DefFrm => _data[(int)enBMCommonDt.DefFrm];
 
     // ループ設定
-    public bool LoopSt => _data[(int)enBMCommonDt.loopSt] != 0;
+    public enBMLoopSt LoopSt => (enBMLoopSt)_data[(int)enBMCommonDt.loopSt];
 
     // ループ時SEも鳴らし直す
     public bool SeLoopF => _data[(int)enBMCommonDt.seloop_f] != 0;

@@ -4,17 +4,6 @@ public partial class CharaBehavior
 {
 
     /// <summary>
-    /// サイド操作権を渡せるキャラか
-    /// </summary>
-    private bool CanControl()
-    {
-        // 死亡していない、ダメージ中でない、手動操作中でない
-        return MyState.Live.IsDead == false
-               && MyState.Motion.HasFlag(CharaMotionFlag.Dam) == false
-               && MyState.Pad.IsManualControl == false;
-    }
-
-    /// <summary>
     /// ボールとの距離を計算
     /// </summary>
     private void UpdateBallDistance()
@@ -45,66 +34,14 @@ public partial class CharaBehavior
         MyState.Distance.Set(ballDist, ballLandDist, ballLandLineDist);
     }
 
-    /// <summary>
-    /// ボール持ちかどうか
-    /// </summary>
-    private bool IsBallHolder()
+    private void QueueBaseMotionKomaSe()
     {
-        return BallState.IsBallHolder(MySideIndex, OrderIndex);
-    }
+        var se = GetBaseMotionKomaData().Se;
+        if (se == SeType.None)
+        {
+            return;
+        }
 
-    /// <summary>
-    /// 自分がシュートターゲット
-    /// </summary>
-    private bool IsShotTarget()
-    {
-        return BallState.IsShotTarget(MySideIndex, OrderIndex);
-    }
-
-    /// <summary>
-    /// 自分がパスターゲット
-    /// </summary>
-    private bool IsPassTarget()
-    {
-        return BallState.IsPassTarget(MySideIndex, OrderIndex);
-    }
-
-    /// <summary>
-    /// パス待ち状態
-    /// </summary>
-    private bool IsPassWait()
-    {
-        return IsPassTarget()
-               && IsBallHolder() == false
-               && MyState.Pad.IsManualControl;
-        // && IsShiai() //試合中チェック
-    }
-
-    private int GetLevelRank(RankLevelType levelType)
-    {
-        return MasterManager.Instance.RankMaster.GetLevel(levelType, MyState.Level.Level);
-    }
-
-    private int GetSpeedRank(RankSpeedType speedType)
-    {
-        return MasterManager.Instance.RankMaster.GetSpeed(speedType, MyState.Level.Speed);
-    }
-
-    private int GetHpRank(RankHpType hpType)
-    {
-        var hpRateRank = MasterManager.Instance.RankMaster.GetHpRateRank(MyState.Live.Hp, MyState.Live.MaxHp);
-        return MasterManager.Instance.RankMaster.GetHp(hpType, hpRateRank);
-    }
-
-    private int GetTechRank(RankTechType techType, int targetTech)
-    {
-        var techRate = MasterManager.Instance.RankMaster.GetTechRateRank(MyState.Level.Tech, targetTech);
-        return MasterManager.Instance.RankMaster.GetTech(techType, techRate);
-    }
-
-    private int GetPowerRank(RankPowerType powerType, int targetPower)
-    {
-        var powerRate = MasterManager.Instance.RankMaster.GetPowerRateRank(MyState.Level.Power, targetPower);
-        return MasterManager.Instance.RankMaster.GetPower(powerType, powerRate);
+        SoundManager.Instance.PlaySe(se);
     }
 }

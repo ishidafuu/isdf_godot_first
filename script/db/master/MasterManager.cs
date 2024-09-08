@@ -9,6 +9,7 @@ public class MasterManager
     public ComPlanMaster ComPlanMaster { get; } = new();
     public RankMaster RankMaster { get; } = new();
     public SettingMaster SettingMaster { get; } = new();
+    public BaseMotionMaster BaseMotionMaster { get; } = new();
 
     private MasterManager()
     {
@@ -21,5 +22,6 @@ public class MasterManager
         ComPlanMaster.Load();
         RankMaster.Load();
         SettingMaster.Load();
+        BaseMotionMaster.Load();
     }
 }
