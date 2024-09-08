@@ -203,106 +203,6 @@ public partial class CharaBehavior
         SetFrameData(false);
     }
 
-    public void SetFrameData(bool isInLoop)
-    {
-        var komaData = GetBaseMotionKomaData();
-
-        if (isInLoop)
-        {
-            if (komaData.SeLoopF)
-            {
-                QueueBaseMotionKomaSe();
-            }
-        }
-        else
-        {
-            switch (komaData.LoopSt)
-            {
-                case enBMLoopSt.St:
-                    MyState.Anime.SetLoopStart(komaData);
-                    break;
-                case enBMLoopSt.Ed:
-                    MyState.Anime.SetLoopEnd(komaData);
-                    break;
-                default:
-                    break;
-            }
-
-            QueueBaseMotionKomaSe();
-        }
-
-        MyState.Anime.StartKoma(komaData);
-
-        var isAction = MyState.Anime.IsActionPoint && MyState.Anime.AnimationCount == 0;
-
-        if (isAction)
-        {
-            InvokeActionPoint();
-        }
-    }
-
-    private void InvokeActionPoint()
-    {
-        switch (MyState.Motion.MotionType)
-        {
-            case CharaMotionType.Ds:
-                MyState.Shoot.Step.Add();
-                if (MyState.Shoot.Step.Value % 2 == 1)
-                {
-                    SoundManager.Instance.PlaySe(SeType.Dash);
-                }
-
-                break;
-            case CharaMotionType.Sh:
-                SetShoot(false);
-                break;
-
-            case CharaMotionType.JSh:
-                SetShoot(true);
-                break;
-
-            case CharaMotionType.Pa:
-            case CharaMotionType.JPa:
-                SetPass();
-                break;
-
-            case CharaMotionType.Ca:
-            case CharaMotionType.JCa:
-                MyState.Catch.CatchCount.Clear();
-                break;
-            case CharaMotionType.OvL:
-                if (IsBallHolder())
-                {
-                    
-                }
-
-                break;
-        }
-    }
-
-    //             //オーバーライン
-    //             case dbmtOvL:
-    //                 if (IsBall())//攻撃時間オーバーとの重なり防止
-    //                 {
-    //                     //審判の元へ
-    //                     if (st_.mysideNo_ == 0)
-    //                     {
-    //                         st_.pmgRf_->SetMotion(dbrfOvLine, mR);
-    //                     }
-    //                     else
-    //                     {
-    //                         st_.pmgRf_->SetMotion(dbrfOvLine, mL);
-    //                     }
-    //                     //タイマーリセット
-    //                     st_.pmgBa_->baCommon_.ResetTimer(NGNUM, FALSE);
-    //                 }
-    //                 break;
-    //             default:
-    //                 break;
-    //         }
-    //     }
-    // }
-
     private CharaMotionType ShiftMotionType(CharaMotionType motionType)
     {
         // 空中の場合、地上モーションを空中用に変更
@@ -724,6 +624,83 @@ public partial class CharaBehavior
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(motionType), motionType, null);
+        }
+    }
+
+    public void SetFrameData(bool isInLoop)
+    {
+        var komaData = GetBaseMotionKomaData();
+
+        if (isInLoop)
+        {
+            if (komaData.SeLoopF)
+            {
+                QueueBaseMotionKomaSe();
+            }
+        }
+        else
+        {
+            switch (komaData.LoopSt)
+            {
+                case enBMLoopSt.St:
+                    MyState.Anime.SetLoopStart(komaData);
+                    break;
+                case enBMLoopSt.Ed:
+                    MyState.Anime.SetLoopEnd(komaData);
+                    break;
+                default:
+                    break;
+            }
+
+            QueueBaseMotionKomaSe();
+        }
+
+        MyState.Anime.StartKoma(komaData);
+
+        var isAction = MyState.Anime.IsActionPoint && MyState.Anime.AnimationCount == 0;
+
+        if (isAction)
+        {
+            InvokeActionPoint();
+        }
+    }
+
+    private void InvokeActionPoint()
+    {
+        switch (MyState.Motion.MotionType)
+        {
+            case CharaMotionType.Ds:
+                MyState.Shoot.Step.Add();
+                if (MyState.Shoot.Step.Value % 2 == 1)
+                {
+                    SoundManager.Instance.PlaySe(SeType.Dash);
+                }
+
+                break;
+            case CharaMotionType.Sh:
+                SetShoot(false);
+                break;
+
+            case CharaMotionType.JSh:
+                SetShoot(true);
+                break;
+
+            case CharaMotionType.Pa:
+            case CharaMotionType.JPa:
+                SetPass();
+                break;
+
+            case CharaMotionType.Ca:
+            case CharaMotionType.JCa:
+                MyState.Catch.CatchCount.Clear();
+                break;
+            case CharaMotionType.OvL:
+                if (IsBallHolder())
+                {
+                    RefereeBehaviorManager.Instance.Get().CallOverLine(MySideIndex);
+                }
+
+                break;
         }
     }
 }
