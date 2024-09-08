@@ -55,6 +55,8 @@ public partial class CharaBehavior
             MyState.View.ResetTargetCount();
         }
 
+        var isProgressAnimation = true;
+
         switch (MyState.Motion.MotionType)
         {
             case CharaMotionType.St:
@@ -70,42 +72,62 @@ public partial class CharaBehavior
                         SetMotionType(CharaMotionType.Breath);
                     }
                 }
+
                 break;
             case CharaMotionType.Breath:
                 break;
             case CharaMotionType.Wk:
+                if (IsPassWait())
+                {
+                    SetMotionType(CharaMotionType.PWWk);
+                }
                 break;
             case CharaMotionType.Ds:
+                if (IsPassWait())
+                {
+                    SetMotionType(CharaMotionType.PWDs);
+                }
                 break;
             case CharaMotionType.JCr:
                 break;
             case CharaMotionType.CJCr:
                 break;
             case CharaMotionType.JUp:
+                if (MyState.Coordinate.VelocityY < 0)
+                {
+                    SetMotionType(CharaMotionType.JDn);
+                }
                 break;
             case CharaMotionType.JDn:
                 break;
             case CharaMotionType.ARv:
                 break;
             case CharaMotionType.Cr:
+                if (MyState.Move.JumpCrouchCount.Value > 0)
+                {
+                    isProgressAnimation = false;
+                }
                 break;
-            case CharaMotionType.FlF:
-                break;
-            case CharaMotionType.FlB:
-                break;
+            // case CharaMotionType.FlF:
+            //     break;
+            // case CharaMotionType.FlB:
+            //     break;
             case CharaMotionType.PHF:
                 break;
             case CharaMotionType.PHB:
                 break;
             case CharaMotionType.DnHF:
-                break;
             case CharaMotionType.DnHB:
+                MyState.Damage.DownCount.AddUntil(GetHpRank(RankHpType.RevFrm));
                 break;
             case CharaMotionType.KG:
                 break;
             case CharaMotionType.DnF:
-                break;
             case CharaMotionType.DnB:
+                if (MyState.Damage.DownCount.AddUntil(GetHpRank(RankHpType.RevFrm)))
+                {
+                    SetMotionType(CharaMotionType.DRv);
+                }
                 break;
             case CharaMotionType.DRv:
                 break;
@@ -118,10 +140,22 @@ public partial class CharaBehavior
             case CharaMotionType.JFB:
                 break;
             case CharaMotionType.PW:
+                if (IsPassWait() == false)
+                {
+                    SetMotionType(CharaMotionType.St);
+                }
                 break;
             case CharaMotionType.PWWk:
+                if (IsPassWait() == false)
+                {
+                    SetMotionType(CharaMotionType.Wk);
+                }
                 break;
             case CharaMotionType.PWDs:
+                if (IsPassWait() == false)
+                {
+                    SetMotionType(CharaMotionType.Ds);
+                }
                 break;
             case CharaMotionType.Sl:
                 break;
@@ -146,8 +180,8 @@ public partial class CharaBehavior
             case CharaMotionType.JDg:
                 break;
             case CharaMotionType.RoF:
-                break;
             case CharaMotionType.RoB:
+                ここから
                 break;
             case CharaMotionType.DRAW:
                 break;
@@ -184,7 +218,7 @@ public partial class CharaBehavior
             case CharaMotionType.ANG:
                 break;
             default:
-                throw new ArgumentOutOfRangeException();
+                break;
         }
     }
 }
