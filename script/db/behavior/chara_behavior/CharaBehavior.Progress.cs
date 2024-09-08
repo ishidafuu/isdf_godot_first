@@ -55,15 +55,21 @@ public partial class CharaBehavior
             MyState.View.ResetTargetCount();
         }
 
-
         switch (MyState.Motion.MotionType)
         {
             case CharaMotionType.St:
                 if (IsPassWait())
                 {
-                    // MyState.Motion.MotionType
+                    SetMotionType(CharaMotionType.PW);
                 }
-                
+                else if (IsBallHolder() == false)
+                {
+                    if (MyState.View.BreathCount.AddUntil(GetSpeedRank(RankSpeedType.IkiItv)))
+                    {
+                        MyState.View.BreathCount.Clear();
+                        SetMotionType(CharaMotionType.Breath);
+                    }
+                }
                 break;
             case CharaMotionType.Breath:
                 break;

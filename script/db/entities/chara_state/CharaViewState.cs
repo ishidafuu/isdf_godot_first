@@ -6,7 +6,7 @@
 public class CharaViewState
 {
     // 息継ぎカウンタ
-    public int BreathCount { get; set; }
+    public Counter BreathCount { get; set; }
 
     // 長持ちセリフ用
     public int LongKeepCount { get; set; }
@@ -19,7 +19,7 @@ public class CharaViewState
 
     public void Initialize()
     {
-        BreathCount = 0;
+        BreathCount.Clear();
         LongKeepCount = 0;
         PassWaitCount = 0;
         TargetCount.Clear();
