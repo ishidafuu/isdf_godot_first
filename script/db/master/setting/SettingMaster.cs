@@ -2,7 +2,7 @@
 
 namespace db;
 
-public class SettingData
+public class SettingMaster
 {
     private static int GravityOffset => 0;
     private static int DamageOffset => GravityOffset + Enum.GetValues<SettingGravityType>().Length;
@@ -19,9 +19,9 @@ public class SettingData
     private static int InputOffset => ComOffset + Enum.GetValues<SettingComType>().Length;
     private static int AllSettingLength => InputOffset + Enum.GetValues<SettingInputType>().Length;
 
-    public int[] Sheet { get; private set; } = new int[AllSettingLength];
+    private int[] Sheet { get; set; } = new int[AllSettingLength];
 
-    public SettingData()
+    public SettingMaster()
     {
     }
 

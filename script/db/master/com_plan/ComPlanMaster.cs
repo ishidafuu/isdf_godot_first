@@ -2,12 +2,12 @@
 
 namespace db;
 
-public class ComPlanData
+public class ComPlanMaster
 {
     public static int PlanTypeLength => Enum.GetValues<enComPlanType>().Length;
     public int[][] Sheet { get; private set; }
 
-    public ComPlanData()
+    public ComPlanMaster()
     {
         Sheet = new int[PlanTypeLength][];
 

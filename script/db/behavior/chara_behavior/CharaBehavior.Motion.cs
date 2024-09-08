@@ -120,7 +120,7 @@ public partial class CharaBehavior
 
         if (motionType is CharaMotionType.Pa or CharaMotionType.JPa)
         {
-            var passWait = DataManager.Instance.SettingData.GetPass(SettingPassType.PaStWait);
+            var passWait = MasterManager.Instance.SettingMaster.GetPass(SettingPassType.PaStWait);
             MyState.Pass.ResetPassStandWaitCount(passWait);
             MyState.Pass.IsTossPass = true;
         }
@@ -138,7 +138,7 @@ public partial class CharaBehavior
 
         if (motionType is CharaMotionType.Ca)
         {
-            var catchWait = DataManager.Instance.SettingData.GetCatch(SettingCatchType.CatchWait);
+            var catchWait = MasterManager.Instance.SettingMaster.GetCatch(SettingCatchType.CatchWait);
             MyState.Catch.SetCacheWait(catchWait);
         }
 

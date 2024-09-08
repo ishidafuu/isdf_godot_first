@@ -82,29 +82,29 @@ public partial class CharaBehavior
 
     private int GetLevelRank(RankLevelType levelType)
     {
-        return DataManager.Instance.RankData.GetLevel(levelType, MyState.Level.Level);
+        return MasterManager.Instance.RankMaster.GetLevel(levelType, MyState.Level.Level);
     }
 
     private int GetSpeedRank(RankSpeedType speedType)
     {
-        return DataManager.Instance.RankData.GetSpeed(speedType, MyState.Level.Speed);
+        return MasterManager.Instance.RankMaster.GetSpeed(speedType, MyState.Level.Speed);
     }
 
     private int GetHpRank(RankHpType hpType)
     {
-        var hpRateRank = DataManager.Instance.RankData.GetHpRateRank(MyState.Live.Hp, MyState.Live.MaxHp);
-        return DataManager.Instance.RankData.GetHp(hpType, hpRateRank);
+        var hpRateRank = MasterManager.Instance.RankMaster.GetHpRateRank(MyState.Live.Hp, MyState.Live.MaxHp);
+        return MasterManager.Instance.RankMaster.GetHp(hpType, hpRateRank);
     }
 
     private int GetTechRank(RankTechType techType, int targetTech)
     {
-        var techRate = DataManager.Instance.RankData.GetTechRateRank(MyState.Level.Tech, targetTech);
-        return DataManager.Instance.RankData.GetTech(techType, techRate);
+        var techRate = MasterManager.Instance.RankMaster.GetTechRateRank(MyState.Level.Tech, targetTech);
+        return MasterManager.Instance.RankMaster.GetTech(techType, techRate);
     }
 
     private int GetPowerRank(RankPowerType powerType, int targetPower)
     {
-        var powerRate = DataManager.Instance.RankData.GetPowerRateRank(MyState.Level.Power, targetPower);
-        return DataManager.Instance.RankData.GetPower(powerType, powerRate);
+        var powerRate = MasterManager.Instance.RankMaster.GetPowerRateRank(MyState.Level.Power, targetPower);
+        return MasterManager.Instance.RankMaster.GetPower(powerType, powerRate);
     }
 }

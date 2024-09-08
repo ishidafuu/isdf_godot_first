@@ -7,7 +7,7 @@ namespace db;
 /// </summary>
 public class ComPatternState
 {
-    public int[] PlanPattern { get; set; } = new int[ComPlanData.PlanTypeLength];
+    public int[] PlanPattern { get; set; } = new int[ComPlanMaster.PlanTypeLength];
     public int[][] ActionPattern { get; set; } = new int[ComActionData.ActionTypeLength][];
 
     public ComPatternState()

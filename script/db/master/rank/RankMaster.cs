@@ -2,7 +2,7 @@
 
 namespace db;
 
-public class RankData
+public class RankMaster
 {
     private static int LevelOffset => 0;
     private static int SpeedOffset => LevelOffset + Enum.GetValues<RankLevelType>().Length;
@@ -11,9 +11,9 @@ public class RankData
     private static int PowerOffset => TechOffset + Enum.GetValues<RankTechType>().Length;
     private static int AllRankLength => PowerOffset + Enum.GetValues<RankPowerType>().Length;
 
-    public int[][] Sheet { get; private set; }
+    private int[][] Sheet { get; set; }
 
-    public RankData()
+    public RankMaster()
     {
         Sheet = new int[AllRankLength][];
 
