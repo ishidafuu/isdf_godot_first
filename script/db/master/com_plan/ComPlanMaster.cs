@@ -1,25 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace db;
 
 public class ComPlanMaster
 {
-    public static int PlanTypeLength => Enum.GetValues<enComPlanType>().Length;
-    public int[][] Sheet { get; private set; }
+    public List<ComPlanData> ComPlanDataList { get; private set; }
 
     public ComPlanMaster()
     {
-        Sheet = new int[PlanTypeLength][];
-
-        for (var i = 0; i < PlanTypeLength; i++)
-        {
-            Sheet[i] = new int[Defines.ComPattern];
-        }
+        ComPlanDataList = new List<ComPlanData>();
     }
-    
+
     public void Load()
     {
-        
+    }
+
+    public ComPlanData Get(int teamNo)
+    {
+        return ComPlanDataList[teamNo];
     }
 
     //     //読み込み

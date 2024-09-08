@@ -1,6 +1,6 @@
 ﻿namespace db;
 
-enum enComPlanType //オプション
+public enum enComPlanType //オプション
 {
     comRessei, //劣勢判断 //体力一定以下いれば	残りが敵未満	ボス退場	内野一人
 

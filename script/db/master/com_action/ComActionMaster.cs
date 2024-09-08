@@ -16,6 +16,11 @@ public class ComActionMaster
     {
     }
 
+    public ComActionData Get(int teamNo)
+    {
+        return ComActionDataList[teamNo];
+    }
+
     //     //読み込み
     //     void LoadDt(const char *CSVDir, const char *CSVFilename_ys, const char *CSVFilename_rs);
     //     //取得

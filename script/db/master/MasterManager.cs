@@ -12,10 +12,10 @@ public class MasterManager
 
     private MasterManager()
     {
-        Setup();
+        LoadAll();
     }
 
-    private void Setup()
+    private void LoadAll()
     {
         ComActionMaster.Load();
         ComPlanMaster.Load();
