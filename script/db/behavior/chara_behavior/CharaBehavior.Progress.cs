@@ -202,7 +202,7 @@ public partial class CharaBehavior
                         GotoNextKoma();
                     }
                     else
-                    {   
+                    {
                         MyState.Catch.CatchCount.Add();
                     }
 
@@ -344,40 +344,151 @@ public partial class CharaBehavior
 
     private void MotionEnd()
     {
-        // switch (st_.pstMyCh_->Motion.Mtype)
-        // {
-        //     //ジャンプしゃがみ
-        //     case dbmtJCr:
-        //         Jumping(); //ジャンプ
-        //         break;
-        //
-        //     //転がり
-        //     case dbmtRoF:
-        //     case dbmtRoB:
-        //         //転がりカウンタで終了を決める
-        //         break;
-        //
-        //     //ダウンダメージ
-        //     case dbmtDnHF:
-        //         pCommon_->SetMtype(dbmtDnF);
-        //         break;
-        //     //ダウンダメージ
-        //     case dbmtDnHB:
-        //         pCommon_->SetMtype(dbmtDnB);
-        //         break;
-        //
-        //     //屈み
-        //     case dbmtKG:
-        //         if (Kagami_f())
-        //         {
-        //             st_.pstMyCh_->Kagami_c--;
-        //             pCommon_->SetMtypeReset(dbmtKG);
-        //         }
-        //         else
-        //         {
-        //             pCommon_->SetMtype(dbmtSt);
-        //         }
-        //         break;
+        switch (MyState.Motion.MotionType)
+        {
+            // ジャンプしゃがみ
+            case CharaMotionType.JCr:
+                Jumping();
+                break;
+
+            // 転がり
+            case CharaMotionType.RoF:
+            case CharaMotionType.RoB:
+                // 転がりカウンタで終了を決める
+                break;
+
+            // ダウンダメージ
+            case CharaMotionType.DnHF:
+                SetMotionType(CharaMotionType.DnF);
+                break;
+            case CharaMotionType.DnHB:
+                SetMotionType(CharaMotionType.DnB);
+                break;
+
+            // 屈み
+            case CharaMotionType.KG:
+                if (IsKagami)
+                {
+                    MyState.Damage.KagamiCount.Sub();
+                    SetMotionType(CharaMotionType.KG);
+                }
+                else
+                {
+                    SetMotionType(CharaMotionType.St);
+                }
+                break;
+
+            case CharaMotionType.St:
+                break;
+            case CharaMotionType.Breath:
+                break;
+            case CharaMotionType.Wk:
+                break;
+            case CharaMotionType.Ds:
+                break;
+
+            case CharaMotionType.CJCr:
+                break;
+            case CharaMotionType.JUp:
+                break;
+            case CharaMotionType.JDn:
+                break;
+            case CharaMotionType.ARv:
+                break;
+            case CharaMotionType.Cr:
+                break;
+            case CharaMotionType.FlF:
+                break;
+            case CharaMotionType.FlB:
+                break;
+            case CharaMotionType.PHF:
+                break;
+            case CharaMotionType.PHB:
+                break;
+
+            case CharaMotionType.DnF:
+                break;
+            case CharaMotionType.DnB:
+                break;
+            case CharaMotionType.DRv:
+                break;
+            case CharaMotionType.CM:
+                break;
+            case CharaMotionType.JCM:
+                break;
+            case CharaMotionType.FB:
+                break;
+            case CharaMotionType.JFB:
+                break;
+            case CharaMotionType.PW:
+                break;
+            case CharaMotionType.PWWk:
+                break;
+            case CharaMotionType.PWDs:
+                break;
+            case CharaMotionType.Sl:
+                break;
+            case CharaMotionType.Sh:
+                break;
+            case CharaMotionType.RtSh:
+                break;
+            case CharaMotionType.Pa:
+                break;
+            case CharaMotionType.JSh:
+                break;
+            case CharaMotionType.RtJSh:
+                break;
+            case CharaMotionType.JPa:
+                break;
+            case CharaMotionType.Ca:
+                break;
+            case CharaMotionType.JCa:
+                break;
+            case CharaMotionType.Dg:
+                break;
+            case CharaMotionType.JDg:
+                break;
+
+            case CharaMotionType.DRAW:
+                break;
+            case CharaMotionType.WIN:
+                break;
+            case CharaMotionType.LOSE:
+                break;
+            case CharaMotionType.OvL:
+                break;
+            case CharaMotionType.USA:
+                break;
+            case CharaMotionType.USA2:
+                break;
+            case CharaMotionType.IKI:
+                break;
+            case CharaMotionType.LOOK:
+                break;
+            case CharaMotionType.LOOK2:
+                break;
+            case CharaMotionType.FALL:
+                break;
+            case CharaMotionType.AGE2:
+                break;
+            case CharaMotionType.AGE3:
+                break;
+            case CharaMotionType.AGE4:
+                break;
+            case CharaMotionType.AGE5:
+                break;
+            case CharaMotionType.DO1:
+                break;
+            case CharaMotionType.DO2:
+                break;
+            case CharaMotionType.ANG:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        
+        ここから
+
         //
         //     //シュート（ジャンプシュートはどのみち落下まで何も出来ない）
         //     case dbmtSh:

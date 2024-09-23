@@ -695,7 +695,9 @@ public partial class CharaBehavior
         StartKoma(true);
     }
 
-    //ジャンプ
+    /// <summary>
+    /// ジャンプ
+    /// </summary>
     private void Jumping()
     {
         SetMotionType(CharaMotionType.JUp);
@@ -714,7 +716,7 @@ public partial class CharaBehavior
         MyState.Air.TopTiming = topTiming;
 
         if (IsControl == false
-            && IsDashman() == false
+            && IsDashman == false
             && MyState.Air.IsVerticalJump)
         {
             MyState.Coordinate.VelocityX = 0;
@@ -736,168 +738,72 @@ public partial class CharaBehavior
             var dX = isLongJump
                 ? GetSpeedRank(RankSpeedType.LDSJPX)
                 : GetSettingCourt(SetingCourtType.DashJpX);
-        }
 
-        s32 dXSign;
-        s32 dZSign;
+            MyState.Coordinate.VelocityX = xSign * dX;
 
-        //斜めジャンプは内野のみ
-        if ((IsCtrl() == FALSE)
-            && (IsDashman() == FALSE)
-            && st_.pstMyCh_->VJump_f)
-        {
-            st_.pstMyCh_->Zahyou.dX = 0;
-            st_.pstMyCh_->Zahyou.dZ = 0;
+            var zSign = 0;
+            if (IsControl && IsCom == false)
+            {
+                if (MyState.Pad.Pad.KeyUp.IsPressed)
+                {
+                    zSign = +1;
+                }
+                else if (MyState.Pad.Pad.KeyDown.IsPressed)
+                {
+                    zSign = -1;
+                }
+            }
+
+            MyState.Coordinate.VelocityZ = zSign * DiagonalWalkJumpVelocityZ;
         }
         else
         {
-            //tJType = 0;
-            dXSign = 0;
-            dZSign = 0;
-
-            //攻撃時は現在の向きに依存
-            //ＤＪの時はダッシュ方向に依存
-            if (st_.pstMyCh_->Motion.IsMFlags(dbmfDs))
+            var orderType = MyState.Order.GetOrderType();
+            var xSign = 0;
+            var zSign = 0;
+            if (IsCom == false && (IsFree(true) || MyState.Auto.IsFreeAction))
             {
-                //enCrsType longJpCrs = base::cNone;
-
-                switch (st_.pstMyCh_->Zahyou.DsMuki)
+                if (orderType != OrderType.Outfield2 && MyState.Pad.Pad.KeyUp.IsPressed)
                 {
-                    case mL:
-                        dXSign = -1;
-                        break;
-                    case mR:
-                        dXSign = +1;
-                        break;
-                    default:
-                        break;
+                    zSign = +1;
+                }
+                else if (orderType != OrderType.Outfield3 && MyState.Pad.Pad.KeyDown.IsPressed)
+                {
+                    zSign = -1;
                 }
 
-                BOOL longJp_f = FALSE;
-
-                //Ｒ押しでロングジャンプ(IOSでは加速ダッシュのままジャンプでロングジャンプ)
-                if (IsCOM() == FALSE)
+                if ((MySideIndex == 1 || orderType != OrderType.Outfield4) && MyState.Pad.Pad.KeyRight.IsPressed)
                 {
-                    longJp_f = (DashAccBtn_f() || st_.pstMyCh_->LJump_f);
+                    xSign = +1;
                 }
-                else
+                else if ((MySideIndex == 0 || orderType != OrderType.Outfield4) && MyState.Pad.Pad.KeyLeft.IsPressed)
                 {
-                    //適当に歩数で１／２
-                    if (IsCtrl() && (st_.pstMyCh_->NextAuto.AutoType != dbatCPUJumpBall))
-                    {
-                        longJp_f = ((st_.pstMyCh_->Step_c % 2) == 0);
-                    }
-                }
-
-                s32 jpx = longJp_f
-                    ? RankSpeed(rkLDSJPX)
-                    : pmgEO_->mgDt_.dtSet_.GetDtCourt(setDashJpX);
-
-                st_.pstMyCh_->Zahyou.dX = (dXSign * jpx);
-                st_.pstMyCh_->Zahyou.dZ = 0;
-
-                //斜めジャンプ
-                if ((IsCOM() == FALSE) && (IsCtrl())) //捜査権チェックしないとダッシュマンまで斜めジャンプ
-                {
-                    if (MyPad()->IsJumpMv(dxU)) //斜めジャンプ入力
-                    {
-                        dZSign = +1;
-                    }
-                    else if (MyPad()->IsJumpMv(dxD)) //斜めジャンプ入力
-                    {
-                        dZSign = -1;
-                    }
-                }
-
-                st_.pstMyCh_->Zahyou.dX = dXSign * jpx;
-                st_.pstMyCh_->Zahyou.dZ = dZSign * pCommon_->GetNWkJpZ();
-            }
-            else
-            {
-                //斜めジャンプ（リターン中は斜めジャンプきかないように）
-                if ((IsCOM() == FALSE)
-                    && (IsFreeMotion(TRUE) || st_.pstMyCh_->FreeAct_f))
-                {
-                    //if ((st_.posNo_ != (s32)dbpoO2) && (st_.posNo_ != (s32)dbpoO3))
-                    //{
-                    //  if (MyPad()->IsCrs2(base::cU)) { dZSign = +1; }
-                    //  else if (MyPad()->IsCrs2(base::cD)) { dZSign = -1; }
-                    //}
-
-                    //if (st_.posNo_ != (s32)dbpoO4)
-                    //{
-                    //  if (MyPad()->IsCrs2(base::cL)) { dXSign = -1; }
-                    //  else if (MyPad()->IsCrs2(base::cR)) { dXSign = +1; }
-                    //}
-                    if ((st_.posNo_ != (s32)dbpoO2) && MyPad()->IsJumpMv(dxU)) //斜めジャンプ入力
-                    {
-                        dZSign = +1;
-                    }
-                    else if ((st_.posNo_ != (s32)dbpoO3) && MyPad()->IsJumpMv(dxD)) //斜めジャンプ入力
-                    {
-                        dZSign = -1;
-                    }
-
-                    if (((st_.posNo_ != (s32)dbpoO4) || (st_.mysideNo_ != SIDE1)) && MyPad()->IsJumpMv(dxL)) //斜めジャンプ入力
-                    {
-                        dXSign = -1;
-                    }
-                    else if (((st_.posNo_ != (s32)dbpoO4) || (st_.mysideNo_ != SIDE0)) && MyPad()->IsJumpMv(dxR)) //斜めジャンプ入力
-                    {
-                        dXSign = +1;
-                    }
-                }
-                else if (st_.pstMyCh_->Auto.AutoType == dbatReturn)
-                {
-                    if (st_.pstMyCh_->Auto.AMuki == maL)
-                    {
-                        dXSign = -1;
-                    }
-                    else if (st_.pstMyCh_->Auto.AMuki == maR)
-                    {
-                        dXSign = +1;
-                    }
-
-                    if (st_.pstMyCh_->Auto.AMukiZ == mzaF)
-                    {
-                        dZSign = -1;
-                    }
-                    else if (st_.pstMyCh_->Auto.AMukiZ == mzaB)
-                    {
-                        dZSign = +1;
-                    }
-                }
-
-                //斜めジャンプ
-                if ((dXSign != 0) && (dZSign != 0))
-                {
-                    st_.pstMyCh_->Zahyou.dX = dXSign * pCommon_->GetNWkJpX();
-                    st_.pstMyCh_->Zahyou.dZ = dZSign * pCommon_->GetNWkJpZ();
-                }
-                else
-                {
-                    st_.pstMyCh_->Zahyou.dX = dXSign * pCommon_->GetWkJpX();
-                    st_.pstMyCh_->Zahyou.dZ = dZSign * pCommon_->GetWkJpZ();
-                }
-
-                if ((st_.posNo_ == (s32)dbpoO2) || (st_.posNo_ == (s32)dbpoO3))
-                {
-                    st_.pstMyCh_->Zahyou.dZ = lib_num::Percent(st_.pstMyCh_->Zahyou.dZ, JPGAIYAPER);
+                    xSign = -1;
                 }
             }
+            else if (MyState.Auto.AutoType == AutoType.Return)
+            {
+                xSign = (int)MyState.Auto.DirectionX;
+                zSign = (int)MyState.Auto.DirectionZ;
+            }
 
-            ////パスタゲがジャンプしたら操作権をカバーマンに移す
-            //if ((st_.pmgMyTm_->st_.pstMyTm_->CtrlNo == pmgSG_->stBa_.PaTgPNo)
-            //  && (pmgSG_->stBa_.Motion == bmPass)
-            //  && (pmgSG_->stBa_.PaTgTNo == st_.mysideNo_)
-            //  && (pmgSG_->stBa_.PaTgPNo <= (s32)dbpoI3))
-            //{
-            //  //★イマイチな気がする//TeamObj内でいろいろ片付けた方がよい
-            //  st_.pmgMyTm_->SetCtrl(st_.pmgMyTm_->st_.pstMyTm_->CvrNo);
-            //  st_.pmgMyTm_->st_.pmgMyCh_[st_.pmgMyTm_->st_.pstMyTm_->CtrlNo)->st_.pstMyCh_->Nomove_f = TRUE;
-            //  //新しいカバーマン
-            //  st_.pmgMyTm_->SeekCover(st_.pmgMyTm_->st_.pstMyTm_->CvrNo, pmgSG_->stBa_.PichPNo, pmgSG_->stBa_.PaTgPNo, TRUE);
-            //}
+            var idDiagonal = xSign != 0 && zSign != 0;
+
+            var dx = idDiagonal
+                ? zSign * DiagonalWalkJumpVelocityX
+                : zSign * WalkJumpVelocityX;
+
+            var dz = idDiagonal
+                ? zSign * DiagonalWalkJumpVelocityZ
+                : zSign * WalkJumpVelocityZ;
+
+            if (orderType is OrderType.Outfield2 or OrderType.Outfield3)
+            {
+                dz = dz * Defines.Percent / Defines.JPGAIYAPER;
+            }
+
+            MyState.Coordinate.VelocityX = dx;
+            MyState.Coordinate.VelocityZ = dz;
         }
     }
 }

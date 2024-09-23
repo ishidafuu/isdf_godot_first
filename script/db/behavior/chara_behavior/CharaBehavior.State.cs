@@ -27,7 +27,7 @@ public partial class CharaBehavior
     /// 自分で操作するキャラかどうか
     /// </summary>
     private bool IsSelfControl => MyState.Pad.IsManualControl
-                                  || (IsControl && IsCom == false); //サイド
+                                  || (IsControl && IsCom == false);
 
     /// <summary>
     /// ボール持ちかどうか
@@ -102,7 +102,7 @@ public partial class CharaBehavior
                                 && MyState.Motion.MotionFlag.HasFlag(CharaMotionFlag.Ar)
                                 && MyState.Motion.MotionType != CharaMotionType.Sl
                                 && MyState.Coordinate.VelocityY > Defines.DIVELIMDY
-                                && LeftCourtX() > Defines.DBCRT_CLXL;
+                                && LeftCourtX > Defines.DBCRT_CLXL;
 
             // 前方ジャンプ状態であればダッシュマン扱い（ミラーパスの対象とするため）
             if (isForwardJump)
