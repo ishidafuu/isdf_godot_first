@@ -65,8 +65,8 @@ public partial class BallState
     public int PaSelfHit { get; set; }
     public int PassTargetOrder { get; set; }
     public int PassTargetSide { get; set; }
-    public int PichPNo { get; set; }
-    public int PichTNo { get; set; }
+    public int ThrowerOrderNo { get; set; }
+    public int ThrowerSideNo { get; set; }
     public int RbwTNo { get; set; }
     public int ShotTargetOrder { get; set; }
     public int ShotTargetSide { get; set; }
@@ -144,8 +144,8 @@ public partial class BallState
         PaSelfHit = 0;
         PassTargetOrder = 0;
         PassTargetSide = 0;
-        PichPNo = 0;
-        PichTNo = 0;
+        ThrowerOrderNo = 0;
+        ThrowerSideNo = 0;
         RbwTNo = 0;
         ShotTargetOrder = 0;
         ShotTargetSide = 0;

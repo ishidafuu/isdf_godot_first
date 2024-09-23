@@ -39,7 +39,6 @@ public partial class CharaBehavior
         }
 
         MyState.Motion.MotionCount.Clear();
-        MyState.Anime.Initialize();
         MyState.Catch.CatchCount.Clear();
         MyState.Dodge.EnemyCortDodgeCount.Clear();
         MyState.Move.DashAccelCount.Clear();
@@ -57,7 +56,7 @@ public partial class CharaBehavior
         }
 
         // 立ちパス待ちカウンタ
-        if (IsPassWait() == false)
+        if (IsPassWait == false)
         {
             MyState.Pass.PassStandWaitCount.Clear();
         }
@@ -98,8 +97,7 @@ public partial class CharaBehavior
         if (motionType is CharaMotionType.Sh or CharaMotionType.RtSh or CharaMotionType.JSh
             or CharaMotionType.RtJSh)
         {
-            MyState.Shoot.ShootWaitCount = GetLevelRank(RankLevelType.ShStMotion);
-            MyState.Shoot.ShootEndWaitCount = GetLevelRank(RankLevelType.ShEdMotion);
+            MyState.Shoot.SetWaitCount(GetLevelRank(RankLevelType.ShStMotion), GetLevelRank(RankLevelType.ShEdMotion));
             CallBallShootMotion();
         }
 
@@ -619,17 +617,17 @@ public partial class CharaBehavior
 
     private void SetKomaData(bool isInLoop)
     {
-        var komaData = GetBaseMotionKomaData();
+        var komaData = NowBaseMotionKoma;
 
         if (isInLoop == false)
         {
             switch (komaData.LoopSt)
             {
                 case enBMLoopSt.St:
-                    MyState.Anime.SetLoopStart(komaData);
+                    MyState.Motion.SetLoopStart(komaData);
                     break;
                 case enBMLoopSt.Ed:
-                    MyState.Anime.SetLoopEnd(komaData);
+                    MyState.Motion.SetLoopEnd(komaData);
                     break;
                 default:
                     break;
@@ -641,8 +639,8 @@ public partial class CharaBehavior
             PlayBaseMotionKomaSe();
         }
 
-        MyState.Anime.StartKoma(komaData);
-        
+        MyState.Motion.StartKoma(komaData);
+
         if (komaData.IsActionPoint)
         {
             InvokeActionPoint();
@@ -651,7 +649,7 @@ public partial class CharaBehavior
 
     private void PlayBaseMotionKomaSe()
     {
-        var se = GetBaseMotionKomaData().Se;
+        var se = NowBaseMotionKoma.Se;
         PlaySe(se);
     }
 
@@ -684,7 +682,7 @@ public partial class CharaBehavior
                 MyState.Catch.CatchCount.Clear();
                 break;
             case CharaMotionType.OvL:
-                if (IsBallHolder())
+                if (IsBallHolder)
                 {
                     CallRefereeResetOverLine();
                 }

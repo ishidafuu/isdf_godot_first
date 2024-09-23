@@ -6,10 +6,10 @@
 public class CharaShootState
 {
     // シュート待ちカウンタ
-    public int ShootWaitCount { get; set; }
+    public Counter ShootWaitCount { get; set; }
 
     // シュート終了待ちカウンタ
-    public int ShootEndWaitCount { get; set; }
+    public Counter ShootEndWaitCount { get; set; }
 
     // 必殺タイミング
     public Counter Step { get; set; }
@@ -34,8 +34,8 @@ public class CharaShootState
 
     public void Initialize()
     {
-        ShootWaitCount = 0;
-        ShootEndWaitCount = 0;
+        ShootWaitCount.Clear();
+        ShootEndWaitCount.Clear();
         Step.Clear();
         ShootTiming = default;
         Angle12 = 0;
@@ -43,5 +43,11 @@ public class CharaShootState
         IsBackSh = false;
         IsUTurn = false;
         FumbleCount = 0;
+    }
+
+    public void SetWaitCount(int startCount, int endCount)
+    {
+        ShootWaitCount.Set(startCount);
+        ShootEndWaitCount.Set(endCount);
     }
 }

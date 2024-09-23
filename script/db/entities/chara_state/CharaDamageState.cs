@@ -12,7 +12,7 @@ public class CharaDamageState
     public Counter DownCount { get; set; }
 
     // 回転カウンタ
-    public int RollCount { get; set; }
+    public Counter RollCount { get; set; }
 
     // 屈みカウンタ
     public int KagamiCount { get; set; }
@@ -33,7 +33,7 @@ public class CharaDamageState
     {
         DamageAfterCount.Clear();
         DownCount.Clear();
-        RollCount = 0;
+        RollCount.Clear();
         KagamiCount = 0;
         KagamiRevCount = 0;
         KagamiRevKgNo = 0;

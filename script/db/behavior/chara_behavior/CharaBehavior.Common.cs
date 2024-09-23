@@ -13,7 +13,7 @@ public partial class CharaBehavior
         var ballLandLineDist = 0;
 
         // 操作可能キャラのみ
-        if (CanControl())
+        if (CanControl)
         {
             ballDist = MyState.Coordinate.DistanceXZ(BallState.Coordinate);
             ballLandDist = ballDist;

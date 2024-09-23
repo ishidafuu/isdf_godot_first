@@ -14,9 +14,10 @@ public partial class CharaBehavior
     private CharaState[] EnemySideOrders => CharaStateManager.Instance.GetSideOrders(EnemySideIndex);
     private BallState BallState => BallStateManager.Instance.BallState;
     private RefereeState RefereeState => RefereeStateManager.Instance.RefereeState;
-    private TeamState MyTeam => TeamStateManager.Instance.Get(MySideIndex);
-    private ComState MyCom => ComStateManager.Instance.Get(MySideIndex);
-    private TeamState EnemyTeam => TeamStateManager.Instance.Get(EnemySideIndex);
+    private TeamState MyTeamState => TeamStateManager.Instance.Get(MySideIndex);
+    private ComState MyComState => ComStateManager.Instance.Get(MySideIndex);
+    private TeamState EnemyTeamState => TeamStateManager.Instance.Get(EnemySideIndex);
+    private TeamBehavior MyTeamBehavior => TeamBehaviorManager.Instance.Get(MySideIndex);
 
     public CharaBehavior()
     {

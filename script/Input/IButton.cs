@@ -1,4 +1,4 @@
-﻿namespace isdf_godot_first.script.Input;
+﻿namespace isdf;
 
 public interface IButton
 {

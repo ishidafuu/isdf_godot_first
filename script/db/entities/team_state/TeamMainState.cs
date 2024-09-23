@@ -10,7 +10,7 @@ public class TeamMainState
     public bool RsvResetComF { get; set; } // ＣＯＭ思考リセット★
     public bool CallingDmResetF { get; set; } // コールによるＣＯＭ思考リセット★
     public bool CallingRdCgF { get; set; } // コールによるリーダチェンジ＆ＣＯＭ思考リセット★
-    public int CtrlNo { get; set; } // 操作中のキャラポジション
+    public int ControlOrderIndex { get; set; } // 操作中のキャラポジション(orderindex)
     public int DmCallmanNo { get; set; } // ダッシュマンを呼んだ人（センターダッシュ用）
     public int CtrlRsvNo { get; set; } // 操作権予約キャラ
     public int CvrNo { get; set; } // パス先に操作権が移ったときカバーにはいるキャラ
@@ -83,7 +83,7 @@ public class TeamMainState
         RsvResetComF = false;
         CallingDmResetF = false;
         CallingRdCgF = false;
-        CtrlNo = 0;
+        ControlOrderIndex = 0;
         DmCallmanNo = 0;
         CtrlRsvNo = 0;
         CvrNo = 0;

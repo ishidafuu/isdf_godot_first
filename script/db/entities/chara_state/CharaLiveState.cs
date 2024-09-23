@@ -13,7 +13,7 @@ public class CharaLiveState
     // 死亡 天使の間 GenSaiObjのLive_f=Falseは完全消滅
     public bool IsDead { get; set; }
 
-    // 外野天使
+    // 外野天使、HP0でダウンしたタイミングでTRUE
     public bool IsAngel { get; set; }
 
     // 喰らい判定

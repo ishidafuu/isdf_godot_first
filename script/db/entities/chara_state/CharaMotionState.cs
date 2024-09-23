@@ -11,7 +11,11 @@ public class CharaMotionState
     public CharaMotionFlag MotionFlag { get; private set; }
     public Counter MotionCount { get; private set; }
     public CharaMotionNo MotionNo { get; private set; }
-    public int MotionKomaNo { get; private set; }
+    public int KomaNo { get; set; }
+    public Counter AnimationCount { get; set; }
+    public Counter LoopCount { get; set; }
+    public int LoopStartKomaNo { get; set; }
+    public bool IsActionPoint { get; set; }
 
     public void Initialize()
     {
@@ -19,7 +23,11 @@ public class CharaMotionState
         MotionFlag = default;
         MotionCount.Clear();
         MotionNo = default;
-        MotionKomaNo = default;
+        KomaNo = 0;
+        AnimationCount.Clear();
+        LoopCount.Clear();
+        LoopStartKomaNo = 0;
+        IsActionPoint = false;
     }
 
     public bool HasFlag(CharaMotionFlag flag)
@@ -84,6 +92,34 @@ public class CharaMotionState
                     _ => motionNo
                 };
         }
+    }
+
+    public void SetLoopStart(BaseMotionKomaData komaData)
+    {
+        LoopCount.Set(komaData.LoopNum);
+        LoopStartKomaNo = KomaNo;
+    }
+
+    public void SetLoopEnd(BaseMotionKomaData komaData)
+    {
+        LoopStartKomaNo = KomaNo;
+    }
+
+    public void StartKoma(BaseMotionKomaData komaData)
+    {
+        AnimationCount.Clear();
+        IsActionPoint = komaData.IsActionPoint;
+    }
+
+    public void BackToLoopStartFrame()
+    {
+        KomaNo = LoopStartKomaNo;
+    }
+
+    public void StartLoop(int loopCount)
+    {
+        LoopCount.Set(loopCount);
+        LoopStartKomaNo = KomaNo;
     }
 
 }

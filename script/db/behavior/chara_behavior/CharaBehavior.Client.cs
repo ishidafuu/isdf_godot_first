@@ -32,4 +32,9 @@ public partial class CharaBehavior
         TeamBehaviorManager.Instance.Get(MySideIndex).CallGenerateAngel(MyState.Order.OrderIndex);
     }
 
+    private void CallTeamCheckChangePos()
+    {
+       MyTeamBehavior.CallCheckChangePos();
+    }
+    
 }

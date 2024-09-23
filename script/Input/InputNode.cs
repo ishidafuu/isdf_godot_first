@@ -1,5 +1,6 @@
 using Godot;
-using isdf_godot_first.script.Input;
+
+namespace isdf;
 
 public partial class InputNode : Node
 {

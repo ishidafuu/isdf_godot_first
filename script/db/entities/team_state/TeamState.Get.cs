@@ -17,4 +17,12 @@ public partial class TeamState
 
         return true;
     }
+
+    public bool IsCom()
+    {
+        // セミオート時のみオート扱いor COMサイド
+
+        return (SemiAutoState.SemiF || MainState.ManSideF == false);
+    }
+
 }

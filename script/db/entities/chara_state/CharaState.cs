@@ -8,7 +8,6 @@ public partial class CharaState
     public CharaLiveState Live { get; set; } = new();
     public CoordinateState Coordinate { get; set; } = new();
     public CharaMotionState Motion { get; set; } = new();
-    public CharaAnimeState Anime { get; set; } = new();
     public CharaAutoState Auto { get; set; } = new();
     public CharaAutoState NextAuto { get; set; } = new();
     public CharaComAutoState ComAuto { get; set; } = new();
@@ -46,7 +45,6 @@ public partial class CharaState
         Live.Initialize();
         Coordinate.Initialize();
         Motion.Initialize();
-        Anime.Initialize();
         Auto.Initialize();
         NextAuto.Initialize();
         ComAuto.Initialize();

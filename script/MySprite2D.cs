@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using isdf;
 
 public partial class MySprite2D : Sprite2D
 {

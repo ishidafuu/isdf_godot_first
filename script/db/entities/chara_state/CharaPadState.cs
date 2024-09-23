@@ -1,4 +1,6 @@
-﻿namespace db;
+﻿using isdf;
+
+namespace db;
 
 /// <summary>
 /// パッド入力に関するステータス
@@ -11,7 +13,9 @@ public class CharaPadState
     public bool IsManualControl;
 
     public int PadNo;
+
     // public TMgPad pCharPad_; // パッド
+    public IPad Pad;
 
     public void Initialize()
     {
