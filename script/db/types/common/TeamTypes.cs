@@ -46,3 +46,11 @@ public enum ResultType
     rtTIMEUPDRAW = 6,
     rtRETIRE = 10,
 };
+
+public enum OrderType
+{
+    Infield,
+    Outfield2,
+    Outfield3,
+    Outfield4,
+};
