@@ -41,7 +41,7 @@ public class CharaLiveState
     public int LoopCount { get; set; }
 
     // バイオリズム
-    public Counter BiorhythmCount { get; set; }
+    public UpCounter BiorhythmCount { get; set; }
 
     public void Initialize()
     {

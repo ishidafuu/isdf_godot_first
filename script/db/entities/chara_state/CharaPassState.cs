@@ -6,16 +6,16 @@
 public class CharaPassState
 {
     // 立ちパス待ちカウンタ
-    public Counter PassStandWaitCount { get; set; }
+    public DownCounter PassStandWaitCount { get; set; }
 
     // ミラーパスカウンタ
-    public Counter MirrorPassCount { get; set; }
+    public DownCounter MirrorPassCount { get; set; }
 
     // ミラーパス的シュートカウンタ
-    public Counter MirrorShotCount { get; set; }
+    public DownCounter MirrorShotCount { get; set; }
 
     // ミラーパス的シュート受付時間
-    public Counter MirrorShotLimitCount { get; set; }
+    public DownCounter MirrorShotLimitCount { get; set; }
 
     // トスパスフラグ
     public bool IsTossPass { get; set; }

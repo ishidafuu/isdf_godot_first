@@ -6,10 +6,10 @@
 public class CharaCatchState
 {
     // ボールをキャッチできるカウンタ
-    public Counter CatchCount { get; set; }
+    public UpCounter CatchCount { get; set; }
 
     // 次のキャッチまでのラグ
-    public Counter CatchWaitCount { get; set; }
+    public DownCounter CatchWaitCount { get; set; }
 
     // ブロックカウンタ
     public int BlockCount { get; set; }

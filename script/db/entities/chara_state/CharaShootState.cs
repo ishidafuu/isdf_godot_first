@@ -6,13 +6,13 @@
 public class CharaShootState
 {
     // シュート待ちカウンタ
-    public Counter ShootWaitCount { get; set; }
+    public DownCounter ShootWaitCount { get; set; }
 
     // シュート終了待ちカウンタ
-    public Counter ShootEndWaitCount { get; set; }
+    public DownCounter ShootEndWaitCount { get; set; }
 
     // 必殺タイミング
-    public Counter Step { get; set; }
+    public UpCounter Step { get; set; }
 
     // 必殺アシスト状態
     public ShootTiming ShootTiming { get; set; }

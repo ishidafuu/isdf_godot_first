@@ -55,12 +55,23 @@ public partial class CharaBehavior
     /// 現在のモーションデータ
     /// </summary>
     /// <returns></returns>
-    private BaseMotionData NowBaseMotionData => MasterManager.Instance.BaseMotionMaster.Get(MyState.Motion.MotionType);
+    private BaseMotionData CurrentBaseMotionData => MasterManager.Instance.BaseMotionMaster.Get(MyState.Motion.MotionType);
 
     /// <summary>
     /// 現在のモーションのコマデータ
     /// </summary>
     /// <returns></returns>
-    private BaseMotionKomaData NowBaseMotionKoma => NowBaseMotionData.Get(MyState.Motion.KomaNo);
+    private BaseMotionKomaData CurrentBaseMotionKoma => CurrentBaseMotionData.Get(MyState.Motion.KomaNo);
+
+    /// <summary>
+    /// 現在のモーションのコマデータ
+    /// </summary>
+    /// <returns></returns>
+    private BaseMotionKomaData NextBaseMotionKoma => CurrentBaseMotionData.Get(MyState.Motion.KomaNo);
+
+    /// <summary>
+    /// 最終コマか
+    /// </summary>
+    private bool IsLastKoma => MyState.Motion.KomaNo == CurrentBaseMotionData.KomaCount - 1;
 
 }

@@ -6,7 +6,7 @@
 public class CharaDodgeState
 {
     // 敵コート避け時間
-    public Counter EnemyCortDodgeCount { get; set; }
+    public DownCounter EnemyCortDodgeCount { get; set; }
 
     public void Initialize()
     {

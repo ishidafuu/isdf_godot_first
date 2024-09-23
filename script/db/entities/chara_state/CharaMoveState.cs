@@ -6,13 +6,13 @@
 public class CharaMoveState
 {
     // ジャンプしゃがみカウンタ
-    public Counter JumpCrouchCount { get; set; }
+    public UpCounter JumpCrouchCount { get; set; }
 
     // ダッシュ加速カウンタ
-    public Counter DashAccelCount { get; set; }
+    public UpCounter DashAccelCount { get; set; }
 
     // 泥足場ステップ数
-    public Counter MadStepCount { get; set; }
+    public UpCounter MadStepCount { get; set; }
 
     // ダッシュ加速IOSフラグ
     public bool IsDashAccelIOS { get; set; }

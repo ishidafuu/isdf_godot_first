@@ -188,7 +188,14 @@ public partial class CharaBehavior
             MyState.Dashman.Initialize();
         }
 
-        SetKomaData(false);
+        // コマスタート処理
+        StartKoma();
+        PlayBaseMotionKomaSe();
+
+        if (CurrentBaseMotionKoma.IsActionPoint)
+        {
+            InvokeActionPoint();
+        }
     }
 
     private CharaMotionType ShiftMotionType(CharaMotionType motionType)
@@ -615,41 +622,43 @@ public partial class CharaBehavior
         }
     }
 
-    private void SetKomaData(bool isInLoop)
-    {
-        var komaData = NowBaseMotionKoma;
-
-        if (isInLoop == false)
-        {
-            switch (komaData.LoopSt)
-            {
-                case enBMLoopSt.St:
-                    MyState.Motion.SetLoopStart(komaData);
-                    break;
-                case enBMLoopSt.Ed:
-                    MyState.Motion.SetLoopEnd(komaData);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        if (isInLoop == false || komaData.SeLoopF)
-        {
-            PlayBaseMotionKomaSe();
-        }
-
-        MyState.Motion.StartKoma(komaData);
-
-        if (komaData.IsActionPoint)
-        {
-            InvokeActionPoint();
-        }
-    }
+    // private void SetKomaData(bool isInLoop)
+    // {
+    //     var komaData = CurrentBaseMotionKoma;
+    //     MyState.Motion.StartKoma(komaData);
+    //     
+    //     
+    //     if (isInLoop == false)
+    //     {   
+    //         switch (komaData.LoopSt)
+    //         {
+    //             case enBMLoopSt.St:
+    //                 MyState.Motion.SetLoopStart(komaData);
+    //                 break;
+    //             case enBMLoopSt.Ed:
+    //                 MyState.Motion.SetLoopEnd();
+    //                 break;
+    //             default:
+    //                 break;
+    //         }
+    //     }
+    //
+    //     if (isInLoop == false || komaData.SeLoopF)
+    //     {
+    //         PlayBaseMotionKomaSe();
+    //     }
+    //
+    //     
+    //
+    //     if (komaData.IsActionPoint)
+    //     {
+    //         InvokeActionPoint();
+    //     }
+    // }
 
     private void PlayBaseMotionKomaSe()
     {
-        var se = NowBaseMotionKoma.Se;
+        var se = CurrentBaseMotionKoma.Se;
         PlaySe(se);
     }
 
@@ -688,6 +697,33 @@ public partial class CharaBehavior
                 }
                 break;
         }
+    }
+
+    /// <summary>
+    /// コマスタート
+    /// </summary>
+    private void StartKoma()
+    {
+        var komaData = CurrentBaseMotionKoma;
+        MyState.Motion.StartKoma(komaData);
+    }
+    
+    /// <summary>
+    /// 次のコマに進む
+    /// </summary>
+    private void GotoNextKoma()
+    {
+        MyState.Motion.IncKomaNo();
+        StartKoma();
+    }
+
+    /// <summary>
+    /// ループスタートのコマに戻る
+    /// </summary>
+    private void GotoLoopStartKoma()
+    {
+        MyState.Motion.BackToLoopStartKomaNo();
+        StartKoma();
     }
 }
 

@@ -7,10 +7,10 @@
 public class CharaAirState
 {
     // 滞空時間
-    public Counter AirCount { get; set; }
+    public UpCounter AirCount { get; set; }
 
     // シュートタイミング用滞空時間
-    public Counter ShootAirCount { get; set; }
+    public UpCounter ShootAirCount { get; set; }
 
     // 頂点の時間
     public int TopTiming { get; set; }

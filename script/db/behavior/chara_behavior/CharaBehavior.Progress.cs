@@ -202,7 +202,7 @@ public partial class CharaBehavior
                         GotoNextKoma();
                     }
                     else
-                    {
+                    {   
                         MyState.Catch.CatchCount.Add();
                     }
 
@@ -276,7 +276,7 @@ public partial class CharaBehavior
 
         if (isProgressAnimation)
         {
-            ProgressAnimation(false);
+            ProgressFrame(false);
         }
     }
 
@@ -298,133 +298,148 @@ public partial class CharaBehavior
         return isOverCatchFrame;
     }
 
-    /// <summary>
-    /// 次のコマへ
-    /// </summary>
-    private void GotoNextKoma()
-    {
-        // //ラスコマ
-        // if (IsLastKoma())//(NowKoma(bmc_Last_f != 0)
-        // {
-        //     MotionEnd();
-        // }
-        // else//次コマ
-        // {
-        //     ++st_.pstMyCh_->Anime.FrameNo;
-        //     pCommon_->SetFrameData(FALSE);
-        // }
-    }
+    //現モーション終了
 
     /// <summary>
     /// アニメーションを進める
     /// </summary>
-    private void ProgressAnimation(bool isForce)
+    private void ProgressFrame(bool isForce)
     {
-        // アニメーションカウンタ増加
-        MyState.Motion.AnimationCount.Add();
+        MyState.Motion.KomaFrameCount.Add();
 
-        //フレーム終了の時間がきましたもしくは強制次フレーム
-        if (isForce || MyState.Motion.AnimationCount.Value >= NowBaseMotionKoma.DefFrm)
+        //フレーム終了の時間がきた、もしくは強制次フレーム
+        if (isForce || MyState.Motion.KomaFrameCount.Value >= CurrentBaseMotionKoma.DefFrm)
         {
-            switch (NowBaseMotionKoma.LoopSt)
+            bool isLoop = false;
+            switch (CurrentBaseMotionKoma.LoopSt)
             {
                 // ループ終了
                 case enBMLoopSt.Ed:
-                    if (MyState.Motion.LoopCount.Sub())
-                    {
-                        GotoNextKoma();
-                    }
-                    else
-                    {
-                        MyState.Motion.BackToLoopStartFrame();
-                        SetFrameData(true);
-                    }
-                    break;
                 case enBMLoopSt.StEd:
+                    if (MyState.Motion.LoopCount.Sub() == false)
+                    {
+                        isLoop = true;
+                    }
                     break;
-                default:
-                    break;
+            }
 
-                //     //ループ終了
-                //     case (s32)bmlp_Ed:
-                //
-                //         //カウンタ
-                //         --st_.pstMyCh_->Anime.Loop_c;
-                //
-                //         //ループ終了
-                //         if (st_.pstMyCh_->Anime.Loop_c == 0)
-                //         {
-                //             NextFrame();
-                //         }
-                //         else //ループ中
-                //         {
-                //             //ループ始点まで戻る
-                //             st_.pstMyCh_->Anime.FrameNo = st_.pstMyCh_->Anime.LoopStNo;
-                //             pCommon_->SetFrameData(TRUE);
-                //
-                //             if (st_.pstMyCh_->Anime.Loop_c <= NGNUM)
-                //             {
-                //                 st_.pstMyCh_->Anime.Loop_c = 0;
-                //                 //st_.pstMyCh_->Motion.M_c = 0;
-                //                 //攻撃モーションで無い無限ループはM_cを初期化してみる
-                //                 //ジャンプ必殺のタイミングをM_cで取るのでやっぱり初期化しない
-                //                 //空中以外は初期化してみる
-                //                 //下の同コマループはいいかな
-                //             }
-                //         }
-                //         break;
-                //     //同コマループ
-                //     case (s32)bmlp_StEd:
-                //         //カウンタ
-                //         --st_.pstMyCh_->Anime.Loop_c;
-                //
-                //         //ループ終了
-                //         if (st_.pstMyCh_->Anime.Loop_c == 0)
-                //         {
-                //             NextFrame();
-                //         }
-                //         else if (st_.pstMyCh_->Anime.Loop_c <= NGNUM)
-                //         {
-                //             st_.pstMyCh_->Anime.Loop_c = 0;
-                //         }
-                //         break;
-                //
-                //     //非ループ
-                //     default:
-                //         NextFrame();
-                //         break;
-                // }
+            if (isLoop)
+            {
+                GotoLoopStartKoma();
+            }
+            else
+            {
+                if (IsLastKoma)
+                {
+                    // ラスコマ
+                    MotionEnd();
+                }
+                else
+                {
+                    GotoNextKoma();
+                }
             }
         }
     }
 
-    //フレーム情報のセット
-    private void SetFrameData(bool isInLoop)
+    private void MotionEnd()
     {
-        //ループ始点の場合
-        if (isInLoop == false)
-        {
-            switch (NowBaseMotionKoma.LoopSt)
-            {
-                case enBMLoopSt.St:
-                    MyState.Motion.StartLoop(NowBaseMotionKoma.LoopNum);
-                    break;
-                case enBMLoopSt.StEd:
-                    MyState.Motion.StartLoop(NowBaseMotionKoma.LoopNum);
-                    break;
-            }
-
-            PlaySe(NowBaseMotionKoma.Se);
-        }
-        else
-        {
-            if (NowBaseMotionKoma.SeLoopF)
-            {
-                PlaySe(NowBaseMotionKoma.Se);
-            }
-        }
-
-        MyState.Motion.AnimationCount.Clear();
-        MyState.Motion.IsActionPoint = NowBaseMotionKoma.IsActionPoint;
+        // switch (st_.pstMyCh_->Motion.Mtype)
+        // {
+        //     //ジャンプしゃがみ
+        //     case dbmtJCr:
+        //         Jumping(); //ジャンプ
+        //         break;
+        //
+        //     //転がり
+        //     case dbmtRoF:
+        //     case dbmtRoB:
+        //         //転がりカウンタで終了を決める
+        //         break;
+        //
+        //     //ダウンダメージ
+        //     case dbmtDnHF:
+        //         pCommon_->SetMtype(dbmtDnF);
+        //         break;
+        //     //ダウンダメージ
+        //     case dbmtDnHB:
+        //         pCommon_->SetMtype(dbmtDnB);
+        //         break;
+        //
+        //     //屈み
+        //     case dbmtKG:
+        //         if (Kagami_f())
+        //         {
+        //             st_.pstMyCh_->Kagami_c--;
+        //             pCommon_->SetMtypeReset(dbmtKG);
+        //         }
+        //         else
+        //         {
+        //             pCommon_->SetMtype(dbmtSt);
+        //         }
+        //         break;
+        //
+        //     //シュート（ジャンプシュートはどのみち落下まで何も出来ない）
+        //     case dbmtSh:
+        //         //終了カウンタ回す
+        //         if (lib_num::AprTo0(&st_.pstMyCh_->ShEdWait_c))
+        //         {
+        //             pCommon_->SetMtypeReset(dbmtSt);
+        //         }
+        //         break;
+        //
+        //     //パス
+        //     case dbmtPa:
+        //     {
+        //         //ボールダッシュマン
+        //         if (pCommon_->IsBMDashOK()
+        //             && (st_.pmgMyTm_->st_.pstMyTm_->DashmanNoBM == st_.posNo_)) //予約状態でもある
+        //         {
+        //             pCommon_->SetMtype(dbmtDs);
+        //         }
+        //         else
+        //         {
+        //             pCommon_->SetMtypeReset(dbmtSt);
+        //         }
+        //     }
+        //         break;
+        //
+        //     //キャッチ
+        //     case dbmtCa:
+        //         if (st_.pstMyCh_->Motion.IsMFlags(dbmfDs))
+        //         {
+        //             pCommon_->SetMtype(dbmtDs);
+        //         }
+        //         else
+        //         {
+        //             pCommon_->SetMtype(dbmtSt);
+        //         }
+        //
+        //         break;
+        //
+        //     //キャッチモーション
+        //     case dbmtCM:
+        //         if (st_.pstMyCh_->Motion.IsMFlags(dbmfDs))
+        //         {
+        //             pCommon_->SetMtype(dbmtDs);
+        //         }
+        //         else
+        //         {
+        //             pCommon_->SetMtype(dbmtSt);
+        //         }
+        //         break;
+        //
+        //     //その他
+        //     default:
+        //         if (st_.pstMyCh_->Motion.IsMFlags(dbmfAr))
+        //         {
+        //             pCommon_->SetMtype(dbmtJDn);
+        //         }
+        //         else
+        //         {
+        //             pCommon_->SetMtypeReset(dbmtSt);
+        //         }
+        //         break;
+        // }
     }
 }

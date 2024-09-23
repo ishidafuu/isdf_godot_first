@@ -16,7 +16,7 @@ public class CharaDashmanState
     public int TargetZ { get; set; }
 
     // ダッシュマンにパスを出しても大丈夫な時間
-    public Counter EnabledPassCount { get; set; }
+    public DownCounter EnabledPassCount { get; set; }
 
     public void Initialize()
     {

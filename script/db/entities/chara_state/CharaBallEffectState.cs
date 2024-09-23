@@ -35,7 +35,7 @@ public class CharaBallEffectState
     public int comboMax { get; set; } //コンボ回数　０でコンボしない（他キャラによる貫通力減少が起こるので貫通力と別で持つ）
     public int comboNoHitTime_c { get; set; } //コンボ中ヒットフラグ発生までの時間→０より大きい場合は無敵＆０でヒットOK
     public bool flySpGrav_f { get; set; } //特殊吹っ飛び重力処理フラグ
-    public Counter hitMTime_cd { get; set; } //食らったあとの無敵時間カウント…減算
+    public DownCounter hitMTime_cd { get; set; } //食らったあとの無敵時間カウント…減算
     public int hitMltDam { get; set; } //連続ヒット時のダメージ
     public bool noDmg_f { get; set; } //ダメナシフラグ
     public int hitSound;

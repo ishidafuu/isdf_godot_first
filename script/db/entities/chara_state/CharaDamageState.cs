@@ -6,13 +6,13 @@
 public class CharaDamageState
 {
     // キャッチダメージ顔
-    public Counter DamageAfterCount { get; set; }
+    public DownCounter DamageAfterCount { get; set; }
 
     // ダウンカウンタ
-    public Counter DownCount { get; set; }
+    public UpCounter DownCount { get; set; }
 
     // 回転カウンタ
-    public Counter RollCount { get; set; }
+    public DownCounter RollCount { get; set; }
 
     // 屈みカウンタ
     public int KagamiCount { get; set; }
@@ -27,7 +27,7 @@ public class CharaDamageState
     public bool IsHitStop { get; set; }
 
     // ファンブルカウンタ
-    public Counter FumbleCount { get; set; }
+    public DownCounter FumbleCount { get; set; }
 
     public void Initialize()
     {

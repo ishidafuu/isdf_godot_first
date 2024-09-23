@@ -9,11 +9,11 @@ public class CharaMotionState
 {
     public CharaMotionType MotionType { get; private set; }
     public CharaMotionFlag MotionFlag { get; private set; }
-    public Counter MotionCount { get; private set; }
+    public UpCounter MotionCount { get; private set; }
     public CharaMotionNo MotionNo { get; private set; }
-    public int KomaNo { get; set; }
-    public Counter AnimationCount { get; set; }
-    public Counter LoopCount { get; set; }
+    public int KomaNo { get; private set; }
+    public UpCounter KomaFrameCount { get; set; }
+    public DownCounter LoopCount { get; set; }
     public int LoopStartKomaNo { get; set; }
     public bool IsActionPoint { get; set; }
 
@@ -24,7 +24,7 @@ public class CharaMotionState
         MotionCount.Clear();
         MotionNo = default;
         KomaNo = 0;
-        AnimationCount.Clear();
+        KomaFrameCount.Clear();
         LoopCount.Clear();
         LoopStartKomaNo = 0;
         IsActionPoint = false;
@@ -94,32 +94,35 @@ public class CharaMotionState
         }
     }
 
-    public void SetLoopStart(BaseMotionKomaData komaData)
-    {
-        LoopCount.Set(komaData.LoopNum);
-        LoopStartKomaNo = KomaNo;
-    }
-
-    public void SetLoopEnd(BaseMotionKomaData komaData)
-    {
-        LoopStartKomaNo = KomaNo;
-    }
-
+    /// <summary>
+    /// コマスタート
+    /// </summary>
     public void StartKoma(BaseMotionKomaData komaData)
     {
-        AnimationCount.Clear();
+        KomaFrameCount.Clear();
         IsActionPoint = komaData.IsActionPoint;
+
+        switch (komaData.LoopSt)
+        {
+            case enBMLoopSt.St:
+                LoopCount.Set(komaData.LoopNum);
+                LoopStartKomaNo = KomaNo;
+                break;
+            case enBMLoopSt.Ed:
+                LoopStartKomaNo = KomaNo;
+                break;
+            default:
+                break;
+        }
     }
 
-    public void BackToLoopStartFrame()
+    public void IncKomaNo()
+    {
+        KomaNo += 1;
+    }
+
+    public void BackToLoopStartKomaNo()
     {
         KomaNo = LoopStartKomaNo;
     }
-
-    public void StartLoop(int loopCount)
-    {
-        LoopCount.Set(loopCount);
-        LoopStartKomaNo = KomaNo;
-    }
-
 }

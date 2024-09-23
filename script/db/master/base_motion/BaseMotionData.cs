@@ -5,7 +5,7 @@ namespace db;
 
 public class BaseMotionData
 {
-    public int KomaCount { get; private set; }
+    public int KomaCount => BaseMotionKomaDataList.Count;
     private IReadOnlyList<BaseMotionKomaData> BaseMotionKomaDataList { get; set; }
 
     public BaseMotionData()

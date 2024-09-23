@@ -6,7 +6,7 @@
 public class CharaViewState
 {
     // 息継ぎカウンタ
-    public Counter BreathCount { get; set; }
+    public UpCounter BreathCount { get; set; }
 
     // 長持ちセリフ用
     public int LongKeepCount { get; set; }
@@ -15,7 +15,7 @@ public class CharaViewState
     public int PassWaitCount { get; set; }
 
     // ターゲット
-    public Counter TargetCount { get; set; }
+    public UpCounter TargetCount { get; set; }
 
     public void Initialize()
     {
