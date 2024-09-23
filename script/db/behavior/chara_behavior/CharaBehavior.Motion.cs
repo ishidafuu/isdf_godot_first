@@ -189,13 +189,7 @@ public partial class CharaBehavior
         }
 
         // コマスタート処理
-        StartKoma();
-        PlayBaseMotionKomaSe();
-
-        if (CurrentBaseMotionKoma.IsActionPoint)
-        {
-            InvokeActionPoint();
-        }
+        StartKoma(false);
     }
 
     private CharaMotionType ShiftMotionType(CharaMotionType motionType)
@@ -702,19 +696,28 @@ public partial class CharaBehavior
     /// <summary>
     /// コマスタート
     /// </summary>
-    private void StartKoma()
+    private void StartKoma(bool isInLoop)
     {
         var komaData = CurrentBaseMotionKoma;
         MyState.Motion.StartKoma(komaData);
+        if (CurrentBaseMotionKoma.IsActionPoint)
+        {
+            InvokeActionPoint();
+        }
+
+        if (isInLoop == false || komaData.SeLoopF)
+        {
+            PlayBaseMotionKomaSe();
+        }
     }
-    
+
     /// <summary>
     /// 次のコマに進む
     /// </summary>
     private void GotoNextKoma()
     {
         MyState.Motion.IncKomaNo();
-        StartKoma();
+        StartKoma(false);
     }
 
     /// <summary>
@@ -723,7 +726,7 @@ public partial class CharaBehavior
     private void GotoLoopStartKoma()
     {
         MyState.Motion.BackToLoopStartKomaNo();
-        StartKoma();
+        StartKoma(true);
     }
 }
 

@@ -61,17 +61,17 @@ public partial class CharaBehavior
     /// 現在のモーションのコマデータ
     /// </summary>
     /// <returns></returns>
-    private BaseMotionKomaData CurrentBaseMotionKoma => CurrentBaseMotionData.Get(MyState.Motion.KomaNo);
+    private BaseMotionKomaData CurrentBaseMotionKoma => CurrentBaseMotionData.Get(MyState.Motion.KomaNo.Value);
 
     /// <summary>
     /// 現在のモーションのコマデータ
     /// </summary>
     /// <returns></returns>
-    private BaseMotionKomaData NextBaseMotionKoma => CurrentBaseMotionData.Get(MyState.Motion.KomaNo);
+    private BaseMotionKomaData NextBaseMotionKoma => CurrentBaseMotionData.Get(MyState.Motion.KomaNo.Value);
 
     /// <summary>
     /// 最終コマか
     /// </summary>
-    private bool IsLastKoma => MyState.Motion.KomaNo == CurrentBaseMotionData.KomaCount - 1;
+    private bool IsLastKoma => MyState.Motion.KomaNo.Value == CurrentBaseMotionData.KomaCount - 1;
 
 }

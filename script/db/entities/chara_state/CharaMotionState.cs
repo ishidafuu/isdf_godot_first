@@ -11,7 +11,7 @@ public class CharaMotionState
     public CharaMotionFlag MotionFlag { get; private set; }
     public UpCounter MotionCount { get; private set; }
     public CharaMotionNo MotionNo { get; private set; }
-    public int KomaNo { get; private set; }
+    public UpCounter KomaNo { get; private set; }
     public UpCounter KomaFrameCount { get; set; }
     public DownCounter LoopCount { get; set; }
     public int LoopStartKomaNo { get; set; }
@@ -118,11 +118,12 @@ public class CharaMotionState
 
     public void IncKomaNo()
     {
-        KomaNo += 1;
+        KomaNo.Add();
+        ;
     }
 
     public void BackToLoopStartKomaNo()
     {
-        KomaNo = LoopStartKomaNo;
+        KomaNo.Set(LoopStartKomaNo);
     }
 }
