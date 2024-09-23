@@ -3,7 +3,7 @@
 /// <summary>
 /// オート動作
 /// </summary>
-public enum AutoTypes
+public enum AutoType
 {
     Free,
     Alleyoop,

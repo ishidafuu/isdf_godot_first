@@ -5,7 +5,7 @@
 /// </summary>
 public class CharaAutoState
 {
-    public AutoTypes AutoTypes { get; set; }
+    public AutoType AutoType { get; set; }
     public DirectionXType DirectionX { get; set; }
     public DirectionZType DirectionZ { get; set; }
 
@@ -19,7 +19,7 @@ public class CharaAutoState
 
     public void Initialize()
     {
-        AutoTypes = default;
+        AutoType = default;
         DirectionX = default;
         DirectionZ = default;
         IsDash = false;

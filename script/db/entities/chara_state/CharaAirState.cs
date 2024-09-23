@@ -41,6 +41,11 @@ public class CharaAirState
     // 着地計算済み
     public bool IsLandSet { get; set; }
 
+    // 垂直ジャンプ
+    public bool IsVerticalJump { get; set; }
+    // ロングジャンプ
+    public bool IsLongJump { get; set; }
+
     public void Initialize()
     {
         AirCount.Clear();
@@ -55,6 +60,8 @@ public class CharaAirState
         LandRest = 0;
         NowGravity = 0;
         IsLandSet = false;
+        IsVerticalJump = false;
+        IsLongJump = false;
     }
 
     public void Progress(bool isProgressShootAirCount)

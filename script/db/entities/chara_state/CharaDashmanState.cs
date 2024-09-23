@@ -6,8 +6,8 @@
 /// </summary>
 public class CharaDashmanState
 {
-    // ダッシュマン
-    public bool IsDashman { get; set; }
+    // ダッシュマン(操作ダッシュマンもあるので、ここでは呼ばれたダッシュマンフラグ)
+    public bool IsCalledDashman { get; set; }
 
     // ダッシュマン番号
     public int DashmanNo { get; set; }
@@ -20,7 +20,7 @@ public class CharaDashmanState
 
     public void Initialize()
     {
-        IsDashman = false;
+        IsCalledDashman = false;
         DashmanNo = 0;
         TargetZ = 0;
         EnabledPassCount.Clear();

@@ -3,45 +3,106 @@
 public partial class CharaBehavior
 {
     /// <summary>
-    /// レベル→ランク変換
+    /// SettingMaster重力
     /// </summary>
-    private int GetLevelRank(RankLevelType levelType)
+    private int GetSettingGravity(SettingGravityType value)
     {
-        return MasterManager.Instance.RankMaster.GetLevel(levelType, MyState.Level.Level);
+        return MasterManager.Instance.SettingMaster.GetGravity(value);
     }
 
     /// <summary>
-    /// スピード→ランク変換
+    /// SettingMasterダメージ
     /// </summary>
-    private int GetSpeedRank(RankSpeedType speedType)
+    private int GetSettingDamage(SettingDamageType value)
     {
-        return MasterManager.Instance.RankMaster.GetSpeed(speedType, MyState.Level.Speed);
+        return MasterManager.Instance.SettingMaster.GetDamage(value);
     }
 
     /// <summary>
-    /// HP→ランク変換
+    /// SettingMasterジャンプ
     /// </summary>
-    private int GetHpRank(RankHpType hpType)
+    private int GetSettingJump(SettingJumpType value)
     {
-        var hpRateRank = MasterManager.Instance.RankMaster.GetHpRateRank(MyState.Live.Hp, MyState.Live.MaxHp);
-        return MasterManager.Instance.RankMaster.GetHp(hpType, hpRateRank);
+        return MasterManager.Instance.SettingMaster.GetJump(value);
     }
 
     /// <summary>
-    /// てく比→ランク変換
+    /// SettingMasterコート
     /// </summary>
-    private int GetTechRank(RankTechType techType, int targetTech)
+    private int GetSettingCourt(SetingCourtType value)
     {
-        var techRate = MasterManager.Instance.RankMaster.GetTechRateRank(MyState.Level.Tech, targetTech);
-        return MasterManager.Instance.RankMaster.GetTech(techType, techRate);
+        return MasterManager.Instance.SettingMaster.GetCourt(value);
     }
 
     /// <summary>
-    /// ぱわー比→ランク変換
+    /// SettingMasterボール
     /// </summary>
-    private int GetPowerRank(RankPowerType powerType, int targetPower)
+    private int GetSettingBall(SettingBallType value)
     {
-        var powerRate = MasterManager.Instance.RankMaster.GetPowerRateRank(MyState.Level.Power, targetPower);
-        return MasterManager.Instance.RankMaster.GetPower(powerType, powerRate);
+        return MasterManager.Instance.SettingMaster.GetBall(value);
+    }
+
+    /// <summary>
+    /// SettingMaster壁
+    /// </summary>
+    private int GetSettingWall(SettingWallType value)
+    {
+        return MasterManager.Instance.SettingMaster.GetWall(value);
+    }
+
+    /// <summary>
+    /// SettingMaster内野
+    /// </summary>
+    private int GetSettingInfield(SettingInfieldType value)
+    {
+        return MasterManager.Instance.SettingMaster.GetInfield(value);
+    }
+
+    /// <summary>
+    /// SettingMasterキャッチ
+    /// </summary>
+    private int GetSettingCatch(SettingCatchType value)
+    {
+        return MasterManager.Instance.SettingMaster.GetCatch(value);
+    }
+
+    /// <summary>
+    /// SettingMasterシュート
+    /// </summary>
+    private int GetSettingShoot(SettingShotType value)
+    {
+        return MasterManager.Instance.SettingMaster.GetShoot(value);
+    }
+
+    /// <summary>
+    /// SettingMasterパス
+    /// </summary>
+    private int GetSettingPass(SettingPassType value)
+    {
+        return MasterManager.Instance.SettingMaster.GetPass(value);
+    }
+
+    /// <summary>
+    /// SettingMasterフォーメーション
+    /// </summary>
+    private int GetSettingFormation(SettingFormationType value)
+    {
+        return MasterManager.Instance.SettingMaster.GetFormation(value);
+    }
+
+    /// <summary>
+    /// SettingMasterCOM思考
+    /// </summary>
+    private int GetSettingComPlan(SettingComType value)
+    {
+        return MasterManager.Instance.SettingMaster.GetCom(value);
+    }
+
+    /// <summary>
+    /// SettingMaster入力
+    /// </summary>
+    private int GetSettingInput(SettingInputType value)
+    {
+        return MasterManager.Instance.SettingMaster.GetInput(value);
     }
 }

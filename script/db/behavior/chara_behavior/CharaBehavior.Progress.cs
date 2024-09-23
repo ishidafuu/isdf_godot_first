@@ -290,8 +290,8 @@ public partial class CharaBehavior
                              && BallState.ThrowerSideNo != MyState.Index.SideIndex;
 
         var catchFrame = enemyShootBall
-            ? MasterManager.Instance.SettingMaster.GetCatch(SettingCatchType.CaMotionFrm)
-            : MasterManager.Instance.SettingMaster.GetCatch(SettingCatchType.CatchWait); // パスキャッチ時間（8）に変更
+            ? GetSettingCatch(SettingCatchType.CaMotionFrm)
+            : GetSettingCatch(SettingCatchType.CatchWait); // パスキャッチ時間（8）に変更
 
         var isOverCatchFrame = nowCatchCount + 1 > catchFrame;
 

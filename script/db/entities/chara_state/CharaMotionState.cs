@@ -23,7 +23,7 @@ public class CharaMotionState
         MotionFlag = default;
         MotionCount.Clear();
         MotionNo = default;
-        KomaNo = 0;
+        KomaNo.Clear();
         KomaFrameCount.Clear();
         LoopCount.Clear();
         LoopStartKomaNo = 0;
@@ -106,10 +106,10 @@ public class CharaMotionState
         {
             case enBMLoopSt.St:
                 LoopCount.Set(komaData.LoopNum);
-                LoopStartKomaNo = KomaNo;
+                LoopStartKomaNo = KomaNo.Value;
                 break;
             case enBMLoopSt.Ed:
-                LoopStartKomaNo = KomaNo;
+                LoopStartKomaNo = KomaNo.Value;
                 break;
             default:
                 break;
@@ -119,7 +119,6 @@ public class CharaMotionState
     public void IncKomaNo()
     {
         KomaNo.Add();
-        ;
     }
 
     public void BackToLoopStartKomaNo()
