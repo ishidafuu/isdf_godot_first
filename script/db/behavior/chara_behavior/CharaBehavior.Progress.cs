@@ -298,10 +298,8 @@ public partial class CharaBehavior
         return isOverCatchFrame;
     }
 
-    //現モーション終了
-
     /// <summary>
-    /// アニメーションを進める
+    /// コマを進める
     /// </summary>
     private void ProgressFrame(bool isForce)
     {
@@ -342,6 +340,9 @@ public partial class CharaBehavior
         }
     }
 
+    /// <summary>
+    /// モーション終了
+    /// </summary>
     private void MotionEnd()
     {
         switch (MyState.Motion.MotionType)
@@ -377,180 +378,44 @@ public partial class CharaBehavior
                     SetMotionType(CharaMotionType.St);
                 }
                 break;
-
-            case CharaMotionType.St:
-                break;
-            case CharaMotionType.Breath:
-                break;
-            case CharaMotionType.Wk:
-                break;
-            case CharaMotionType.Ds:
-                break;
-
-            case CharaMotionType.CJCr:
-                break;
-            case CharaMotionType.JUp:
-                break;
-            case CharaMotionType.JDn:
-                break;
-            case CharaMotionType.ARv:
-                break;
-            case CharaMotionType.Cr:
-                break;
-            case CharaMotionType.FlF:
-                break;
-            case CharaMotionType.FlB:
-                break;
-            case CharaMotionType.PHF:
-                break;
-            case CharaMotionType.PHB:
-                break;
-
-            case CharaMotionType.DnF:
-                break;
-            case CharaMotionType.DnB:
-                break;
-            case CharaMotionType.DRv:
-                break;
+            // キャッチモーション
             case CharaMotionType.CM:
+                SetMotionType(MyState.Motion.HasFlag(CharaMotionFlag.Ds)
+                    ? CharaMotionType.Ds
+                    : CharaMotionType.St);
                 break;
-            case CharaMotionType.JCM:
-                break;
-            case CharaMotionType.FB:
-                break;
-            case CharaMotionType.JFB:
-                break;
-            case CharaMotionType.PW:
-                break;
-            case CharaMotionType.PWWk:
-                break;
-            case CharaMotionType.PWDs:
-                break;
-            case CharaMotionType.Sl:
-                break;
+            // シュート
             case CharaMotionType.Sh:
+                if (MyState.Shoot.ShootEndWaitCount.Sub())
+                {
+                    SetMotionType(CharaMotionType.St);
+                }
                 break;
-            case CharaMotionType.RtSh:
-                break;
+            // パス
             case CharaMotionType.Pa:
+                // ボールダッシュマン
+                if (CanContinuationDash
+                    && MyTeamState.MainState.DashmanNoBm == MyState.Order.OrderIndex) //予約状態でもある
+                {
+                    SetMotionType(CharaMotionType.Ds);
+                }
+                else
+                {
+                    SetMotionType(CharaMotionType.St);
+                }
                 break;
-            case CharaMotionType.JSh:
-                break;
-            case CharaMotionType.RtJSh:
-                break;
-            case CharaMotionType.JPa:
-                break;
+            // キャッチ
             case CharaMotionType.Ca:
+                SetMotionType(MyState.Motion.HasFlag(CharaMotionFlag.Ds)
+                    ? CharaMotionType.Ds
+                    : CharaMotionType.St);
                 break;
-            case CharaMotionType.JCa:
-                break;
-            case CharaMotionType.Dg:
-                break;
-            case CharaMotionType.JDg:
-                break;
-
-            case CharaMotionType.DRAW:
-                break;
-            case CharaMotionType.WIN:
-                break;
-            case CharaMotionType.LOSE:
-                break;
-            case CharaMotionType.OvL:
-                break;
-            case CharaMotionType.USA:
-                break;
-            case CharaMotionType.USA2:
-                break;
-            case CharaMotionType.IKI:
-                break;
-            case CharaMotionType.LOOK:
-                break;
-            case CharaMotionType.LOOK2:
-                break;
-            case CharaMotionType.FALL:
-                break;
-            case CharaMotionType.AGE2:
-                break;
-            case CharaMotionType.AGE3:
-                break;
-            case CharaMotionType.AGE4:
-                break;
-            case CharaMotionType.AGE5:
-                break;
-            case CharaMotionType.DO1:
-                break;
-            case CharaMotionType.DO2:
-                break;
-            case CharaMotionType.ANG:
-                break;
+            // その他
             default:
-                throw new ArgumentOutOfRangeException();
+                SetMotionType(MyState.Motion.HasFlag(CharaMotionFlag.Ar)
+                    ? CharaMotionType.JDn
+                    : CharaMotionType.St);
+                break;
         }
-        
-        ここから
-
-        //
-        //     //シュート（ジャンプシュートはどのみち落下まで何も出来ない）
-        //     case dbmtSh:
-        //         //終了カウンタ回す
-        //         if (lib_num::AprTo0(&st_.pstMyCh_->ShEdWait_c))
-        //         {
-        //             pCommon_->SetMtypeReset(dbmtSt);
-        //         }
-        //         break;
-        //
-        //     //パス
-        //     case dbmtPa:
-        //     {
-        //         //ボールダッシュマン
-        //         if (pCommon_->IsBMDashOK()
-        //             && (st_.pmgMyTm_->st_.pstMyTm_->DashmanNoBM == st_.posNo_)) //予約状態でもある
-        //         {
-        //             pCommon_->SetMtype(dbmtDs);
-        //         }
-        //         else
-        //         {
-        //             pCommon_->SetMtypeReset(dbmtSt);
-        //         }
-        //     }
-        //         break;
-        //
-        //     //キャッチ
-        //     case dbmtCa:
-        //         if (st_.pstMyCh_->Motion.IsMFlags(dbmfDs))
-        //         {
-        //             pCommon_->SetMtype(dbmtDs);
-        //         }
-        //         else
-        //         {
-        //             pCommon_->SetMtype(dbmtSt);
-        //         }
-        //
-        //         break;
-        //
-        //     //キャッチモーション
-        //     case dbmtCM:
-        //         if (st_.pstMyCh_->Motion.IsMFlags(dbmfDs))
-        //         {
-        //             pCommon_->SetMtype(dbmtDs);
-        //         }
-        //         else
-        //         {
-        //             pCommon_->SetMtype(dbmtSt);
-        //         }
-        //         break;
-        //
-        //     //その他
-        //     default:
-        //         if (st_.pstMyCh_->Motion.IsMFlags(dbmfAr))
-        //         {
-        //             pCommon_->SetMtype(dbmtJDn);
-        //         }
-        //         else
-        //         {
-        //             pCommon_->SetMtypeReset(dbmtSt);
-        //         }
-        //         break;
-        // }
     }
 }

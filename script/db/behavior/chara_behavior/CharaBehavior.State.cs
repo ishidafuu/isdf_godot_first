@@ -98,8 +98,8 @@ public partial class CharaBehavior
             }
 
             //メンバー操作＆下降開始まで＆（敵方向ダッシュＯＲコート前方ジャンプ）でダッシュマン扱い
-            var isForwardJump = MyState.Motion.MotionFlag.HasFlag(CharaMotionFlag.Ds)
-                                && MyState.Motion.MotionFlag.HasFlag(CharaMotionFlag.Ar)
+            var isForwardJump = MyState.Motion.HasFlag(CharaMotionFlag.Ds)
+                                && MyState.Motion.HasFlag(CharaMotionFlag.Ar)
                                 && MyState.Motion.MotionType != CharaMotionType.Sl
                                 && MyState.Coordinate.VelocityY > Defines.DIVELIMDY
                                 && LeftCourtX > Defines.DBCRT_CLXL;
@@ -180,13 +180,30 @@ public partial class CharaBehavior
         get
         {
             if (IsSelfControl == false
-                || MyState.Motion.MotionFlag.HasFlag(CharaMotionFlag.Ds) == false)
+                || MyState.Motion.HasFlag(CharaMotionFlag.Ds) == false)
             {
                 return false;
             }
 
             return MyState.Coordinate.DashDirection == DirectionXType.Left && MyState.Pad.Pad.KeyLeft.IsPressed
                    || MyState.Coordinate.DashDirection == DirectionXType.Right && MyState.Pad.Pad.KeyRight.IsPressed;
+        }
+    }
+
+    /// <summary>
+    /// 敵コート方向継続ダッシュ可能状態
+    /// </summary>
+    /// <returns></returns>
+    private bool CanContinuationDash
+    {
+        get
+        {
+            var isForwardDash = (MySideIndex == 0 && MyState.Coordinate.DashDirection == DirectionXType.Right)
+                                || (MySideIndex == 1 && MyState.Coordinate.DashDirection == DirectionXType.Left);
+
+            return MyState.Motion.HasFlag(CharaMotionFlag.Ds)
+                   && MyState.Motion.HasFlag(CharaMotionFlag.Ar) == false
+                   && isForwardDash;
         }
     }
 }

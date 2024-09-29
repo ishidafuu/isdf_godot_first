@@ -704,7 +704,7 @@ public partial class CharaBehavior
         PlaySe(SeType.Jump);
 
         // Y初速
-        var velocityY = MyState.Motion.MotionFlag.HasFlag(CharaMotionFlag.Ds)
+        var velocityY = MyState.Motion.HasFlag(CharaMotionFlag.Ds)
             ? GetSettingJump(SettingJumpType.DashJump_vY0)
             : GetSettingJump(SettingJumpType.Jump_vY0);
 
@@ -722,7 +722,7 @@ public partial class CharaBehavior
             MyState.Coordinate.VelocityX = 0;
             MyState.Coordinate.VelocityZ = 0;
         }
-        else if (MyState.Motion.MotionFlag.HasFlag(CharaMotionFlag.Ds))
+        else if (MyState.Motion.HasFlag(CharaMotionFlag.Ds))
         {
             var xSign = (int)MyState.Coordinate.DashDirection;
             var isLongJump = false;
