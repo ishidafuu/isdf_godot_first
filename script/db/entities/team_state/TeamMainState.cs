@@ -17,7 +17,7 @@ public class TeamMainState
     public int Cvr2No { get; set; } // カバーマンのカバーマン
     public int GetNo { get; set; } // ボール拾いマン
     public int NoInputC { get; set; } // 操作権自動切り替え用
-    public bool InputCancelF { get; set; } // 操作権変わったときなど同フレームの入力を反映しない
+    public bool IsCancelActionInput { get; set; } // 操作権変わったときなど同フレームの入力を反映しない
 
     public int DrwHsNo { get; set; } // 表示必殺シュート番号
     public int DrwHsC { get; set; } // 表示必殺シュートカウンタ　これらはチームで管理した方がよさそう
@@ -90,7 +90,7 @@ public class TeamMainState
         Cvr2No = 0;
         GetNo = 0;
         NoInputC = 0;
-        InputCancelF = false;
+        IsCancelActionInput = false;
         DrwHsNo = 0;
         DrwHsC = 0;
         DrwPosX = 0;

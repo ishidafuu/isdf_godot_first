@@ -70,6 +70,7 @@ public partial class BallState
     public int RbwTNo { get; set; }
     public int ShotTargetOrder { get; set; }
     public int ShotTargetSide { get; set; }
+    // TIMER周りはreferee
     public int TimerAutoReturn { get; set; }
     public int TimerCrtPos { get; set; }
     public int TimerCrtSide { get; set; }

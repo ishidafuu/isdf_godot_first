@@ -156,7 +156,7 @@ public partial class CharaBehavior
         // ドロー、勝ち、負け
         if (motionType is CharaMotionType.DRAW or CharaMotionType.WIN or CharaMotionType.LOSE)
         {
-            MyState.Coordinate.SetGameOverCoordinate(MySideIndex, MyState.Order.IsInfield());
+            MyState.Coordinate.SetGameOverCoordinate(MySideIndex, MyState.Order.IsInfield);
         }
 
         // 接地した

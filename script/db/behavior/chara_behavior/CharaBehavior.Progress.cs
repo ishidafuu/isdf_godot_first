@@ -56,11 +56,17 @@ public partial class CharaBehavior
         }
 
         var isProgressAnimation = true;
-
+        
+        var isSetKagami = IsKagami && MyState.Auto.AutoType == AutoType.Free;
+        
         switch (MyState.Motion.MotionType)
         {
             case CharaMotionType.St:
-                if (IsPassWait)
+                if (isSetKagami)
+                {
+                    SetMotionType(CharaMotionType.KG);
+                }
+                else if (IsPassWait)
                 {
                     SetMotionType(CharaMotionType.PW);
                 }
@@ -77,13 +83,21 @@ public partial class CharaBehavior
             case CharaMotionType.Breath:
                 break;
             case CharaMotionType.Wk:
-                if (IsPassWait)
+                if (isSetKagami)
+                {
+                    SetMotionType(CharaMotionType.KG);
+                }
+                else if (IsPassWait)
                 {
                     SetMotionType(CharaMotionType.PWWk);
                 }
                 break;
             case CharaMotionType.Ds:
-                if (IsPassWait)
+                if (isSetKagami)
+                {
+                    SetMotionType(CharaMotionType.KG);
+                }
+                else if (IsPassWait)
                 {
                     SetMotionType(CharaMotionType.PWDs);
                 }

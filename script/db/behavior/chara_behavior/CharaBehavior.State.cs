@@ -132,7 +132,7 @@ public partial class CharaBehavior
         get
         {
             // T0の外野とT1の内野は右に居るので反転
-            var isLeftCrt = MyState.Order.IsInfield() ^ (MySideIndex != 0);
+            var isLeftCrt = MyState.Order.IsInfield ^ (MySideIndex != 0);
             return isLeftCrt
                 ? MyState.Coordinate.X
                 : Defines.DBCRT_W - MyState.Coordinate.X;

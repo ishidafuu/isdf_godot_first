@@ -32,4 +32,12 @@ public class CharaBehaviorManager
             chara.UpdateProgress();
         }
     }
+    
+    public void UpdateActionInput()
+    {
+        foreach (var chara in _allCharas)
+        {
+            chara.UpdateActionInput();
+        }
+    }
 }
