@@ -383,7 +383,7 @@ public partial class CharaBehavior
     }
 
     //ボール持った処理
-    private void HoldBall(bool NoSE_f, bool LookBall_f) //FALSE,FALSE
+    private void HoldBall(bool isNoSE, bool isLookBall) //FALSE,FALSE
     {
         // 保持状況をチームに渡す
         CallTeamHoldBall();
@@ -395,69 +395,39 @@ public partial class CharaBehavior
         MyState.Com.IsComTossPassGet = false;
         MyState.Pass.MirrorShotLimitCount.Set(Defines.MIRLIM);
 
-        const int activeCount = 1;
-        const int inactiveCount = 0;
+        HoldBallSetMirrorState();
 
-        if (MyState.Pad.IsValid
-            && BallState.MotionType == BallMotionType.Pass
-            && BallState.ThrowerSideNo == MySideIndex)
+        if (isLookBall)
         {
-            MyState.Pass.MirrorShotCount.Set(activeCount);
+            ResetAutoDirection();
 
-            var mirrorPassCount = MyState.Pad.Pad.ButtonB.IsPressed
-                ? activeCount
-                : inactiveCount;
-            MyState.Pass.MirrorPassCount.Set(mirrorPassCount);
-        }
-        else
-        {
-            MyState.Pass.MirrorPassCount.Set(inactiveCount);
-
-            // キャッチボタン不要で取れるボール
-            var isActiveMirrorShot = BallState.MotionType is BallMotionType.Free or BallMotionType.Bound or BallMotionType.Referee
-                                     && MyState.Damage.FumbleCount.Value == 0;
-
-            var mirrorShotCount = isActiveMirrorShot
-                ? activeCount
-                : inactiveCount;
-            MyState.Pass.MirrorShotCount.Set(mirrorShotCount);
-        }
-
-        if (LookBall_f)
-        {
-            AutoMukiInit();
-            if (pmgSG_->stBa_.Zahyou.dX > 0)
+            MyState.Auto.DirectionX = BallState.Coordinate.VelocityX switch
             {
-                st_.pstMyCh_->Auto.AMuki = maL;
-            }
-            else if (pmgSG_->stBa_.Zahyou.dX < 0)
-            {
-                st_.pstMyCh_->Auto.AMuki = maR;
-            }
+                > 0 => DirectionXType.Right,
+                < 0 => DirectionXType.Left,
+                _ => MyState.Auto.DirectionX
+            };
 
-            if (abs(pmgSG_->stBa_.Zahyou.dX) < abs(pmgSG_->stBa_.Zahyou.dZ))
+            if (Math.Abs(BallState.Coordinate.VelocityZ) > Math.Abs(BallState.Coordinate.VelocityX))
             {
-                if (pmgSG_->stBa_.Zahyou.dZ > 0)
+                MyState.Auto.DirectionZ = BallState.Coordinate.VelocityZ switch
                 {
-                    st_.pstMyCh_->Auto.AMukiZ = mzaF;
-                }
-                else if (pmgSG_->stBa_.Zahyou.dZ < 0)
-                {
-                    st_.pstMyCh_->Auto.AMukiZ = mzaB;
-                }
+                    > 0 => DirectionZType.Backward,
+                    < 0 => DirectionZType.Forward,
+                    _ => MyState.Auto.DirectionZ
+                };
             }
             else
             {
-                st_.pstMyCh_->Auto.AMukiZ = mzaN;
+                MyState.Auto.DirectionZ = DirectionZType.Neutral;
             }
-            //chCommon_.
+
             MukiSetAuto();
         }
 
-        if (NoSE_f == FALSE)
+        if (isNoSE == false)
         {
-            //chCommon_.
-            SESet(seTake);
+            PlaySe(SeType.Take);
         }
 
         //自分を操作キャラに
@@ -553,6 +523,187 @@ public partial class CharaBehavior
             }
         }
 #endif // #ifdef __K_DEBUG_SHIAI__
+    }
+
+    private void HoldBallSetMirrorState()
+    {
+        const int activeCount = 1;
+        const int inactiveCount = 0;
+
+        if (MyState.Pad.IsValid
+            && BallState.MotionType == BallMotionType.Pass
+            && BallState.ThrowerSideNo == MySideIndex)
+        {
+            MyState.Pass.MirrorShotCount.Set(activeCount);
+
+            var mirrorPassCount = MyState.Pad.Pad.ButtonB.IsPressed
+                ? activeCount
+                : inactiveCount;
+            MyState.Pass.MirrorPassCount.Set(mirrorPassCount);
+        }
+        else
+        {
+            MyState.Pass.MirrorPassCount.Set(inactiveCount);
+
+            // キャッチボタン不要で取れるボール
+            var isActiveMirrorShot = BallState.MotionType is BallMotionType.Free or BallMotionType.Bound or BallMotionType.Referee
+                                     && MyState.Damage.FumbleCount.Value == 0;
+
+            var mirrorShotCount = isActiveMirrorShot
+                ? activeCount
+                : inactiveCount;
+            MyState.Pass.MirrorShotCount.Set(mirrorShotCount);
+        }
+    }
+
+    //向き変え(強制的にAUTOMUKIに向かせる)
+    private bool MukiSetAuto()
+    {
+        var lastDirectionX = MyState.Coordinate.DirectionX;
+        var lastDirectionZ = MyState.Coordinate.DirectionZ;
+
+        MyState.Coordinate.DirectionX = MyState.Auto.DirectionX switch
+        {
+            DirectionXType.Left => DirectionXType.Left,
+            DirectionXType.Right => DirectionXType.Right,
+            _ => MyState.Coordinate.DirectionX
+        };
+
+        MyState.Coordinate.DirectionZ = MyState.Auto.DirectionZ switch
+        {
+            DirectionZType.Forward => DirectionZType.Forward,
+            DirectionZType.Backward => DirectionZType.Backward,
+            DirectionZType.Neutral => DirectionZType.Neutral,
+            _ => MyState.Coordinate.DirectionZ
+        };
+
+        // 向き変えありかどうか
+        var isChanged = lastDirectionX != MyState.Coordinate.DirectionX
+                        || lastDirectionZ != MyState.Coordinate.DirectionZ;
+
+        if (isChanged)
+        {
+            //タゲも変える
+            SetMukiAgl(MyState.Coordinate.DirectionX == DirectionXType.Left,
+                MyState.Coordinate.DirectionX == DirectionXType.Right,
+                MyState.Coordinate.DirectionZ == DirectionZType.Backward,
+                MyState.Coordinate.DirectionZ == DirectionZType.Forward);
+        }
+
+        return isChanged;
+    }
+
+    // AUTO向き変え初期化
+    private void ResetAutoDirection()
+    {
+        MyState.Auto.DirectionX = MyState.Coordinate.DirectionX switch
+        {
+            DirectionXType.Left => DirectionXType.Left,
+            DirectionXType.Neutral => DirectionXType.Neutral,
+            DirectionXType.Right => DirectionXType.Right,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        MyState.Auto.DirectionZ = MyState.Coordinate.DirectionZ switch
+        {
+            DirectionZType.Forward => DirectionZType.Forward,
+            DirectionZType.Neutral => DirectionZType.Neutral,
+            DirectionZType.Backward => DirectionZType.Backward,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    //ターゲッティング用向き
+    private void SetMukiAgl(bool isLeft, bool isRight, bool isUp, bool isDown)
+    {
+        switch (MyState.Order.GetOrderType())
+        {
+            case OrderType.Infield:
+                if (isRight)
+                {
+                    if (isUp)
+                    {
+                        MyState.Shoot.Angle12 = 11; //11 0 1 2
+                    }
+                    else if (isDown)
+                    {
+                        MyState.Shoot.Angle12 = 3; //3 4 5 6
+                    }
+                    else
+                    {
+                        MyState.Shoot.Angle12 = 1; //1 2 3 4
+                    }
+                }
+                else if (isLeft)
+                {
+                    if (isUp)
+                    {
+                        MyState.Shoot.Angle12 = 9; //9 10 11 0
+                    }
+                    else if (isDown)
+                    {
+                        MyState.Shoot.Angle12 = 5; //5 6 7 8
+                    }
+                    else
+                    {
+                        MyState.Shoot.Angle12 = 7; //7 8 9 10
+                    }
+                }
+                break;
+            case OrderType.Outfield2:
+                if (isLeft)
+                {
+                    MyState.Shoot.Angle12 = 5; //5678
+                }
+                else if (isRight)
+                {
+                    MyState.Shoot.Angle12 = 3; //3456
+                }
+                break;
+            case OrderType.Outfield3:
+                if (isLeft)
+                {
+                    MyState.Shoot.Angle12 = 9; //9 10 11 0
+                }
+                else if (isRight)
+                {
+                    MyState.Shoot.Angle12 = 11; //11 0 1 2
+                }
+                break;
+            case OrderType.Outfield4:
+                if (MySideIndex == 0)
+                {
+                    if (isUp)
+                    {
+                        MyState.Shoot.Angle12 = 9; //9 10 11 0
+                    }
+                    else if (isDown)
+                    {
+                        MyState.Shoot.Angle12 = 5; //5 6 7 8
+                    }
+                    else
+                    {
+                        MyState.Shoot.Angle12 = 7; //7 8 9 10
+                    }
+                }
+                else
+                {
+                    if (isUp)
+                    {
+                        MyState.Shoot.Angle12 = 11; //11 0 1 2
+                    }
+                    else if (isDown)
+                    {
+                        MyState.Shoot.Angle12 = 3; //3 4 5 6
+                    }
+                    else
+                    {
+                        MyState.Shoot.Angle12 = 1; //1 2 3 4
+                    }
+                }
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
     //自分で操作
@@ -1113,7 +1264,7 @@ public partial class CharaBehavior
 //                         utrn_f = TRUE;
 //                         st_.pstMyCh_->Zahyou.Muki = mR;
 //                         st_.pstMyCh_->Zahyou.MukiZ = mzN;
-//                         st_.pstMyCh_->MukiAgl12 = 1; //1 2 3 4
+//                         MyState.Shoot.Angle12 = 1; //1 2 3 4
 //                         SetMukiAgl(FALSE, TRUE, FALSE, FALSE);
 //                     }
 //                     else if ((st_.pstMyCh_->Zahyou.Muki == mR)
@@ -1123,7 +1274,7 @@ public partial class CharaBehavior
 //                         utrn_f = TRUE;
 //                         st_.pstMyCh_->Zahyou.Muki = mL;
 //                         st_.pstMyCh_->Zahyou.MukiZ = mzN;
-//                         st_.pstMyCh_->MukiAgl12 = 7; //7 8 9 10
+//                         MyState.Shoot.Angle12 = 7; //7 8 9 10
 //                         SetMukiAgl(TRUE, FALSE, FALSE, FALSE);
 //                     }
 //
