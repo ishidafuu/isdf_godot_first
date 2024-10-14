@@ -22,4 +22,6 @@ public class CharaPadState
         IsManualControl = false;
         PadNo = 0;
     }
+
+    public bool IsValid => Pad != null;
 }

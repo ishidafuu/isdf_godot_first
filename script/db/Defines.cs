@@ -123,6 +123,7 @@ public static class Defines
     public const int DBETCOBJ = 8; //試合中の小物オブジェの数
     public const int PLAYERNUM = 4; // 他のプレイヤー数
     public const int RANKERNUM = 1000; // ランキング表示名
+    public const int MIRLIM = 10; //ミラーシュート受付時間
 
     //座標
     public const int GAME_W = 448;

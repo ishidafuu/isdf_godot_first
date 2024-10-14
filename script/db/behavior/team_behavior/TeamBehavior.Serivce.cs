@@ -7,12 +7,20 @@ public partial class TeamBehavior
     {
         // st_.pmgMyTm_->SetAngel(st_.posNo_);
     }
-    
+
     public void CallCheckChangePos()
     {
-  
     }
-    
+
+    public void CallHoldBall(int orderIndex)
+    {
+        // //チーム
+        // st_.pmgMyTm_->st_.pstMyTm_->getJpball_f = (pmgSG_->stBa_.JumpBall == jbJpball);
+        // st_.pmgMyTm_->st_.pstMyTm_->COMCall.CallingPa_f[st_.posNo_] = FALSE; //パス要求もクリア
+        // //ボール触った
+        // st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].BallTouched_f = TRUE;
+    }
+
     //
     //     //内外野入れ替えが発生する人数
     // BOOL TMgTeam::IsIOChange()

@@ -37,4 +37,9 @@ public partial class CharaBehavior
        MyTeamBehavior.CallCheckChangePos();
     }
     
+    private void CallTeamHoldBall()
+    {
+        TeamBehaviorManager.Instance.Get(MySideIndex).CallHoldBall(MyState.Order.OrderIndex);
+    }
+
 }

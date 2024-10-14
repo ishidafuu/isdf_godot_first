@@ -370,7 +370,8 @@ public partial class CharaBehavior
 
         // 停止、バウンド以外は拾えない
         if (BallState.MotionType != BallMotionType.Free
-            && BallState.MotionType != BallMotionType.Bound)
+            && BallState.MotionType != BallMotionType.Bound
+            && BallState.MotionType != BallMotionType.Referee)
         {
             return false;
         }
@@ -384,53 +385,42 @@ public partial class CharaBehavior
     //ボール持った処理
     private void HoldBall(bool NoSE_f, bool LookBall_f) //FALSE,FALSE
     {
-        //チーム
-        st_.pmgMyTm_->st_.pstMyTm_->getJpball_f = (pmgSG_->stBa_.JumpBall == jbJpball);
-        st_.pmgMyTm_->st_.pstMyTm_->COMCall.CallingPa_f[st_.posNo_] = FALSE; //パス要求もクリア
-        //ボール触った
-        st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].BallTouched_f = TRUE;
+        // 保持状況をチームに渡す
+        CallTeamHoldBall();
 
-        //自分
-        st_.pstMyCh_->Kagami_c = 0; //固まるの回避
-        st_.pstMyCh_->AirAct_f = FALSE; //ここでFALSEにしてokか
-        st_.pstMyCh_->LastLRKey = maN;
-        st_.pstMyCh_->LongKeep_c = 0;
-        st_.pstMyCh_->COMCounter_f = FALSE;
-        st_.pstMyCh_->COMTossPassGet_f = FALSE;
+        MyState.Damage.KagamiCount.Clear();
+        MyState.Air.IsAirAction = false;
+        MyState.Move.LastDirectionXType = DirectionXType.Neutral;
+        MyState.Com.IsCatchCounter = false;
+        MyState.Com.IsComTossPassGet = false;
+        MyState.Pass.MirrorShotLimitCount.Set(Defines.MIRLIM);
 
-        const s32 MIRLIM = 10;
+        const int activeCount = 1;
+        const int inactiveCount = 0;
 
-        //ミラーシュート受付時間
-        st_.pstMyCh_->MirShotLim_c = MIRLIM;
-
-        //ミラーパスシュート
-        if ((MyPad() != NULL)
-            && (pmgSG_->stBa_.Motion == bmPass)
-            && (pmgSG_->stBa_.PichTNo == st_.mysideNo_))
+        if (MyState.Pad.IsValid
+            && BallState.MotionType == BallMotionType.Pass
+            && BallState.ThrowerSideNo == MySideIndex)
         {
-            st_.pstMyCh_->MirPass_c = (MyPad()->IsPass2())
-                ? 1
-                : 0;
+            MyState.Pass.MirrorShotCount.Set(activeCount);
 
-            st_.pstMyCh_->MirShot_c = 1;
+            var mirrorPassCount = MyState.Pad.Pad.ButtonB.IsPressed
+                ? activeCount
+                : inactiveCount;
+            MyState.Pass.MirrorPassCount.Set(mirrorPassCount);
         }
         else
         {
-            //キャッチボタン不要で取れるボール
-            if ((pmgSG_->stBa_.Motion == bmReferee)
-                || (pmgSG_->stBa_.Motion == bmFree)
-                || (pmgSG_->stBa_.Motion == bmBound))
-            {
-                st_.pstMyCh_->MirShot_c = (st_.pstMyCh_->Fmbl_c == 0) //ファンブル直後はオートシュートしない
-                    ? 1
-                    : 0;
-            }
-            else
-            {
-                st_.pstMyCh_->MirShot_c = 0;
-            }
+            MyState.Pass.MirrorPassCount.Set(inactiveCount);
 
-            st_.pstMyCh_->MirPass_c = 0;
+            // キャッチボタン不要で取れるボール
+            var isActiveMirrorShot = BallState.MotionType is BallMotionType.Free or BallMotionType.Bound or BallMotionType.Referee
+                                     && MyState.Damage.FumbleCount.Value == 0;
+
+            var mirrorShotCount = isActiveMirrorShot
+                ? activeCount
+                : inactiveCount;
+            MyState.Pass.MirrorShotCount.Set(mirrorShotCount);
         }
 
         if (LookBall_f)
@@ -1157,5 +1147,4 @@ public partial class CharaBehavior
 //             st_.pstMyCh_->LastMukiZ = lastMukiZ;
 //         }
     }
-
 }
