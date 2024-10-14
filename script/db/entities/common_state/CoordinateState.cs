@@ -16,6 +16,7 @@ public class CoordinateState
     public int VelocityZ { get; set; }
     public DownCounter FrictionCount { get; set; }
     public int Priority { get; set; }
+    public Rect HitBox { get; set; }
 
     public CoordinateState()
     {
@@ -38,6 +39,7 @@ public class CoordinateState
         VelocityZ = 0;
         FrictionCount.Clear();
         Priority = 0;
+        HitBox.Initialize();
     }
 
     /// <summary>
@@ -81,7 +83,7 @@ public class CoordinateState
     {
         return (int)System.Math.Sqrt(System.Math.Pow(X - targetX, 2) + System.Math.Pow(Z - targetZ, 2));
     }
-    
+
     /// <summary>
     /// 速度０
     /// </summary>
@@ -91,7 +93,7 @@ public class CoordinateState
         VelocityY = 0;
         VelocityZ = 0;
     }
-    
+
     /// <summary>
     /// ゲームセット時の座標設定
     /// </summary>

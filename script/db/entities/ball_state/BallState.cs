@@ -56,7 +56,7 @@ public partial class BallState
     public int LandZLine { get; set; }
     public int NGGetPNo { get; set; }
     public int NGGetTNo { get; set; }
-    public int NGGet { get; set; }
+    public bool IsNGGet { get; set; }
     public int NoHit { get; set; }
     public int PaCtPNo { get; set; }
     public int PaCtTNo { get; set; }

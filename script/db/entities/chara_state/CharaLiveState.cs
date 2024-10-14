@@ -16,9 +16,6 @@ public class CharaLiveState
     // 外野天使、HP0でダウンしたタイミングでTRUE
     public bool IsAngel { get; set; }
 
-    // 喰らい判定
-    public Rect HitBox { get; set; }
-
     // 体力
     public int Hp { get; set; }
     
@@ -48,7 +45,6 @@ public class CharaLiveState
         IsAlive = false;
         IsDead = false;
         IsAngel = false;
-        HitBox.Initialize();
         Hp = 0;
         IsMaxHp = false;
         AngelCount = 0;

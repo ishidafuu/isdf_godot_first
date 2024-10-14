@@ -341,91 +341,44 @@ public partial class CharaBehavior
     {
         if (MyState.Motion.HasFlag(CharaMotionFlag.Act) == false
             && IsFree(false)
-            && IsPickUpPos(false))
+            && IsPickUpPos())
         {
             HoldBall(false, false);
         }
     }
 
     //拾える位置関係か
-    private bool IsPickUpPos(bool isCatch)
+    private bool IsPickUpPos()
     {
-        s32 tD = pmgEO_->mgDt_.dtSet_.GetDtBall(setFAtariDepth2);
-
         //ジャンプボール上昇中は捕れない
-        if ((pmgSG_->stBa_.JumpBall == jbJpball) && (pmgSG_->stBa_.Zahyou.dY > 0)) return FALSE;
-
         //審判投げ入れボールも相手外野は捕れない
         //内野も取れないように
-        if ((pmgSG_->stBa_.JumpBall == jbSide0) && (st_.mysideNo_ == 1)) return FALSE;
-        if ((pmgSG_->stBa_.JumpBall == jbSide1) && (st_.mysideNo_ == 0)) return FALSE;
-
-        if (pmgSG_->stBa_.NGGet_f)
+        if (BallState.CanHoldJumpBall(MySideIndex) == false)
         {
-            if ((pmgSG_->stBa_.NGGetPNo == st_.posNo_)
-                && (pmgSG_->stBa_.NGGetTNo == st_.mysideNo_))
+            return false;
+        }
+
+        // さわれない指定が出ているボール
+        if (BallState.IsNGGet)
+        {
+            if (BallState.NGGetTNo == MySideIndex
+                && BallState.NGGetPNo == MemberIndex)
             {
-                return FALSE;
+                return false;
             }
         }
 
-        //ボール状態でいろいろ判断
-        switch (pmgSG_->stBa_.Motion)
+        // 停止、バウンド以外は拾えない
+        if (BallState.MotionType != BallMotionType.Free
+            && BallState.MotionType != BallMotionType.Bound)
         {
-            case bmFree: //フリー
-
-                break;
-
-            case bmBound: //バウンド
-
-                break;
-            case bmPass: //パス  パスはここでとらないようにするか
-                if (pmgSG_->stBa_.PichTNo == st_.mysideNo_) //味方パス
-                {
-                    return FALSE;
-                }
-                else //敵パス
-                {
-                    return FALSE;
-                }
-                break;
-            case bmShoot: //シュート
-                if ((pmgSG_->stBa_.PichTNo == st_.mysideNo_) && ca_f) //味方シュート
-                {
-                    //return FALSE;
-                }
-                else //敵シュート
-                {
-                    return FALSE;
-                }
-                break;
-            case bmHold: //持ち
-                if ((pmgSG_->stBa_.HoldTNo == st_.mysideNo_)
-                    && (pmgSG_->stBa_.HoldPNo != st_.posNo_)
-                    && ca_f) //味方
-                {
-                    if (st_.pmgMyTm_->GetBallmanNo() != NGNUM)
-                    {
-                        //アクション中は取れないように
-                        if (st_.pmgMyTm_->st_.pmgMyCh_[st_.pmgMyTm_->GetBallmanNo()]->st_.pstMyCh_->Motion.IsMFlags(dbmfAct))
-                        {
-                            return FALSE;
-                        }
-                    }
-                    //return FALSE;
-                }
-                else //敵シュート
-                {
-                    return FALSE;
-                }
-                break;
-            //敵が持っているのはとれない（とれても割と面白い→内野がオート移動してしまう
-            default:
-                return FALSE;
+            return false;
         }
+
         //当たり
-        return (st_.pstMyCh_->Kurai.IsPile(pmgSG_->stBa_.Atari)
-                && (abs(pmgSG_->stBa_.Zahyou.Z - st_.pstMyCh_->Zahyou.Z) < (tD * XYMAG)));
+        var atariDepth = GetSettingBall(SettingBallType.FAtariDepth2);
+        var isHitDepth = Math.Abs(BallState.Coordinate.Z - MyState.Coordinate.Z) <= atariDepth;
+        return isHitDepth && MyState.Coordinate.HitBox.IsPile(BallState.Atari);
     }
 
     //ボール持った処理
