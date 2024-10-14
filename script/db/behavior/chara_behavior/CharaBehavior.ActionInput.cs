@@ -383,7 +383,7 @@ public partial class CharaBehavior
     }
 
     //ボール持った処理
-    private void HoldBall(bool isNoSE, bool isLookBall) //FALSE,FALSE
+    private void HoldBall(bool isNoSe, bool isLookBall)
     {
         // 保持状況をチームに渡す
         CallTeamHoldBall();
@@ -425,14 +425,10 @@ public partial class CharaBehavior
             MukiSetAuto();
         }
 
-        if (isNoSE == false)
+        if (isNoSe == false)
         {
             PlaySe(SeType.Take);
         }
-
-        //自分を操作キャラに
-        //st_.pmgMyTm_->SetCtrl(st_.posNo_);
-        st_.pmgMyTm_->SetCtrlBallGet(st_.posNo_); //強制
 
         //ボール側の処理
 

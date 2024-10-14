@@ -16,7 +16,7 @@ public partial class CharaBehavior
     /// <summary>
     /// 操作権キャラ
     /// </summary>
-    private bool IsControl => MyTeamState.MainState.ControlOrderIndex == MyState.Order.OrderIndex;
+    private bool IsControl => MyTeamState.MainState.ControlOrderIndex == OrderIndex;
 
     /// <summary>
     /// COM操作中かどうか

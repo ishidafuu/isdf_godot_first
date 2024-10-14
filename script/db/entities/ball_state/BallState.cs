@@ -136,7 +136,7 @@ public partial class BallState
         LandZLine = 0;
         NGGetPNo = 0;
         NGGetTNo = 0;
-        NGGet = 0;
+        IsNGGet = false;
         NoHit = 0;
         PaCtPNo = 0;
         PaCtTNo = 0;

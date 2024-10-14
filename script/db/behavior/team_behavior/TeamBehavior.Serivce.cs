@@ -18,7 +18,8 @@ public partial class TeamBehavior
         // st_.pmgMyTm_->st_.pstMyTm_->getJpball_f = (pmgSG_->stBa_.JumpBall == jbJpball);
         // st_.pmgMyTm_->st_.pstMyTm_->COMCall.CallingPa_f[st_.posNo_] = FALSE; //パス要求もクリア
         // //ボール触った
-        // st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].BallTouched_f = TRUE;
+        // st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].BallTouched_f = TRUE;        //自分を操作キャラに
+        // st_.pmgMyTm_->SetCtrlBallGet(st_.posNo_); //強制
     }
 
     //
