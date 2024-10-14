@@ -39,7 +39,7 @@ public partial class CharaBehavior
 
     private void CallTeamCheckChangePos()
     {
-        MyPadBehavior.CallCheckChangePos();
+        MyTeamBehavior.CallCheckChangePos();
     }
 
     private void CallTeamHoldBall()

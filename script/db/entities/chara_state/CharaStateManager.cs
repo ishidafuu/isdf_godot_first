@@ -94,10 +94,10 @@ public class CharaStateManager
             for (var m = 0; m < Defines.MemberCount; m++)
             {
                 var member = _sideCharas[s][m];
-                var positionIndex = member.Order.OrderIndex;
-                if (positionIndex < Defines.InfieldCount)
+                var orderIndex = member.Order.OrderIndex;
+                if (member.Order.IsInfield)
                 {
-                    _infieldOrders[s][positionIndex] = member;
+                    _infieldOrders[s][(int)orderIndex] = member;
                 }
 
                 _sideOrders[s][m] = member;

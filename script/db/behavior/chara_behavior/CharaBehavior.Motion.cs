@@ -758,25 +758,25 @@ public partial class CharaBehavior
         }
         else
         {
-            var orderType = MyState.Order.GetOrderType();
+            var orderType = MyState.Order.GetOrderFieldType();
             var xSign = 0;
             var zSign = 0;
             if (IsCom == false && (IsFree(true) || MyState.Auto.IsFreeAction))
             {
-                if (orderType != OrderType.Outfield2 && MyPad.KeyUp.IsPressed)
+                if (orderType != OrderFieldType.Outfield2 && MyPad.KeyUp.IsPressed)
                 {
                     zSign = +1;
                 }
-                else if (orderType != OrderType.Outfield3 && MyPad.KeyDown.IsPressed)
+                else if (orderType != OrderFieldType.Outfield3 && MyPad.KeyDown.IsPressed)
                 {
                     zSign = -1;
                 }
 
-                if ((MySideIndex == 1 || orderType != OrderType.Outfield4) && MyPad.KeyRight.IsPressed)
+                if ((MySideIndex == 1 || orderType != OrderFieldType.Outfield4) && MyPad.KeyRight.IsPressed)
                 {
                     xSign = +1;
                 }
-                else if ((MySideIndex == 0 || orderType != OrderType.Outfield4) && MyPad.KeyLeft.IsPressed)
+                else if ((MySideIndex == 0 || orderType != OrderFieldType.Outfield4) && MyPad.KeyLeft.IsPressed)
                 {
                     xSign = -1;
                 }
@@ -797,7 +797,7 @@ public partial class CharaBehavior
                 ? zSign * DiagonalWalkJumpVelocityZ
                 : zSign * WalkJumpVelocityZ;
 
-            if (orderType is OrderType.Outfield2 or OrderType.Outfield3)
+            if (orderType is OrderFieldType.Outfield2 or OrderFieldType.Outfield3)
             {
                 dz = dz * Defines.Percent / Defines.JPGAIYAPER;
             }

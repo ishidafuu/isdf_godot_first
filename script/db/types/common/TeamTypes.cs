@@ -7,7 +7,7 @@ public enum enInfLineType
     iltO3,
     iltO4,
     iltOfO
-};
+}
 
 public enum enFormationType
 {
@@ -17,7 +17,7 @@ public enum enFormationType
     ftDf4,
     ftOfI,
     ftOfO
-};
+}
 
 public enum enDodgeType
 {
@@ -25,7 +25,7 @@ public enum enDodgeType
     dgJp,
     dgCr,
     dgBest
-};
+}
 
 public enum enShChangeType
 {
@@ -33,7 +33,7 @@ public enum enShChangeType
     scNone,
     scPass,
     scCrv
-};
+}
 
 public enum ResultType
 {
@@ -45,12 +45,23 @@ public enum ResultType
     rtTIMEUPLOSE = 5,
     rtTIMEUPDRAW = 6,
     rtRETIRE = 10,
-};
+}
 
-public enum OrderType
+public enum OrderFieldType
 {
     Infield,
     Outfield2,
     Outfield3,
     Outfield4,
-};
+}
+
+public enum OrderIndexType
+{
+    Infield0,
+    Infield1,
+    Infield2,
+    Infield3,
+    Outfield2,
+    Outfield3,
+    Outfield4,
+}

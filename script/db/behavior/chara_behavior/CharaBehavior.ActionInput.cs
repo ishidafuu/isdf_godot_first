@@ -122,8 +122,8 @@ public partial class CharaBehavior
         //       || (IsCOM() == false))
         //     {
         //
-        //       bool muki_f = ((st_.mysideNo_ == 0) && (st_.pstMyCh_.Zahyou.Muki == mL))
-        //         || ((st_.mysideNo_ == 1) && (st_.pstMyCh_.Zahyou.Muki == mR));
+        //       bool muki_f = ((st_.mysideNo_ == 0) && (MyState.Coordinate.Muki == mL))
+        //         || ((st_.mysideNo_ == 1) && (MyState.Coordinate.Muki == mR));
         //
         //       switch (st_.pstMyCh_.Motion.Mtype)
         //       {
@@ -159,8 +159,8 @@ public partial class CharaBehavior
         //           if (st_.pstMyCh_.ECDdg_f)
         //           {
         //             pCommon_.CatchSE();
-        //             st_.pstMyCh_.LastMuki = st_.pstMyCh_.Zahyou.Muki;
-        //             st_.pstMyCh_.LastMukiZ = st_.pstMyCh_.Zahyou.MukiZ;
+        //             st_.pstMyCh_.LastMuki = MyState.Coordinate.Muki;
+        //             st_.pstMyCh_.LastMukiZ = MyState.Coordinate.MukiZ;
         //           }
         //         }
         //         break;
@@ -448,7 +448,7 @@ public partial class CharaBehavior
         if (st_.pmgEnTm_.IsAllDead() == false)
         {
             //シュートタゲは向き反映
-            s32 tstg = GetTag(false);
+            int tstg = GetTag(false);
             if (tstg == NGNUM)
             {
                 if (IsSelfControl == false)
@@ -466,7 +466,7 @@ public partial class CharaBehavior
             }
 
             //カーソルは強制的に内野
-            s32 tEnctrl = GetTag(true);
+            int tEnctrl = GetTag(true);
             if (tEnctrl != NGNUM) //ないとはおもうが
             {
                 st_.pmgEnTm_.SetCtrl(tEnctrl);
@@ -486,7 +486,7 @@ public partial class CharaBehavior
             }
 
             // 自動シュート状態を取得
-            s32 step = pDs.GetAutoShootStep();
+            int step = pDs.GetAutoShootStep();
             if (step == kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_WAIT)
             {
                 pDs.SetReturnBallFlg(false); // フラグを落とす
@@ -523,7 +523,7 @@ public partial class CharaBehavior
     }
 
     //内野パスタゲセット★
-    private int GetNaiyaPassTag()
+    private OrderIndexType GetNaiyaPassTag()
     {
         var AllNoTag_f = true; //完全にタゲが居ない
         var NoTag_f = true; //向き方向にタゲが居ない
@@ -593,14 +593,14 @@ public partial class CharaBehavior
         bool backPos_f = true; //一番奥にいる
 
         //ダッシュマンへパス
-        bool dashman_f = MyTeamState.PositionState.DashmanNum > 0;
+        bool isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
 
         int distO2 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_BL);
         int distO3 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_FL);
         bool nearO2_f = (distO2 < distO3);
 
         //優先順位初期化
-        // for (s32 i = 0; i < Defines.DBMEMBER_INF; ++i)
+        // for (int i = 0; i < Defines.DBMEMBER_INF; ++i)
         // {
         //     tgOrd[i] = NGNUM;
         // }
@@ -622,7 +622,7 @@ public partial class CharaBehavior
         }
 
         //パスが出せるダッシュマンがいるか
-        if (dashman_f) //ダッシュマンへパス
+        if (isDashmanPass) //ダッシュマンへパス
         {
             //内野全員との角度を取る
             for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
@@ -634,78 +634,83 @@ public partial class CharaBehavior
 
                 var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
 
-                if (chara.IsDashman)
+                if (chara.IsDashman == false)
                 {
-                    //向き方向に居る
-                    sltg_f[order] = TGOK;
-                    NoTag_f = false; //一人でも向き方向にタゲが見つかった
-
-                    //右にダッシュマンがいる
-                    if (st_.pmgMyTm_.st_.pmgMyCh_[order].LeftCourtX > LeftCourtX)
-                    {
-                        topPos_f = false;
-                    }
-
-                    //奥にダッシュマンがいる
-                    if (st_.pmgMyTm_.st_.pmgMyCh_[order].st_.pstMyCh_.Zahyou.Z > st_.pstMyCh_.Zahyou.Z)
-                    {
-                        backPos_f = false;
-                    }
-
-                    //手前にダッシュマンがいる
-                    if (st_.pmgMyTm_.st_.pmgMyCh_[order].st_.pstMyCh_.Zahyou.Z < st_.pstMyCh_.Zahyou.Z)
-                    {
-                        frontPos_f = false;
-                    }
+                    continue;
                 }
-                else
+
+                //向き方向に居る
+                sltg_f[order] = enNaiyaTag.TGOK;
+
+                NoTag_f = false; //一人でも向き方向にタゲが見つかった
+
+                //右にダッシュマンがいる
+                if (chara.LeftCourtX > LeftCourtX)
                 {
-                    sltg_f[order] = TGNG;
+                    topPos_f = false;
+                }
+
+                //奥にダッシュマンがいる
+                if (chara.MyState.Coordinate.Z > MyState.Coordinate.Z)
+                {
+                    backPos_f = false;
+                }
+
+                //手前にダッシュマンがいる
+                if (chara.MyState.Coordinate.Z < MyState.Coordinate.Z)
+                {
+                    frontPos_f = false;
                 }
             }
+
             //パスが出せるダッシュマンがいない
-            if (NoTag_f) dashman_f = false;
+            if (NoTag_f)
+            {
+                isDashmanPass = false;
+            }
         }
 
         //最終的にダッシュマンいない
-        if (dashman_f == false)
+        if (isDashmanPass == false)
         {
             //内野全員との角度を取る
-            for (s32 i = 0; i < DBMEMBER_INF; ++i)
+            for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
             {
-                if (IsNGPassTag(i))
+                if (IsNGPassTag(order))
                 {
-                    sltg_f[i] = TGNG;
+                    sltg_f[order] = enNaiyaTag.TGNG;
                     continue;
                 }
-                else if (IsCheckNoAgl(st_.pmgMyTm_.st_.pmgMyCh_[i].st_.pstMyCh_.Zahyou.X, st_.pmgMyTm_.st_.pmgMyCh_[i].st_.pstMyCh_.Zahyou.Z))
+                AllNoTag_f = false; //一応タゲ可能は人はいる
+
+                var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
+
+                if (IsCheckNoAgl(chara.MyState.Coordinate.X, chara.MyState.Coordinate.Z))
                 {
                     //向きに居ない
-                    sltg_f[i] = TGNOAGL;
+                    sltg_f[order] = enNaiyaTag.TGNOAGL;
                 }
                 else
                 {
                     //向き方向に居る
-                    sltg_f[i] = TGOK;
+                    sltg_f[order] = enNaiyaTag.TGOK;
                     NoTag_f = false; //一人でも向き方向にタゲが見つかった
                 }
 
-                AllNoTag_f = false; //一応タゲ可能は人はいる
-
                 //誰か右にいる
-                if (st_.pmgMyTm_.st_.pmgMyCh_[i].LeftCourtX > LeftCourtX)
+                if (chara.LeftCourtX > LeftCourtX)
                 {
                     topPos_f = false;
                 }
 
                 //奥にいる
-                if (st_.pmgMyTm_.st_.pmgMyCh_[i].st_.pstMyCh_.Zahyou.Z > st_.pstMyCh_.Zahyou.Z)
+                if (chara.MyState.Coordinate.Z > MyState.Coordinate.Z)
                 {
                     backPos_f = false;
                 }
 
                 //手前にいる
-                if (st_.pmgMyTm_.st_.pmgMyCh_[i].st_.pstMyCh_.Zahyou.Z < st_.pstMyCh_.Zahyou.Z)
+                if (chara.MyState.Coordinate.Z < MyState.Coordinate.Z)
                 {
                     frontPos_f = false;
                 }
@@ -713,36 +718,31 @@ public partial class CharaBehavior
         }
 
         //ダッシュマンいるとき
-        if (dashman_f)
+        if (isDashmanPass)
         {
             if (topPos_f && enmCrs_f) //先頭で右→が入ってるのときのみ
             {
                 if (CrsU_f)
                 {
-                    return (s32)dbpoO2; //右上
+                    return OrderIndexType.Outfield2; //右上
                 }
-                else if (CrsD_f)
+
+                if (CrsD_f)
                 {
-                    return (s32)dbpoO3; //右下
+                    return OrderIndexType.Outfield3; //右下
                 }
-                else //右のみ
-                {
-                    if (nearO2_f)
-                    {
-                        return (s32)dbpoO2;
-                    }
-                    else
-                    {
-                        return (s32)dbpoO3;
-                    }
-                }
+
+                //右のみ
+                return nearO2_f
+                    ? OrderIndexType.Outfield2
+                    : OrderIndexType.Outfield3;
             }
 
             if (frontPos_f) //一番手前に居る
             {
                 if (CrsD_f)
                 {
-                    return (s32)dbpoO3; //右下
+                    return OrderIndexType.Outfield3; //右下
                 }
             }
 
@@ -750,62 +750,53 @@ public partial class CharaBehavior
             {
                 if (CrsU_f)
                 {
-                    return (s32)dbpoO2; //右下
+                    return OrderIndexType.Outfield2; //右下
                 }
             }
         }
-        else if (((infMuki_f == false) && topPos_f) || AllNoTag_f) //右向き時しかも先頭もしくは孤立(→外野パス)
+        else if ((infMuki_f == false && topPos_f) || AllNoTag_f) //右向き時しかも先頭もしくは孤立(→外野パス)
         {
-            if (st_.pstMyCh_.Motion.Mtype == dbmtDs) //ダッシュ中
+            if (MyState.Motion.MotionType == CharaMotionType.Ds) //ダッシュ中
             {
                 if (IsSelfControl)
                 {
-                    if (CrsU_f) return (s32)dbpoO2; //上
-                    if (CrsD_f) return (s32)dbpoO3; //下
-                    if (enmCrs_f) return (s32)dbpoO4; //右
-                    if (nearO2_f)
-                    {
-                        return (s32)dbpoO2;
-                    }
-                    else
-                    {
-                        return (s32)dbpoO3;
-                    }
+                    if (CrsU_f) return OrderIndexType.Outfield2; //上
+                    if (CrsD_f) return OrderIndexType.Outfield3; //下
+                    if (enmCrs_f) return OrderIndexType.Outfield4; //右
+
+                    return nearO2_f
+                        ? OrderIndexType.Outfield2
+                        : OrderIndexType.Outfield3;
                 }
-                else
+
+                return MyState.Auto.DirectionZ switch
                 {
-                    switch (st_.pstMyCh_.Auto.AMukiZ)
-                    {
-                        case mzaB: return (s32)dbpoO2;
-                        case mzaF: return (s32)dbpoO3;
-                    }
-                }
+                    DirectionZType.Backward => OrderIndexType.Outfield2,
+                    DirectionZType.Forward => OrderIndexType.Outfield3
+                };
             }
-            else
+
+            switch (passDirectionZ)
             {
-                switch (paMukiZ)
-                {
-                    case mzB: return (s32)dbpoO2;
-                    case mzF: return (s32)dbpoO3;
-                    default:
-                        if (enmCrs_f) return (s32)dbpoO4; //右
-                        if (nearO2_f)
-                        {
-                            return (s32)dbpoO2;
-                        }
-                        else
-                        {
-                            return (s32)dbpoO3;
-                        }
-                        break;
-                }
+                case DirectionZType.Backward:
+                    return OrderIndexType.Outfield2;
+                case DirectionZType.Forward:
+                    return OrderIndexType.Outfield3;
+                default:
+                    if (enmCrs_f) return OrderIndexType.Outfield4;
+                    return nearO2_f
+                        ? OrderIndexType.Outfield2
+                        : OrderIndexType.Outfield3;
             }
+
             //しかも先頭もしくは孤立は4番でFA
-            return (s32)dbpoO4;
+            return OrderIndexType.Outfield4;
         }
 
-        s32 f = 0;
-        for (s32 i = 0; i < DBMEMBER_INF; ++i)
+        ここから
+        
+        int f = 0;
+        for (int i = 0; i < DBMEMBER_INF; ++i)
         {
             //向き方向に人なしのとき
 
@@ -816,14 +807,14 @@ public partial class CharaBehavior
             {
                 if (neutral_f) //ニュートラル
                 {
-                    sortDt[i] = (s32)sltgXZ[i]; //内野間は距離が近い人
+                    sortDt[i] = (int)sltgXZ[i]; //内野間は距離が近い人
                 }
                 else
                 {
                     //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
-                    s32 tgZ = (dashman_f)
+                    int tgZ = (isDashmanPass)
                         ? st_.pmgMyTm_.st_.pmgMyCh_[i].st_.pstMyCh_.DashmanTgZ
-                        : st_.pmgMyTm_.st_.pmgMyCh_[i].st_.pstMyCh_.Zahyou.Z;
+                        : st_.pmgMyTm_.st_.pmgMyCh_[i].MyState.Coordinate.Z;
 
                     //上
                     if (CrsU_f)
@@ -838,11 +829,11 @@ public partial class CharaBehavior
                     //上下が入ってるとき用に合計値
                     if (CrsL_f) //左
                     {
-                        sortDt[i] += (st_.pmgMyTm_.st_.pmgMyCh_[i].st_.pstMyCh_.Zahyou.X); //Ｘ（左ほど優先）
+                        sortDt[i] += (st_.pmgMyTm_.st_.pmgMyCh_[i].MyState.Coordinate.X); //Ｘ（左ほど優先）
                     }
                     else if (CrsR_f) //右
                     {
-                        sortDt[i] -= (st_.pmgMyTm_.st_.pmgMyCh_[i].st_.pstMyCh_.Zahyou.X); //Ｘのマイナス（右ほど優先）
+                        sortDt[i] -= (st_.pmgMyTm_.st_.pmgMyCh_[i].MyState.Coordinate.X); //Ｘのマイナス（右ほど優先）
                     }
                 }
                 tgOrd[f++] = i;
@@ -850,9 +841,9 @@ public partial class CharaBehavior
         }
 
         //ソート
-        for (s32 i = 0; i < (DBMEMBER_INF - 1); ++i)
+        for (int i = 0; i < (DBMEMBER_INF - 1); ++i)
         {
-            for (s32 i2 = 0; i2 < (DBMEMBER_INF - 1); i2++)
+            for (int i2 = 0; i2 < (DBMEMBER_INF - 1); i2++)
             {
                 if (i == i2) continue; //同じ
 
@@ -860,7 +851,7 @@ public partial class CharaBehavior
                 {
                     if (sortDt[tgOrd[i]] < sortDt[tgOrd[i2]]) //小さい方優先
                     {
-                        s32 tmp;
+                        int tmp;
                         tmp = tgOrd[i2];
                         tgOrd[i2] = tgOrd[i];
                         tgOrd[i] = tmp;
@@ -870,9 +861,32 @@ public partial class CharaBehavior
         }
 
         //ソート１位
-        s32 res = tgOrd[0];
+        int res = tgOrd[0];
 
         return res;
+    }
+
+    //角度に入っていない
+    private bool IsCheckNoAgl(int targetX, int targetZ)
+    {
+        var isInAngle = MyState.Coordinate.DirectionZ switch
+        {
+            DirectionZType.Forward => targetZ < MyState.Coordinate.Z,
+            DirectionZType.Neutral => true,
+            DirectionZType.Backward => targetZ > MyState.Coordinate.Z
+        };
+
+        if (isInAngle)
+        {
+            isInAngle = MyState.Coordinate.DirectionX switch
+            {
+                DirectionXType.Left => targetX < MyState.Coordinate.X,
+                DirectionXType.Neutral => true,
+                DirectionXType.Right => targetX > MyState.Coordinate.X,
+            };
+        }
+
+        return isInAngle == false;
     }
 
     private void HoldBallSetMirrorState()
@@ -880,13 +894,12 @@ public partial class CharaBehavior
         const int activeCount = 1;
         const int inactiveCount = 0;
 
-        if (MyState.Pad.IsValid
-            && BallState.MotionType == BallMotionType.Pass
+        if (BallState.MotionType == BallMotionType.Pass
             && BallState.ThrowerSideNo == MySideIndex)
         {
             MyState.Pass.MirrorShotCount.Set(activeCount);
 
-            var mirrorPassCount = MyState.Pad.Pad.ButtonB.IsPressed
+            var mirrorPassCount = MyPad.ButtonB.IsPressed
                 ? activeCount
                 : inactiveCount;
             MyState.Pass.MirrorPassCount.Set(mirrorPassCount);
@@ -970,9 +983,9 @@ public partial class CharaBehavior
     //ターゲッティング用向き
     private void SetMukiAgl(bool isLeft, bool isRight, bool isUp, bool isDown)
     {
-        switch (MyState.Order.GetOrderType())
+        switch (MyState.Order.GetOrderFieldType())
         {
-            case OrderType.Infield:
+            case OrderFieldType.Infield:
                 if (isRight)
                 {
                     if (isUp)
@@ -1004,7 +1017,7 @@ public partial class CharaBehavior
                     }
                 }
                 break;
-            case OrderType.Outfield2:
+            case OrderFieldType.Outfield2:
                 if (isLeft)
                 {
                     MyState.Shoot.Angle12 = 5; //5678
@@ -1014,7 +1027,7 @@ public partial class CharaBehavior
                     MyState.Shoot.Angle12 = 3; //3456
                 }
                 break;
-            case OrderType.Outfield3:
+            case OrderFieldType.Outfield3:
                 if (isLeft)
                 {
                     MyState.Shoot.Angle12 = 9; //9 10 11 0
@@ -1024,7 +1037,7 @@ public partial class CharaBehavior
                     MyState.Shoot.Angle12 = 11; //11 0 1 2
                 }
                 break;
-            case OrderType.Outfield4:
+            case OrderFieldType.Outfield4:
                 if (MySideIndex == 0)
                 {
                     if (isUp)
@@ -1061,15 +1074,38 @@ public partial class CharaBehavior
         }
     }
 
+    //パスタゲにならない★★再確認
+    bool IsNGPassTag(int order)
+    {
+        if (order == OrderIndex) //自分
+        {
+            return true; //パス不可
+        }
+
+        var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
+
+        //★ダッシュマンはだいじょぶ
+        if (chara.IsDashman)
+            //&& ((st_.pmgMyTm_->st_.pmgMyCh_[pos]->MyState.Coordinate.dY >= (-XYMAG))
+            //  || (st_.pstMyCh_->MirPass_c > 0)))//下降ではない
+        {
+            return false;
+        }
+
+        //空中の人はパスタゲにならないように
+        return chara.IsFree(true) == false
+               || chara.MyState.Motion.HasFlag(CharaMotionFlag.Ar);
+    }
+
     //自分で操作
     private void ControlSelf()
     {
         var actionType = GetActionType();
 //
-//         const s32 MIRWAIT = 4;
+//         const int MIRWAIT = 4;
 //         //モーション変更前の向き
-//         enMukiType lastMuki = st_.pstMyCh_.Zahyou.Muki;
-//         enMukiZType lastMukiZ = st_.pstMyCh_.Zahyou.MukiZ;
+//         enMukiType lastMuki = MyState.Coordinate.Muki;
+//         enMukiZType lastMukiZ = MyState.Coordinate.MukiZ;
 //         bool LastMukiKeep_f = false;
 //         bool autoPickUp_f = true;
 //         bool atlook_f = MyPad.IsAutoLook(); //自動タゲ向き（ニュートラル）
@@ -1118,11 +1154,11 @@ public partial class CharaBehavior
 //             //ダッシュ中前フリックはシュート
 //             if (st_.pstMyCh_.Motion.IsMFlags(dbmfDs))
 //             {
-//                 if (st_.pstMyCh_.Zahyou.DsMuki == mL)
+//                 if (MyState.Coordinate.DsMuki == mL)
 //                 {
 //                     shbtn_f |= MyPad.IsDsShot(dxL);
 //                 }
-//                 else if (st_.pstMyCh_.Zahyou.DsMuki == mR)
+//                 else if (MyState.Coordinate.DsMuki == mR)
 //                 {
 //                     shbtn_f |= MyPad.IsDsShot(dxR);
 //                 }
@@ -1136,14 +1172,14 @@ public partial class CharaBehavior
 //         if (kdebug::DebugSystem::GetInstance().IsEnemyLastOne())
 //         {
 //             // 今いるやつを全員殺す
-//             for (s32 i = 0; i < DBMEMBER_INF; i++)
+//             for (int i = 0; i < DBMEMBER_INF; i++)
 //             {
 //                 pmgGO_.pmgCh_[st_.ensideNo_][i].st_.pstMyCh_.ANGEL_f = true;
 //                 pmgGO_.pmgCh_[st_.ensideNo_][i].st_.pstMyCh_.HP = 0;
 //             }
 //             pmgGO_.pmgTm_[st_.ensideNo_].CheckChangePos();
 //             // 一人を残して全員殺す
-//             for (s32 i = 0; i < DBMEMBER_INF - 2; i++)
+//             for (int i = 0; i < DBMEMBER_INF - 2; i++)
 //             {
 //                 pmgGO_.pmgCh_[st_.ensideNo_][i].st_.pstMyCh_.ANGEL_f = true;
 //                 pmgGO_.pmgCh_[st_.ensideNo_][i].st_.pstMyCh_.HP = 0;
@@ -1244,7 +1280,7 @@ public partial class CharaBehavior
 //         kdebug::DebugSystem* pDs = kdebug::DebugSystem::GetInstance();
 //         bool isAutoShot = false;
 //         // 自動シュート状態を取得
-//         s32 step = pDs.GetAutoShootStep();
+//         int step = pDs.GetAutoShootStep();
 //         if (step == kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_STANDBY)
 //         {
 //             // この状態で手元にボールがないのがおかしいので
@@ -1337,12 +1373,12 @@ public partial class CharaBehavior
 //
 //                             //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
 //                             bool nortst_f = (st_.pstMyCh_.Motion.IsMFlags(dbmfDs))
-//                                             && (st_.pstMyCh_.Zahyou.DsMuki == st_.pstMyCh_.Zahyou.Muki);
+//                                             && (MyState.Coordinate.DsMuki == MyState.Coordinate.Muki);
 //
 //                             //内野で向きに変わるときは振り向きシュート
 //                             if (IsInfield()
 //                                 && (nortst_f == false)
-//                                 && (lastMuki != st_.pstMyCh_.Zahyou.Muki)
+//                                 && (lastMuki != MyState.Coordinate.Muki)
 //                                )
 //                             {
 //                                 SetMtype(dbmtRtSh);
@@ -1403,11 +1439,11 @@ public partial class CharaBehavior
 //
 //                                         //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
 //                                         bool nortst_f = (st_.pstMyCh_.Motion.IsMFlags(dbmfDs))
-//                                                         && (st_.pstMyCh_.Zahyou.DsMuki == st_.pstMyCh_.Zahyou.Muki);
+//                                                         && (MyState.Coordinate.DsMuki == MyState.Coordinate.Muki);
 //
 //                                         if (IsInfield()
 //                                             && (nortst_f == false)
-//                                             && (lastMuki != st_.pstMyCh_.Zahyou.Muki)
+//                                             && (lastMuki != MyState.Coordinate.Muki)
 //                                            )
 //                                         {
 //                                             SetMtype(dbmtRtSh);
@@ -1476,9 +1512,9 @@ public partial class CharaBehavior
 //                         && (st_.pstMyCh_.Auto.AutoType == dbatFree)
 //                         && (st_.pstMyCh_.Motion.IsMFlags(dbmfDs)))
 //                     {
-//                         if (((st_.pstMyCh_.Zahyou.DsMuki == mL)
+//                         if (((MyState.Coordinate.DsMuki == mL)
 //                              && MyPad.IsCatchDash(dxL)) //キャッチ後ダッシュ継続入力
-//                             || ((st_.pstMyCh_.Zahyou.DsMuki == mR)
+//                             || ((MyState.Coordinate.DsMuki == mR)
 //                                 && MyPad.IsCatchDash(dxR)))
 //                         {
 //                             //継続なので向きセットも歩数リセットもいらない
@@ -1500,11 +1536,11 @@ public partial class CharaBehavior
 //             case dbmtJDn:
 // //      if ((st_.pstMyCh_.AirAct_f == false)
 // //        && st_.pstMyCh_.Motion.IsMFlags(dbmfAr)
-// //        && ((st_.pstMyCh_.Zahyou.dY > 0) || (st_.pstMyCh_.Zahyou.Y >= (JPINVALIDHEIGHT * XYMAG))))
+// //        && ((MyState.Coordinate.dY > 0) || (MyState.Coordinate.Y >= (JPINVALIDHEIGHT * XYMAG))))
 //                 if (
 //                     ((st_.pstMyCh_.AirAct_f == false)
 //                      && st_.pstMyCh_.Motion.IsMFlags(dbmfAr)
-//                      && ((st_.pstMyCh_.Zahyou.dY > 0) || (st_.pstMyCh_.Zahyou.Y >= (JPINVALIDHEIGHT * XYMAG)))
+//                      && ((MyState.Coordinate.dY > 0) || (MyState.Coordinate.Y >= (JPINVALIDHEIGHT * XYMAG)))
 //                     )
 //                     ||
 //                     ( //マリオネット効果中
@@ -1582,7 +1618,7 @@ public partial class CharaBehavior
 //                             if ((st_.pmgMyTm_.st_.pstMyTm_.CtrlNo == pmgSG_.stBa_.PaTgPNo)
 //                                 && (pmgSG_.stBa_.Motion == bmPass)
 //                                 && (pmgSG_.stBa_.PaTgTNo == st_.mysideNo_)
-//                                 && (pmgSG_.stBa_.PaTgPNo <= (s32)dbpoI3))
+//                                 && (pmgSG_.stBa_.PaTgPNo <= (int)dbpoI3))
 //                             {
 //                                 st_.pmgMyTm_.SetCtrl(st_.pmgMyTm_.st_.pstMyTm_.CvrNo);
 //                                 st_.pmgMyTm_.st_.pmgMyCh_[st_.pmgMyTm_.st_.pstMyTm_.CtrlNo].st_.pstMyCh_.Nomove_f = true;
@@ -1612,23 +1648,23 @@ public partial class CharaBehavior
 //                    )
 //                 {
 //                     bool utrn_f = false;
-//                     if ((st_.pstMyCh_.Zahyou.Muki == mL)
+//                     if ((MyState.Coordinate.Muki == mL)
 //                         && MyPad.IsWalk2(dxR)
 //                         && (st_.mysideNo_ == 0))
 //                     {
 //                         utrn_f = true;
-//                         st_.pstMyCh_.Zahyou.Muki = mR;
-//                         st_.pstMyCh_.Zahyou.MukiZ = mzN;
+//                         MyState.Coordinate.Muki = mR;
+//                         MyState.Coordinate.MukiZ = mzN;
 //                         MyState.Shoot.Angle12 = 1; //1 2 3 4
 //                         SetMukiAgl(false, true, false, false);
 //                     }
-//                     else if ((st_.pstMyCh_.Zahyou.Muki == mR)
+//                     else if ((MyState.Coordinate.Muki == mR)
 //                              && MyPad.IsWalk2(dxL)
 //                              && (st_.mysideNo_ == 1))
 //                     {
 //                         utrn_f = true;
-//                         st_.pstMyCh_.Zahyou.Muki = mL;
-//                         st_.pstMyCh_.Zahyou.MukiZ = mzN;
+//                         MyState.Coordinate.Muki = mL;
+//                         MyState.Coordinate.MukiZ = mzN;
 //                         MyState.Shoot.Angle12 = 7; //7 8 9 10
 //                         SetMukiAgl(true, false, false, false);
 //                     }

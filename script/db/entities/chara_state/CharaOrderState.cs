@@ -6,29 +6,24 @@
 public class CharaOrderState
 {
     // ポジション番号（0～6）
-    public int OrderIndex { get; set; }
+    public OrderIndexType OrderIndex { get; set; }
 
     public void Initialize(int orderIndex)
     {
-        OrderIndex = orderIndex;
+        OrderIndex = (OrderIndexType)orderIndex;
     }
 
-    public bool IsInfield => OrderIndex < Defines.InfieldCount;
+    public bool IsInfield => OrderIndex <= OrderIndexType.Infield3;
     public bool IsOutfield => IsInfield == false;
 
-    public OrderType GetOrderType()
+    public OrderFieldType GetOrderFieldType()
     {
-        if (OrderIndex < Defines.InfieldCount)
+        return OrderIndex switch
         {
-            return OrderType.Infield;
-        }
-
-        var outfieldIndex = OrderIndex - Defines.InfieldCount;
-        return outfieldIndex switch
-        {
-            0 => OrderType.Outfield2,
-            1 => OrderType.Outfield3,
-            _ => OrderType.Outfield4
+            OrderIndexType.Outfield2 => OrderFieldType.Outfield2,
+            OrderIndexType.Outfield3 => OrderFieldType.Outfield3,
+            OrderIndexType.Outfield4 => OrderFieldType.Outfield4,
+            _ => OrderFieldType.Infield,
         };
     }
 
