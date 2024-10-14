@@ -11,6 +11,11 @@ public partial class CharaBehavior
         SoundManager.Instance.PlaySe(seType);
     }
 
+    private void StopHomingSe()
+    {
+        SoundManager.Instance.StopHomingSe();
+    }
+
     private void CallRefereeWhistleOverLine()
     {
         RefereeBehaviorManager.Instance.Get().CallWhistleOverLine(MySideIndex);
@@ -42,7 +47,7 @@ public partial class CharaBehavior
         TeamBehaviorManager.Instance.Get(MySideIndex).CallHoldBall(OrderIndex);
     }
 
-    private void CallBallHOld()
+    private void CallBallHold()
     {
         BallBehaviorManager.Instance.Get().CallHold(MySideIndex, OrderIndex);
     }

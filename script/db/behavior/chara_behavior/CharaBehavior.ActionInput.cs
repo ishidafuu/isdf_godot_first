@@ -425,44 +425,19 @@ public partial class CharaBehavior
             MukiSetAuto();
         }
 
+        StopHomingSe();
         if (isNoSe == false)
         {
             PlaySe(SeType.Take);
         }
 
         //ボール側の処理
-
-        //とりあえずAniNoをクリア
-        st_.pmgBa_->baCommon_.SetNmlBall(FALSE);
-
-        //タイマーリセット
-        st_.pmgBa_->baCommon_.ResetTimer(st_.mysideNo_, FALSE);
-
-        //自分でキャッチしたときも音を止める
-        pmgEO_->mgSound_.StopHMNG();
-
-        //★成績//リバウンド
-        if (pmgSG_->stBa_.RbwTNo == st_.mysideNo_)
-        {
-            AddRec(recRebound_c);
-        }
-
-        st_.pmgBa_->baCommon_.SetMTypeHold(st_.mysideNo_, st_.posNo_);
-
-        pmgSG_->stBa_.NGGet_f = FALSE;
-        pmgSG_->stBa_.ShTgTNo = st_.ensideNo_;
-        pmgSG_->stBa_.ShTgPNo = 0;
-        pmgSG_->stBa_.PaTgTNo = st_.mysideNo_;
-        pmgSG_->stBa_.PaTgPNo = 0;
+        CallBallHold();
 
         //拾った瞬間dbaFreeのときはその瞬間のタゲをカーソルキャラに
         //それ以外はfreeに戻ったタイミング
         //chCommon_.
-        SetMukiAgl(
-            (st_.pstMyCh_->Zahyou.Muki == mL),
-            (st_.pstMyCh_->Zahyou.Muki == mR),
-            (st_.pstMyCh_->Zahyou.MukiZ == mzB),
-            (st_.pstMyCh_->Zahyou.MukiZ == mzF));
+        SetMukiAglFromDirection();
 
         //最初のタゲを敵の操作キャラに
         //外野の可能性もでるのでなんとかする
@@ -519,6 +494,392 @@ public partial class CharaBehavior
             }
         }
 #endif // #ifdef __K_DEBUG_SHIAI__
+    }
+
+    private void PaTagSet()
+    {
+        DirectionXType infieldDirectionX = MySideIndex == 0
+            ? DirectionXType.Left
+            : DirectionXType.Right;
+        
+        int ptg =MyState.Order.IsInfield
+            ? GetNaiyaPassTag()
+            : GetGaiyaPassTag();
+
+        pmgSG_->stBa_.PaTgTNo = st_.mysideNo_;
+
+        if (ptg == NGNUM)
+        {
+            //パスタゲがパス出せないとき
+            NGPaTagShift();
+        }
+        else
+        {
+            pmgSG_->stBa_.PaTgPNo = ptg;
+        }
+
+        //パスカットキャラセット
+        PaCtTagSet();
+    }
+
+    //内野パスタゲセット★
+    private int GetNaiyaPassTag()
+    {
+        s32 sltgX[DBMEMBER_INF];
+        s32 sltgZ[DBMEMBER_INF];
+        f32 sltgXZ[DBMEMBER_INF];
+        enNaiyaTag sltg_f[DBMEMBER_INF];
+        s32 tgOrd[DBMEMBER_INF];
+
+        BOOL AllNoTag_f = TRUE; //完全にタゲが居ない
+        BOOL NoTag_f = TRUE; //向き方向にタゲが居ない
+
+        s32 sortDt[DBMEMBER_INF];
+
+        enMukiType paMuki = st_.pstMyCh_->Zahyou.Muki; //向き
+        enMukiZType paMukiZ = st_.pstMyCh_->Zahyou.MukiZ; //奥行き向き
+
+        BOOL CrsL_f = FALSE;
+        BOOL CrsR_f = FALSE;
+        BOOL CrsU_f = FALSE;
+        BOOL CrsD_f = FALSE;
+
+        if (IsSelfCtrl())
+        {
+            CrsL_f = MyPad()->IsPassCrs(dxL); //パス方向入力
+            CrsR_f = MyPad()->IsPassCrs(dxR);
+            CrsU_f = MyPad()->IsPassCrs(dxU);
+            CrsD_f = MyPad()->IsPassCrs(dxD);
+
+            //ここ再チェック
+            if (mid::midIsTBL())
+            {
+                if (CrsL_f)
+                {
+                    paMuki = mL;
+                    //Z方向を無視
+                    if ((CrsU_f || CrsD_f) == FALSE) paMukiZ = mzN;
+                }
+                else if (CrsR_f)
+                {
+                    paMuki = mR;
+                    //Z方向を無視
+                    if ((CrsU_f || CrsD_f) == FALSE) paMukiZ = mzN;
+                }
+
+                if (CrsU_f)
+                {
+                    paMukiZ = mzB;
+                    //X方向を無視
+                    if ((CrsL_f || CrsR_f) == FALSE) paMuki = mN;
+                }
+                else if (CrsD_f)
+                {
+                    paMukiZ = mzF;
+                    //X方向を無視
+                    if ((CrsL_f || CrsR_f) == FALSE) paMuki = mN;
+                }
+            }
+        }
+
+        //内野方向を向いてる
+        BOOL infMuki_f = (((st_.mysideNo_ == 0) && (paMuki == mL))
+                          || ((st_.mysideNo_ == 1) && (paMuki == mR)));
+
+        BOOL infCrs_f = (((st_.mysideNo_ == 0) && CrsL_f)
+                         || ((st_.mysideNo_ == 1) && CrsR_f));
+
+        BOOL enmCrs_f = (((st_.mysideNo_ == 0) && CrsR_f)
+                         || ((st_.mysideNo_ == 1) && CrsL_f));
+
+        //十字入ってない
+        BOOL neutral_f = !(CrsL_f || CrsR_f || CrsU_f || CrsD_f);
+
+        //左コート時、内野内で一番右にいる
+        BOOL topPos_f = TRUE;
+
+        BOOL frontPos_f = TRUE; //一番手前にいる
+        BOOL backPos_f = TRUE; //一番奥にいる
+
+        //ダッシュマンへパス
+        BOOL dashman_f = (st_.pmgMyTm_->st_.pstMyTm_->PosMove.DashmanNum > 0);
+
+        s32 distO2 = abs(st_.pstMyCh_->Zahyou.Z - DBCRT_BL);
+        s32 distO3 = abs(st_.pstMyCh_->Zahyou.Z - DBCRT_FL);
+        BOOL nearO2_f = (distO2 < distO3);
+
+        //優先順位初期化
+        for (s32 i = 0; i < DBMEMBER_INF; ++i)
+        {
+            tgOrd[i] = NGNUM;
+        }
+
+        //内野全員との距離を取る
+        for (s32 i = 0; i < DBMEMBER_INF; ++i)
+        {
+            if (i != st_.posNo_)
+            {
+                //X距離
+                sltgX[i] = (st_.pmgMyTm_->st_.pmgMyCh_[i]->GetLeftCrtX() - GetLeftCrtX()); //自分より右に居れば＋
+                //Z距離
+                sltgZ[i] = (st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.Z - st_.pstMyCh_->Zahyou.Z); //自分より上にいれば＋
+                //距離
+                sltgXZ[i] = lib_num::Hypot(sltgX[i], sltgZ[i]);
+            }
+        }
+
+        //パスが出せるダッシュマンがいるか
+        if (dashman_f) //ダッシュマンへパス
+        {
+            //内野全員との角度を取る
+            for (s32 i = 0; i < DBMEMBER_INF; ++i)
+            {
+                if (i == st_.posNo_)
+                {
+                    sltg_f[i] = TGNG;
+                    continue; //自分
+                }
+
+                if (st_.pmgMyTm_->st_.pmgMyCh_[i]->IsDashman()
+                   )
+                {
+                    //向き方向に居る
+                    sltg_f[i] = TGOK;
+                    NoTag_f = FALSE; //一人でも向き方向にタゲが見つかった
+
+                    //右にダッシュマンがいる
+                    if (st_.pmgMyTm_->st_.pmgMyCh_[i]->GetLeftCrtX() > GetLeftCrtX())
+                    {
+                        topPos_f = FALSE;
+                    }
+
+                    //奥にダッシュマンがいる
+                    if (st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.Z > st_.pstMyCh_->Zahyou.Z)
+                    {
+                        backPos_f = FALSE;
+                    }
+
+                    //手前にダッシュマンがいる
+                    if (st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.Z < st_.pstMyCh_->Zahyou.Z)
+                    {
+                        frontPos_f = FALSE;
+                    }
+                }
+                else
+                {
+                    sltg_f[i] = TGNG;
+                }
+            }
+            //パスが出せるダッシュマンがいない
+            if (NoTag_f) dashman_f = FALSE;
+        }
+
+        //最終的にダッシュマンいない
+        if (dashman_f == FALSE)
+        {
+            //内野全員との角度を取る
+            for (s32 i = 0; i < DBMEMBER_INF; ++i)
+            {
+                if (IsNGPassTag(i))
+                {
+                    sltg_f[i] = TGNG;
+                    continue;
+                }
+                else if (IsCheckNoAgl(st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.X, st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.Z))
+                {
+                    //向きに居ない
+                    sltg_f[i] = TGNOAGL;
+                }
+                else
+                {
+                    //向き方向に居る
+                    sltg_f[i] = TGOK;
+                    NoTag_f = FALSE; //一人でも向き方向にタゲが見つかった
+                }
+
+                AllNoTag_f = FALSE; //一応タゲ可能は人はいる
+
+                //誰か右にいる
+                if (st_.pmgMyTm_->st_.pmgMyCh_[i]->GetLeftCrtX() > GetLeftCrtX())
+                {
+                    topPos_f = FALSE;
+                }
+
+                //奥にいる
+                if (st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.Z > st_.pstMyCh_->Zahyou.Z)
+                {
+                    backPos_f = FALSE;
+                }
+
+                //手前にいる
+                if (st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.Z < st_.pstMyCh_->Zahyou.Z)
+                {
+                    frontPos_f = FALSE;
+                }
+            }
+        }
+
+        //ダッシュマンいるとき
+        if (dashman_f)
+        {
+            if (topPos_f && enmCrs_f) //先頭で右→が入ってるのときのみ
+            {
+                if (CrsU_f)
+                {
+                    return (s32)dbpoO2; //右上
+                }
+                else if (CrsD_f)
+                {
+                    return (s32)dbpoO3; //右下
+                }
+                else //右のみ
+                {
+                    if (nearO2_f)
+                    {
+                        return (s32)dbpoO2;
+                    }
+                    else
+                    {
+                        return (s32)dbpoO3;
+                    }
+                }
+            }
+
+            if (frontPos_f) //一番手前に居る
+            {
+                if (CrsD_f)
+                {
+                    return (s32)dbpoO3; //右下
+                }
+            }
+
+            if (backPos_f) //一番奥に居る
+            {
+                if (CrsU_f)
+                {
+                    return (s32)dbpoO2; //右下
+                }
+            }
+        }
+        else if (((infMuki_f == FALSE) && topPos_f) || AllNoTag_f) //右向き時しかも先頭もしくは孤立(→外野パス)
+        {
+            if (st_.pstMyCh_->Motion.Mtype == dbmtDs) //ダッシュ中
+            {
+                if (IsSelfCtrl())
+                {
+                    if (CrsU_f) return (s32)dbpoO2; //上
+                    if (CrsD_f) return (s32)dbpoO3; //下
+                    if (enmCrs_f) return (s32)dbpoO4; //右
+                    if (nearO2_f)
+                    {
+                        return (s32)dbpoO2;
+                    }
+                    else
+                    {
+                        return (s32)dbpoO3;
+                    }
+                }
+                else
+                {
+                    switch (st_.pstMyCh_->Auto.AMukiZ)
+                    {
+                        case mzaB: return (s32)dbpoO2;
+                        case mzaF: return (s32)dbpoO3;
+                    }
+                }
+            }
+            else
+            {
+                switch (paMukiZ)
+                {
+                    case mzB: return (s32)dbpoO2;
+                    case mzF: return (s32)dbpoO3;
+                    default:
+                        if (enmCrs_f) return (s32)dbpoO4; //右
+                        if (nearO2_f)
+                        {
+                            return (s32)dbpoO2;
+                        }
+                        else
+                        {
+                            return (s32)dbpoO3;
+                        }
+                        break;
+                }
+            }
+            //しかも先頭もしくは孤立は4番でFA
+            return (s32)dbpoO4;
+        }
+
+        s32 f = 0;
+        for (s32 i = 0; i < DBMEMBER_INF; ++i)
+        {
+            //向き方向に人なしのとき
+
+            sortDt[i] = 0; //初期化
+
+            if ((sltg_f[i] == TGOK)
+                || (NoTag_f && (sltg_f[i] != TGNG)))
+            {
+                if (neutral_f) //ニュートラル
+                {
+                    sortDt[i] = (s32)sltgXZ[i]; //内野間は距離が近い人
+                }
+                else
+                {
+                    //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
+                    s32 tgZ = (dashman_f)
+                        ? st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->DashmanTgZ
+                        : st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.Z;
+
+                    //上
+                    if (CrsU_f)
+                    {
+                        sortDt[i] = -tgZ; //Ｚのマイナス（上ほど優先）
+                    }
+                    else if (CrsD_f) //下
+                    {
+                        sortDt[i] = +tgZ; //Ｚ（下ほど優先）
+                    }
+
+                    //上下が入ってるとき用に合計値
+                    if (CrsL_f) //左
+                    {
+                        sortDt[i] += (st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.X); //Ｘ（左ほど優先）
+                    }
+                    else if (CrsR_f) //右
+                    {
+                        sortDt[i] -= (st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.X); //Ｘのマイナス（右ほど優先）
+                    }
+                }
+                tgOrd[f++] = i;
+            }
+        }
+
+        //ソート
+        for (s32 i = 0; i < (DBMEMBER_INF - 1); ++i)
+        {
+            for (s32 i2 = 0; i2 < (DBMEMBER_INF - 1); i2++)
+            {
+                if (i == i2) continue; //同じ
+
+                if ((tgOrd[i] != NGNUM) && (tgOrd[i2] != NGNUM))
+                {
+                    if (sortDt[tgOrd[i]] < sortDt[tgOrd[i2]]) //小さい方優先
+                    {
+                        s32 tmp;
+                        tmp = tgOrd[i2];
+                        tgOrd[i2] = tgOrd[i];
+                        tgOrd[i] = tmp;
+                    }
+                }
+            }
+        }
+
+        //ソート１位
+        s32 res = tgOrd[0];
+
+        return res;
     }
 
     private void HoldBallSetMirrorState()
@@ -580,10 +941,7 @@ public partial class CharaBehavior
         if (isChanged)
         {
             //タゲも変える
-            SetMukiAgl(MyState.Coordinate.DirectionX == DirectionXType.Left,
-                MyState.Coordinate.DirectionX == DirectionXType.Right,
-                MyState.Coordinate.DirectionZ == DirectionZType.Backward,
-                MyState.Coordinate.DirectionZ == DirectionZType.Forward);
+            SetMukiAglFromDirection();
         }
 
         return isChanged;
@@ -606,6 +964,14 @@ public partial class CharaBehavior
             DirectionZType.Backward => DirectionZType.Backward,
             _ => throw new ArgumentOutOfRangeException()
         };
+    }
+
+    private void SetMukiAglFromDirection()
+    {
+        SetMukiAgl(MyState.Coordinate.DirectionX == DirectionXType.Left,
+            MyState.Coordinate.DirectionX == DirectionXType.Right,
+            MyState.Coordinate.DirectionZ == DirectionZType.Backward,
+            MyState.Coordinate.DirectionZ == DirectionZType.Forward);
     }
 
     //ターゲッティング用向き

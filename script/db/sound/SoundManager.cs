@@ -29,4 +29,9 @@ public class SoundManager
     {
         // 全ての音声停止処理
     }
+    
+    public void StopHomingSe()
+    {
+        // SE再生処理
+    }
 }
