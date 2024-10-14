@@ -4,7 +4,7 @@ namespace db;
 
 public partial class CharaBehavior
 {
-    
+
     /// <summary>
     /// ボールとの距離を計算
     /// </summary>
@@ -36,8 +36,5 @@ public partial class CharaBehavior
         MyState.Distance.Set(ballDist, ballLandDist, ballLandLineDist);
     }
 
-    private IPad MyPad()
-    {
-        
-    }
+    private IPad MyPad => PadBehaviorManager.Instance.Get(MySideIndex).Pad;
 }

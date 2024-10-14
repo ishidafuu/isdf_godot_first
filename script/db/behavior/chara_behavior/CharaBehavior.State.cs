@@ -9,81 +9,81 @@ public partial class CharaBehavior
     /// サイド操作権を渡せるキャラか
     /// 死亡していない、ダメージ中でない、手動操作中でない
     /// </summary>
-    private bool CanControl => MyState.Live.IsDead == false
+    public bool CanControl => MyState.Live.IsDead == false
                                && MyState.Motion.HasFlag(CharaMotionFlag.Dam) == false
                                && MyState.Pad.IsManualControl == false;
 
     /// <summary>
     /// 操作権キャラ
     /// </summary>
-    private bool IsControl => MyTeamState.MainState.ControlOrderIndex == OrderIndex;
+    public bool IsControl => MyTeamState.MainState.ControlOrderIndex == OrderIndex;
 
     /// <summary>
     /// COM操作中かどうか
     /// </summary>
-    private bool IsCom => MyState.Pad.IsManualControl == false || MyTeamState.IsCom();
+    public bool IsCom => MyState.Pad.IsManualControl == false || MyTeamState.IsCom();
 
     /// <summary>
     /// 自分で操作するキャラかどうか
     /// </summary>
-    private bool IsSelfControl => MyState.Pad.IsManualControl
+    public bool IsSelfControl => MyState.Pad.IsManualControl
                                   || (IsControl && IsCom == false);
 
     /// <summary>
     /// ボール持ちかどうか
     /// </summary>
-    private bool IsBallHolder => BallState.IsBallHolder(MySideIndex, OrderIndex);
+    public bool IsBallHolder => BallState.IsBallHolder(MySideIndex, OrderIndex);
 
     /// <summary>
     /// 自分がシュートターゲット
     /// </summary>
-    private bool IsShotTarget => BallState.IsShotTarget(MySideIndex, OrderIndex);
+    public bool IsShotTarget => BallState.IsShotTarget(MySideIndex, OrderIndex);
 
     /// <summary>
     /// 自分がパスターゲット
     /// </summary>
-    private bool IsPassTarget => BallState.IsPassTarget(MySideIndex, OrderIndex);
+    public bool IsPassTarget => BallState.IsPassTarget(MySideIndex, OrderIndex);
 
     /// <summary>
     /// パス待ち状態
     /// </summary>
-    private bool IsPassWait => IsPassTarget
+    public bool IsPassWait => IsPassTarget
                                && IsBallHolder == false
                                && MyState.Pad.IsManualControl;
 
     /// <summary>
     /// かがみ中（予約中）かどうか
     /// </summary>
-    private bool IsKagami => MyState.Damage.KagamiCount.Value > 0;
+    public bool IsKagami => MyState.Damage.KagamiCount.Value > 0;
 
     /// <summary>
     /// 現在のモーションデータ
     /// </summary>
     /// <returns></returns>
-    private BaseMotionData CurrentBaseMotionData => MasterManager.Instance.BaseMotionMaster.Get(MyState.Motion.MotionType);
+    public BaseMotionData CurrentBaseMotionData => MasterManager.Instance.BaseMotionMaster.Get(MyState.Motion.MotionType);
 
     /// <summary>
     /// 現在のモーションのコマデータ
     /// </summary>
     /// <returns></returns>
-    private BaseMotionKomaData CurrentBaseMotionKoma => CurrentBaseMotionData.Get(MyState.Motion.KomaNo.Value);
+    public BaseMotionKomaData CurrentBaseMotionKoma => CurrentBaseMotionData.Get(MyState.Motion.KomaNo.Value);
 
     /// <summary>
     /// 現在のモーションのコマデータ
     /// </summary>
     /// <returns></returns>
-    private BaseMotionKomaData NextBaseMotionKoma => CurrentBaseMotionData.Get(MyState.Motion.KomaNo.Value);
+    public BaseMotionKomaData NextBaseMotionKoma => CurrentBaseMotionData.Get(MyState.Motion.KomaNo.Value);
 
     /// <summary>
     /// 最終コマか
     /// </summary>
-    private bool IsLastKoma => MyState.Motion.KomaNo.Value == CurrentBaseMotionData.KomaCount - 1;
+    public bool IsLastKoma => MyState.Motion.KomaNo.Value == CurrentBaseMotionData.KomaCount - 1;
 
     /// <summary>
     /// ダッシュマン（メンバー操作も含む）
     /// </summary>
     /// <returns></returns>
-    private bool IsDashman
+    public bool IsDashman
     {
         get
         {
@@ -127,7 +127,7 @@ public partial class CharaBehavior
     /// 左側コート換算でのX座標
     /// </summary>
     /// <returns></returns>
-    private int LeftCourtX
+    public int LeftCourtX
     {
         get
         {
@@ -142,7 +142,7 @@ public partial class CharaBehavior
     /// <summary>
     /// 自由状態かどうか
     /// </summary>
-    private bool IsFree(bool isCheckAutoType)
+    public bool IsFree(bool isCheckAutoType)
     {
         if (MyState.Live.IsDead
             || !MyState.Live.IsAlive
@@ -175,7 +175,7 @@ public partial class CharaBehavior
     /// ダッシュ加速ボタンが押されているか
     /// </summary>
     /// <returns></returns>
-    private bool IsPressedDashAccelKey
+    public bool IsPressedDashAccelKey
     {
         get
         {
@@ -185,8 +185,8 @@ public partial class CharaBehavior
                 return false;
             }
 
-            return MyState.Coordinate.DashDirection == DirectionXType.Left && MyState.Pad.Pad.KeyLeft.IsPressed
-                   || MyState.Coordinate.DashDirection == DirectionXType.Right && MyState.Pad.Pad.KeyRight.IsPressed;
+            return MyState.Coordinate.DashDirection == DirectionXType.Left && MyPad.KeyLeft.IsPressed
+                   || MyState.Coordinate.DashDirection == DirectionXType.Right && MyPad.KeyRight.IsPressed;
         }
     }
 
@@ -194,7 +194,7 @@ public partial class CharaBehavior
     /// 敵コート方向継続ダッシュ可能状態
     /// </summary>
     /// <returns></returns>
-    private bool CanContinuationDash
+    public bool CanContinuationDash
     {
         get
         {

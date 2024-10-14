@@ -195,7 +195,7 @@ public partial class CharaBehavior
             case CharaMotionType.Pa:
             case CharaMotionType.JPa:
                 // 指が離れたらクイックパス
-                if (IsSelfControl && MyState.Pad.Pad.ButtonA.IsPressed == false)
+                if (IsSelfControl && MyPad.ButtonA.IsPressed == false)
                 {
                     MyState.Pass.IsTossPass = false;
                 }

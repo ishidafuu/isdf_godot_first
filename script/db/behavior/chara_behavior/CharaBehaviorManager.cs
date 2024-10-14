@@ -12,6 +12,20 @@ public class CharaBehaviorManager
 
     public CharaBehavior[] GetAllCharas() => _allCharas;
 
+    public CharaBehavior GetChara(int sideIndex, int orderIndex)
+    {
+        foreach (var chara in _allCharas)
+        {
+            if (chara.MySideIndex == sideIndex
+                && chara.OrderIndex == orderIndex)
+            {
+                return chara;
+            }
+        }
+
+        return null;
+    }
+
     private CharaBehaviorManager()
     {
         SetupAll();
@@ -32,7 +46,7 @@ public class CharaBehaviorManager
             chara.UpdateProgress();
         }
     }
-    
+
     public void UpdateActionInput()
     {
         foreach (var chara in _allCharas)

@@ -10,18 +10,18 @@ public class CharaPadState
     /// <summary>
     /// 操作キャラ
     /// </summary>
-    public bool IsManualControl;
+    public bool IsManualControl { get; set; }
 
-    public int PadNo;
-
-    // public TMgPad pCharPad_; // パッド
-    public IPad Pad;
+    // public int PadNo;
+    //
+    // // public TMgPad pCharPad_; // パッド
+    // public IPad Pad;
 
     public void Initialize()
     {
         IsManualControl = false;
-        PadNo = 0;
+        // PadNo = 0;
     }
 
-    public bool IsValid => Pad != null;
+    // public bool IsValid => Pad != null;
 }

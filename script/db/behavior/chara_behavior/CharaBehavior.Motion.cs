@@ -744,11 +744,11 @@ public partial class CharaBehavior
             var zSign = 0;
             if (IsControl && IsCom == false)
             {
-                if (MyState.Pad.Pad.KeyUp.IsPressed)
+                if (MyPad.KeyUp.IsPressed)
                 {
                     zSign = +1;
                 }
-                else if (MyState.Pad.Pad.KeyDown.IsPressed)
+                else if (MyPad.KeyDown.IsPressed)
                 {
                     zSign = -1;
                 }
@@ -763,20 +763,20 @@ public partial class CharaBehavior
             var zSign = 0;
             if (IsCom == false && (IsFree(true) || MyState.Auto.IsFreeAction))
             {
-                if (orderType != OrderType.Outfield2 && MyState.Pad.Pad.KeyUp.IsPressed)
+                if (orderType != OrderType.Outfield2 && MyPad.KeyUp.IsPressed)
                 {
                     zSign = +1;
                 }
-                else if (orderType != OrderType.Outfield3 && MyState.Pad.Pad.KeyDown.IsPressed)
+                else if (orderType != OrderType.Outfield3 && MyPad.KeyDown.IsPressed)
                 {
                     zSign = -1;
                 }
 
-                if ((MySideIndex == 1 || orderType != OrderType.Outfield4) && MyState.Pad.Pad.KeyRight.IsPressed)
+                if ((MySideIndex == 1 || orderType != OrderType.Outfield4) && MyPad.KeyRight.IsPressed)
                 {
                     xSign = +1;
                 }
-                else if ((MySideIndex == 0 || orderType != OrderType.Outfield4) && MyState.Pad.Pad.KeyLeft.IsPressed)
+                else if ((MySideIndex == 0 || orderType != OrderType.Outfield4) && MyPad.KeyLeft.IsPressed)
                 {
                     xSign = -1;
                 }
