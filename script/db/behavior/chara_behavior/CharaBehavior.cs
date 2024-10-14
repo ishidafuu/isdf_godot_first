@@ -17,7 +17,7 @@ public partial class CharaBehavior
     private TeamState MyTeamState => TeamStateManager.Instance.Get(MySideIndex);
     private ComState MyComState => ComStateManager.Instance.Get(MySideIndex);
     private TeamState EnemyTeamState => TeamStateManager.Instance.Get(EnemySideIndex);
-    private TeamBehavior MyTeamBehavior => TeamBehaviorManager.Instance.Get(MySideIndex);
+    private PadBehavior MyPadBehavior => TeamBehaviorManager.Instance.Get(MySideIndex);
 
     public CharaBehavior()
     {

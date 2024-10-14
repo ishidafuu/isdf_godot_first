@@ -1,4 +1,6 @@
-﻿namespace db;
+﻿using isdf;
+
+namespace db;
 
 public partial class CharaBehavior
 {
@@ -32,5 +34,10 @@ public partial class CharaBehavior
         }
 
         MyState.Distance.Set(ballDist, ballLandDist, ballLandLineDist);
+    }
+
+    private IPad MyPad()
+    {
+        
     }
 }

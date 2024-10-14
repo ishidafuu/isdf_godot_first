@@ -36,7 +36,7 @@ public partial class CharaBehavior
                 }
                 else
                 {
-                    //       if ((IsBall() == FALSE)
+                    //       if ((IsBall() == false)
                     //         && (st_.pstMyCh_->Motion.Mtype == dbmtJDg))
                     //       {
                     //         st_.pstMyCh_->Anime.Ani_c = 0;//こうやる必要ないか？
@@ -92,14 +92,14 @@ public partial class CharaBehavior
         //   {
         //     //自由
         //   case dbatFree:
-        //     if (IsSelfCtrl())
+        //     if (IsSelfControl)
         //     {
         //       //自分で操作**********
         //       pCommon_->SelfCtrl(ATType);
         //     }
         //     else
         //     {
-        //       if ((IsBall() == FALSE)
+        //       if ((IsBall() == false)
         //         && (st_.pstMyCh_->Motion.Mtype == dbmtJDg))
         //       {
         //         st_.pstMyCh_->Anime.Ani_c = 0;//こうやる必要ないか？
@@ -118,11 +118,11 @@ public partial class CharaBehavior
         //
         //     //戻り
         //   case dbatReturn:
-        //     if (IsSelfCtrl()//←いらないかも
-        //       || (IsCOM() == FALSE))
+        //     if (IsSelfControl//←いらないかも
+        //       || (IsCOM() == false))
         //     {
         //
-        //       BOOL muki_f = ((st_.mysideNo_ == 0) && (st_.pstMyCh_->Zahyou.Muki == mL))
+        //       bool muki_f = ((st_.mysideNo_ == 0) && (st_.pstMyCh_->Zahyou.Muki == mL))
         //         || ((st_.mysideNo_ == 1) && (st_.pstMyCh_->Zahyou.Muki == mR));
         //
         //       switch (st_.pstMyCh_->Motion.Mtype)
@@ -133,27 +133,27 @@ public partial class CharaBehavior
         //       case dbmtWk:
         //       case dbmtDs:
         //       case dbmtSl://スリップも追加オーバーラインの瞬間なぞのキャッチできてしまう
-        //         if ((st_.pstMyCh_->ECDdg_f == FALSE) && (ecdgOK_f))
+        //         if ((st_.pstMyCh_->ECDdg_f == false) && (ecdgOK_f))
         //         {
         //           if (MyPad()->IsJump()//ジャンプ入力
         //             && muki_f
-        //             && (st_.pstMyCh_->ECDjp_f == FALSE))
+        //             && (st_.pstMyCh_->ECDjp_f == false))
         //           {
-        //             pCommon_->JumpSet(FALSE, FALSE, FALSE);//ジャンプ
+        //             pCommon_->JumpSet(false, false, false);//ジャンプ
         //             //mid::midLog("J0\n");
-        //             st_.pstMyCh_->ECDdg_f = TRUE;//１回だけ
-        //             st_.pstMyCh_->ECDjp_f = TRUE;//１回だけ
+        //             st_.pstMyCh_->ECDdg_f = true;//１回だけ
+        //             st_.pstMyCh_->ECDjp_f = true;//１回だけ
         //           }
         //           else if (MyPad()->IsDodge())//よけ
         //           {
         //             pCommon_->SetMtype(dbmtDg);
-        //             st_.pstMyCh_->ECDdg_f = TRUE;//１回だけ
+        //             st_.pstMyCh_->ECDdg_f = true;//１回だけ
         //           }
         //           //else if (MyPad()->IsCatch())//キャッチ入力
         //           //{
         //           //  pCommon_->SetCatchMuki();
         //           //  pCommon_->SetMtype(dbmtCa);
-        //           //  st_.pstMyCh_->ECDdg_f = TRUE;//１回だけ
+        //           //  st_.pstMyCh_->ECDdg_f = true;//１回だけ
         //           //}
         //
         //           if (st_.pstMyCh_->ECDdg_f)
@@ -166,17 +166,17 @@ public partial class CharaBehavior
         //         break;
         //       case dbmtSh:
         //       case dbmtPa:
-        //         if (ecdgOK_f) pCommon_->CanselJump(FALSE);
+        //         if (ecdgOK_f) pCommon_->CanselJump(false);
         //         break;
         //       case dbmtCa:
         //       case dbmtJCa:
-        //         if ((st_.pstMyCh_->ECDjp_f == FALSE) && ecdgOK_f)
+        //         if ((st_.pstMyCh_->ECDjp_f == false) && ecdgOK_f)
         //         {
         //           //mid::midLog("J1\n");
-        //           if (pCommon_->CanselJump(FALSE) && muki_f)
+        //           if (pCommon_->CanselJump(false) && muki_f)
         //           {
-        //             st_.pstMyCh_->ECDjp_f = TRUE;//１回だけ
-        //             st_.pstMyCh_->ECDdg_f = TRUE;//１回だけ
+        //             st_.pstMyCh_->ECDjp_f = true;//１回だけ
+        //             st_.pstMyCh_->ECDdg_f = true;//１回だけ
         //           }
         //           else
         //           {
@@ -186,13 +186,13 @@ public partial class CharaBehavior
         //         //オーバラインは審判息なのでもう不要
         //         break;
         //       case dbmtDg:
-        //         if ((st_.pstMyCh_->ECDjp_f == FALSE) && ecdgOK_f)
+        //         if ((st_.pstMyCh_->ECDjp_f == false) && ecdgOK_f)
         //         {
         //           //mid::midLog("J2\n");
-        //           if (pCommon_->CanselJump(FALSE) && muki_f)
+        //           if (pCommon_->CanselJump(false) && muki_f)
         //           {
-        //             st_.pstMyCh_->ECDjp_f = TRUE;//１回だけ
-        //             st_.pstMyCh_->ECDdg_f = TRUE;//１回だけ
+        //             st_.pstMyCh_->ECDjp_f = true;//１回だけ
+        //             st_.pstMyCh_->ECDdg_f = true;//１回だけ
         //           }
         //           else
         //           {
@@ -227,7 +227,7 @@ public partial class CharaBehavior
         //   case dbatDg:
         //   {
         //     //COMの的コートオートよけ
-        //     if ((IsSelfCtrl() == FALSE)
+        //     if ((IsSelfControl == false)
         //       && (pmgSG_->stBa_.Motion == bmShoot)
         //       && (ecdgOK_f))
         //     {
@@ -236,11 +236,11 @@ public partial class CharaBehavior
         //       case dbmtSt:
         //       case dbmtWk:
         //       case dbmtDs:
-        //         if (st_.pstMyCh_->ECDdg_f == FALSE)
+        //         if (st_.pstMyCh_->ECDdg_f == false)
         //         {
         //           pCommon_->SetMtype(dbmtDg);
         //           pCommon_->CatchSE();
-        //           //st_.pstMyCh_->ECDdg_f = TRUE;//１回だけ
+        //           //st_.pstMyCh_->ECDdg_f = true;//１回だけ
         //         }
         //         break;
         //       case dbmtDg:
@@ -441,17 +441,17 @@ public partial class CharaBehavior
 
         //最初のタゲを敵の操作キャラに
         //外野の可能性もでるのでなんとかする
-        //ShTagSet(FALSE); //拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
+        //ShTagSet(false); //拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
         PaTagSet();
 
         //拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
-        if (st_.pmgEnTm_->IsAllDead() == FALSE)
+        if (st_.pmgEnTm_->IsAllDead() == false)
         {
             //シュートタゲは向き反映
-            s32 tstg = GetTag(FALSE);
+            s32 tstg = GetTag(false);
             if (tstg == NGNUM)
             {
-                if (IsSelfCtrl() == FALSE)
+                if (IsSelfControl == false)
                 {
                     //CPUだけ無理矢理。後で外すかも
                     pmgSG_->stBa_.ShTgTNo = st_.ensideNo_;
@@ -466,7 +466,7 @@ public partial class CharaBehavior
             }
 
             //カーソルは強制的に内野
-            s32 tEnctrl = GetTag(TRUE);
+            s32 tEnctrl = GetTag(true);
             if (tEnctrl != NGNUM) //ないとはおもうが
             {
                 st_.pmgEnTm_->SetCtrl(tEnctrl);
@@ -479,7 +479,7 @@ public partial class CharaBehavior
             if (st_.posNo_ != 0)
             {
                 // ボールが手元に帰ってくる処理
-                pmgGO_->pmgBa_->baCommon_.ResetRefPos_Prev(FALSE);
+                pmgGO_->pmgBa_->baCommon_.ResetRefPos_Prev(false);
 
                 // 操作キャラを強制的にボール持ってる人に
                 //st_.pmgTm_[SIDE0]->st_.pmgMyTm_->SetCtrlBallGet(0);
@@ -489,7 +489,7 @@ public partial class CharaBehavior
             s32 step = pDs->GetAutoShootStep();
             if (step == kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_WAIT)
             {
-                pDs->SetReturnBallFlg(FALSE); // フラグを落とす
+                pDs->SetReturnBallFlg(false); // フラグを落とす
                 pDs->SetAutoShootStep(kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_CHOOSE);
             }
         }
@@ -501,8 +501,8 @@ public partial class CharaBehavior
         DirectionXType infieldDirectionX = MySideIndex == 0
             ? DirectionXType.Left
             : DirectionXType.Right;
-        
-        int ptg =MyState.Order.IsInfield
+
+        int ptg = MyState.Order.IsInfield
             ? GetNaiyaPassTag()
             : GetGaiyaPassTag();
 
@@ -525,26 +525,19 @@ public partial class CharaBehavior
     //内野パスタゲセット★
     private int GetNaiyaPassTag()
     {
-        s32 sltgX[DBMEMBER_INF];
-        s32 sltgZ[DBMEMBER_INF];
-        f32 sltgXZ[DBMEMBER_INF];
-        enNaiyaTag sltg_f[DBMEMBER_INF];
-        s32 tgOrd[DBMEMBER_INF];
+        var AllNoTag_f = true; //完全にタゲが居ない
+        var NoTag_f = true; //向き方向にタゲが居ない
 
-        BOOL AllNoTag_f = TRUE; //完全にタゲが居ない
-        BOOL NoTag_f = TRUE; //向き方向にタゲが居ない
+        var passDirectionX = MyState.Coordinate.DirectionX;
+        var passDirectionZ = MyState.Coordinate.DirectionZ;
 
-        s32 sortDt[DBMEMBER_INF];
-
-        enMukiType paMuki = st_.pstMyCh_->Zahyou.Muki; //向き
-        enMukiZType paMukiZ = st_.pstMyCh_->Zahyou.MukiZ; //奥行き向き
-
-        BOOL CrsL_f = FALSE;
-        BOOL CrsR_f = FALSE;
-        BOOL CrsU_f = FALSE;
-        BOOL CrsD_f = FALSE;
-
-        if (IsSelfCtrl())
+        var CrsL_f = false;
+        var CrsR_f = false;
+        var CrsU_f = false;
+        var CrsD_f = false;
+        
+        
+        if (IsSelfControl)
         {
             CrsL_f = MyPad()->IsPassCrs(dxL); //パス方向入力
             CrsR_f = MyPad()->IsPassCrs(dxR);
@@ -558,55 +551,55 @@ public partial class CharaBehavior
                 {
                     paMuki = mL;
                     //Z方向を無視
-                    if ((CrsU_f || CrsD_f) == FALSE) paMukiZ = mzN;
+                    if ((CrsU_f || CrsD_f) == false) paMukiZ = mzN;
                 }
                 else if (CrsR_f)
                 {
                     paMuki = mR;
                     //Z方向を無視
-                    if ((CrsU_f || CrsD_f) == FALSE) paMukiZ = mzN;
+                    if ((CrsU_f || CrsD_f) == false) paMukiZ = mzN;
                 }
 
                 if (CrsU_f)
                 {
                     paMukiZ = mzB;
                     //X方向を無視
-                    if ((CrsL_f || CrsR_f) == FALSE) paMuki = mN;
+                    if ((CrsL_f || CrsR_f) == false) paMuki = mN;
                 }
                 else if (CrsD_f)
                 {
                     paMukiZ = mzF;
                     //X方向を無視
-                    if ((CrsL_f || CrsR_f) == FALSE) paMuki = mN;
+                    if ((CrsL_f || CrsR_f) == false) paMuki = mN;
                 }
             }
         }
 
         //内野方向を向いてる
-        BOOL infMuki_f = (((st_.mysideNo_ == 0) && (paMuki == mL))
+        bool infMuki_f = (((st_.mysideNo_ == 0) && (paMuki == mL))
                           || ((st_.mysideNo_ == 1) && (paMuki == mR)));
 
-        BOOL infCrs_f = (((st_.mysideNo_ == 0) && CrsL_f)
+        bool infCrs_f = (((st_.mysideNo_ == 0) && CrsL_f)
                          || ((st_.mysideNo_ == 1) && CrsR_f));
 
-        BOOL enmCrs_f = (((st_.mysideNo_ == 0) && CrsR_f)
+        bool enmCrs_f = (((st_.mysideNo_ == 0) && CrsR_f)
                          || ((st_.mysideNo_ == 1) && CrsL_f));
 
         //十字入ってない
-        BOOL neutral_f = !(CrsL_f || CrsR_f || CrsU_f || CrsD_f);
+        bool neutral_f = !(CrsL_f || CrsR_f || CrsU_f || CrsD_f);
 
         //左コート時、内野内で一番右にいる
-        BOOL topPos_f = TRUE;
+        bool topPos_f = true;
 
-        BOOL frontPos_f = TRUE; //一番手前にいる
-        BOOL backPos_f = TRUE; //一番奥にいる
+        bool frontPos_f = true; //一番手前にいる
+        bool backPos_f = true; //一番奥にいる
 
         //ダッシュマンへパス
-        BOOL dashman_f = (st_.pmgMyTm_->st_.pstMyTm_->PosMove.DashmanNum > 0);
+        bool dashman_f = (st_.pmgMyTm_->st_.pstMyTm_->PosMove.DashmanNum > 0);
 
         s32 distO2 = abs(st_.pstMyCh_->Zahyou.Z - DBCRT_BL);
         s32 distO3 = abs(st_.pstMyCh_->Zahyou.Z - DBCRT_FL);
-        BOOL nearO2_f = (distO2 < distO3);
+        bool nearO2_f = (distO2 < distO3);
 
         //優先順位初期化
         for (s32 i = 0; i < DBMEMBER_INF; ++i)
@@ -645,24 +638,24 @@ public partial class CharaBehavior
                 {
                     //向き方向に居る
                     sltg_f[i] = TGOK;
-                    NoTag_f = FALSE; //一人でも向き方向にタゲが見つかった
+                    NoTag_f = false; //一人でも向き方向にタゲが見つかった
 
                     //右にダッシュマンがいる
                     if (st_.pmgMyTm_->st_.pmgMyCh_[i]->GetLeftCrtX() > GetLeftCrtX())
                     {
-                        topPos_f = FALSE;
+                        topPos_f = false;
                     }
 
                     //奥にダッシュマンがいる
                     if (st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.Z > st_.pstMyCh_->Zahyou.Z)
                     {
-                        backPos_f = FALSE;
+                        backPos_f = false;
                     }
 
                     //手前にダッシュマンがいる
                     if (st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.Z < st_.pstMyCh_->Zahyou.Z)
                     {
-                        frontPos_f = FALSE;
+                        frontPos_f = false;
                     }
                 }
                 else
@@ -671,11 +664,11 @@ public partial class CharaBehavior
                 }
             }
             //パスが出せるダッシュマンがいない
-            if (NoTag_f) dashman_f = FALSE;
+            if (NoTag_f) dashman_f = false;
         }
 
         //最終的にダッシュマンいない
-        if (dashman_f == FALSE)
+        if (dashman_f == false)
         {
             //内野全員との角度を取る
             for (s32 i = 0; i < DBMEMBER_INF; ++i)
@@ -694,27 +687,27 @@ public partial class CharaBehavior
                 {
                     //向き方向に居る
                     sltg_f[i] = TGOK;
-                    NoTag_f = FALSE; //一人でも向き方向にタゲが見つかった
+                    NoTag_f = false; //一人でも向き方向にタゲが見つかった
                 }
 
-                AllNoTag_f = FALSE; //一応タゲ可能は人はいる
+                AllNoTag_f = false; //一応タゲ可能は人はいる
 
                 //誰か右にいる
                 if (st_.pmgMyTm_->st_.pmgMyCh_[i]->GetLeftCrtX() > GetLeftCrtX())
                 {
-                    topPos_f = FALSE;
+                    topPos_f = false;
                 }
 
                 //奥にいる
                 if (st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.Z > st_.pstMyCh_->Zahyou.Z)
                 {
-                    backPos_f = FALSE;
+                    backPos_f = false;
                 }
 
                 //手前にいる
                 if (st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.Z < st_.pstMyCh_->Zahyou.Z)
                 {
-                    frontPos_f = FALSE;
+                    frontPos_f = false;
                 }
             }
         }
@@ -761,11 +754,11 @@ public partial class CharaBehavior
                 }
             }
         }
-        else if (((infMuki_f == FALSE) && topPos_f) || AllNoTag_f) //右向き時しかも先頭もしくは孤立(→外野パス)
+        else if (((infMuki_f == false) && topPos_f) || AllNoTag_f) //右向き時しかも先頭もしくは孤立(→外野パス)
         {
             if (st_.pstMyCh_->Motion.Mtype == dbmtDs) //ダッシュ中
             {
-                if (IsSelfCtrl())
+                if (IsSelfControl)
                 {
                     if (CrsU_f) return (s32)dbpoO2; //上
                     if (CrsD_f) return (s32)dbpoO3; //下
@@ -1077,48 +1070,48 @@ public partial class CharaBehavior
 //         //モーション変更前の向き
 //         enMukiType lastMuki = st_.pstMyCh_->Zahyou.Muki;
 //         enMukiZType lastMukiZ = st_.pstMyCh_->Zahyou.MukiZ;
-//         BOOL LastMukiKeep_f = FALSE;
-//         BOOL autoPickUp_f = TRUE;
-//         BOOL atlook_f = MyPad()->IsAutoLook(); //自動タゲ向き（ニュートラル）
+//         bool LastMukiKeep_f = false;
+//         bool autoPickUp_f = true;
+//         bool atlook_f = MyPad()->IsAutoLook(); //自動タゲ向き（ニュートラル）
 //
 //         //プレビュー中パス禁止
-//         BOOL pabtn_f = MyPad()->IsPass() && (pmgGO_->pmgRf_->IsPrev() == FALSE);
-//         BOOL pabtn2_f = MyPad()->IsPass2() && (pmgGO_->pmgRf_->IsPrev() == FALSE);
-//         BOOL dgbtn_f = MyPad()->IsDodge();
-//         BOOL dgbtn2_f = MyPad()->IsDodge2();
-//         BOOL cabtn_f = MyPad()->IsCatch();
-//         BOOL shbtn_f = MyPad()->IsShot();
-//         BOOL shbtn2_f = MyPad()->IsShot2();
-//         BOOL uppos_f = (pabtn_f || dgbtn_f);
-//         BOOL dnpos_f = (cabtn_f || shbtn_f);
+//         bool pabtn_f = MyPad()->IsPass() && (pmgGO_->pmgRf_->IsPrev() == false);
+//         bool pabtn2_f = MyPad()->IsPass2() && (pmgGO_->pmgRf_->IsPrev() == false);
+//         bool dgbtn_f = MyPad()->IsDodge();
+//         bool dgbtn2_f = MyPad()->IsDodge2();
+//         bool cabtn_f = MyPad()->IsCatch();
+//         bool shbtn_f = MyPad()->IsShot();
+//         bool shbtn2_f = MyPad()->IsShot2();
+//         bool uppos_f = (pabtn_f || dgbtn_f);
+//         bool dnpos_f = (cabtn_f || shbtn_f);
 //
-//         BOOL ng_f = FALSE;
+//         bool ng_f = false;
 //
 //         //シュート以外の時はきゃっちよけがでないように
 //         if (st_.pstMyTm_->smart_f_)
 //         {
-//             BOOL caok_f = (((pmgSG_->stBa_.Motion == bmShoot) && (pmgSG_->stBa_.PichTNo == st_.ensideNo_))
+//             bool caok_f = (((pmgSG_->stBa_.Motion == bmShoot) && (pmgSG_->stBa_.PichTNo == st_.ensideNo_))
 //                            || ((pmgSG_->stBa_.Motion == bmPass) && (pmgSG_->stBa_.PichTNo == st_.ensideNo_))
 //                            || ((pmgSG_->stBa_.Motion == bmHold) && pmgSG_->stBa_.shotmotion_f));
 //
-//             if (caok_f == FALSE)
+//             if (caok_f == false)
 //             {
-//                 //dgbtn_f = FALSE;
-//                 //dgbtn2_f = FALSE;
+//                 //dgbtn_f = false;
+//                 //dgbtn2_f = false;
 //                 //ダッシュがにゅうりょくされてなければ
 //                 cabtn_f = (MyPad()->IsCatch3() //左下短押しリリース
-//                            && (MyPad()->IsDash(IsBall()) == FALSE)); //ダッシュにゅうりょく無し
+//                            && (MyPad()->IsDash(IsBall()) == false)); //ダッシュにゅうりょく無し
 //             }
 //
-//             if (st_.pstMyCh_->shotok_f_ == FALSE)
+//             if (st_.pstMyCh_->shotok_f_ == false)
 //             {
-//                 if (shbtn2_f == FALSE)
+//                 if (shbtn2_f == false)
 //                 {
-//                     st_.pstMyCh_->shotok_f_ = TRUE;
+//                     st_.pstMyCh_->shotok_f_ = true;
 //                 }
 //                 else
 //                 {
-//                     shbtn_f = FALSE; //キャッチ後ジャンプおしっぱで出てしまうのカット
+//                     shbtn_f = false; //キャッチ後ジャンプおしっぱで出てしまうのカット
 //                 }
 //             }
 //
@@ -1136,7 +1129,7 @@ public partial class CharaBehavior
 //             }
 //
 //             //スマホ操作ではおしっぱシュートは使わない
-//             shbtn2_f = FALSE;
+//             shbtn2_f = false;
 //         }
 //
 // #ifdef __K_DEBUG_SHIAI__
@@ -1145,14 +1138,14 @@ public partial class CharaBehavior
 //             // 今いるやつを全員殺す
 //             for (s32 i = 0; i < DBMEMBER_INF; i++)
 //             {
-//                 pmgGO_->pmgCh_[st_.ensideNo_][i]->st_.pstMyCh_->ANGEL_f = TRUE;
+//                 pmgGO_->pmgCh_[st_.ensideNo_][i]->st_.pstMyCh_->ANGEL_f = true;
 //                 pmgGO_->pmgCh_[st_.ensideNo_][i]->st_.pstMyCh_->HP = 0;
 //             }
 //             pmgGO_->pmgTm_[st_.ensideNo_]->CheckChangePos();
 //             // 一人を残して全員殺す
 //             for (s32 i = 0; i < DBMEMBER_INF - 2; i++)
 //             {
-//                 pmgGO_->pmgCh_[st_.ensideNo_][i]->st_.pstMyCh_->ANGEL_f = TRUE;
+//                 pmgGO_->pmgCh_[st_.ensideNo_][i]->st_.pstMyCh_->ANGEL_f = true;
 //                 pmgGO_->pmgCh_[st_.ensideNo_][i]->st_.pstMyCh_->HP = 0;
 //             }
 //             pmgGO_->pmgTm_[st_.ensideNo_]->CheckChangePos();
@@ -1168,73 +1161,73 @@ public partial class CharaBehavior
 //                     if (dnpos_f)
 //                     {
 //                         st_.pmgRf_->SetTutoNG(st_.pmgRf_->GetTutoNo(), rta_dodge_ngpos);
-//                         ng_f = TRUE;
+//                         ng_f = true;
 //                     }
 //                     break;
 //                 case sta_WalkAct:
 //                     if (uppos_f)
 //                     {
 //                         st_.pmgRf_->SetTutoNG(st_.pmgRf_->GetTutoNo(), rta_walk_ngpos);
-//                         ng_f = TRUE;
+//                         ng_f = true;
 //                     }
 //                     break;
 //                 case sta_JumpAct:
 //                     if (uppos_f)
 //                     {
 //                         st_.pmgRf_->SetTutoNG(st_.pmgRf_->GetTutoNo(), rta_jump_ngpos);
-//                         ng_f = TRUE;
+//                         ng_f = true;
 //                     }
 //                 case sta_CatchAct:
 //                     if (uppos_f)
 //                     {
 //                         st_.pmgRf_->SetTutoNG(st_.pmgRf_->GetTutoNo(), rta_catch_ngpos);
-//                         ng_f = TRUE;
+//                         ng_f = true;
 //                     }
 //                     break;
 //                 case sta_DashAct:
 //                     if (uppos_f)
 //                     {
 //                         st_.pmgRf_->SetTutoNG(st_.pmgRf_->GetTutoNo(), rta_dash_ngpos);
-//                         ng_f = TRUE;
+//                         ng_f = true;
 //                     }
-//                     shbtn_f = FALSE;
-//                     pabtn_f = FALSE;
+//                     shbtn_f = false;
+//                     pabtn_f = false;
 //                     break;
 //                 case sta_ShotAct:
 //                     if (uppos_f)
 //                     {
 //                         st_.pmgRf_->SetTutoNG(st_.pmgRf_->GetTutoNo(), rta_shot_ngpos);
-//                         ng_f = TRUE;
+//                         ng_f = true;
 //                     }
 //                     break;
 //                 case sta_GameAct:
 //                     break;
 //                 default:
-//                     ng_f = TRUE;
+//                     ng_f = true;
 //                     break;
 //             }
 //         }
 //
 //         if (ng_f)
 //         {
-//             pabtn_f = FALSE;
-//             pabtn2_f = FALSE;
-//             dgbtn_f = FALSE;
-//             dgbtn2_f = FALSE;
-//             cabtn_f = FALSE;
-//             shbtn_f = FALSE;
+//             pabtn_f = false;
+//             pabtn2_f = false;
+//             dgbtn_f = false;
+//             dgbtn2_f = false;
+//             cabtn_f = false;
+//             shbtn_f = false;
 //         }
 //
 //         if (st_.pstMyCh_->Nomove_f)
 //         {
-//             st_.pstMyCh_->Nomove_f = FALSE;
+//             st_.pstMyCh_->Nomove_f = false;
 //             return;
 //         }
 //
 //         //シュートとパスは投げる瞬間にターゲットの方向を自動で向くようにする
-//         LastMukiKeep_f = TRUE;
+//         LastMukiKeep_f = true;
 //
-//         BOOL shotok_f = TRUE;
+//         bool shotok_f = true;
 //
 //         //スマート
 //         if (st_.pstMyTm_->smart_f_)
@@ -1243,13 +1236,13 @@ public partial class CharaBehavior
 //             if (IsInfield()
 //                 && ((st_.pstMyCh_->Motion.Mtype == dbmtSt) || (st_.pstMyCh_->Motion.Mtype == dbmtWk)))
 //             {
-//                 shotok_f = FALSE;
+//                 shotok_f = false;
 //             }
 //         }
 //
 // #ifdef __K_DEBUG_SHIAI__
 //         kdebug::DebugSystem* pDs = kdebug::DebugSystem::GetInstance();
-//         bool isAutoShot = FALSE;
+//         bool isAutoShot = false;
 //         // 自動シュート状態を取得
 //         s32 step = pDs->GetAutoShootStep();
 //         if (step == kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_STANDBY)
@@ -1265,7 +1258,7 @@ public partial class CharaBehavior
 //                 if (!IsNGPassTag(0))
 //                 {
 //                     // ボールが手元に帰ってくる処理
-//                     pmgGO_->pmgBa_->baCommon_.ResetRefPos_Prev(FALSE);
+//                     pmgGO_->pmgBa_->baCommon_.ResetRefPos_Prev(false);
 //                 }
 //                 return;
 //             }
@@ -1278,7 +1271,7 @@ public partial class CharaBehavior
 //             // 自動シュート終わりますよフラグが立っていれば投げない
 //             if (!pDs->IsAutoShootEnd())
 //             {
-//                 isAutoShot = TRUE;
+//                 isAutoShot = true;
 //             }
 //         }
 //         else
@@ -1295,7 +1288,7 @@ public partial class CharaBehavior
 //                         && (pmgSG_->stBa_.HoldPNo == 0))
 //                     {
 //                         pDs->SetAutoShootStep(kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_CHOOSE);
-//                         pDs->SetReturnBallFlg(FALSE); // フラグを落とす
+//                         pDs->SetReturnBallFlg(false); // フラグを落とす
 //                     }
 //                     // 他人が持ってる
 //                     else
@@ -1304,7 +1297,7 @@ public partial class CharaBehavior
 //                         if (!IsNGPassTag(0))
 //                         {
 //                             // ボールが手元に帰ってくる処理
-//                             pmgGO_->pmgBa_->baCommon_.ResetRefPos_Prev(FALSE);
+//                             pmgGO_->pmgBa_->baCommon_.ResetRefPos_Prev(false);
 //                             return;
 //                         }
 //                     }
@@ -1328,7 +1321,7 @@ public partial class CharaBehavior
 //                         if (pabtn_f) //
 //                         {
 //                             //内野の場合後ろ内野内パスなので、相手の方向を向かないと行けない
-//                             Passing(FALSE);
+//                             Passing(false);
 //                         }
 // #ifdef __K_DEBUG_SHIAI__
 //                         // シュート条件に自動シュートフラグも入れる
@@ -1340,15 +1333,15 @@ public partial class CharaBehavior
 //
 //                         {
 //                             //外野２３からＺ軸シュートのとき、一応相手の方向を向く
-//                             LookTg(pmgSG_->stBa_.ShTgPNo, FALSE, atlook_f); // && (st_.pstMyCh_->Motion.Mtype == dbmtSt)
+//                             LookTg(pmgSG_->stBa_.ShTgPNo, false, atlook_f); // && (st_.pstMyCh_->Motion.Mtype == dbmtSt)
 //
 //                             //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
-//                             BOOL nortst_f = (st_.pstMyCh_->Motion.IsMFlags(dbmfDs))
+//                             bool nortst_f = (st_.pstMyCh_->Motion.IsMFlags(dbmfDs))
 //                                             && (st_.pstMyCh_->Zahyou.DsMuki == st_.pstMyCh_->Zahyou.Muki);
 //
 //                             //内野で向きに変わるときは振り向きシュート
 //                             if (IsInfield()
-//                                 && (nortst_f == FALSE)
+//                                 && (nortst_f == false)
 //                                 && (lastMuki != st_.pstMyCh_->Zahyou.Muki)
 //                                )
 //                             {
@@ -1385,7 +1378,7 @@ public partial class CharaBehavior
 //                                         {
 //                                             if (st_.pmgMyTm_->st_.pmgMyCh_[pmgSG_->stBa_.PaTgPNo]->IsDashman())
 //                                             {
-//                                                 Passing(FALSE);
+//                                                 Passing(false);
 //                                             }
 //                                             else
 //                                             {
@@ -1402,18 +1395,18 @@ public partial class CharaBehavior
 //
 //                             if (st_.pstMyCh_->MirShot_c > 0) //ミラーシュート状態
 //                             {
-//                                 if (shbtn2_f && (pabtn2_f == FALSE)) //シュート入力おしっぱ
+//                                 if (shbtn2_f && (pabtn2_f == false)) //シュート入力おしっぱ
 //                                 {
 //                                     if (lib_num::UpToR(&st_.pstMyCh_->MirShot_c, MIRWAIT))
 //                                     {
-//                                         LookTg(pmgSG_->stBa_.ShTgPNo, FALSE, TRUE); //居ないときはオートで探す
+//                                         LookTg(pmgSG_->stBa_.ShTgPNo, false, true); //居ないときはオートで探す
 //
 //                                         //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
-//                                         BOOL nortst_f = (st_.pstMyCh_->Motion.IsMFlags(dbmfDs))
+//                                         bool nortst_f = (st_.pstMyCh_->Motion.IsMFlags(dbmfDs))
 //                                                         && (st_.pstMyCh_->Zahyou.DsMuki == st_.pstMyCh_->Zahyou.Muki);
 //
 //                                         if (IsInfield()
-//                                             && (nortst_f == FALSE)
+//                                             && (nortst_f == false)
 //                                             && (lastMuki != st_.pstMyCh_->Zahyou.Muki)
 //                                            )
 //                                         {
@@ -1438,7 +1431,7 @@ public partial class CharaBehavior
 //                         {
 //                             SetMtype(dbmtDg);
 //                             CatchSE();
-//                             if (IsPickUpPos(FALSE)) BallGet(FALSE, FALSE);
+//                             if (IsPickUpPos(false)) BallGet(false, false);
 //                         }
 //                         else if (cabtn_f && (st_.pstMyCh_->CatchW_c == 0)) //キャッチ入力
 //                         {
@@ -1446,9 +1439,9 @@ public partial class CharaBehavior
 //                             SetCatchMuki();
 //                             SetMtype(dbmtCa);
 //                         }
-//                         else if (autoPickUp_f && IsPickUpPos(FALSE)) //自動拾い★
+//                         else if (autoPickUp_f && IsPickUpPos(false)) //自動拾い★
 //                         {
-//                             BallGet(FALSE, FALSE);
+//                             BallGet(false, false);
 //                         }
 //                         break;
 //
@@ -1460,24 +1453,24 @@ public partial class CharaBehavior
 //                             SetCatchMuki();
 //                             SetMtype(dbmtCa);
 //                         }
-//                         else if (autoPickUp_f && IsPickUpPos(FALSE)) //自動拾い★
+//                         else if (autoPickUp_f && IsPickUpPos(false)) //自動拾い★
 //                         {
-//                             BallGet(FALSE, FALSE);
+//                             BallGet(false, false);
 //                         }
 //                         break;
 //                 }
 //             }
 //                 break;
 //             case dbmtJCa:
-//                 if (IsPickUpPos(TRUE))
+//                 if (IsPickUpPos(true))
 //                 {
-//                     BallGet(FALSE, FALSE);
+//                     BallGet(false, false);
 //                 }
 //                 break;
 //             case dbmtCa:
-//                 if (IsPickUpPos(TRUE))
+//                 if (IsPickUpPos(true))
 //                 {
-//                     BallGet(FALSE, FALSE);
+//                     BallGet(false, false);
 //
 //                     if (IsInfield()
 //                         && (st_.pstMyCh_->Auto.AutoType == dbatFree)
@@ -1498,24 +1491,24 @@ public partial class CharaBehavior
 //             case dbmtJDg:
 //                 //押しっぱなしで避け続けるようにする
 //                 if (dgbtn2_f
-//                     && (IsBall() == FALSE))
+//                     && (IsBall() == false))
 //                 {
 //                     st_.pstMyCh_->Anime.Ani_c = 0; //こんなんでいいのだろうか
 //                 }
 //                 break;
 //             case dbmtJUp:
 //             case dbmtJDn:
-// //      if ((st_.pstMyCh_->AirAct_f == FALSE)
+// //      if ((st_.pstMyCh_->AirAct_f == false)
 // //        && st_.pstMyCh_->Motion.IsMFlags(dbmfAr)
 // //        && ((st_.pstMyCh_->Zahyou.dY > 0) || (st_.pstMyCh_->Zahyou.Y >= (JPINVALIDHEIGHT * XYMAG))))
 //                 if (
-//                     ((st_.pstMyCh_->AirAct_f == FALSE)
+//                     ((st_.pstMyCh_->AirAct_f == false)
 //                      && st_.pstMyCh_->Motion.IsMFlags(dbmfAr)
 //                      && ((st_.pstMyCh_->Zahyou.dY > 0) || (st_.pstMyCh_->Zahyou.Y >= (JPINVALIDHEIGHT * XYMAG)))
 //                     )
 //                     ||
 //                     ( //マリオネット効果中
-//                         (st_.pstMyCh_->symCtrl_f == TRUE)
+//                         (st_.pstMyCh_->symCtrl_f == true)
 //                         && st_.pstMyCh_->Motion.IsMFlags(dbmfAr)
 //                     )
 //                 )
@@ -1524,11 +1517,11 @@ public partial class CharaBehavior
 //                     {
 //                         if (pabtn_f)
 //                         {
-//                             Passing(TRUE);
+//                             Passing(true);
 //                         }
 //                         else if (MyPad()->IsJumpShot()) //ジャンプシュート入力
 //                         {
-//                             LookTg(pmgSG_->stBa_.ShTgPNo, FALSE, atlook_f);
+//                             LookTg(pmgSG_->stBa_.ShTgPNo, false, atlook_f);
 //                             SetMtype(dbmtJSh);
 //                         }
 //                         else
@@ -1548,7 +1541,7 @@ public partial class CharaBehavior
 //                                         {
 //                                             if (st_.pmgMyTm_->st_.pmgMyCh_[pmgSG_->stBa_.PaTgPNo]->IsDashman())
 //                                             {
-//                                                 Passing(TRUE);
+//                                                 Passing(true);
 //                                             }
 //                                             else
 //                                             {
@@ -1565,11 +1558,11 @@ public partial class CharaBehavior
 //
 //                             if (st_.pstMyCh_->MirShot_c > 0) //ミラーシュート状態
 //                             {
-//                                 if (shbtn2_f && (pabtn2_f == FALSE)) //シュート入力おしっぱ
+//                                 if (shbtn2_f && (pabtn2_f == false)) //シュート入力おしっぱ
 //                                 {
 //                                     if (lib_num::UpToR(&st_.pstMyCh_->MirShot_c, MIRWAIT))
 //                                     {
-//                                         LookTg(pmgSG_->stBa_.ShTgPNo, FALSE, TRUE);
+//                                         LookTg(pmgSG_->stBa_.ShTgPNo, false, true);
 //                                         SetMtype(dbmtJSh);
 //                                     }
 //                                 }
@@ -1592,8 +1585,8 @@ public partial class CharaBehavior
 //                                 && (pmgSG_->stBa_.PaTgPNo <= (s32)dbpoI3))
 //                             {
 //                                 st_.pmgMyTm_->SetCtrl(st_.pmgMyTm_->st_.pstMyTm_->CvrNo);
-//                                 st_.pmgMyTm_->st_.pmgMyCh_[st_.pmgMyTm_->st_.pstMyTm_->CtrlNo]->st_.pstMyCh_->Nomove_f = TRUE;
-//                                 st_.pmgMyTm_->SeekCover(st_.pmgMyTm_->st_.pstMyTm_->CtrlNo, pmgSG_->stBa_.PichPNo, pmgSG_->stBa_.PaTgPNo, TRUE); //新しいカバーマン
+//                                 st_.pmgMyTm_->st_.pmgMyCh_[st_.pmgMyTm_->st_.pstMyTm_->CtrlNo]->st_.pstMyCh_->Nomove_f = true;
+//                                 st_.pmgMyTm_->SeekCover(st_.pmgMyTm_->st_.pstMyTm_->CtrlNo, pmgSG_->stBa_.PichPNo, pmgSG_->stBa_.PaTgPNo, true); //新しいカバーマン
 //                             }
 //                         }
 //                         else if (cabtn_f)
@@ -1602,42 +1595,42 @@ public partial class CharaBehavior
 //                             SetCatchMuki();
 //                             SetMtype(dbmtJCa);
 //                             //                            CatchSE();
-//                             if (IsPickUpPos(TRUE)) BallGet(FALSE, FALSE);
+//                             if (IsPickUpPos(true)) BallGet(false, false);
 //                         }
-//                         else if (autoPickUp_f && IsPickUpPos(FALSE)) //自動拾い★
+//                         else if (autoPickUp_f && IsPickUpPos(false)) //自動拾い★
 //                         {
-//                             BallGet(FALSE, FALSE);
+//                             BallGet(false, false);
 //                         }
 //                     }
 //                 }
 //                 break;
 //             case dbmtSh: //振り向きシュート
-//                 if ((st_.pstMyCh_->Utrun_f == FALSE)
+//                 if ((st_.pstMyCh_->Utrun_f == false)
 //                     && IsBall()
 //                     && IsInfield()
 //                     //&& (st_.pstMyCh_->Motion.IsMFlags(dbmfDs) || st_.pstMyCh_->Motion.IsMFlags(dbmfSlip))
 //                    )
 //                 {
-//                     BOOL utrn_f = FALSE;
+//                     bool utrn_f = false;
 //                     if ((st_.pstMyCh_->Zahyou.Muki == mL)
 //                         && MyPad()->IsWalk2(dxR)
 //                         && (st_.mysideNo_ == 0))
 //                     {
-//                         utrn_f = TRUE;
+//                         utrn_f = true;
 //                         st_.pstMyCh_->Zahyou.Muki = mR;
 //                         st_.pstMyCh_->Zahyou.MukiZ = mzN;
 //                         MyState.Shoot.Angle12 = 1; //1 2 3 4
-//                         SetMukiAgl(FALSE, TRUE, FALSE, FALSE);
+//                         SetMukiAgl(false, true, false, false);
 //                     }
 //                     else if ((st_.pstMyCh_->Zahyou.Muki == mR)
 //                              && MyPad()->IsWalk2(dxL)
 //                              && (st_.mysideNo_ == 1))
 //                     {
-//                         utrn_f = TRUE;
+//                         utrn_f = true;
 //                         st_.pstMyCh_->Zahyou.Muki = mL;
 //                         st_.pstMyCh_->Zahyou.MukiZ = mzN;
 //                         MyState.Shoot.Angle12 = 7; //7 8 9 10
-//                         SetMukiAgl(TRUE, FALSE, FALSE, FALSE);
+//                         SetMukiAgl(true, false, false, false);
 //                     }
 //
 //                     if (utrn_f)

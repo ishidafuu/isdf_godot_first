@@ -1,8 +1,9 @@
+using db;
 using Godot;
 
 namespace isdf;
 
-public partial class InputNode : Node
+public partial class InputNode : Node, IPad
 {
     public enum KeyType
     {
@@ -43,22 +44,24 @@ public partial class InputNode : Node
     private Button _buttonA;
     private Button _buttonB;
 
-    public Button KeyUp => _keyUp;
-    public Button KeyDown => _keyDown;
-    public Button KeyLeft => _keyLeft;
-    public Button KeyRight => _keyRight;
-    public Button ButtonA => _buttonA;
-    public Button ButtonB => _buttonB;
+    public IButton KeyUp => _keyUp;
+    public IButton KeyDown => _keyDown;
+    public IButton KeyLeft => _keyLeft;
+    public IButton KeyRight => _keyRight;
+    public IButton ButtonA => _buttonA;
+    public IButton ButtonB => _buttonB;
 
     public override void _Ready()
     {
         base._Ready();
-        _keyUp = new(KeyType.KeyUp);
-        _keyDown = new(KeyType.KeyDown);
-        _keyLeft = new(KeyType.KeyLeft);
-        _keyRight = new(KeyType.KeyRight);
-        _buttonA = new(KeyType.ButtonA);
-        _buttonB = new(KeyType.ButtonB);
+        _keyUp = new Button(KeyType.KeyUp);
+        _keyDown = new Button(KeyType.KeyDown);
+        _keyLeft = new Button(KeyType.KeyLeft);
+        _keyRight = new Button(KeyType.KeyRight);
+        _buttonA = new Button(KeyType.ButtonA);
+        _buttonB = new Button(KeyType.ButtonB);
+
+        PadBehaviorManager.Instance.AttachPad(this);
     }
 
     public override void _Process(double delta)
