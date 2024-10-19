@@ -14,10 +14,15 @@ public class CharaBehaviorManager
 
     public CharaBehavior GetChara(int sideIndex, int orderIndex)
     {
+        return GetChara(sideIndex, (OrderIndexType)orderIndex);
+    }
+
+    public CharaBehavior GetChara(int sideIndex, OrderIndexType orderIndex)
+    {
         foreach (var chara in _allCharas)
         {
             if (chara.MySideIndex == sideIndex
-                && chara.OrderIndex == orderIndex)
+                && chara.MyOrderIndex == orderIndex)
             {
                 return chara;
             }

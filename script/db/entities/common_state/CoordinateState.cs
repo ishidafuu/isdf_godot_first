@@ -81,7 +81,7 @@ public class CoordinateState
     /// </summary>
     public int DistanceXZ(int targetX, int targetZ)
     {
-        return (int)System.Math.Sqrt(System.Math.Pow(X - targetX, 2) + System.Math.Pow(Z - targetZ, 2));
+        return Defines.Hypot(X - targetX, Z - targetZ);
     }
 
     /// <summary>

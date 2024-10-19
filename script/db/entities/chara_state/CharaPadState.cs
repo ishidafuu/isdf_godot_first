@@ -12,16 +12,12 @@ public class CharaPadState
     /// </summary>
     public bool IsManualControl { get; set; }
 
-    // public int PadNo;
-    //
-    // // public TMgPad pCharPad_; // パッド
-    // public IPad Pad;
+    public DirectionXType LastXKey { get; set; }
 
     public void Initialize()
     {
         IsManualControl = false;
-        // PadNo = 0;
+        LastXKey = DirectionXType.Neutral;
     }
 
-    // public bool IsValid => Pad != null;
 }

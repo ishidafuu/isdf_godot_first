@@ -170,6 +170,13 @@ public static class Defines
     public const int POS6_X = 440 * Percent;
     public const int POS6_Z = 56 * Percent;
 
+    /// <summary>
+    /// 斜辺
+    /// </summary>
+    public static int Hypot(int x, int y)
+    {
+        return (int)System.Math.Sqrt(System.Math.Pow(x, 2) + System.Math.Pow(y, 2));
+    }
     // enum enCrtLine
     // {
     //     crtLLine,

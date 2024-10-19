@@ -34,7 +34,7 @@ public partial class CharaBehavior
 
     private void CallTeamGenerateAngel()
     {
-        TeamBehaviorManager.Instance.Get(MySideIndex).CallGenerateAngel(OrderIndex);
+        TeamBehaviorManager.Instance.Get(MySideIndex).CallGenerateAngel(MyOrderIndex);
     }
 
     private void CallTeamCheckChangePos()
@@ -44,11 +44,11 @@ public partial class CharaBehavior
 
     private void CallTeamHoldBall()
     {
-        TeamBehaviorManager.Instance.Get(MySideIndex).CallHoldBall(OrderIndex);
+        TeamBehaviorManager.Instance.Get(MySideIndex).CallHoldBall(MyOrderIndex);
     }
 
     private void CallBallHold()
     {
-        BallBehaviorManager.Instance.Get().CallHold(MySideIndex, OrderIndex);
+        BallBehaviorManager.Instance.Get().CallHold(MySideIndex, MyOrderIndex);
     }
 }

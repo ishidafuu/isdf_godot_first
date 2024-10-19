@@ -5,7 +5,7 @@ public partial class CharaBehavior
     public int MySideIndex => MyState.Index.SideIndex;
     private int EnemySideIndex => MySideIndex == 0 ? 1 : 0;
     private int MemberIndex => MyState.Index.MemberIndex;
-    public int OrderIndex => MyState.Order.OrderIndex;
+    public OrderIndexType MyOrderIndex => MyState.Order.OrderIndex;
 
     private CharaState MyState => CharaStateManager.Instance.Get(MySideIndex, MemberIndex);
     // private CharaState[] MySideCharas => CharaStateManager.Instance.GetSideCharas(MySideIndex);

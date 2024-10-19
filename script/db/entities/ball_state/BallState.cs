@@ -48,7 +48,7 @@ public partial class BallState
     public int EnemTNo { get; set; }
     public int HitPNo { get; set; }
     public int HitTNo { get; set; }
-    public int HolderOrder { get; set; }
+    public OrderIndexType HolderOrder { get; set; }
     public int HolderSide { get; set; }
     public int LandX { get; set; }
     public int LandXLine { get; set; }
@@ -63,12 +63,12 @@ public partial class BallState
     public int PaETA { get; set; }
     public int PaGrv { get; set; }
     public int PaSelfHit { get; set; }
-    public int PassTargetOrder { get; set; }
+    public OrderIndexType PassTargetOrder { get; set; }
     public int PassTargetSide { get; set; }
     public int ThrowerOrderNo { get; set; }
     public int ThrowerSideNo { get; set; }
     public int RbwTNo { get; set; }
-    public int ShotTargetOrder { get; set; }
+    public OrderIndexType ShotTargetOrder { get; set; }
     public int ShotTargetSide { get; set; }
     // TIMER周りはreferee
     public int TimerAutoReturn { get; set; }

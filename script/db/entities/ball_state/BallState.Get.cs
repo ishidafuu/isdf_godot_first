@@ -7,7 +7,7 @@ public partial class BallState
     /// <summary>
     /// ボール保持者かどうか
     /// </summary>
-    public bool IsBallHolder(int side, int order)
+    public bool IsBallHolder(int side, OrderIndexType order)
     {
         return side == HolderSide
                && order == HolderOrder;
@@ -16,7 +16,7 @@ public partial class BallState
     /// <summary>
     /// シュートターゲットかどうか
     /// </summary>
-    public bool IsShotTarget(int side, int order)
+    public bool IsShotTarget(int side, OrderIndexType order)
     {
         return MotionType is BallMotionType.Hold or BallMotionType.Shoot
                && side == ShotTargetSide
@@ -26,7 +26,7 @@ public partial class BallState
     /// <summary>
     /// パスターゲットかどうか
     /// </summary>
-    public bool IsPassTarget(int side, int order)
+    public bool IsPassTarget(int side, OrderIndexType order)
     {
         return MotionType is BallMotionType.Hold
                && side == PassTargetSide

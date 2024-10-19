@@ -64,4 +64,5 @@ public enum OrderIndexType
     Outfield2,
     Outfield3,
     Outfield4,
+    Disabled,
 }

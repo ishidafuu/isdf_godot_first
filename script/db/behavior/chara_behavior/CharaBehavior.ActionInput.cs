@@ -1,4 +1,5 @@
 ﻿using System;
+using Defines = db.Defines;
 
 namespace db;
 
@@ -502,7 +503,7 @@ public partial class CharaBehavior
             ? DirectionXType.Left
             : DirectionXType.Right;
 
-        int ptg = MyState.Order.IsInfield
+        OrderIndexType ptg = MyState.Order.IsInfield
             ? GetNaiyaPassTag()
             : GetGaiyaPassTag();
 
@@ -542,36 +543,6 @@ public partial class CharaBehavior
             CrsR_f = MyPad.KeyRight.IsPressed;
             CrsU_f = MyPad.KeyUp.IsPressed;
             CrsD_f = MyPad.KeyDown.IsPressed;
-
-            // //ここ再チェック
-            // if (mid::midIsTBL())
-            // {
-            //     if (CrsL_f)
-            //     {
-            //         paMuki = mL;
-            //         //Z方向を無視
-            //         if ((CrsU_f || CrsD_f) == false) paMukiZ = mzN;
-            //     }
-            //     else if (CrsR_f)
-            //     {
-            //         paMuki = mR;
-            //         //Z方向を無視
-            //         if ((CrsU_f || CrsD_f) == false) paMukiZ = mzN;
-            //     }
-            //
-            //     if (CrsU_f)
-            //     {
-            //         paMukiZ = mzB;
-            //         //X方向を無視
-            //         if ((CrsL_f || CrsR_f) == false) paMuki = mN;
-            //     }
-            //     else if (CrsD_f)
-            //     {
-            //         paMukiZ = mzF;
-            //         //X方向を無視
-            //         if ((CrsL_f || CrsR_f) == false) paMuki = mN;
-            //     }
-            // }
         }
 
         //内野方向を向いてる
@@ -602,23 +573,24 @@ public partial class CharaBehavior
         //優先順位初期化
         // for (int i = 0; i < Defines.DBMEMBER_INF; ++i)
         // {
-        //     tgOrd[i] = NGNUM;
+        //     targetOrder[i] = NGNUM;
         // }
 
+        TmpStateManager.Instance.TmpState.Clear();
         var sltgXZ = TmpStateManager.Instance.TmpState.sltgXZ;
         var sltg_f = TmpStateManager.Instance.TmpState.sltg_f;
-        var tgOrd = TmpStateManager.Instance.TmpState.tgOrd;
-        var sortDt = TmpStateManager.Instance.TmpState.sortDt;
+        var targetOrder = TmpStateManager.Instance.TmpState.targetOrder;
+        var sortValue = TmpStateManager.Instance.TmpState.sortValue;
 
         //内野全員との距離を取る
         for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
-            if (order == OrderIndex)
+            if ((OrderIndexType)order == MyOrderIndex)
             {
                 continue;
             }
 
-            TmpStateManager.Instance.TmpState.sltgXZ[order] = MyState.Coordinate.DistanceXZ(MySideOrders[order].Coordinate);
+            sltgXZ[order] = MyState.Coordinate.DistanceXZ(MySideOrders[order].Coordinate);
         }
 
         //パスが出せるダッシュマンがいるか
@@ -627,7 +599,7 @@ public partial class CharaBehavior
             //内野全員との角度を取る
             for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
             {
-                if (order == OrderIndex)
+                if ((OrderIndexType)order == MyOrderIndex)
                 {
                     continue;
                 }
@@ -772,7 +744,8 @@ public partial class CharaBehavior
                 return MyState.Auto.DirectionZ switch
                 {
                     DirectionZType.Backward => OrderIndexType.Outfield2,
-                    DirectionZType.Forward => OrderIndexType.Outfield3
+                    DirectionZType.Forward => OrderIndexType.Outfield3,
+                    _ => OrderIndexType.Outfield4
                 };
             }
 
@@ -783,7 +756,11 @@ public partial class CharaBehavior
                 case DirectionZType.Forward:
                     return OrderIndexType.Outfield3;
                 default:
-                    if (enmCrs_f) return OrderIndexType.Outfield4;
+                    if (enmCrs_f)
+                    {
+                        return OrderIndexType.Outfield4;
+                    }
+
                     return nearO2_f
                         ? OrderIndexType.Outfield2
                         : OrderIndexType.Outfield3;
@@ -793,77 +770,348 @@ public partial class CharaBehavior
             return OrderIndexType.Outfield4;
         }
 
-        ここから
-        
-        int f = 0;
-        for (int i = 0; i < DBMEMBER_INF; ++i)
+        var f = 0;
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
             //向き方向に人なしのとき
+            // sortValue[order] = 0; //初期化
 
-            sortDt[i] = 0; //初期化
-
-            if ((sltg_f[i] == TGOK)
-                || (NoTag_f && (sltg_f[i] != TGNG)))
+            if (sltg_f[order] != enNaiyaTag.TGOK
+                && (!NoTag_f || sltg_f[order] == enNaiyaTag.TGNG))
             {
-                if (neutral_f) //ニュートラル
-                {
-                    sortDt[i] = (int)sltgXZ[i]; //内野間は距離が近い人
-                }
-                else
-                {
-                    //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
-                    int tgZ = (isDashmanPass)
-                        ? st_.pmgMyTm_.st_.pmgMyCh_[i].st_.pstMyCh_.DashmanTgZ
-                        : st_.pmgMyTm_.st_.pmgMyCh_[i].MyState.Coordinate.Z;
-
-                    //上
-                    if (CrsU_f)
-                    {
-                        sortDt[i] = -tgZ; //Ｚのマイナス（上ほど優先）
-                    }
-                    else if (CrsD_f) //下
-                    {
-                        sortDt[i] = +tgZ; //Ｚ（下ほど優先）
-                    }
-
-                    //上下が入ってるとき用に合計値
-                    if (CrsL_f) //左
-                    {
-                        sortDt[i] += (st_.pmgMyTm_.st_.pmgMyCh_[i].MyState.Coordinate.X); //Ｘ（左ほど優先）
-                    }
-                    else if (CrsR_f) //右
-                    {
-                        sortDt[i] -= (st_.pmgMyTm_.st_.pmgMyCh_[i].MyState.Coordinate.X); //Ｘのマイナス（右ほど優先）
-                    }
-                }
-                tgOrd[f++] = i;
+                targetOrder[f] = OrderIndexType.Disabled;
+                continue;
             }
+
+            if (neutral_f) //ニュートラル
+            {
+                sortValue[order] = sltgXZ[order]; //内野間は距離が近い人
+            }
+            else
+            {
+                var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
+
+                //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
+                var tgZ = isDashmanPass
+                    ? chara.MyState.Dashman.TargetZ
+                    : chara.MyState.Coordinate.Z;
+
+                //上
+                if (CrsU_f)
+                {
+                    sortValue[order] = -tgZ; //Ｚのマイナス（上ほど優先）
+                }
+                else if (CrsD_f) //下
+                {
+                    sortValue[order] = +tgZ; //Ｚ（下ほど優先）
+                }
+
+                //上下が入ってるとき用に合計値
+                if (CrsL_f) //左
+                {
+                    sortValue[order] += chara.MyState.Coordinate.X; //Ｘ（左ほど優先）
+                }
+                else if (CrsR_f) //右
+                {
+                    sortValue[order] -= chara.MyState.Coordinate.X; //Ｘのマイナス（右ほど優先）
+                }
+            }
+
+            targetOrder[f] = order;
+
+            f++;
         }
 
         //ソート
-        for (int i = 0; i < (DBMEMBER_INF - 1); ++i)
+        for (var i = 0; i < Defines.DBMEMBER_INF - 1; ++i)
         {
-            for (int i2 = 0; i2 < (DBMEMBER_INF - 1); i2++)
+            for (var i2 = 0; i2 < Defines.DBMEMBER_INF - 1; i2++)
             {
-                if (i == i2) continue; //同じ
-
-                if ((tgOrd[i] != NGNUM) && (tgOrd[i2] != NGNUM))
+                if (i == i2
+                    || targetOrder[i] == OrderIndexType.Disabled
+                    || targetOrder[i2] == OrderIndexType.Disabled)
                 {
-                    if (sortDt[tgOrd[i]] < sortDt[tgOrd[i2]]) //小さい方優先
-                    {
-                        int tmp;
-                        tmp = tgOrd[i2];
-                        tgOrd[i2] = tgOrd[i];
-                        tgOrd[i] = tmp;
-                    }
+                    continue;
+                }
+
+                if (sortValue[(int)targetOrder[i]] < sortValue[(int)targetOrder[i2]]) //小さい方優先
+                {
+                    (targetOrder[i2], targetOrder[i]) = (targetOrder[i], targetOrder[i2]);
                 }
             }
         }
 
         //ソート１位
-        int res = tgOrd[0];
+        return targetOrder[0];
+    }
 
-        return res;
+    //外野間パスタゲセット★
+    private OrderIndexType GetGaiyaPassTag()
+    {
+        var NaiyaMuki = MySideIndex == 0
+            ? DirectionXType.Left
+            : DirectionXType.Right;
+
+        OrderIndexType ptg = OrderIndexType.Infield0; //パスタゲ
+
+        //ダッシュマンへパス
+        bool isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
+
+        DirectionXType paMuki = MyState.Coordinate.DirectionX;
+        DirectionZType paMukiZ = MyState.Coordinate.DirectionZ;
+
+        DirectionXType lastXKey = MyState.Pad.LastXKey;
+
+        var CrsL_f = false;
+        var CrsR_f = false;
+        var CrsU_f = false;
+        var CrsD_f = false;
+
+        if (IsSelfControl)
+        {
+            CrsL_f = MyPad.KeyLeft.IsPressed; //パス方向入力
+            CrsR_f = MyPad.KeyRight.IsPressed;
+            CrsU_f = MyPad.KeyUp.IsPressed;
+            CrsD_f = MyPad.KeyDown.IsPressed;
+        }
+
+        //内野向きが押されてる
+        bool infCrs_f = (MySideIndex == 0 && CrsL_f) || (MySideIndex == 1 && CrsR_f);
+
+        var noLR_f = CrsL_f == false && CrsR_f == false;
+
+        //十字入ってない
+        var neutral_f = (CrsL_f || CrsR_f || CrsU_f || CrsD_f) == false;
+
+        var postMan = MyTeamState.PositionState.Postman;
+
+        //とりあえずパスタゲを出す
+        switch (MyState.Order.OrderIndex)
+        {
+            case OrderIndexType.Outfield2:
+                if (lastXKey == DirectionXType.Neutral)
+                {
+                    if (CrsD_f && noLR_f) //(st_.pstMyCh_->Zahyou.MukiZ == mzF)
+                    {
+                        ptg = OrderIndexType.Outfield3;
+                    }
+                    else
+                    {
+                        ptg = paMuki == NaiyaMuki
+                            ? postMan
+                            : OrderIndexType.Outfield4;
+                    }
+                }
+                else
+                {
+                    ptg = lastXKey == NaiyaMuki
+                        ? postMan
+                        : OrderIndexType.Outfield4;
+                }
+                break;
+
+            case OrderIndexType.Outfield3:
+                if (lastXKey == DirectionXType.Neutral)
+                {
+                    if (CrsU_f && noLR_f)
+                    {
+                        ptg = OrderIndexType.Outfield2;
+                    }
+                    else
+                    {
+                        ptg = paMuki == NaiyaMuki
+                            ? postMan
+                            : OrderIndexType.Outfield4;
+                    }
+                }
+                else
+                {
+                    ptg = lastXKey == NaiyaMuki
+                        ? postMan
+                        : OrderIndexType.Outfield4;
+                }
+                break;
+
+            case OrderIndexType.Outfield4:
+
+                if (infCrs_f && CrsU_f == false && CrsD_f == false) //内野方向入ってたら内野
+                {
+                    ptg = postMan;
+                }
+                else
+                {
+                    switch (paMukiZ)
+                    {
+                        case DirectionZType.Backward:
+                            ptg = OrderIndexType.Outfield2;
+                            break;
+                        case DirectionZType.Forward:
+                            ptg = OrderIndexType.Outfield3;
+                            break;
+                        default:
+                        {
+                            var distO2 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_BL);
+                            var distO3 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_FL);
+
+                            ptg = distO2 < distO3
+                                ? OrderIndexType.Outfield2
+                                : OrderIndexType.Outfield3;
+                        }
+                            break;
+                    }
+                }
+                break;
+        }
+
+        //ダッシュマンいるとき(十字ニュートラルも)
+        if (isDashmanPass && (ptg == postMan || neutral_f))
+        {
+            var NoTag_f = true; //タゲが居ない
+            TmpStateManager.Instance.TmpState.Clear();
+            var sltgX = TmpStateManager.Instance.TmpState.sltgX;
+            var sltgXZ = TmpStateManager.Instance.TmpState.sltgXZ;
+            var sltg_f = TmpStateManager.Instance.TmpState.sltg_f;
+            var targetOrder = TmpStateManager.Instance.TmpState.targetOrder;
+            var sortValue = TmpStateManager.Instance.TmpState.sortValue;
+
+            //内野全員との角度を取る
+            for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+            {
+                var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
+                if (chara.IsDashman
+                    && (OrderIndexType)order != MyOrderIndex //自分
+                    && IsCheckLandEnPos(order) == false) //外野からのときは敵コート着地キャラはなしに
+                {
+                    sltg_f[order] = enNaiyaTag.TGOK;
+                    NoTag_f = false; //一人でも向き方向にタゲが見つかった
+                }
+                else
+                {
+                    sltg_f[order] = enNaiyaTag.TGNG;
+                }
+
+                //X距離外野はGetLeftCrtX()が左コートなので絶対値を使う
+                sltgX[order] = chara.LeftCourtX; //自分より右に居れば＋
+                //Z距離
+                var sltgZ = Math.Abs(chara.MyState.Coordinate.Z - MyState.Coordinate.Z); //自分より上にいれば＋
+                //距離
+                sltgXZ[order] = Defines.Hypot(sltgX[order], sltgZ);
+            }
+
+            //ダッシュマンいるけど敵コートに着地しちゃう場合もある
+            //NoTagのときはそのままポストマンに
+            if (NoTag_f == false)
+            {
+                //優先順位初期化
+                for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+                {
+                    targetOrder[order] = OrderIndexType.Disabled;
+                }
+
+                var f = 0;
+                for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+                {
+                    sortValue[order] = 0; //初期化
+
+                    if (sltg_f[order] == enNaiyaTag.TGOK) //ＯＫ
+                    {
+                        if (neutral_f) //ニュートラル
+                        {
+                            sortValue[order] = -sltgX[order]; //外野からのときは右（先頭を走ってる人）
+                        }
+                        else
+                        {
+                            var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
+
+                            // //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
+                            // var tgZ = isDashmanPass
+                            //     ? chara.MyState.Dashman.TargetZ
+                            //     : chara.MyState.Coordinate.Z;
+                            //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
+                            var tgZ = chara.MyState.Dashman.TargetZ;
+
+                            //上
+                            if (CrsU_f)
+                            {
+                                sortValue[order] = -tgZ; //Ｚのマイナス（上ほど優先）
+                            }
+                            else if (CrsD_f) //下
+                            {
+                                sortValue[order] = +tgZ; //Ｚ（下ほど優先）
+                            }
+
+                            if (CrsL_f) //左
+                            {
+                                sortValue[order] += chara.X; //Ｘ（左ほど優先）
+                            }
+                            else if (CrsR_f) //右
+                            {
+                                sortValue[order] -= chara.X; //Ｘのマイナス（右ほど優先）
+                            }
+                            //else//ニュートラル
+                            //{
+                            //  //sortValue[i] = (var)sltgXZ[i];//距離
+                            //  sortValue[i] = (var)sltgX[i];//先頭を走ってる人
+                            //}
+                        }
+
+                        targetOrder[f++] = (OrderIndexType)order;
+                    }
+                }
+                
+                ここから
+
+                //ソート
+                for (var i = 0; i < (Defines.DBMEMBER_INF - 1); ++i)
+                {
+                    for (var i2 = 0; i2 < (Defines.DBMEMBER_INF - 1); i2++)
+                    {
+                        if (i == i2) continue; //同じ
+
+                        if (targetOrder[i] != OrderIndexType.Disabled
+                            && targetOrder[i2] != OrderIndexType.Disabled)
+                        {
+                            var dist = abs(sortValue[targetOrder[i]] - sortValue[targetOrder[i2]]);
+
+                            //ほぼ同じ場合(1dotいない)
+                            if (dist <= XYMAG)
+                            {
+                                //絶対距離で判断
+                                if (sltgXZ[targetOrder[i]] < sltgXZ[targetOrder[i2]]) //小さい方優先
+                                {
+                                    var tmp;
+                                    tmp = targetOrder[i2];
+                                    targetOrder[i2] = targetOrder[i];
+                                    targetOrder[i] = tmp;
+                                }
+                            }
+                            else if (sortValue[targetOrder[i]] < sortValue[targetOrder[i2]]) //小さい方優先
+                            {
+                                var tmp;
+                                tmp = targetOrder[i2];
+                                targetOrder[i2] = targetOrder[i];
+                                targetOrder[i] = tmp;
+                            }
+                        }
+                    }
+                }
+
+                //ソート１位
+                ptg = targetOrder[0];
+            }
+        }
+
+        return ptg;
+    }
+
+    private bool IsCheckLandEnPos(int order)
+    {
+        var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
+        var tLandX = MySideIndex == 0
+            ? chara.MyState.Air.LandX
+            : Defines.DBCRT_CL - (chara.MyState.Air.LandX - Defines.DBCRT_CL);
+
+        return chara.MyState.Order.IsInfield && tLandX > Defines.DBCRT_CLI);
     }
 
     //角度に入っていない
@@ -1077,7 +1325,7 @@ public partial class CharaBehavior
     //パスタゲにならない★★再確認
     bool IsNGPassTag(int order)
     {
-        if (order == OrderIndex) //自分
+        if (order == MyOrderIndex) //自分
         {
             return true; //パス不可
         }
@@ -1172,14 +1420,14 @@ public partial class CharaBehavior
 //         if (kdebug::DebugSystem::GetInstance().IsEnemyLastOne())
 //         {
 //             // 今いるやつを全員殺す
-//             for (int i = 0; i < DBMEMBER_INF; i++)
+//             for (int i = 0; i < Defines.DBMEMBER_INF; i++)
 //             {
 //                 pmgGO_.pmgCh_[st_.ensideNo_][i].st_.pstMyCh_.ANGEL_f = true;
 //                 pmgGO_.pmgCh_[st_.ensideNo_][i].st_.pstMyCh_.HP = 0;
 //             }
 //             pmgGO_.pmgTm_[st_.ensideNo_].CheckChangePos();
 //             // 一人を残して全員殺す
-//             for (int i = 0; i < DBMEMBER_INF - 2; i++)
+//             for (int i = 0; i < Defines.DBMEMBER_INF - 2; i++)
 //             {
 //                 pmgGO_.pmgCh_[st_.ensideNo_][i].st_.pstMyCh_.ANGEL_f = true;
 //                 pmgGO_.pmgCh_[st_.ensideNo_][i].st_.pstMyCh_.HP = 0;

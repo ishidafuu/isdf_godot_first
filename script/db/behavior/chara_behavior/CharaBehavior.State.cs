@@ -4,7 +4,10 @@ namespace db;
 
 public partial class CharaBehavior
 {
-
+    public int X => MyState.Coordinate.X;
+    public int Y => MyState.Coordinate.Y;
+    public int Z => MyState.Coordinate.Z;
+    
     /// <summary>
     /// サイド操作権を渡せるキャラか
     /// 死亡していない、ダメージ中でない、手動操作中でない
@@ -16,7 +19,7 @@ public partial class CharaBehavior
     /// <summary>
     /// 操作権キャラ
     /// </summary>
-    public bool IsControl => MyTeamState.MainState.ControlOrderIndex == OrderIndex;
+    public bool IsControl => MyTeamState.MainState.ControlOrderIndex == MyOrderIndex;
 
     /// <summary>
     /// COM操作中かどうか
@@ -32,17 +35,17 @@ public partial class CharaBehavior
     /// <summary>
     /// ボール持ちかどうか
     /// </summary>
-    public bool IsBallHolder => BallState.IsBallHolder(MySideIndex, OrderIndex);
+    public bool IsBallHolder => BallState.IsBallHolder(MySideIndex, MyOrderIndex);
 
     /// <summary>
     /// 自分がシュートターゲット
     /// </summary>
-    public bool IsShotTarget => BallState.IsShotTarget(MySideIndex, OrderIndex);
+    public bool IsShotTarget => BallState.IsShotTarget(MySideIndex, MyOrderIndex);
 
     /// <summary>
     /// 自分がパスターゲット
     /// </summary>
-    public bool IsPassTarget => BallState.IsPassTarget(MySideIndex, OrderIndex);
+    public bool IsPassTarget => BallState.IsPassTarget(MySideIndex, MyOrderIndex);
 
     /// <summary>
     /// パス待ち状態

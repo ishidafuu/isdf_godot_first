@@ -24,7 +24,7 @@ public class TeamPositionState
     //パス可能人数＝ダッシュマン待機人数
     public int PassAbleNum { get; private set; }
     //現在のポストマン（居ないときはNGNUM）
-    public int Postman { get; private set; }
+    public OrderIndexType Postman { get; private set; }
     //ダッシュマン待機
     public int[] DashmanStock { get; private set; } = new int[Defines.InfieldCount];
     //ダッシュマンNG理由

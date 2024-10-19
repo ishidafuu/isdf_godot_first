@@ -409,7 +409,7 @@ public partial class CharaBehavior
             case CharaMotionType.Pa:
                 // ボールダッシュマン
                 if (CanContinuationDash
-                    && MyTeamState.MainState.DashmanNoBm == OrderIndex) //予約状態でもある
+                    && MyTeamState.MainState.DashmanNoBm == MyOrderIndex) //予約状態でもある
                 {
                     SetMotionType(CharaMotionType.Ds);
                 }
