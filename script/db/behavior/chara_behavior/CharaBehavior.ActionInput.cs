@@ -526,59 +526,50 @@ public partial class CharaBehavior
     //内野パスタゲセット★
     private OrderIndexType GetNaiyaPassTag()
     {
-        var AllNoTag_f = true; //完全にタゲが居ない
-        var NoTag_f = true; //向き方向にタゲが居ない
+        var isNoneTarget = true; //完全にタゲが居ない
+        var isNoneAngleTarget = true; //向き方向にタゲが居ない
 
         var passDirectionX = MyState.Coordinate.DirectionX;
         var passDirectionZ = MyState.Coordinate.DirectionZ;
 
-        var CrsL_f = false;
-        var CrsR_f = false;
-        var CrsU_f = false;
-        var CrsD_f = false;
+        var isLeftKey = false;
+        var isRightKey = false;
+        var isUpKey = false;
+        var isDownKey = false;
 
         if (IsSelfControl)
         {
-            CrsL_f = MyPad.KeyLeft.IsPressed; //パス方向入力
-            CrsR_f = MyPad.KeyRight.IsPressed;
-            CrsU_f = MyPad.KeyUp.IsPressed;
-            CrsD_f = MyPad.KeyDown.IsPressed;
+            isLeftKey = MyPad.KeyLeft.IsPressed; //パス方向入力
+            isRightKey = MyPad.KeyRight.IsPressed;
+            isUpKey = MyPad.KeyUp.IsPressed;
+            isDownKey = MyPad.KeyDown.IsPressed;
         }
 
         //内野方向を向いてる
-        var infMuki_f = MySideIndex == 0
+        var isInfieldDirection = MySideIndex == 0
             ? passDirectionX == DirectionXType.Left
             : passDirectionX == DirectionXType.Right;
-
-        bool infCrs_f = (MySideIndex == 0 && CrsL_f) || (MySideIndex == 1 && CrsR_f);
-
-        bool enmCrs_f = (MySideIndex == 0 && CrsR_f) || (MySideIndex == 1 && CrsL_f);
+        
+        var isEnemyCourtKey = (MySideIndex == 0 && isRightKey) || (MySideIndex == 1 && isLeftKey);
 
         //十字入ってない
-        bool neutral_f = (CrsL_f || CrsR_f || CrsU_f || CrsD_f) == false;
+        var isNeutralKey = (isLeftKey || isRightKey || isUpKey || isDownKey) == false;
 
         //左コート時、内野内で一番右にいる
-        bool topPos_f = true;
-
-        bool frontPos_f = true; //一番手前にいる
-        bool backPos_f = true; //一番奥にいる
+        var isTopPosition = true;
+        var isFrontPosition = true; //一番手前にいる
+        var isBackwordPosition = true; //一番奥にいる
 
         //ダッシュマンへパス
-        bool isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
+        var isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
 
-        int distO2 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_BL);
-        int distO3 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_FL);
-        bool nearO2_f = (distO2 < distO3);
-
-        //優先順位初期化
-        // for (int i = 0; i < Defines.DBMEMBER_INF; ++i)
-        // {
-        //     targetOrder[i] = NGNUM;
-        // }
+        var distO2 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_BL);
+        var distO3 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_FL);
+        var isNearO2 = distO2 < distO3;
 
         TmpStateManager.Instance.TmpState.Clear();
-        var sltgXZ = TmpStateManager.Instance.TmpState.sltgXZ;
-        var sltg_f = TmpStateManager.Instance.TmpState.sltg_f;
+        var targetDist = TmpStateManager.Instance.TmpState.targetDist;
+        var isSelectTarget = TmpStateManager.Instance.TmpState.isSelectTarget;
         var targetOrder = TmpStateManager.Instance.TmpState.targetOrder;
         var sortValue = TmpStateManager.Instance.TmpState.sortValue;
 
@@ -590,7 +581,7 @@ public partial class CharaBehavior
                 continue;
             }
 
-            sltgXZ[order] = MyState.Coordinate.DistanceXZ(MySideOrders[order].Coordinate);
+            targetDist[order] = MyState.Coordinate.DistanceXZ(MySideOrders[order].Coordinate);
         }
 
         //パスが出せるダッシュマンがいるか
@@ -612,31 +603,31 @@ public partial class CharaBehavior
                 }
 
                 //向き方向に居る
-                sltg_f[order] = enNaiyaTag.TGOK;
+                isSelectTarget[order] = enNaiyaTag.TGOK;
 
-                NoTag_f = false; //一人でも向き方向にタゲが見つかった
+                isNoneAngleTarget = false; //一人でも向き方向にタゲが見つかった
 
                 //右にダッシュマンがいる
                 if (chara.LeftCourtX > LeftCourtX)
                 {
-                    topPos_f = false;
+                    isTopPosition = false;
                 }
 
                 //奥にダッシュマンがいる
                 if (chara.MyState.Coordinate.Z > MyState.Coordinate.Z)
                 {
-                    backPos_f = false;
+                    isBackwordPosition = false;
                 }
 
                 //手前にダッシュマンがいる
                 if (chara.MyState.Coordinate.Z < MyState.Coordinate.Z)
                 {
-                    frontPos_f = false;
+                    isFrontPosition = false;
                 }
             }
 
             //パスが出せるダッシュマンがいない
-            if (NoTag_f)
+            if (isNoneAngleTarget)
             {
                 isDashmanPass = false;
             }
@@ -650,41 +641,41 @@ public partial class CharaBehavior
             {
                 if (IsNGPassTag(order))
                 {
-                    sltg_f[order] = enNaiyaTag.TGNG;
+                    isSelectTarget[order] = enNaiyaTag.TGNG;
                     continue;
                 }
-                AllNoTag_f = false; //一応タゲ可能は人はいる
+                isNoneTarget = false; //一応タゲ可能は人はいる
 
                 var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
 
                 if (IsCheckNoAgl(chara.MyState.Coordinate.X, chara.MyState.Coordinate.Z))
                 {
                     //向きに居ない
-                    sltg_f[order] = enNaiyaTag.TGNOAGL;
+                    isSelectTarget[order] = enNaiyaTag.TGNOAGL;
                 }
                 else
                 {
                     //向き方向に居る
-                    sltg_f[order] = enNaiyaTag.TGOK;
-                    NoTag_f = false; //一人でも向き方向にタゲが見つかった
+                    isSelectTarget[order] = enNaiyaTag.TGOK;
+                    isNoneAngleTarget = false; //一人でも向き方向にタゲが見つかった
                 }
 
                 //誰か右にいる
                 if (chara.LeftCourtX > LeftCourtX)
                 {
-                    topPos_f = false;
+                    isTopPosition = false;
                 }
 
                 //奥にいる
                 if (chara.MyState.Coordinate.Z > MyState.Coordinate.Z)
                 {
-                    backPos_f = false;
+                    isBackwordPosition = false;
                 }
 
                 //手前にいる
                 if (chara.MyState.Coordinate.Z < MyState.Coordinate.Z)
                 {
-                    frontPos_f = false;
+                    isFrontPosition = false;
                 }
             }
         }
@@ -692,51 +683,51 @@ public partial class CharaBehavior
         //ダッシュマンいるとき
         if (isDashmanPass)
         {
-            if (topPos_f && enmCrs_f) //先頭で右→が入ってるのときのみ
+            if (isTopPosition && isEnemyCourtKey) //先頭で右→が入ってるのときのみ
             {
-                if (CrsU_f)
+                if (isUpKey)
                 {
                     return OrderIndexType.Outfield2; //右上
                 }
 
-                if (CrsD_f)
+                if (isDownKey)
                 {
                     return OrderIndexType.Outfield3; //右下
                 }
 
                 //右のみ
-                return nearO2_f
+                return isNearO2
                     ? OrderIndexType.Outfield2
                     : OrderIndexType.Outfield3;
             }
 
-            if (frontPos_f) //一番手前に居る
+            if (isFrontPosition) //一番手前に居る
             {
-                if (CrsD_f)
+                if (isDownKey)
                 {
                     return OrderIndexType.Outfield3; //右下
                 }
             }
 
-            if (backPos_f) //一番奥に居る
+            if (isBackwordPosition) //一番奥に居る
             {
-                if (CrsU_f)
+                if (isUpKey)
                 {
                     return OrderIndexType.Outfield2; //右下
                 }
             }
         }
-        else if ((infMuki_f == false && topPos_f) || AllNoTag_f) //右向き時しかも先頭もしくは孤立(→外野パス)
+        else if ((isInfieldDirection == false && isTopPosition) || isNoneTarget) //右向き時しかも先頭もしくは孤立(→外野パス)
         {
             if (MyState.Motion.MotionType == CharaMotionType.Ds) //ダッシュ中
             {
                 if (IsSelfControl)
                 {
-                    if (CrsU_f) return OrderIndexType.Outfield2; //上
-                    if (CrsD_f) return OrderIndexType.Outfield3; //下
-                    if (enmCrs_f) return OrderIndexType.Outfield4; //右
+                    if (isUpKey) return OrderIndexType.Outfield2; //上
+                    if (isDownKey) return OrderIndexType.Outfield3; //下
+                    if (isEnemyCourtKey) return OrderIndexType.Outfield4; //右
 
-                    return nearO2_f
+                    return isNearO2
                         ? OrderIndexType.Outfield2
                         : OrderIndexType.Outfield3;
                 }
@@ -756,12 +747,12 @@ public partial class CharaBehavior
                 case DirectionZType.Forward:
                     return OrderIndexType.Outfield3;
                 default:
-                    if (enmCrs_f)
+                    if (isEnemyCourtKey)
                     {
                         return OrderIndexType.Outfield4;
                     }
 
-                    return nearO2_f
+                    return isNearO2
                         ? OrderIndexType.Outfield2
                         : OrderIndexType.Outfield3;
             }
@@ -776,16 +767,16 @@ public partial class CharaBehavior
             //向き方向に人なしのとき
             // sortValue[order] = 0; //初期化
 
-            if (sltg_f[order] != enNaiyaTag.TGOK
-                && (!NoTag_f || sltg_f[order] == enNaiyaTag.TGNG))
+            if (isSelectTarget[order] != enNaiyaTag.TGOK
+                && (!isNoneAngleTarget || isSelectTarget[order] == enNaiyaTag.TGNG))
             {
                 targetOrder[f] = OrderIndexType.Disabled;
                 continue;
             }
 
-            if (neutral_f) //ニュートラル
+            if (isNeutralKey) //ニュートラル
             {
-                sortValue[order] = sltgXZ[order]; //内野間は距離が近い人
+                sortValue[order] = targetDist[order]; //内野間は距離が近い人
             }
             else
             {
@@ -797,21 +788,21 @@ public partial class CharaBehavior
                     : chara.MyState.Coordinate.Z;
 
                 //上
-                if (CrsU_f)
+                if (isUpKey)
                 {
                     sortValue[order] = -tgZ; //Ｚのマイナス（上ほど優先）
                 }
-                else if (CrsD_f) //下
+                else if (isDownKey) //下
                 {
                     sortValue[order] = +tgZ; //Ｚ（下ほど優先）
                 }
 
                 //上下が入ってるとき用に合計値
-                if (CrsL_f) //左
+                if (isLeftKey) //左
                 {
                     sortValue[order] += chara.MyState.Coordinate.X; //Ｘ（左ほど優先）
                 }
-                else if (CrsR_f) //右
+                else if (isRightKey) //右
                 {
                     sortValue[order] -= chara.MyState.Coordinate.X; //Ｘのマイナス（右ほど優先）
                 }
@@ -848,40 +839,41 @@ public partial class CharaBehavior
     //外野間パスタゲセット★
     private OrderIndexType GetGaiyaPassTag()
     {
-        var NaiyaMuki = MySideIndex == 0
+        var infieldDirectionX = MySideIndex == 0
             ? DirectionXType.Left
             : DirectionXType.Right;
 
-        OrderIndexType ptg = OrderIndexType.Infield0; //パスタゲ
+        var passTarget = OrderIndexType.Infield0; //パスタゲ
 
         //ダッシュマンへパス
-        bool isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
+        var isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
 
-        DirectionXType paMuki = MyState.Coordinate.DirectionX;
-        DirectionZType paMukiZ = MyState.Coordinate.DirectionZ;
+        var passDirectionX = MyState.Coordinate.DirectionX;
+        var passDirectionZ = MyState.Coordinate.DirectionZ;
 
-        DirectionXType lastXKey = MyState.Pad.LastXKey;
+        var lastXKey = MyState.Pad.LastXKey;
 
-        var CrsL_f = false;
-        var CrsR_f = false;
-        var CrsU_f = false;
-        var CrsD_f = false;
+        var isLeftKey = false;
+        var isRightKey = false;
+        var isUpKey = false;
+        var isDownKey = false;
 
         if (IsSelfControl)
         {
-            CrsL_f = MyPad.KeyLeft.IsPressed; //パス方向入力
-            CrsR_f = MyPad.KeyRight.IsPressed;
-            CrsU_f = MyPad.KeyUp.IsPressed;
-            CrsD_f = MyPad.KeyDown.IsPressed;
+            isLeftKey = MyPad.KeyLeft.IsPressed; //パス方向入力
+            isRightKey = MyPad.KeyRight.IsPressed;
+            isUpKey = MyPad.KeyUp.IsPressed;
+            isDownKey = MyPad.KeyDown.IsPressed;
         }
 
         //内野向きが押されてる
-        bool infCrs_f = (MySideIndex == 0 && CrsL_f) || (MySideIndex == 1 && CrsR_f);
+        var isInfieldKey = (MySideIndex == 0 && isLeftKey) || (MySideIndex == 1 && isRightKey);
 
-        var noLR_f = CrsL_f == false && CrsR_f == false;
+        var isNoneXKey = isLeftKey == false && isRightKey == false;
+        var isNoneZKey = isUpKey == false && isDownKey == false;
 
         //十字入ってない
-        var neutral_f = (CrsL_f || CrsR_f || CrsU_f || CrsD_f) == false;
+        var isNeutralKey = (isLeftKey || isRightKey || isUpKey || isDownKey) == false;
 
         var postMan = MyTeamState.PositionState.Postman;
 
@@ -891,20 +883,20 @@ public partial class CharaBehavior
             case OrderIndexType.Outfield2:
                 if (lastXKey == DirectionXType.Neutral)
                 {
-                    if (CrsD_f && noLR_f) //(st_.pstMyCh_->Zahyou.MukiZ == mzF)
+                    if (isDownKey && isNoneXKey)
                     {
-                        ptg = OrderIndexType.Outfield3;
+                        passTarget = OrderIndexType.Outfield3;
                     }
                     else
                     {
-                        ptg = paMuki == NaiyaMuki
+                        passTarget = passDirectionX == infieldDirectionX
                             ? postMan
                             : OrderIndexType.Outfield4;
                     }
                 }
                 else
                 {
-                    ptg = lastXKey == NaiyaMuki
+                    passTarget = lastXKey == infieldDirectionX
                         ? postMan
                         : OrderIndexType.Outfield4;
                 }
@@ -913,20 +905,20 @@ public partial class CharaBehavior
             case OrderIndexType.Outfield3:
                 if (lastXKey == DirectionXType.Neutral)
                 {
-                    if (CrsU_f && noLR_f)
+                    if (isUpKey && isNoneXKey)
                     {
-                        ptg = OrderIndexType.Outfield2;
+                        passTarget = OrderIndexType.Outfield2;
                     }
                     else
                     {
-                        ptg = paMuki == NaiyaMuki
+                        passTarget = passDirectionX == infieldDirectionX
                             ? postMan
                             : OrderIndexType.Outfield4;
                     }
                 }
                 else
                 {
-                    ptg = lastXKey == NaiyaMuki
+                    passTarget = lastXKey == infieldDirectionX
                         ? postMan
                         : OrderIndexType.Outfield4;
                 }
@@ -934,26 +926,26 @@ public partial class CharaBehavior
 
             case OrderIndexType.Outfield4:
 
-                if (infCrs_f && CrsU_f == false && CrsD_f == false) //内野方向入ってたら内野
+                if (isInfieldKey && isNoneZKey) //内野方向入ってたら内野
                 {
-                    ptg = postMan;
+                    passTarget = postMan;
                 }
                 else
                 {
-                    switch (paMukiZ)
+                    switch (passDirectionZ)
                     {
                         case DirectionZType.Backward:
-                            ptg = OrderIndexType.Outfield2;
+                            passTarget = OrderIndexType.Outfield2;
                             break;
                         case DirectionZType.Forward:
-                            ptg = OrderIndexType.Outfield3;
+                            passTarget = OrderIndexType.Outfield3;
                             break;
                         default:
                         {
                             var distO2 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_BL);
                             var distO3 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_FL);
 
-                            ptg = distO2 < distO3
+                            passTarget = distO2 < distO3
                                 ? OrderIndexType.Outfield2
                                 : OrderIndexType.Outfield3;
                         }
@@ -964,144 +956,150 @@ public partial class CharaBehavior
         }
 
         //ダッシュマンいるとき(十字ニュートラルも)
-        if (isDashmanPass && (ptg == postMan || neutral_f))
+        if (!isDashmanPass || (passTarget != postMan && !isNeutralKey))
         {
-            var NoTag_f = true; //タゲが居ない
-            TmpStateManager.Instance.TmpState.Clear();
-            var sltgX = TmpStateManager.Instance.TmpState.sltgX;
-            var sltgXZ = TmpStateManager.Instance.TmpState.sltgXZ;
-            var sltg_f = TmpStateManager.Instance.TmpState.sltg_f;
-            var targetOrder = TmpStateManager.Instance.TmpState.targetOrder;
-            var sortValue = TmpStateManager.Instance.TmpState.sortValue;
+            return passTarget;
+        }
 
-            //内野全員との角度を取る
-            for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+        var isNoneTarget = true; //タゲが居ない
+        TmpStateManager.Instance.TmpState.Clear();
+        var targetX = TmpStateManager.Instance.TmpState.targetX;
+        var targetDist = TmpStateManager.Instance.TmpState.targetDist;
+        var isSelectTarget = TmpStateManager.Instance.TmpState.isSelectTarget;
+        var targetOrder = TmpStateManager.Instance.TmpState.targetOrder;
+        var sortValue = TmpStateManager.Instance.TmpState.sortValue;
+
+        //内野全員との角度を取る
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+        {
+            var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
+            if (chara.IsDashman
+                && (OrderIndexType)order != MyOrderIndex //自分
+                && IsCheckLandEnPos(order) == false) //外野からのときは敵コート着地キャラはなしに
             {
-                var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
-                if (chara.IsDashman
-                    && (OrderIndexType)order != MyOrderIndex //自分
-                    && IsCheckLandEnPos(order) == false) //外野からのときは敵コート着地キャラはなしに
-                {
-                    sltg_f[order] = enNaiyaTag.TGOK;
-                    NoTag_f = false; //一人でも向き方向にタゲが見つかった
-                }
-                else
-                {
-                    sltg_f[order] = enNaiyaTag.TGNG;
-                }
-
-                //X距離外野はGetLeftCrtX()が左コートなので絶対値を使う
-                sltgX[order] = chara.LeftCourtX; //自分より右に居れば＋
-                //Z距離
-                var sltgZ = Math.Abs(chara.MyState.Coordinate.Z - MyState.Coordinate.Z); //自分より上にいれば＋
-                //距離
-                sltgXZ[order] = Defines.Hypot(sltgX[order], sltgZ);
+                isSelectTarget[order] = enNaiyaTag.TGOK;
+                isNoneTarget = false; //一人でも向き方向にタゲが見つかった
+            }
+            else
+            {
+                isSelectTarget[order] = enNaiyaTag.TGNG;
             }
 
-            //ダッシュマンいるけど敵コートに着地しちゃう場合もある
-            //NoTagのときはそのままポストマンに
-            if (NoTag_f == false)
+            //X距離外野はGetLeftCrtX()が左コートなので絶対値を使う
+            targetX[order] = chara.LeftCourtX; //自分より右に居れば＋
+            //Z距離
+            var targetZ = Math.Abs(chara.MyState.Coordinate.Z - MyState.Coordinate.Z); //自分より上にいれば＋
+            //距離
+            targetDist[order] = Defines.Hypot(targetX[order], targetZ);
+        }
+
+        //ダッシュマンいるけど敵コートに着地しちゃう場合もある
+        //NoTagのときはそのままポストマンに
+        if (isNoneTarget)
+        {
+            return passTarget;
+        }
+
+        //優先順位初期化
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+        {
+            targetOrder[order] = OrderIndexType.Disabled;
+        }
+
+        var f = 0;
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+        {
+            sortValue[order] = 0; //初期化
+
+            if (isSelectTarget[order] != enNaiyaTag.TGOK)
             {
-                //優先順位初期化
-                for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+                continue;
+            }
+
+            if (isNeutralKey) //ニュートラル
+            {
+                sortValue[order] = -targetX[order]; //外野からのときは右（先頭を走ってる人）
+            }
+            else
+            {
+                var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
+
+                // //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
+                // var tgZ = isDashmanPass
+                //     ? chara.MyState.Dashman.TargetZ
+                //     : chara.MyState.Coordinate.Z;
+                //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
+                var tgZ = chara.MyState.Dashman.TargetZ;
+
+                //上
+                if (isUpKey)
                 {
-                    targetOrder[order] = OrderIndexType.Disabled;
+                    sortValue[order] = -tgZ; //Ｚのマイナス（上ほど優先）
+                }
+                else if (isDownKey) //下
+                {
+                    sortValue[order] = +tgZ; //Ｚ（下ほど優先）
                 }
 
-                var f = 0;
-                for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+                if (isLeftKey) //左
                 {
-                    sortValue[order] = 0; //初期化
+                    sortValue[order] += chara.X; //Ｘ（左ほど優先）
+                }
+                else if (isRightKey) //右
+                {
+                    sortValue[order] -= chara.X; //Ｘのマイナス（右ほど優先）
+                }
+                //else//ニュートラル
+                //{
+                //  //sortValue[i] = (var)sltgXZ[i];//距離
+                //  sortValue[i] = (var)sltgX[i];//先頭を走ってる人
+                //}
+            }
 
-                    if (sltg_f[order] == enNaiyaTag.TGOK) //ＯＫ
+            targetOrder[f++] = (OrderIndexType)order;
+        }
+
+        //ソート
+        for (var i = 0; i < Defines.DBMEMBER_INF - 1; ++i)
+        {
+            for (var i2 = 0; i2 < Defines.DBMEMBER_INF - 1; i2++)
+            {
+                if (i == i2
+                    || targetOrder[i] == OrderIndexType.Disabled
+                    || targetOrder[i2] == OrderIndexType.Disabled)
+                {
+                    continue;
+                }
+
+                var orderA = (int)targetOrder[i];
+                var orderB = (int)targetOrder[i2];
+
+                var dist = Math.Abs(sortValue[orderA] - sortValue[orderB]);
+
+                var isSwitch = false;
+
+                if (dist <= Defines.Percent)
+                {
+                    // ほぼ同じ場合(1dot以内)は絶対距離で判断
+                    if (targetDist[orderA] < targetDist[orderB]) //小さい方優先
                     {
-                        if (neutral_f) //ニュートラル
-                        {
-                            sortValue[order] = -sltgX[order]; //外野からのときは右（先頭を走ってる人）
-                        }
-                        else
-                        {
-                            var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
-
-                            // //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
-                            // var tgZ = isDashmanPass
-                            //     ? chara.MyState.Dashman.TargetZ
-                            //     : chara.MyState.Coordinate.Z;
-                            //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
-                            var tgZ = chara.MyState.Dashman.TargetZ;
-
-                            //上
-                            if (CrsU_f)
-                            {
-                                sortValue[order] = -tgZ; //Ｚのマイナス（上ほど優先）
-                            }
-                            else if (CrsD_f) //下
-                            {
-                                sortValue[order] = +tgZ; //Ｚ（下ほど優先）
-                            }
-
-                            if (CrsL_f) //左
-                            {
-                                sortValue[order] += chara.X; //Ｘ（左ほど優先）
-                            }
-                            else if (CrsR_f) //右
-                            {
-                                sortValue[order] -= chara.X; //Ｘのマイナス（右ほど優先）
-                            }
-                            //else//ニュートラル
-                            //{
-                            //  //sortValue[i] = (var)sltgXZ[i];//距離
-                            //  sortValue[i] = (var)sltgX[i];//先頭を走ってる人
-                            //}
-                        }
-
-                        targetOrder[f++] = (OrderIndexType)order;
+                        isSwitch = true;
                     }
                 }
-                
-                ここから
-
-                //ソート
-                for (var i = 0; i < (Defines.DBMEMBER_INF - 1); ++i)
+                else if (sortValue[orderA] < sortValue[orderB]) //小さい方優先
                 {
-                    for (var i2 = 0; i2 < (Defines.DBMEMBER_INF - 1); i2++)
-                    {
-                        if (i == i2) continue; //同じ
-
-                        if (targetOrder[i] != OrderIndexType.Disabled
-                            && targetOrder[i2] != OrderIndexType.Disabled)
-                        {
-                            var dist = abs(sortValue[targetOrder[i]] - sortValue[targetOrder[i2]]);
-
-                            //ほぼ同じ場合(1dotいない)
-                            if (dist <= XYMAG)
-                            {
-                                //絶対距離で判断
-                                if (sltgXZ[targetOrder[i]] < sltgXZ[targetOrder[i2]]) //小さい方優先
-                                {
-                                    var tmp;
-                                    tmp = targetOrder[i2];
-                                    targetOrder[i2] = targetOrder[i];
-                                    targetOrder[i] = tmp;
-                                }
-                            }
-                            else if (sortValue[targetOrder[i]] < sortValue[targetOrder[i2]]) //小さい方優先
-                            {
-                                var tmp;
-                                tmp = targetOrder[i2];
-                                targetOrder[i2] = targetOrder[i];
-                                targetOrder[i] = tmp;
-                            }
-                        }
-                    }
+                    isSwitch = true;
                 }
 
-                //ソート１位
-                ptg = targetOrder[0];
+                if (isSwitch)
+                {
+                    (targetOrder[i2], targetOrder[i]) = (targetOrder[i], targetOrder[i2]);
+                }
             }
         }
 
-        return ptg;
+        //ソート１位
+        return targetOrder[0];
     }
 
     private bool IsCheckLandEnPos(int order)
@@ -1121,7 +1119,8 @@ public partial class CharaBehavior
         {
             DirectionZType.Forward => targetZ < MyState.Coordinate.Z,
             DirectionZType.Neutral => true,
-            DirectionZType.Backward => targetZ > MyState.Coordinate.Z
+            DirectionZType.Backward => targetZ > MyState.Coordinate.Z,
+            _ => throw new ArgumentOutOfRangeException()
         };
 
         if (isInAngle)
@@ -1131,6 +1130,7 @@ public partial class CharaBehavior
                 DirectionXType.Left => targetX < MyState.Coordinate.X,
                 DirectionXType.Neutral => true,
                 DirectionXType.Right => targetX > MyState.Coordinate.X,
+                _ => throw new ArgumentOutOfRangeException()
             };
         }
 
