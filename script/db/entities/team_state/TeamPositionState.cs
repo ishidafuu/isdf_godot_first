@@ -22,7 +22,7 @@ public class TeamPositionState
     //ボールに触ってないダッシュマン人数
     public int DashmanNum_Run_NT { get; private set; }
     //パス可能人数＝ダッシュマン待機人数
-    public int PassAbleNum { get; private set; }
+    public int PassAbleCount { get; private set; }
     //現在のポストマン（居ないときはNGNUM）
     public OrderIndexType Postman { get; private set; }
     //ダッシュマン待機

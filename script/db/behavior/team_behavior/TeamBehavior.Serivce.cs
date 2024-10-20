@@ -3,7 +3,7 @@
 public partial class TeamBehavior
 {
 
-    public void CallGenerateAngel(int orderIndex)
+    public void CallGenerateAngel(OrderIndexType orderIndex)
     {
         // st_.pmgMyTm_->SetAngel(st_.posNo_);
     }
@@ -12,7 +12,7 @@ public partial class TeamBehavior
     {
     }
 
-    public void CallHoldBall(int orderIndex)
+    public void CallHoldBall(OrderIndexType orderIndex)
     {
         // //チーム
         // st_.pmgMyTm_->st_.pstMyTm_->getJpball_f = (pmgSG_->stBa_.JumpBall == jbJpball);

@@ -443,7 +443,11 @@ public partial class CharaBehavior
         //最初のタゲを敵の操作キャラに
         //外野の可能性もでるのでなんとかする
         //ShTagSet(false); //拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
-        PaTagSet();
+        var passTargetOrderIndex = MyState.Order.IsInfield
+            ? GetNaiyaPassTag()
+            : GetGaiyaPassTag();
+
+        SetPassTarget(passTargetOrderIndex);
 
         //拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
         if (st_.pmgEnTm_.IsAllDead() == false)
@@ -497,30 +501,42 @@ public partial class CharaBehavior
 #endif // #ifdef __K_DEBUG_SHIAI__
     }
 
-    private void PaTagSet()
+    private void SetPassTarget(OrderIndexType orderIndex)
     {
-        DirectionXType infieldDirectionX = MySideIndex == 0
-            ? DirectionXType.Left
-            : DirectionXType.Right;
-
-        OrderIndexType ptg = MyState.Order.IsInfield
-            ? GetNaiyaPassTag()
-            : GetGaiyaPassTag();
-
-        pmgSG_.stBa_.PaTgTNo = st_.mysideNo_;
-
-        if (ptg == NGNUM)
+        if (IsNGPassTag(orderIndex))
         {
-            //パスタゲがパス出せないとき
-            NGPaTagShift();
-        }
-        else
-        {
-            pmgSG_.stBa_.PaTgPNo = ptg;
+            if (MyOrderIndex != OrderIndexType.Outfield4 && IsNGPassTag(OrderIndexType.Outfield4) == false)
+            {
+                orderIndex = OrderIndexType.Outfield4;
+            }
+            else if (MyOrderIndex != OrderIndexType.Outfield3 && IsNGPassTag(OrderIndexType.Outfield3) == false)
+            {
+                orderIndex = OrderIndexType.Outfield3;
+            }
+            else if (MyOrderIndex != OrderIndexType.Outfield2 && IsNGPassTag(OrderIndexType.Outfield2) == false)
+            {
+                orderIndex = OrderIndexType.Outfield2;
+            }
+            else
+            {
+                if (MyTeamState.PositionState.PassAbleCount > 0
+                    && MyOrderIndex != MyTeamState.PositionState.Postman
+                    && IsNGPassTag(MyTeamState.PositionState.Postman) == false)
+                {
+                    orderIndex = MyTeamState.PositionState.Postman;
+                }
+                else
+                {
+                    orderIndex = OrderIndexType.Outfield4;
+                }
+            }
         }
 
-        //パスカットキャラセット
-        PaCtTagSet();
+        CallBallChangePassTarget(orderIndex);
+    }
+
+    private void NGPaTagShift()
+    {
     }
 
     //内野パスタゲセット★
@@ -549,7 +565,7 @@ public partial class CharaBehavior
         var isInfieldDirection = MySideIndex == 0
             ? passDirectionX == DirectionXType.Left
             : passDirectionX == DirectionXType.Right;
-        
+
         var isEnemyCourtKey = (MySideIndex == 0 && isRightKey) || (MySideIndex == 1 && isLeftKey);
 
         //十字入ってない
@@ -558,7 +574,7 @@ public partial class CharaBehavior
         //左コート時、内野内で一番右にいる
         var isTopPosition = true;
         var isFrontPosition = true; //一番手前にいる
-        var isBackwordPosition = true; //一番奥にいる
+        var isBackwardPosition = true; //一番奥にいる
 
         //ダッシュマンへパス
         var isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
@@ -616,7 +632,7 @@ public partial class CharaBehavior
                 //奥にダッシュマンがいる
                 if (chara.MyState.Coordinate.Z > MyState.Coordinate.Z)
                 {
-                    isBackwordPosition = false;
+                    isBackwardPosition = false;
                 }
 
                 //手前にダッシュマンがいる
@@ -669,7 +685,7 @@ public partial class CharaBehavior
                 //奥にいる
                 if (chara.MyState.Coordinate.Z > MyState.Coordinate.Z)
                 {
-                    isBackwordPosition = false;
+                    isBackwardPosition = false;
                 }
 
                 //手前にいる
@@ -709,7 +725,7 @@ public partial class CharaBehavior
                 }
             }
 
-            if (isBackwordPosition) //一番奥に居る
+            if (isBackwardPosition) //一番奥に居る
             {
                 if (isUpKey)
                 {
@@ -765,7 +781,6 @@ public partial class CharaBehavior
         for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
             //向き方向に人なしのとき
-            // sortValue[order] = 0; //初期化
 
             if (isSelectTarget[order] != enNaiyaTag.TGOK
                 && (!isNoneAngleTarget || isSelectTarget[order] == enNaiyaTag.TGNG))
@@ -808,7 +823,7 @@ public partial class CharaBehavior
                 }
             }
 
-            targetOrder[f] = order;
+            targetOrder[f] = (OrderIndexType)order;
 
             f++;
         }
@@ -839,11 +854,11 @@ public partial class CharaBehavior
     //外野間パスタゲセット★
     private OrderIndexType GetGaiyaPassTag()
     {
+        var passTarget = OrderIndexType.Disabled; //パスタゲ
+
         var infieldDirectionX = MySideIndex == 0
             ? DirectionXType.Left
             : DirectionXType.Right;
-
-        var passTarget = OrderIndexType.Infield0; //パスタゲ
 
         //ダッシュマンへパス
         var isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
@@ -1109,7 +1124,7 @@ public partial class CharaBehavior
             ? chara.MyState.Air.LandX
             : Defines.DBCRT_CL - (chara.MyState.Air.LandX - Defines.DBCRT_CL);
 
-        return chara.MyState.Order.IsInfield && tLandX > Defines.DBCRT_CLI);
+        return chara.MyState.Order.IsInfield && tLandX > Defines.DBCRT_CLI;
     }
 
     //角度に入っていない
@@ -1323,9 +1338,10 @@ public partial class CharaBehavior
     }
 
     //パスタゲにならない★★再確認
-    bool IsNGPassTag(int order)
+    bool IsNGPassTag(OrderIndexType order)
     {
-        if (order == MyOrderIndex) //自分
+        if (order == MyOrderIndex
+            || order == OrderIndexType.Disabled)
         {
             return true; //パス不可
         }
