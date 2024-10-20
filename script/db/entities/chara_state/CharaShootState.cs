@@ -38,7 +38,7 @@ public class CharaShootState
         ShootEndWaitCount.Clear();
         Step.Clear();
         ShootTiming = default;
-        Angle12 = 0;
+        Angle12 = -1;
         ShCv = 0;
         IsBackSh = false;
         IsUTurn = false;

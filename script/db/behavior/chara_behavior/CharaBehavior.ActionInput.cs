@@ -449,8 +449,11 @@ public partial class CharaBehavior
 
         SetPassTarget(passTargetOrderIndex);
 
-        //拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
-        if (st_.pmgEnTm_.IsAllDead() == false)
+        
+        ここから
+            
+        // 拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
+        if (EnemyTeamState.IsAllOut == false)
         {
             //シュートタゲは向き反映
             int tstg = GetTag(false);
@@ -499,6 +502,144 @@ public partial class CharaBehavior
             }
         }
 #endif // #ifdef __K_DEBUG_SHIAI__
+    }
+
+    //タゲセット
+    private OrderIndexType GetTag(bool NoRefMuki_f)
+    {
+        TmpStateManager.Instance.TmpState.Clear();
+        var targetX = TmpStateManager.Instance.TmpState.targetX;
+        var targetY = TmpStateManager.Instance.TmpState.targetY;
+        var targetDist = TmpStateManager.Instance.TmpState.targetDist;
+        var isSelectTarget = TmpStateManager.Instance.TmpState.isSelectTarget;
+
+        SetMukiAglFromDirection();
+
+        //敵内野全員との角度を取る
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+        {
+            var enemyChara = CharaBehaviorManager.Instance.GetChara(EnemySideIndex, order);
+
+            if (enemyChara.IsEnableShootTarget == false)
+            {
+                continue;
+            }
+
+            isSelectTarget[order] = enNaiyaTag.TGOK;
+            targetX[order] = enemyChara.X - MyState.Coordinate.X;
+            var targetZ = enemyChara.Z - MyState.Coordinate.Z;
+            targetY[order] = enemyChara.Y - MyState.Coordinate.Y;
+            targetDist[order] = Defines.Hypot(targetX[order], targetZ); //距離
+
+            //向きを反映しない（強制的に内野タゲ）
+            if (NoRefMuki_f == false)
+            {
+                const int angle12 = 12;
+                var angle2 = GetTagAgl2(targetX[order], targetZ); //新12時法
+                //メインアングルチェック
+                if (angle2 != (MyState.Shoot.Angle12 + 0) % angle12
+                    && angle2 != (MyState.Shoot.Angle12 + 1) % angle12
+                    && angle2 != (MyState.Shoot.Angle12 + 2) % angle12
+                    && angle2 != (MyState.Shoot.Angle12 + 3) % angle12)
+                {
+                    isSelectTarget[order] = enNaiyaTag.TGNG;
+                }
+            }
+        }
+
+        var targetOrderIndex = OrderIndexType.Disabled;
+        var subTargetOrderIndex = OrderIndexType.Disabled;
+        var nearTargetDist = 0;
+        var subNearTargetDist = 0;
+
+        //距離による優先順位
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+        {
+            if (isSelectTarget[order] == enNaiyaTag.TGNG)
+            {
+                continue;
+            }
+
+            // 第二候補
+            if (subNearTargetDist == 0
+                || targetDist[order] < subNearTargetDist)
+            {
+                subTargetOrderIndex = (OrderIndexType)order;
+                subNearTargetDist = targetDist[order];
+            }
+
+            // 近すぎ
+            if (targetDist[order] < Defines.SHTAG_NEARDIST)
+            {
+                continue;
+            }
+
+            // Y離れすぎ
+            if (Defines.PercentageOf(targetDist[order], Defines.SHTAG_FARDIST_Y) < Math.Abs(targetY[order]))
+            {
+                continue;
+            }
+
+            if (nearTargetDist == 0
+                || targetDist[order] < nearTargetDist)
+            {
+                targetOrderIndex = (OrderIndexType)order;
+                nearTargetDist = targetDist[order];
+            }
+        }
+
+        return targetOrderIndex == OrderIndexType.Disabled
+            ? subTargetOrderIndex
+            : targetOrderIndex;
+    }
+
+    //新タゲ角度(12時計算)
+    private int GetTagAgl2(int tX, int tZ)
+    {
+        var res = -1;
+        var absX = Math.Abs(tX);
+        var absZ = Math.Abs(tZ);
+        var isMinusX = tX < 0;
+        var isMinusZ = tZ < 0;
+
+        const int root3 = 173;
+        const int root1 = 100;
+        const int angle90 = 3;
+
+        if (absX * root3 < absZ * root1)
+        {
+            res = -1;
+        }
+        else if (absZ * root3 < absX * root1)
+        {
+            res = 0;
+        }
+        else
+        {
+            res = +1;
+        }
+
+        if (isMinusZ ^ isMinusX) //符号反転
+        {
+            res *= -1;
+        }
+
+        res += 1;
+
+        if (isMinusX && isMinusZ)
+        {
+            res += angle90 * 2;
+        }
+        else if (isMinusX)
+        {
+            res += angle90 * 3;
+        }
+        else if (isMinusZ)
+        {
+            res += angle90 * 1;
+        }
+
+        return res;
     }
 
     private void SetPassTarget(OrderIndexType orderIndex)
@@ -1337,7 +1478,9 @@ public partial class CharaBehavior
         }
     }
 
-    //パスタゲにならない★★再確認
+    /// <summary>
+    /// パスタゲにならない
+    /// </summary>
     bool IsNGPassTag(OrderIndexType order)
     {
         if (order == MyOrderIndex
@@ -1359,6 +1502,11 @@ public partial class CharaBehavior
         //空中の人はパスタゲにならないように
         return chara.IsFree(true) == false
                || chara.MyState.Motion.HasFlag(CharaMotionFlag.Ar);
+    }
+
+    bool IsNGPassTag(int order)
+    {
+        return IsNGPassTag((OrderIndexType)order);
     }
 
     //自分で操作
@@ -1672,7 +1820,7 @@ public partial class CharaBehavior
 //                             {
 //                                 if (pabtn2_f)
 //                                 {
-//                                     if (lib_num::UpToR(&st_.pstMyCh_.MirPass_c, MIRWAIT))
+//                                     if (Defines.UpToR(&st_.pstMyCh_.MirPass_c, MIRWAIT))
 //                                     {
 //                                         if (pmgSG_.stBa_.PaTgPNo != NGNUM)
 //                                         {
@@ -1697,7 +1845,7 @@ public partial class CharaBehavior
 //                             {
 //                                 if (shbtn2_f && (pabtn2_f == false)) //シュート入力おしっぱ
 //                                 {
-//                                     if (lib_num::UpToR(&st_.pstMyCh_.MirShot_c, MIRWAIT))
+//                                     if (Defines.UpToR(&st_.pstMyCh_.MirShot_c, MIRWAIT))
 //                                     {
 //                                         LookTg(pmgSG_.stBa_.ShTgPNo, false, true); //居ないときはオートで探す
 //
@@ -1835,7 +1983,7 @@ public partial class CharaBehavior
 //                             {
 //                                 if (pabtn2_f)
 //                                 {
-//                                     if (lib_num::UpToR(&st_.pstMyCh_.MirPass_c, MIRWAIT))
+//                                     if (Defines.UpToR(&st_.pstMyCh_.MirPass_c, MIRWAIT))
 //                                     {
 //                                         if (pmgSG_.stBa_.PaTgPNo != NGNUM)
 //                                         {
@@ -1860,7 +2008,7 @@ public partial class CharaBehavior
 //                             {
 //                                 if (shbtn2_f && (pabtn2_f == false)) //シュート入力おしっぱ
 //                                 {
-//                                     if (lib_num::UpToR(&st_.pstMyCh_.MirShot_c, MIRWAIT))
+//                                     if (Defines.UpToR(&st_.pstMyCh_.MirShot_c, MIRWAIT))
 //                                     {
 //                                         LookTg(pmgSG_.stBa_.ShTgPNo, false, true);
 //                                         SetMtype(dbmtJSh);

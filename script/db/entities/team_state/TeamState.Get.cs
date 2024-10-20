@@ -5,24 +5,22 @@ public partial class TeamState
     /// <summary>
     /// 全員アウト
     /// </summary>
-    public bool IsAllOut()
+    public bool IsAllOut
     {
-        foreach (var mySideChara in MySideCharas)
+        get
         {
-            if (mySideChara.IsOut() == false)
+            foreach (var mySideChara in MySideCharas)
             {
-                return false;
+                if (mySideChara.IsOut() == false)
+                {
+                    return false;
+                }
             }
+
+            return true;
         }
-
-        return true;
     }
 
-    public bool IsCom()
-    {
-        // セミオート時のみオート扱いor COMサイド
-
-        return (SemiAutoState.SemiF || MainState.ManSideF == false);
-    }
+    public bool IsCom => SemiAutoState.SemiF || MainState.ManSideF == false;
 
 }

@@ -7,14 +7,14 @@ public partial class CharaBehavior
     public int X => MyState.Coordinate.X;
     public int Y => MyState.Coordinate.Y;
     public int Z => MyState.Coordinate.Z;
-    
+
     /// <summary>
     /// サイド操作権を渡せるキャラか
     /// 死亡していない、ダメージ中でない、手動操作中でない
     /// </summary>
     public bool CanControl => MyState.Live.IsDead == false
-                               && MyState.Motion.HasFlag(CharaMotionFlag.Dam) == false
-                               && MyState.Pad.IsManualControl == false;
+                              && MyState.Motion.HasFlag(CharaMotionFlag.Dam) == false
+                              && MyState.Pad.IsManualControl == false;
 
     /// <summary>
     /// 操作権キャラ
@@ -30,7 +30,7 @@ public partial class CharaBehavior
     /// 自分で操作するキャラかどうか
     /// </summary>
     public bool IsSelfControl => MyState.Pad.IsManualControl
-                                  || (IsControl && IsCom == false);
+                                 || (IsControl && IsCom == false);
 
     /// <summary>
     /// ボール持ちかどうか
@@ -51,8 +51,8 @@ public partial class CharaBehavior
     /// パス待ち状態
     /// </summary>
     public bool IsPassWait => IsPassTarget
-                               && IsBallHolder == false
-                               && MyState.Pad.IsManualControl;
+                              && IsBallHolder == false
+                              && MyState.Pad.IsManualControl;
 
     /// <summary>
     /// かがみ中（予約中）かどうか
@@ -207,6 +207,32 @@ public partial class CharaBehavior
             return MyState.Motion.HasFlag(CharaMotionFlag.Ds)
                    && MyState.Motion.HasFlag(CharaMotionFlag.Ar) == false
                    && isForwardDash;
+        }
+    }
+
+    /// <summary>
+    /// シュートターゲットになれる
+    /// </summary>
+    /// <returns></returns>
+    public bool IsEnableShootTarget
+    {
+        get
+        {
+            // if (MyState.Live.IsDead
+            //     || MyState.Live.Hp <= 0
+            //     || MyState.Motion.HasFlag(CharaMotionFlag.ANG))
+            if (MyState.IsOut)
+            {
+                return false;
+            }
+
+            if (MyState.Motion.HasFlag(CharaMotionFlag.Ar)
+                && MyState.Motion.HasFlag(CharaMotionFlag.Dam))
+            {
+                return MyState.Coordinate.Y <= GetSettingShoot(SettingShotType.FlyTagHeight) * Defines.Percent;
+            }
+
+            return true;
         }
     }
 }

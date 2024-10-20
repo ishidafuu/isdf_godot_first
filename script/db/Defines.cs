@@ -124,6 +124,10 @@ public static class Defines
     public const int PLAYERNUM = 4; // 他のプレイヤー数
     public const int RANKERNUM = 1000; // ランキング表示名
     public const int MIRLIM = 10; //ミラーシュート受付時間
+    public const int SHTAG_NEARDIST = 9 * Percent; //シュートターゲット近すぎ
+    public const int SHTAG_FARDIST_Y = 150; //シュートターゲットY遠すぎ
+    
+    
 
     //座標
     public const int GAME_W = 448;
@@ -177,6 +181,16 @@ public static class Defines
     {
         return (int)System.Math.Sqrt(System.Math.Pow(x, 2) + System.Math.Pow(y, 2));
     }
+    
+
+    /// <summary>
+    /// パーセンテージ
+    /// </summary>
+    public static int PercentageOf(int value, int percent)
+    {
+        return value * percent / Percent;
+    }
+    
     // enum enCrtLine
     // {
     //     crtLLine,
