@@ -27,6 +27,13 @@ public partial class BallBehavior
         // PaCtTagSet();
     }
     
+    public void CallChangeShootTarget(int sideIndex, OrderIndexType orderIndex)
+    {
+        
+        // 敵チーム側のパスカットキャラセット
+        // PaCtTagSet();
+    }
+    
     //パスカットタゲセット
     // void TChCommon::PaCtTagSet()
     // {

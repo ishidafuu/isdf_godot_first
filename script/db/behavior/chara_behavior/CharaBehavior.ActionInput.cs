@@ -449,63 +449,92 @@ public partial class CharaBehavior
 
         SetPassTarget(passTargetOrderIndex);
 
-        
-        ここから
-            
         // 拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
         if (EnemyTeamState.IsAllOut == false)
         {
             //シュートタゲは向き反映
-            int tstg = GetTag(false);
-            if (tstg == NGNUM)
+            var orderIndex = GetTarget(false);
+            if (orderIndex == OrderIndexType.Disabled)
             {
                 if (IsSelfControl == false)
                 {
                     //CPUだけ無理矢理。後で外すかも
-                    pmgSG_.stBa_.ShTgTNo = st_.ensideNo_;
-                    pmgSG_.stBa_.ShTgPNo = st_.pmgEnTm_.st_.pstMyTm_.CtrlNo;
+                    CallBallChangeShootTarget(EnemyTeamState.MainState.ControlOrderIndex);
                 }
             }
             else
             {
-                //st_.pmgEnTm_.SetCtrl(tstg);
-                pmgSG_.stBa_.ShTgTNo = st_.ensideNo_;
-                pmgSG_.stBa_.ShTgPNo = tstg;
+                CallBallChangeShootTarget(orderIndex);
             }
 
             //カーソルは強制的に内野
-            int tEnctrl = GetTag(true);
-            if (tEnctrl != NGNUM) //ないとはおもうが
+            var enemyControlOrderIndex = GetTarget(true);
+            if (enemyControlOrderIndex != OrderIndexType.Disabled) //ないとはおもうが
             {
-                st_.pmgEnTm_.SetCtrl(tEnctrl);
+                CallEnemyTeamChangeControl(enemyControlOrderIndex);
             }
         }
-#ifdef __K_DEBUG_SHIAI__
-        kdebug::DebugSystem* pDs = kdebug::DebugSystem::GetInstance();
-        if (pDs.IsReturnBall())
+// #ifdef __K_DEBUG_SHIAI__
+//         kdebug::DebugSystem* pDs = kdebug::DebugSystem::GetInstance();
+//         if (pDs.IsReturnBall())
+//         {
+//             if (st_.posNo_ != 0)
+//             {
+//                 // ボールが手元に帰ってくる処理
+//                 pmgGO_.pmgBa_.baCommon_.ResetRefPos_Prev(false);
+//
+//                 // 操作キャラを強制的にボール持ってる人に
+//                 //st_.pmgTm_[SIDE0].st_.pmgMyTm_.SetCtrlBallGet(0);
+//             }
+//
+//             // 自動シュート状態を取得
+//             int step = pDs.GetAutoShootStep();
+//             if (step == kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_WAIT)
+//             {
+//                 pDs.SetReturnBallFlg(false); // フラグを落とす
+//                 pDs.SetAutoShootStep(kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_CHOOSE);
+//             }
+//         }
+// #endif // #ifdef __K_DEBUG_SHIAI__
+    }
+
+    private void SetShootTarget(OrderIndexType orderIndex)
+    {
+        if (IsNGPassTag(orderIndex))
         {
-            if (st_.posNo_ != 0)
+            if (MyOrderIndex != OrderIndexType.Outfield4 && IsNGPassTag(OrderIndexType.Outfield4) == false)
             {
-                // ボールが手元に帰ってくる処理
-                pmgGO_.pmgBa_.baCommon_.ResetRefPos_Prev(false);
-
-                // 操作キャラを強制的にボール持ってる人に
-                //st_.pmgTm_[SIDE0].st_.pmgMyTm_.SetCtrlBallGet(0);
+                orderIndex = OrderIndexType.Outfield4;
             }
-
-            // 自動シュート状態を取得
-            int step = pDs.GetAutoShootStep();
-            if (step == kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_WAIT)
+            else if (MyOrderIndex != OrderIndexType.Outfield3 && IsNGPassTag(OrderIndexType.Outfield3) == false)
             {
-                pDs.SetReturnBallFlg(false); // フラグを落とす
-                pDs.SetAutoShootStep(kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_CHOOSE);
+                orderIndex = OrderIndexType.Outfield3;
+            }
+            else if (MyOrderIndex != OrderIndexType.Outfield2 && IsNGPassTag(OrderIndexType.Outfield2) == false)
+            {
+                orderIndex = OrderIndexType.Outfield2;
+            }
+            else
+            {
+                if (MyTeamState.PositionState.PassAbleCount > 0
+                    && MyOrderIndex != MyTeamState.PositionState.Postman
+                    && IsNGPassTag(MyTeamState.PositionState.Postman) == false)
+                {
+                    orderIndex = MyTeamState.PositionState.Postman;
+                }
+                else
+                {
+                    orderIndex = OrderIndexType.Outfield4;
+                }
             }
         }
-#endif // #ifdef __K_DEBUG_SHIAI__
+
+        CallBallChangePassTarget(orderIndex);
     }
 
     //タゲセット
-    private OrderIndexType GetTag(bool NoRefMuki_f)
+    //isIgnoreDirection向きを反映しない（強制的に内野タゲ）
+    private OrderIndexType GetTarget(bool isIgnoreDirection)
     {
         TmpStateManager.Instance.TmpState.Clear();
         var targetX = TmpStateManager.Instance.TmpState.targetX;
@@ -532,7 +561,7 @@ public partial class CharaBehavior
             targetDist[order] = Defines.Hypot(targetX[order], targetZ); //距離
 
             //向きを反映しない（強制的に内野タゲ）
-            if (NoRefMuki_f == false)
+            if (isIgnoreDirection == false)
             {
                 const int angle12 = 12;
                 var angle2 = GetTagAgl2(targetX[order], targetZ); //新12時法

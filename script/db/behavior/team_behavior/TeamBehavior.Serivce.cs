@@ -22,6 +22,10 @@ public partial class TeamBehavior
         // st_.pmgMyTm_->SetCtrlBallGet(st_.posNo_); //強制
     }
 
+    public void CallChangeControl(OrderIndexType orderIndex)
+    {
+    }
+    
     //
     //     //内外野入れ替えが発生する人数
     // BOOL TMgTeam::IsIOChange()

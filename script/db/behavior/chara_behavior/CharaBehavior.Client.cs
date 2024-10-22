@@ -64,6 +64,14 @@ public partial class CharaBehavior
     }
 
     /// <summary>
+    /// 操作権変更（敵チーム）
+    /// </summary>
+    private void CallEnemyTeamChangeControl(OrderIndexType controlOrderIndex)
+    {
+        TeamBehaviorManager.Instance.Get(EnemySideIndex).CallChangeControl(controlOrderIndex);
+    }
+
+    /// <summary>
     /// シュート状態
     /// </summary>
     private void CallBallShootMotion()
@@ -83,9 +91,16 @@ public partial class CharaBehavior
     /// <summary>
     /// パスターゲット変更
     /// </summary>
-    /// <param name="passTargetOrderIndex"></param>
     private void CallBallChangePassTarget(OrderIndexType passTargetOrderIndex)
     {
         BallBehaviorManager.Instance.Get().CallChangePassTarget(MySideIndex, passTargetOrderIndex);
+    }
+
+    /// <summary>
+    /// シュートターゲット変更
+    /// </summary>
+    private void CallBallChangeShootTarget(OrderIndexType shootTargetOrderIndex)
+    {
+        BallBehaviorManager.Instance.Get().CallChangePassTarget(EnemySideIndex, shootTargetOrderIndex);
     }
 }
