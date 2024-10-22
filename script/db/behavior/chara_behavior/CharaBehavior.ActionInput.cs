@@ -30,6 +30,7 @@ public partial class CharaBehavior
 
         switch (MyState.Auto.AutoType)
         {
+            // 自由
             case AutoType.Free:
                 if (IsSelfControl)
                 {
@@ -37,88 +38,42 @@ public partial class CharaBehavior
                 }
                 else
                 {
-                    //       if ((IsBall() == false)
-                    //         && (st_.pstMyCh_.Motion.Mtype == dbmtJDg))
-                    //       {
-                    //         st_.pstMyCh_.Anime.Ani_c = 0;//こうやる必要ないか？
-                    //       }
                     AutoPickUp();
                 }
                 break;
-            case AutoType.Alleyoop:
-                break;
+            // コートに戻る
             case AutoType.Return:
+                AutoReturnAction();
                 break;
-            case AutoType.KgReturn:
-                break;
+            // 拾いに行く
             case AutoType.Get:
+                if (MyState.Motion.MotionType
+                    is CharaMotionType.St
+                    or CharaMotionType.Wk
+                    or CharaMotionType.Ds)
+                {
+                    AutoPickUp();
+                }
                 break;
-            case AutoType.PassCvr:
-                break;
+            // ポジショニング
             case AutoType.DfPos:
+                AutoPickUp();
                 break;
-            case AutoType.PassCach:
-                break;
-            case AutoType.PassJp:
-                break;
-            case AutoType.Dg:
-                break;
-            case AutoType.DgJp:
-                break;
-            case AutoType.DgSw:
-                break;
-            case AutoType.ShCv:
-                break;
-            case AutoType.CPUPaCut:
-                break;
-            case AutoType.CPUHelp:
-                break;
-            case AutoType.CPUCa:
-                break;
-            case AutoType.CPUShPa:
-                break;
-            case AutoType.CPUJumpBall:
-                break;
-            case AutoType.Gohome:
-                break;
-            case AutoType.Dashman:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
 
-        //
-        //
-        //   switch (st_.pstMyCh_.Auto.AutoType)
-        //   {
-        //     //自由
-        //   case dbatFree:
-        //     if (IsSelfControl)
-        //     {
-        //       //自分で操作**********
-        //       pCommon_.SelfCtrl(ATType);
-        //     }
-        //     else
-        //     {
-        //       if ((IsBall() == false)
-        //         && (st_.pstMyCh_.Motion.Mtype == dbmtJDg))
-        //       {
-        //         st_.pstMyCh_.Anime.Ani_c = 0;//こうやる必要ないか？
-        //       }
-        //
-        //       pCommon_.AutoPickUp();
-        //       //CheckFreeBallPickUp();
-        //     }
-        //     break;
-        //
-        //     //ポジショニング
-        //   case dbatDfPos:
-        //     pCommon_.AutoPickUp();
-        //     //CheckFreeBallPickUp();
-        //     break;
-        //
-        //     //戻り
-        //   case dbatReturn:
+            // よけ
+            case AutoType.Dg:
+                AutoDodgeAction();
+                break;
+
+            // COMアクション
+            case AutoType.CPUShPa:
+                ComAction();
+                break;
+        }
+    }
+
+    private void AutoReturnAction()
+    {
         //     if (IsSelfControl//←いらないかも
         //       || (IsCOM() == false))
         //     {
@@ -210,23 +165,10 @@ public partial class CharaBehavior
         //         break;
         //       }
         //     }
-        //     break;
-        //
-        //     //拾いに行く
-        //   case dbatGet:
-        //     switch (st_.pstMyCh_.Motion.Mtype)
-        //     {
-        //     case dbmtSt:
-        //     case dbmtWk:
-        //     case dbmtDs:
-        //       pCommon_.AutoPickUp();//自動拾い
-        //       break;
-        //     }
-        //     break;
-        //
-        //     //よけ
-        //   case dbatDg:
-        //   {
+    }
+
+    private void AutoDodgeAction()
+    {
         //     //COMの的コートオートよけ
         //     if ((IsSelfControl == false)
         //       && (pmgSG_.stBa_.Motion == bmShoot)
@@ -272,16 +214,10 @@ public partial class CharaBehavior
         //       }
         //     }
         //   }
-        //   break;
-        //   //ＣＯＭキャッチ
-        //   case dbatCPUCa:
-        //     break;
-        //     //ＣＯＭ思考行動★★
-        //   case dbatCPUShPa:
-        //     COMAction();
-        //     break;
-        //   }
-        // }
+    }
+
+    private void ComAction()
+    {
     }
 
     private ActionType GetActionType()
