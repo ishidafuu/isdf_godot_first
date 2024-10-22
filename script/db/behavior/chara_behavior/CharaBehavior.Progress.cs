@@ -231,7 +231,7 @@ public partial class CharaBehavior
             case CharaMotionType.RoB:
                 if (MyState.Damage.RollCount.Sub())
                 {
-                    var isDead = (MyState.Live.Hp <= 0 && MyTeamState.IsAllOut() == false);
+                    var isDead = MyState.Live.Hp <= 0 && MyTeamState.IsAllOut == false;
                     if (isDead)
                     {
                         MyState.Live.IsAngel = true;

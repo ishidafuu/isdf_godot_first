@@ -11,7 +11,7 @@ public partial class TeamState
         {
             foreach (var mySideChara in MySideCharas)
             {
-                if (mySideChara.IsOut() == false)
+                if (mySideChara.IsOut == false)
                 {
                     return false;
                 }

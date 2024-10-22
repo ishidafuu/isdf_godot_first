@@ -30,8 +30,8 @@ public class TeamMainState
 
     public int DashmanCallNo { get; set; } // ★ダッシュマン予約
     public bool DashmanAllF { get; set; } // 全員出発
-    public int DashmanNoBm { get; set; } // ボールマンからのダッシュマン予約
-    DashmanType DashmanType { get; set; } // ★ダッシュマン予約
+    public OrderIndexType DashmanNoBm { get; set; } // ボールマンからのダッシュマン予約
+    public DashmanType DashmanType { get; set; } // ★ダッシュマン予約
     public int DashmanCallC { get; set; } // 呼んだ人数
 
     public int IoChangeC { get; set; } // 内外野交代カウンタ

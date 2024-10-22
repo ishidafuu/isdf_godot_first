@@ -24,7 +24,7 @@ public partial class CharaBehavior
     /// <summary>
     /// COM操作中かどうか
     /// </summary>
-    public bool IsCom => MyState.Pad.IsManualControl == false || MyTeamState.IsCom();
+    public bool IsCom => MyState.Pad.IsManualControl == false || MyTeamState.IsCom;
 
     /// <summary>
     /// 自分で操作するキャラかどうか
