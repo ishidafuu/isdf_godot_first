@@ -90,6 +90,9 @@ public static class Defines
     public const int KAGAMI2HP = 8; //辛息切れボーダーＨＰ
     public const int DIVELIMDY = -1 * Percent; //ダッシュマンジャンプのパス可能下降限界
     public const int RANKNUM = 17; //レベル17段階
+    public const int SHLAG = 10; //約10フレ後に投げる
+    public const int NEARDISTX = 24 * Percent;
+    public const int NEARDISTZ = 12 * Percent;
     public const int Percent = 100;
 
     public const int PACAJPTIME = 13; //ジャンプパスキャッチタイミング
@@ -126,8 +129,6 @@ public static class Defines
     public const int MIRLIM = 10; //ミラーシュート受付時間
     public const int SHTAG_NEARDIST = 9 * Percent; //シュートターゲット近すぎ
     public const int SHTAG_FARDIST_Y = 150; //シュートターゲットY遠すぎ
-    
-    
 
     //座標
     public const int GAME_W = 448;
@@ -181,7 +182,6 @@ public static class Defines
     {
         return (int)System.Math.Sqrt(System.Math.Pow(x, 2) + System.Math.Pow(y, 2));
     }
-    
 
     /// <summary>
     /// パーセンテージ
@@ -190,7 +190,7 @@ public static class Defines
     {
         return value * percent / Percent;
     }
-    
+
     // enum enCrtLine
     // {
     //     crtLLine,
