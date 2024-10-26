@@ -1459,8 +1459,8 @@ public partial class CharaBehavior
 
         //★ダッシュマンはだいじょぶ
         if (chara.IsDashman)
-            //&& ((st_.pmgMyTm_->st_.pmgMyCh_[pos]->MyState.Coordinate.dY >= (-XYMAG))
-            //  || (st_.pstMyCh_->MirPass_c > 0)))//下降ではない
+            //&& ((st_.pmgMyTm_.st_.pmgMyCh_[pos].MyState.Coordinate.dY >= (-XYMAG))
+            //  || (st_.pstMyCh_.MirPass_c > 0)))//下降ではない
         {
             return false;
         }
@@ -1863,6 +1863,199 @@ public partial class CharaBehavior
                 else
                 {
                     st_.pstMyCh_.MirShot_c = 1;
+                }
+            }
+        }
+    }
+
+    //★パス開始処理
+    void Passing(bool Jp_f)
+    {
+        //パスタゲがパス出せないとき
+        NGPaTagShift();
+
+        //内野の場合後ろ内野内パスなので、
+        //相手の方向を向かないと行けない
+        //★ミラーダッシュマンのときはそちらを向かない
+        //if (st_.pmgMyTm_.st_.pmgMyCh_[pmgSG_.stBa_.PaTgPNo].IsDashman() == false)
+        //{
+        LookTg(pmgSG_.stBa_.PaTgPNo, TRUE, false);
+        //}
+
+        if (Jp_f)
+        {
+            SetMtype(dbmtJPa);
+        }
+        else
+        {
+            SetMtype(dbmtPa);
+        }
+    }
+
+    //タゲ方向を向く
+    void LookTg(OrderIndexType TgPNo, bool Pa_f, bool AtLook_f)
+    {
+        TgPNo = 0;
+
+        CharaBehavior TgSt = null;
+        bool Notag_f = false;
+        int fX, fZ; //SHLAG後の自分の位置
+
+        bool dmPass_f = false;
+        bool alleyoop_f = false;
+
+        if (Pa_f)
+        {
+            if (BallState.PassTargetSide != MySideIndex
+                || BallState.PassTargetOrder == OrderIndexType.Disabled)
+            {
+                Notag_f = true;
+            }
+            else
+            {
+                TgSt = CharaBehaviorManager.Instance.GetChara(MySideIndex, BallState.PassTargetOrder);
+                dmPass_f = TgSt.IsDashman;
+                alleyoop_f = BallState.PaAlPa;
+            }
+        }
+        else
+        {
+            if (BallState.ShotTargetSide != MySideIndex
+                || BallState.ShotTargetOrder == OrderIndexType.Disabled)
+            {
+                Notag_f = true;
+            }
+            else //タゲがいる
+            {
+                TgSt = CharaBehaviorManager.Instance.GetChara(MySideIndex, BallState.ShotTargetOrder);
+            }
+        }
+
+        //先の位置
+        fX = MyState.Coordinate.X + MyState.Coordinate.VelocityX * Defines.SHLAG;
+        fZ = MyState.Coordinate.Z + MyState.Coordinate.VelocityZ * Defines.SHLAG;
+
+        //タゲあり
+        if (Notag_f == false && TgSt != null)
+        {
+            bool near_f = ((Math.Abs(TgSt.MyState.Coordinate.X - fX) < Defines.NEARDISTX)
+                           && (Math.Abs(TgSt.MyState.Coordinate.Z - fZ) < Defines.NEARDISTZ));
+
+            if ((MyState.Order.IsInfield == false)
+                || Pa_f
+                || (near_f == false))
+            {
+                //オート向き初期化
+                AutoMukiInit();
+
+                if (lib_num::Sign(TgSt.Coordinate.X - st_.pstMyCh_.Coordinate.X) == lib_num::Sign(TgSt.Coordinate.X - fX))
+                {
+                    st_.pstMyCh_.Auto.AMuki = (TgSt.Coordinate.X < fX)
+                        ? maL
+                        : maR;
+                }
+
+                //ダッシュマンパス
+                if (dmPass_f)
+                {
+                    st_.pstMyCh_.Auto.AMukiZ = mzaN;
+                }
+                else
+                {
+                    //bool Z_f = ((abs(TgSt.Coordinate.Z - fZ) * 2) > abs(TgSt.Coordinate.X - fX));
+                    bool Z_f = ((abs(TgSt.Coordinate.Z - fZ)) > abs(TgSt.Coordinate.X - fX)); //★斜めのとき
+
+                    if (TgSt.Coordinate.Z < fZ)
+                    {
+                        st_.pstMyCh_.Auto.AMukiZ = (Z_f)
+                            ? mzaF
+                            : mzaN;
+                    }
+                    else
+                    {
+                        st_.pstMyCh_.Auto.AMukiZ = (Z_f)
+                            ? mzaB
+                            : mzaN;
+                    }
+                }
+
+                MukiSetAuto();
+            }
+        }
+        else //タゲ無し
+        {
+            if ((IsInfield() == false)
+                || (IsSelfCtrl() == false)
+                || (AtLook_f && Notag_f))
+            {
+                //２，３番外野が真横に投げてしまうのを阻止
+                switch (st_.posNo_)
+                {
+                    case (int)dbpoO2:
+                        st_.pstMyCh_.Auto.AMukiZ = mzaF;
+                        MukiSetAuto();
+                        ShTagSet(false);
+                        break;
+                    case (int)dbpoO3:
+                        st_.pstMyCh_.Auto.AMukiZ = mzaB;
+                        MukiSetAuto();
+                        ShTagSet(false);
+                        break;
+                    case (int)dbpoO4:
+                        st_.pstMyCh_.Auto.AMuki = (st_.mysideNo_ == 0)
+                            ? maL
+                            : maR;
+                        MukiSetAuto();
+                        ShTagSet(false);
+                        break;
+                }
+
+                if (Pa_f == false)
+                {
+                    //全方向チェック
+                    enMukiType lastMuki = st_.pstMyCh_.Coordinate.Muki;
+                    enMukiZType lastMukiZ = st_.pstMyCh_.Coordinate.MukiZ;
+
+                    if (IsShTag()) return;
+
+                    //ニュートラルから探す
+                    st_.pstMyCh_.Auto.AMukiZ = mzaN;
+                    MukiSetAuto();
+                    ShTagSet(false);
+                    if (IsShTag()) return;
+
+                    st_.pstMyCh_.Auto.AMukiZ = mzaF;
+                    MukiSetAuto();
+                    ShTagSet(false);
+                    if (IsShTag()) return;
+
+                    st_.pstMyCh_.Auto.AMukiZ = mzaB;
+                    MukiSetAuto();
+                    ShTagSet(false);
+                    if (IsShTag()) return;
+
+                    //逆向き
+                    st_.pstMyCh_.Auto.AMukiZ = mzaN;
+                    st_.pstMyCh_.Auto.AMuki = (st_.pstMyCh_.Coordinate.Muki == mL)
+                        ? maR
+                        : maL;
+                    MukiSetAuto();
+                    ShTagSet(false);
+                    if (IsShTag()) return;
+
+                    st_.pstMyCh_.Auto.AMukiZ = mzaF;
+                    MukiSetAuto();
+                    ShTagSet(false);
+                    if (IsShTag()) return;
+
+                    st_.pstMyCh_.Auto.AMukiZ = mzaB;
+                    MukiSetAuto();
+                    ShTagSet(false);
+                    if (IsShTag()) return;
+
+                    //みつからなかった
+                    lastMuki = st_.pstMyCh_.LastMuki;
+                    lastMukiZ = st_.pstMyCh_.LastMukiZ;
                 }
             }
         }
