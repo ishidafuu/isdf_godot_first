@@ -14,6 +14,16 @@ public partial class CharaBehavior
         }
         SoundManager.Instance.PlaySe(seType);
     }
+    
+    //効果音
+    void PlaySeCatchSe()
+    {
+        // (int)SeType.CatchLv0 +  GetTechRank(RankTechType.CatchTime)% 7
+       
+        // SESetInt(seCatchLv0 + ((MyStLv(dbst_Tech) / 3) % 7));
+        PlaySe(SeType.CatchLv0);
+    }
+
 
     /// <summary>
     /// シュートSE停止
@@ -61,6 +71,14 @@ public partial class CharaBehavior
     private void CallTeamHoldBall()
     {
         TeamBehaviorManager.Instance.Get(MySideIndex).CallHoldBall(MyOrderIndex);
+    }
+    
+    /// <summary>
+    /// 現在のカバーマンに操作権を渡す
+    /// </summary>
+    private void CallTeamChangeControlCoverMan()
+    {
+        TeamBehaviorManager.Instance.Get(MySideIndex).CallChangeControlCoverMan();
     }
 
     /// <summary>

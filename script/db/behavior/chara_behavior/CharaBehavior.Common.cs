@@ -35,6 +35,4 @@ public partial class CharaBehavior
 
         MyState.Distance.Set(ballDist, ballLandDist, ballLandLineDist);
     }
-
-    private IPad MyPad => PadBehaviorManager.Instance.Get(MySideIndex).Pad;
 }

@@ -4,17 +4,13 @@ namespace db;
 
 public partial class CharaBehavior
 {
-    public int X => MyState.Coordinate.X;
-    public int Y => MyState.Coordinate.Y;
-    public int Z => MyState.Coordinate.Z;
-
     /// <summary>
     /// サイド操作権を渡せるキャラか
     /// 死亡していない、ダメージ中でない、手動操作中でない
     /// </summary>
     public bool CanControl => MyState.Live.IsDead == false
                               && MyState.Motion.HasFlag(CharaMotionFlag.Dam) == false
-                              && MyState.Pad.IsManualControl == false;
+                              && MyState.Input.IsManualControl == false;
 
     /// <summary>
     /// 操作権キャラ
@@ -24,12 +20,12 @@ public partial class CharaBehavior
     /// <summary>
     /// COM操作中かどうか
     /// </summary>
-    public bool IsCom => MyState.Pad.IsManualControl == false || MyTeamState.IsCom;
+    public bool IsCom => MyState.Input.IsManualControl == false || MyTeamState.IsCom;
 
     /// <summary>
     /// 自分で操作するキャラかどうか
     /// </summary>
-    public bool IsSelfControl => MyState.Pad.IsManualControl
+    public bool IsSelfControl => MyState.Input.IsManualControl
                                  || (IsControl && IsCom == false);
 
     /// <summary>
@@ -52,7 +48,7 @@ public partial class CharaBehavior
     /// </summary>
     public bool IsPassWait => IsPassTarget
                               && IsBallHolder == false
-                              && MyState.Pad.IsManualControl;
+                              && MyState.Input.IsManualControl;
 
     /// <summary>
     /// かがみ中（予約中）かどうか
@@ -119,7 +115,7 @@ public partial class CharaBehavior
                                     || (MySideIndex == 1 && MyState.Coordinate.DashDirection == DirectionXType.Left));
 
             // マニュアル操作ダッシュマン
-            return MyState.Pad.IsManualControl
+            return MyState.Input.IsManualControl
                    && IsBallHolder == false
                    && (isForwardDash || isForwardJump);
         }

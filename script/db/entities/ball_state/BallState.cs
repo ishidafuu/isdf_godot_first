@@ -65,7 +65,7 @@ public partial class BallState
     public int PaSelfHit { get; set; }
     public OrderIndexType PassTargetOrder { get; set; }
     public int PassTargetSide { get; set; }
-    public int ThrowerOrderNo { get; set; }
+    public OrderIndexType ThrowerOrderNo { get; set; }
     public int ThrowerSideNo { get; set; }
     public int RbwTNo { get; set; }
     public OrderIndexType ShotTargetOrder { get; set; }

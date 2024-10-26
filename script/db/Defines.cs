@@ -93,6 +93,7 @@ public static class Defines
     public const int SHLAG = 10; //約10フレ後に投げる
     public const int NEARDISTX = 24 * Percent;
     public const int NEARDISTZ = 12 * Percent;
+    public const int DEFDISTZ = 16 * Percent;
     public const int Percent = 100;
 
     public const int PACAJPTIME = 13; //ジャンプパスキャッチタイミング

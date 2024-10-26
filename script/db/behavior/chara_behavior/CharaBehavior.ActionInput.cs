@@ -79,8 +79,8 @@ public partial class CharaBehavior
         //       || (IsCOM() == false))
         //     {
         //
-        //       bool muki_f = ((st_.mysideNo_ == 0) && (MyState.Coordinate.Muki == mL))
-        //         || ((st_.mysideNo_ == 1) && (MyState.Coordinate.Muki == mR));
+        //       bool muki_f = ((st_.mysideNo_ == 0) && (MyCoordinate.Muki == mL))
+        //         || ((st_.mysideNo_ == 1) && (MyCoordinate.Muki == mR));
         //
         //       switch (st_.pstMyCh_.Motion.Mtype)
         //       {
@@ -116,8 +116,8 @@ public partial class CharaBehavior
         //           if (st_.pstMyCh_.ECDdg_f)
         //           {
         //             pCommon_.CatchSE();
-        //             st_.pstMyCh_.LastMuki = MyState.Coordinate.Muki;
-        //             st_.pstMyCh_.LastMukiZ = MyState.Coordinate.MukiZ;
+        //             st_.pstMyCh_.LastMuki = MyCoordinate.Muki;
+        //             st_.pstMyCh_.LastMukiZ = MyCoordinate.MukiZ;
         //           }
         //         }
         //         break;
@@ -316,8 +316,8 @@ public partial class CharaBehavior
 
         //当たり
         var atariDepth = GetSettingBall(SettingBallType.FAtariDepth2);
-        var isHitDepth = Math.Abs(BallState.Coordinate.Z - MyState.Coordinate.Z) <= atariDepth;
-        return isHitDepth && MyState.Coordinate.HitBox.IsPile(BallState.Atari);
+        var isHitDepth = Math.Abs(BallState.Coordinate.Z - MyCoordinate.Z) <= atariDepth;
+        return isHitDepth && MyCoordinate.HitBox.IsPile(BallState.Atari);
     }
 
     //ボール持った処理
@@ -492,9 +492,9 @@ public partial class CharaBehavior
             }
 
             isSelectTarget[order] = enNaiyaTag.TGOK;
-            targetX[order] = enemyChara.X - MyState.Coordinate.X;
-            var targetZ = enemyChara.Z - MyState.Coordinate.Z;
-            targetY[order] = enemyChara.Y - MyState.Coordinate.Y;
+            targetX[order] = enemyChara.MyCoordinate.X - MyCoordinate.X;
+            var targetZ = enemyChara.MyCoordinate.Z - MyCoordinate.Z;
+            targetY[order] = enemyChara.MyCoordinate.Y - MyCoordinate.Y;
             targetDist[order] = Defines.Hypot(targetX[order], targetZ); //距離
 
             //向きを反映しない（強制的に内野タゲ）
@@ -652,8 +652,8 @@ public partial class CharaBehavior
         var isNoneTarget = true; //完全にタゲが居ない
         var isNoneAngleTarget = true; //向き方向にタゲが居ない
 
-        var passDirectionX = MyState.Coordinate.DirectionX;
-        var passDirectionZ = MyState.Coordinate.DirectionZ;
+        var passDirectionX = MyCoordinate.DirectionX;
+        var passDirectionZ = MyCoordinate.DirectionZ;
 
         var isLeftKey = false;
         var isRightKey = false;
@@ -686,8 +686,8 @@ public partial class CharaBehavior
         //ダッシュマンへパス
         var isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
 
-        var distO2 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_BL);
-        var distO3 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_FL);
+        var distO2 = Math.Abs(MyCoordinate.Z - Defines.DBCRT_BL);
+        var distO3 = Math.Abs(MyCoordinate.Z - Defines.DBCRT_FL);
         var isNearO2 = distO2 < distO3;
 
         TmpStateManager.Instance.TmpState.Clear();
@@ -704,7 +704,7 @@ public partial class CharaBehavior
                 continue;
             }
 
-            targetDist[order] = MyState.Coordinate.DistanceXZ(MySideOrders[order].Coordinate);
+            targetDist[order] = MyCoordinate.DistanceXZ(MySideOrders[order].Coordinate);
         }
 
         //パスが出せるダッシュマンがいるか
@@ -737,13 +737,13 @@ public partial class CharaBehavior
                 }
 
                 //奥にダッシュマンがいる
-                if (chara.MyState.Coordinate.Z > MyState.Coordinate.Z)
+                if (chara.MyCoordinate.Z > MyCoordinate.Z)
                 {
                     isBackwardPosition = false;
                 }
 
                 //手前にダッシュマンがいる
-                if (chara.MyState.Coordinate.Z < MyState.Coordinate.Z)
+                if (chara.MyCoordinate.Z < MyCoordinate.Z)
                 {
                     isFrontPosition = false;
                 }
@@ -771,7 +771,7 @@ public partial class CharaBehavior
 
                 var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
 
-                if (IsCheckNoAgl(chara.MyState.Coordinate.X, chara.MyState.Coordinate.Z))
+                if (IsCheckNoAgl(chara.MyCoordinate.X, chara.MyCoordinate.Z))
                 {
                     //向きに居ない
                     isSelectTarget[order] = enNaiyaTag.TGNOAGL;
@@ -790,13 +790,13 @@ public partial class CharaBehavior
                 }
 
                 //奥にいる
-                if (chara.MyState.Coordinate.Z > MyState.Coordinate.Z)
+                if (chara.MyCoordinate.Z > MyCoordinate.Z)
                 {
                     isBackwardPosition = false;
                 }
 
                 //手前にいる
-                if (chara.MyState.Coordinate.Z < MyState.Coordinate.Z)
+                if (chara.MyCoordinate.Z < MyCoordinate.Z)
                 {
                     isFrontPosition = false;
                 }
@@ -907,7 +907,7 @@ public partial class CharaBehavior
                 //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
                 var tgZ = isDashmanPass
                     ? chara.MyState.Dashman.TargetZ
-                    : chara.MyState.Coordinate.Z;
+                    : chara.MyCoordinate.Z;
 
                 //上
                 if (isUpKey)
@@ -922,11 +922,11 @@ public partial class CharaBehavior
                 //上下が入ってるとき用に合計値
                 if (isLeftKey) //左
                 {
-                    sortValue[order] += chara.MyState.Coordinate.X; //Ｘ（左ほど優先）
+                    sortValue[order] += chara.MyCoordinate.X; //Ｘ（左ほど優先）
                 }
                 else if (isRightKey) //右
                 {
-                    sortValue[order] -= chara.MyState.Coordinate.X; //Ｘのマイナス（右ほど優先）
+                    sortValue[order] -= chara.MyCoordinate.X; //Ｘのマイナス（右ほど優先）
                 }
             }
 
@@ -970,10 +970,10 @@ public partial class CharaBehavior
         //ダッシュマンへパス
         var isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
 
-        var passDirectionX = MyState.Coordinate.DirectionX;
-        var passDirectionZ = MyState.Coordinate.DirectionZ;
+        var passDirectionX = MyCoordinate.DirectionX;
+        var passDirectionZ = MyCoordinate.DirectionZ;
 
-        var lastXKey = MyState.Pad.LastXKey;
+        var lastXKey = MyState.Input.LastXKey;
 
         var isLeftKey = false;
         var isRightKey = false;
@@ -1064,8 +1064,8 @@ public partial class CharaBehavior
                             break;
                         default:
                         {
-                            var distO2 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_BL);
-                            var distO3 = Math.Abs(MyState.Coordinate.Z - Defines.DBCRT_FL);
+                            var distO2 = Math.Abs(MyCoordinate.Z - Defines.DBCRT_BL);
+                            var distO3 = Math.Abs(MyCoordinate.Z - Defines.DBCRT_FL);
 
                             passTarget = distO2 < distO3
                                 ? OrderIndexType.Outfield2
@@ -1110,7 +1110,7 @@ public partial class CharaBehavior
             //X距離外野はGetLeftCrtX()が左コートなので絶対値を使う
             targetX[order] = chara.LeftCourtX; //自分より右に居れば＋
             //Z距離
-            var targetZ = Math.Abs(chara.MyState.Coordinate.Z - MyState.Coordinate.Z); //自分より上にいれば＋
+            var targetZ = Math.Abs(chara.MyCoordinate.Z - MyCoordinate.Z); //自分より上にいれば＋
             //距離
             targetDist[order] = Defines.Hypot(targetX[order], targetZ);
         }
@@ -1149,7 +1149,7 @@ public partial class CharaBehavior
                 // //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
                 // var tgZ = isDashmanPass
                 //     ? chara.MyState.Dashman.TargetZ
-                //     : chara.MyState.Coordinate.Z;
+                //     : chara.MyCoordinate.Z;
                 //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
                 var tgZ = chara.MyState.Dashman.TargetZ;
 
@@ -1165,11 +1165,11 @@ public partial class CharaBehavior
 
                 if (isLeftKey) //左
                 {
-                    sortValue[order] += chara.X; //Ｘ（左ほど優先）
+                    sortValue[order] += chara.MyCoordinate.X; //Ｘ（左ほど優先）
                 }
                 else if (isRightKey) //右
                 {
-                    sortValue[order] -= chara.X; //Ｘのマイナス（右ほど優先）
+                    sortValue[order] -= chara.MyCoordinate.X; //Ｘのマイナス（右ほど優先）
                 }
                 //else//ニュートラル
                 //{
@@ -1237,21 +1237,21 @@ public partial class CharaBehavior
     //角度に入っていない
     private bool IsCheckNoAgl(int targetX, int targetZ)
     {
-        var isInAngle = MyState.Coordinate.DirectionZ switch
+        var isInAngle = MyCoordinate.DirectionZ switch
         {
-            DirectionZType.Forward => targetZ < MyState.Coordinate.Z,
+            DirectionZType.Forward => targetZ < MyCoordinate.Z,
             DirectionZType.Neutral => true,
-            DirectionZType.Backward => targetZ > MyState.Coordinate.Z,
+            DirectionZType.Backward => targetZ > MyCoordinate.Z,
             _ => throw new ArgumentOutOfRangeException()
         };
 
         if (isInAngle)
         {
-            isInAngle = MyState.Coordinate.DirectionX switch
+            isInAngle = MyCoordinate.DirectionX switch
             {
-                DirectionXType.Left => targetX < MyState.Coordinate.X,
+                DirectionXType.Left => targetX < MyCoordinate.X,
                 DirectionXType.Neutral => true,
-                DirectionXType.Right => targetX > MyState.Coordinate.X,
+                DirectionXType.Right => targetX > MyCoordinate.X,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -1292,27 +1292,27 @@ public partial class CharaBehavior
     //向き変え(強制的にAUTOMUKIに向かせる)
     private bool MukiSetAuto()
     {
-        var lastDirectionX = MyState.Coordinate.DirectionX;
-        var lastDirectionZ = MyState.Coordinate.DirectionZ;
+        var lastDirectionX = MyCoordinate.DirectionX;
+        var lastDirectionZ = MyCoordinate.DirectionZ;
 
-        MyState.Coordinate.DirectionX = MyState.Auto.DirectionX switch
+        MyCoordinate.DirectionX = MyState.Auto.DirectionX switch
         {
             DirectionXType.Left => DirectionXType.Left,
             DirectionXType.Right => DirectionXType.Right,
-            _ => MyState.Coordinate.DirectionX
+            _ => MyCoordinate.DirectionX
         };
 
-        MyState.Coordinate.DirectionZ = MyState.Auto.DirectionZ switch
+        MyCoordinate.DirectionZ = MyState.Auto.DirectionZ switch
         {
             DirectionZType.Forward => DirectionZType.Forward,
             DirectionZType.Backward => DirectionZType.Backward,
             DirectionZType.Neutral => DirectionZType.Neutral,
-            _ => MyState.Coordinate.DirectionZ
+            _ => MyCoordinate.DirectionZ
         };
 
         // 向き変えありかどうか
-        var isChanged = lastDirectionX != MyState.Coordinate.DirectionX
-                        || lastDirectionZ != MyState.Coordinate.DirectionZ;
+        var isChanged = lastDirectionX != MyCoordinate.DirectionX
+                        || lastDirectionZ != MyCoordinate.DirectionZ;
 
         if (isChanged)
         {
@@ -1326,14 +1326,14 @@ public partial class CharaBehavior
     // AUTO向き変え初期化
     private void ResetAutoDirection()
     {
-        MyState.Auto.DirectionX = MyState.Coordinate.DirectionX switch
+        MyState.Auto.DirectionX = MyCoordinate.DirectionX switch
         {
             DirectionXType.Left => DirectionXType.Left,
             DirectionXType.Neutral => DirectionXType.Neutral,
             DirectionXType.Right => DirectionXType.Right,
             _ => throw new ArgumentOutOfRangeException()
         };
-        MyState.Auto.DirectionZ = MyState.Coordinate.DirectionZ switch
+        MyState.Auto.DirectionZ = MyCoordinate.DirectionZ switch
         {
             DirectionZType.Forward => DirectionZType.Forward,
             DirectionZType.Neutral => DirectionZType.Neutral,
@@ -1344,10 +1344,10 @@ public partial class CharaBehavior
 
     private void SetMukiAglFromDirection()
     {
-        SetMukiAgl(MyState.Coordinate.DirectionX == DirectionXType.Left,
-            MyState.Coordinate.DirectionX == DirectionXType.Right,
-            MyState.Coordinate.DirectionZ == DirectionZType.Backward,
-            MyState.Coordinate.DirectionZ == DirectionZType.Forward);
+        SetMukiAgl(MyCoordinate.DirectionX == DirectionXType.Left,
+            MyCoordinate.DirectionX == DirectionXType.Right,
+            MyCoordinate.DirectionZ == DirectionZType.Backward,
+            MyCoordinate.DirectionZ == DirectionZType.Forward);
     }
 
     //ターゲッティング用向き
@@ -1459,7 +1459,7 @@ public partial class CharaBehavior
 
         //★ダッシュマンはだいじょぶ
         if (chara.IsDashman)
-            //&& ((st_.pmgMyTm_.st_.pmgMyCh_[pos].MyState.Coordinate.dY >= (-XYMAG))
+            //&& ((st_.pmgMyTm_.st_.pmgMyCh_[pos].MyCoordinate.dY >= (-XYMAG))
             //  || (st_.pstMyCh_.MirPass_c > 0)))//下降ではない
         {
             return false;
@@ -1482,10 +1482,9 @@ public partial class CharaBehavior
 
         const int MIRWAIT = 4;
         //モーション変更前の向き
-        var lastMuki = MyState.Coordinate.DirectionX;
-        var lastMukiZ = MyState.Coordinate.DirectionZ;
+        var lastMuki = MyCoordinate.DirectionX;
+        var lastMukiZ = MyCoordinate.DirectionZ;
         bool LastMukiKeep_f = false;
-        bool autoPickUp_f = true;
         bool atlook_f = MyPad.IsPressedAnyCross() == false;
 
         //プレビュー中パス禁止
@@ -1538,7 +1537,7 @@ public partial class CharaBehavior
             case CharaMotionType.JDn:
                 var canAirAction = MyState.Air.IsAirAction == false
                                    && MyState.Motion.HasFlag(CharaMotionFlag.Ar)
-                                   && (MyState.Coordinate.VelocityY > 0 || MyState.Coordinate.Y >= Defines.JPINVALIDHEIGHT);
+                                   && (MyCoordinate.VelocityY > 0 || MyCoordinate.Y >= Defines.JPINVALIDHEIGHT);
                 var isMarionette = MyState.BallEffect.symCtrl_f && MyState.Motion.HasFlag(CharaMotionFlag.Ar);
 
                 if (canAirAction || isMarionette)
@@ -1561,22 +1560,22 @@ public partial class CharaBehavior
                 {
                     bool utrn_f = false;
                     if (MySideIndex == 0
-                        && (MyState.Coordinate.DirectionX == DirectionXType.Left)
+                        && (MyCoordinate.DirectionX == DirectionXType.Left)
                         && MyPad.KeyRight.IsPressed)
                     {
                         utrn_f = true;
-                        MyState.Coordinate.DirectionX = DirectionXType.Right;
-                        MyState.Coordinate.DirectionZ = DirectionZType.Neutral;
+                        MyCoordinate.DirectionX = DirectionXType.Right;
+                        MyCoordinate.DirectionZ = DirectionZType.Neutral;
                         MyState.Shoot.Angle12 = 1; //1 2 3 4
                         SetMukiAgl(false, true, false, false);
                     }
                     else if (MySideIndex == 1
-                             && (MyState.Coordinate.DirectionX == DirectionXType.Right)
+                             && (MyCoordinate.DirectionX == DirectionXType.Right)
                              && MyPad.KeyLeft.IsPressed)
                     {
                         utrn_f = true;
-                        MyState.Coordinate.DirectionX = DirectionXType.Left;
-                        MyState.Coordinate.DirectionZ = DirectionZType.Neutral;
+                        MyCoordinate.DirectionX = DirectionXType.Left;
+                        MyCoordinate.DirectionZ = DirectionZType.Neutral;
                         MyState.Shoot.Angle12 = 7; //7 8 9 10
                         SetMukiAgl(true, false, false, false);
                     }
@@ -1602,8 +1601,8 @@ public partial class CharaBehavior
                         && MyState.Auto.AutoType == AutoType.Free
                         && MyState.Motion.HasFlag(CharaMotionFlag.Ds))
                     {
-                        if ((MyState.Coordinate.DashDirection == DirectionXType.Left && MyPad.KeyLeft.IsPressed)
-                            || (MyState.Coordinate.DashDirection == DirectionXType.Right && MyPad.KeyRight.IsPressed))
+                        if ((MyCoordinate.DashDirection == DirectionXType.Left && MyPad.KeyLeft.IsPressed)
+                            || (MyCoordinate.DashDirection == DirectionXType.Right && MyPad.KeyRight.IsPressed))
                         {
                             //継続なので向きセットも歩数リセットもいらない
                             SetMotionType(CharaMotionType.Ds);
@@ -1638,32 +1637,132 @@ public partial class CharaBehavior
 
     void AirDefenceOrFree()
     {
-        if (dgbtn_f)
+        if (MyPad.ButtonA.IsJustPressed)
         {
-            SetMtype(dbmtJDg);
-            CatchSE();
-            if ((st_.pmgMyTm_.st_.pstMyTm_.CtrlNo == pmgSG_.stBa_.PaTgPNo)
-                && (pmgSG_.stBa_.Motion == bmPass)
-                && (pmgSG_.stBa_.PaTgTNo == st_.mysideNo_)
-                && (pmgSG_.stBa_.PaTgPNo <= (int)dbpoI3))
+            SetMotionType(CharaMotionType.Dg);
+            // キャッチ時間で変えるとよいかも
+            PlaySeCatchSe();
+
+            // パスをスルーしてカバーマンに操作権を渡す
+            if (BallState.MotionType == BallMotionType.Pass
+                && BallState.PassTargetSide == MySideIndex
+                && MyTeamState.MainState.ControlOrderIndex == BallState.PassTargetOrder
+                && BallState.PassTargetOrder >= OrderIndexType.Infield0
+                && BallState.PassTargetOrder <= OrderIndexType.Infield3)
             {
-                st_.pmgMyTm_.SetCtrl(st_.pmgMyTm_.st_.pstMyTm_.CvrNo);
-                st_.pmgMyTm_.st_.pmgMyCh_[st_.pmgMyTm_.st_.pstMyTm_.CtrlNo].st_.pstMyCh_.Nomove_f = true;
-                st_.pmgMyTm_.SeekCover(st_.pmgMyTm_.st_.pstMyTm_.CtrlNo, pmgSG_.stBa_.PichPNo, pmgSG_.stBa_.PaTgPNo, true); //新しいカバーマン
+                CallTeamChangeControlCoverMan();
             }
         }
-        else if (cabtn_f)
+        else if (MyPad.ButtonB.IsJustPressed)
         {
             //キャッチもボール方向向くようにしてみる
             SetCatchMuki();
-            SetMtype(dbmtJCa);
-            //                            CatchSE();
-            if (IsPickUpPos(true)) BallGet(false, false);
+            SetMotionType(CharaMotionType.JCa);
+            PlaySeCatchSe();
+            if (IsPickUpPos())
+            {
+                HoldBall(false, false);
+            }
         }
-        else if (autoPickUp_f && IsPickUpPos(false)) //自動拾い★
+        else if (IsPickUpPos()) //自動拾い★
         {
-            BallGet(false, false);
+            HoldBall(false, false);
         }
+    }
+
+    void SetCatchMuki()
+    {
+        //キャッチもぼーる方向向くようにしてみる
+        AutoMukiInit();
+        SetBallMukiX();
+        SetBallMukiZ();
+        MukiSetAuto();
+    }
+
+    void SetBallMukiX()
+    {
+        if (IsBallHolder)
+        {
+            return;
+        }
+
+        //自分がタゲでパスが飛んできてるときはそのままの向き自分が投げたときも
+        if (MyOrder.IsInfield == false
+            && BallState.MotionType == BallMotionType.Pass
+            && BallState.ThrowerSideNo == MySideIndex
+            && BallState.ThrowerOrderNo == MyOrderIndex)
+        {
+            return;
+        }
+
+        if (BallState.Coordinate.X < MyCoordinate.X)
+        {
+            MyNextAuto.DirectionX = DirectionXType.Left;
+        }
+        else if (BallState.Coordinate.X < MyCoordinate.X)
+        {
+            MyNextAuto.DirectionX = DirectionXType.Right;
+        }
+    }
+
+    void SetBallMukiZ()
+    {
+        if (IsBallHolder)
+        {
+            return;
+        }
+
+        // 自分がタゲでパスが飛んできてるときはそのままの向き
+        // 自分が投げたときも
+        if (MyOrder.IsInfield == false && BallState.MotionType == BallMotionType.Pass)
+        {
+            if (BallState.ThrowerSideNo == MySideIndex
+                && BallState.ThrowerOrderNo == MyOrderIndex)
+            {
+                return;
+            }
+            // パスの時はパス先を向く
+            MyNextAuto.DirectionZ = BallState.ThrowerOrderNo switch
+            {
+                OrderIndexType.Outfield2 => DirectionZType.Backward,
+                OrderIndexType.Outfield3 => DirectionZType.Forward,
+                _ => DirectionZType.Neutral
+            };
+        }
+        else
+        {
+            if (BallState.Coordinate.Z < MyCoordinate.Z)
+            {
+                if (BallState.Coordinate.Z < MyCoordinate.Z - Defines.DEFDISTZ)
+                {
+                    MyNextAuto.DirectionZ = DirectionZType.Forward;
+                }
+                else if (BallState.Coordinate.Z > MyCoordinate.Z - Defines.DEFDISTZ / 2
+                         || MyNextAuto.DirectionZ == DirectionZType.Backward)
+                {
+                    MyNextAuto.DirectionZ = DirectionZType.Neutral;
+                }
+            }
+            else
+            {
+                if (BallState.Coordinate.Z > MyCoordinate.Z + Defines.DEFDISTZ)
+                {
+                    MyNextAuto.DirectionZ = DirectionZType.Backward;
+                }
+                else if (BallState.Coordinate.Z < MyCoordinate.Z + Defines.DEFDISTZ / 2
+                         || MyNextAuto.DirectionZ == DirectionZType.Forward)
+                {
+                    MyNextAuto.DirectionZ = DirectionZType.Neutral;
+                }
+            }
+        }
+    }
+
+    //AUTO向き変え初期化
+    void AutoMukiInit()
+    {
+        MyAuto.DirectionX = MyCoordinate.DirectionX;
+        MyAuto.DirectionZ = MyCoordinate.DirectionZ;
     }
 
     void AirAttack()
@@ -1779,12 +1878,12 @@ public partial class CharaBehavior
 
             //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
             bool nortst_f = (st_.pstMyCh_.Motion.IsMFlags(dbmfDs))
-                            && (MyState.Coordinate.DsMuki == MyState.Coordinate.Muki);
+                            && (MyCoordinate.DsMuki == MyCoordinate.Muki);
 
             //内野で向きに変わるときは振り向きシュート
             if (IsInfield()
                 && (nortst_f == false)
-                && (lastMuki != MyState.Coordinate.Muki)
+                && (lastMuki != MyCoordinate.Muki)
                )
             {
                 SetMtype(dbmtRtSh);
@@ -1845,11 +1944,11 @@ public partial class CharaBehavior
 
                         //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
                         bool nortst_f = (st_.pstMyCh_.Motion.IsMFlags(dbmfDs))
-                                        && (MyState.Coordinate.DsMuki == MyState.Coordinate.Muki);
+                                        && (MyCoordinate.DsMuki == MyCoordinate.Muki);
 
                         if (IsInfield()
                             && (nortst_f == false)
-                            && (lastMuki != MyState.Coordinate.Muki)
+                            && (lastMuki != MyCoordinate.Muki)
                            )
                         {
                             SetMtype(dbmtRtSh);
@@ -1932,14 +2031,14 @@ public partial class CharaBehavior
         }
 
         //先の位置
-        fX = MyState.Coordinate.X + MyState.Coordinate.VelocityX * Defines.SHLAG;
-        fZ = MyState.Coordinate.Z + MyState.Coordinate.VelocityZ * Defines.SHLAG;
+        fX = MyCoordinate.X + MyCoordinate.VelocityX * Defines.SHLAG;
+        fZ = MyCoordinate.Z + MyCoordinate.VelocityZ * Defines.SHLAG;
 
         //タゲあり
         if (Notag_f == false && TgSt != null)
         {
-            bool near_f = ((Math.Abs(TgSt.MyState.Coordinate.X - fX) < Defines.NEARDISTX)
-                           && (Math.Abs(TgSt.MyState.Coordinate.Z - fZ) < Defines.NEARDISTZ));
+            bool near_f = ((Math.Abs(TgSt.MyCoordinate.X - fX) < Defines.NEARDISTX)
+                           && (Math.Abs(TgSt.MyCoordinate.Z - fZ) < Defines.NEARDISTZ));
 
             if ((MyState.Order.IsInfield == false)
                 || Pa_f

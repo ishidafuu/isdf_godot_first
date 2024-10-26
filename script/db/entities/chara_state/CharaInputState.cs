@@ -3,9 +3,9 @@
 namespace db;
 
 /// <summary>
-/// パッド入力に関するステータス
+/// 入力に関するステータス
 /// </summary>
-public class CharaPadState
+public class CharaInputState
 {
     /// <summary>
     /// 操作キャラ

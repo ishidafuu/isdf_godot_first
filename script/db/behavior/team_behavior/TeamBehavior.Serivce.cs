@@ -22,6 +22,14 @@ public partial class TeamBehavior
         // st_.pmgMyTm_->SetCtrlBallGet(st_.posNo_); //強制
     }
 
+    public void CallChangeControlCoverMan()
+    {
+        // st_.pmgMyTm_.SetCtrl(st_.pmgMyTm_.st_.pstMyTm_.CvrNo);
+        // st_.pmgMyTm_.st_.pmgMyCh_[st_.pmgMyTm_.st_.pstMyTm_.CtrlNo].st_.pstMyCh_.Nomove_f = true;
+        // st_.pmgMyTm_.SeekCover(st_.pmgMyTm_.st_.pstMyTm_.CtrlNo, pmgSG_.stBa_.PichPNo, pmgSG_.stBa_.PaTgPNo, true); //新しいカバーマン
+    }
+    
+
     public void CallChangeControl(OrderIndexType orderIndex)
     {
     }

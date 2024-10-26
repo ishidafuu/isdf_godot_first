@@ -4,7 +4,7 @@ public partial class CharaState
 {
     public CharaIndexState Index { get; set; } = new();
     public CharaOrderState Order { get; set; } = new();
-    public CharaPadState Pad { get; set; } = new();
+    public CharaInputState Input { get; set; } = new();
     public CharaLiveState Live { get; set; } = new();
     public CoordinateState Coordinate { get; set; } = new();
     public CharaMotionState Motion { get; set; } = new();
@@ -41,7 +41,7 @@ public partial class CharaState
     {
         // 初期化時はメンバーIndexをポジション番号とする
         Order.Initialize(Index.MemberIndex);
-        Pad.Initialize();
+        Input.Initialize();
         Live.Initialize();
         Coordinate.Initialize();
         Motion.Initialize();
