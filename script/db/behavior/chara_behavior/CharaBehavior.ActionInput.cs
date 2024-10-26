@@ -1,4 +1,5 @@
 ﻿using System;
+using isdf;
 using Defines = db.Defines;
 
 namespace db;
@@ -1478,74 +1479,398 @@ public partial class CharaBehavior
     private void ControlSelf()
     {
         var actionType = GetActionType();
-//
-//         const int MIRWAIT = 4;
-//         //モーション変更前の向き
-//         enMukiType lastMuki = MyState.Coordinate.Muki;
-//         enMukiZType lastMukiZ = MyState.Coordinate.MukiZ;
-//         bool LastMukiKeep_f = false;
-//         bool autoPickUp_f = true;
-//         bool atlook_f = MyPad.IsAutoLook(); //自動タゲ向き（ニュートラル）
-//
-//         //プレビュー中パス禁止
-//         bool pabtn_f = MyPad.IsPass() && (pmgGO_.pmgRf_.IsPrev() == false);
-//         bool pabtn2_f = MyPad.IsPass2() && (pmgGO_.pmgRf_.IsPrev() == false);
-//         bool dgbtn_f = MyPad.IsDodge();
-//         bool dgbtn2_f = MyPad.IsDodge2();
-//         bool cabtn_f = MyPad.IsCatch();
-//         bool shbtn_f = MyPad.IsShot();
-//         bool shbtn2_f = MyPad.IsShot2();
-//         bool uppos_f = (pabtn_f || dgbtn_f);
-//         bool dnpos_f = (cabtn_f || shbtn_f);
-//
-//         bool ng_f = false;
-//
-//         //シュート以外の時はきゃっちよけがでないように
-//         if (st_.pstMyTm_.smart_f_)
-//         {
-//             bool caok_f = (((pmgSG_.stBa_.Motion == bmShoot) && (pmgSG_.stBa_.PichTNo == st_.ensideNo_))
-//                            || ((pmgSG_.stBa_.Motion == bmPass) && (pmgSG_.stBa_.PichTNo == st_.ensideNo_))
-//                            || ((pmgSG_.stBa_.Motion == bmHold) && pmgSG_.stBa_.shotmotion_f));
-//
-//             if (caok_f == false)
-//             {
-//                 //dgbtn_f = false;
-//                 //dgbtn2_f = false;
-//                 //ダッシュがにゅうりょくされてなければ
-//                 cabtn_f = (MyPad.IsCatch3() //左下短押しリリース
-//                            && (MyPad.IsDash(IsBall()) == false)); //ダッシュにゅうりょく無し
-//             }
-//
-//             if (st_.pstMyCh_.shotok_f_ == false)
-//             {
-//                 if (shbtn2_f == false)
-//                 {
-//                     st_.pstMyCh_.shotok_f_ = true;
-//                 }
-//                 else
-//                 {
-//                     shbtn_f = false; //キャッチ後ジャンプおしっぱで出てしまうのカット
-//                 }
-//             }
-//
-//             //ダッシュ中前フリックはシュート
-//             if (st_.pstMyCh_.Motion.IsMFlags(dbmfDs))
-//             {
-//                 if (MyState.Coordinate.DsMuki == mL)
-//                 {
-//                     shbtn_f |= MyPad.IsDsShot(dxL);
-//                 }
-//                 else if (MyState.Coordinate.DsMuki == mR)
-//                 {
-//                     shbtn_f |= MyPad.IsDsShot(dxR);
-//                 }
-//             }
-//
-//             //スマホ操作ではおしっぱシュートは使わない
-//             shbtn2_f = false;
-//         }
-//
-// #ifdef __K_DEBUG_SHIAI__
+
+        const int MIRWAIT = 4;
+        //モーション変更前の向き
+        var lastMuki = MyState.Coordinate.DirectionX;
+        var lastMukiZ = MyState.Coordinate.DirectionZ;
+        bool LastMukiKeep_f = false;
+        bool autoPickUp_f = true;
+        bool atlook_f = MyPad.IsPressedAnyCross() == false;
+
+        //プレビュー中パス禁止
+        bool pabtn_f = MyPad.ButtonA.IsJustPressed;
+        bool pabtn2_f = MyPad.ButtonA.IsPressed;
+        bool dgbtn_f = MyPad.ButtonA.IsJustPressed;
+        bool dgbtn2_f = MyPad.ButtonA.IsPressed;
+        bool cabtn_f = MyPad.ButtonA.IsJustPressed;
+        bool shbtn_f = MyPad.ButtonB.IsJustPressed;
+        bool shbtn2_f = MyPad.ButtonB.IsPressed;
+        bool uppos_f = (pabtn_f || dgbtn_f);
+        bool dnpos_f = (cabtn_f || shbtn_f);
+
+        bool ng_f = false;
+
+        // DegbugKill();
+
+        // 処理検討
+        // if (st_.pstMyCh_.Nomove_f)
+        // {
+        //     st_.pstMyCh_.Nomove_f = false;
+        //     return;
+        // }
+
+        //シュートとパスは投げる瞬間にターゲットの方向を自動で向くようにする
+        LastMukiKeep_f = true;
+
+        bool shotok_f = true;
+
+        switch (MyState.Motion.MotionType)
+        {
+            case CharaMotionType.St:
+            case CharaMotionType.Wk:
+            case CharaMotionType.Ds:
+            case CharaMotionType.Sl:
+                switch (actionType)
+                {
+                    case ActionType.ATA:
+                        GroundAttack();
+                        break;
+                    case ActionType.ATD:
+                        GroundDefence();
+                        break;
+                    case ActionType.ATF:
+                        GroundFree();
+                        break;
+                }
+                break;
+            case CharaMotionType.JUp:
+            case CharaMotionType.JDn:
+                var canAirAction = MyState.Air.IsAirAction == false
+                                   && MyState.Motion.HasFlag(CharaMotionFlag.Ar)
+                                   && (MyState.Coordinate.VelocityY > 0 || MyState.Coordinate.Y >= Defines.JPINVALIDHEIGHT);
+                var isMarionette = MyState.BallEffect.symCtrl_f && MyState.Motion.HasFlag(CharaMotionFlag.Ar);
+
+                if (canAirAction || isMarionette)
+                {
+                    if (actionType == ActionType.ATA)
+                    {
+                        AirAttack();
+                    }
+                    else
+                    {
+                        AirDefenceOrFree();
+                    }
+                }
+
+                break;
+            case CharaMotionType.Sh:
+                if (IsBallHolder
+                    && MyState.Shoot.IsUTurn == false
+                    && MyState.Order.IsInfield)
+                {
+                    bool utrn_f = false;
+                    if (MySideIndex == 0
+                        && (MyState.Coordinate.DirectionX == DirectionXType.Left)
+                        && MyPad.KeyRight.IsPressed)
+                    {
+                        utrn_f = true;
+                        MyState.Coordinate.DirectionX = DirectionXType.Right;
+                        MyState.Coordinate.DirectionZ = DirectionZType.Neutral;
+                        MyState.Shoot.Angle12 = 1; //1 2 3 4
+                        SetMukiAgl(false, true, false, false);
+                    }
+                    else if (MySideIndex == 1
+                             && (MyState.Coordinate.DirectionX == DirectionXType.Right)
+                             && MyPad.KeyLeft.IsPressed)
+                    {
+                        utrn_f = true;
+                        MyState.Coordinate.DirectionX = DirectionXType.Left;
+                        MyState.Coordinate.DirectionZ = DirectionZType.Neutral;
+                        MyState.Shoot.Angle12 = 7; //7 8 9 10
+                        SetMukiAgl(true, false, false, false);
+                    }
+
+                    if (utrn_f)
+                    {
+                        SetMotionType(CharaMotionType.RtSh);
+                        //ダッシュに復帰
+                        if (MyState.Motion.HasFlag(CharaMotionFlag.Slip))
+                        {
+                            MyState.Motion.AddMotionFlag(CharaMotionFlag.Ds);
+                        }
+                    }
+                }
+                break;
+            case CharaMotionType.Ca:
+                if (IsPickUpPos())
+                {
+                    HoldBall(false, false);
+
+                    // キャッチダッシュ継続
+                    if (MyState.Order.IsInfield
+                        && MyState.Auto.AutoType == AutoType.Free
+                        && MyState.Motion.HasFlag(CharaMotionFlag.Ds))
+                    {
+                        if ((MyState.Coordinate.DashDirection == DirectionXType.Left && MyPad.KeyLeft.IsPressed)
+                            || (MyState.Coordinate.DashDirection == DirectionXType.Right && MyPad.KeyRight.IsPressed))
+                        {
+                            //継続なので向きセットも歩数リセットもいらない
+                            SetMotionType(CharaMotionType.Ds);
+                        }
+                    }
+                }
+                break;
+            case CharaMotionType.JCa:
+                if (IsPickUpPos())
+                {
+                    HoldBall(false, false);
+                }
+                break;
+            case CharaMotionType.Dg:
+            case CharaMotionType.JDg:
+                //押しっぱなしで避け続けるようにする
+                if (dgbtn2_f && IsBallHolder == false)
+                {
+                    // ほかとアニメーション継続の形を合わせる
+                    // st_.pstMyCh_.Anime.Ani_c = 0; //こんなんでいいのだろうか
+                }
+                break;
+        }
+
+        //モーション変更前の向き
+        if (LastMukiKeep_f)
+        {
+            MyState.Move.LastDirectionXType = lastMuki;
+            MyState.Move.LastDirectionZType = lastMukiZ;
+        }
+    }
+
+    void AirDefenceOrFree()
+    {
+        if (dgbtn_f)
+        {
+            SetMtype(dbmtJDg);
+            CatchSE();
+            if ((st_.pmgMyTm_.st_.pstMyTm_.CtrlNo == pmgSG_.stBa_.PaTgPNo)
+                && (pmgSG_.stBa_.Motion == bmPass)
+                && (pmgSG_.stBa_.PaTgTNo == st_.mysideNo_)
+                && (pmgSG_.stBa_.PaTgPNo <= (int)dbpoI3))
+            {
+                st_.pmgMyTm_.SetCtrl(st_.pmgMyTm_.st_.pstMyTm_.CvrNo);
+                st_.pmgMyTm_.st_.pmgMyCh_[st_.pmgMyTm_.st_.pstMyTm_.CtrlNo].st_.pstMyCh_.Nomove_f = true;
+                st_.pmgMyTm_.SeekCover(st_.pmgMyTm_.st_.pstMyTm_.CtrlNo, pmgSG_.stBa_.PichPNo, pmgSG_.stBa_.PaTgPNo, true); //新しいカバーマン
+            }
+        }
+        else if (cabtn_f)
+        {
+            //キャッチもボール方向向くようにしてみる
+            SetCatchMuki();
+            SetMtype(dbmtJCa);
+            //                            CatchSE();
+            if (IsPickUpPos(true)) BallGet(false, false);
+        }
+        else if (autoPickUp_f && IsPickUpPos(false)) //自動拾い★
+        {
+            BallGet(false, false);
+        }
+    }
+
+    void AirAttack()
+    {
+        if (pabtn_f)
+        {
+            Passing(true);
+        }
+        else if (MyPad.IsJumpShot()) //ジャンプシュート入力
+        {
+            LookTg(pmgSG_.stBa_.ShTgPNo, false, atlook_f);
+            SetMtype(dbmtJSh);
+        }
+        else
+        {
+            if (shbtn2_f) //シュート入力おしっぱ
+            {
+                st_.pstMyCh_.MirPass_c = 0;
+            }
+
+            if (st_.pstMyCh_.MirPass_c > 0) //ミラーパス状態
+            {
+                if (pabtn2_f)
+                {
+                    if (Defines.UpToR(&st_.pstMyCh_.MirPass_c, MIRWAIT))
+                    {
+                        if (pmgSG_.stBa_.PaTgPNo != NGNUM)
+                        {
+                            if (st_.pmgMyTm_.st_.pmgMyCh_[pmgSG_.stBa_.PaTgPNo].IsDashman())
+                            {
+                                Passing(true);
+                            }
+                            else
+                            {
+                                st_.pstMyCh_.MirPass_c = 0;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    st_.pstMyCh_.MirPass_c = 0;
+                }
+            }
+
+            if (st_.pstMyCh_.MirShot_c > 0) //ミラーシュート状態
+            {
+                if (shbtn2_f && (pabtn2_f == false)) //シュート入力おしっぱ
+                {
+                    if (Defines.UpToR(&st_.pstMyCh_.MirShot_c, MIRWAIT))
+                    {
+                        LookTg(pmgSG_.stBa_.ShTgPNo, false, true);
+                        SetMtype(dbmtJSh);
+                    }
+                }
+                else
+                {
+                    st_.pstMyCh_.MirShot_c = 1;
+                }
+            }
+        }
+    }
+
+    void GroundFree()
+    {
+        if ((cabtn_f || dgbtn_f) //キャッチ入力
+            && (st_.pstMyCh_.CatchW_c == 0))
+        {
+            //キャッチもボール方向向くようにしてみる
+            SetCatchMuki();
+            SetMtype(dbmtCa);
+        }
+        else if (autoPickUp_f && IsPickUpPos(false)) //自動拾い★
+        {
+            BallGet(false, false);
+        }
+    }
+
+    void GroundDefence()
+    {
+        if (dgbtn_f) //避けボタン
+        {
+            SetMtype(dbmtDg);
+            CatchSE();
+            if (IsPickUpPos(false)) BallGet(false, false);
+        }
+        else if (cabtn_f && (st_.pstMyCh_.CatchW_c == 0)) //キャッチ入力
+        {
+            //キャッチもボール方向向くようにしてみる
+            SetCatchMuki();
+            SetMtype(dbmtCa);
+        }
+        else if (autoPickUp_f && IsPickUpPos(false)) //自動拾い★
+        {
+            BallGet(false, false);
+        }
+    }
+
+    void GroundAttack()
+    {
+        if (pabtn_f) //
+        {
+            //内野の場合後ろ内野内パスなので、相手の方向を向かないと行けない
+            Passing(false);
+        }
+
+        // DegbugShot();
+
+        if (shbtn_f && shotok_f) //シュート入力
+        {
+            //外野２３からＺ軸シュートのとき、一応相手の方向を向く
+            LookTg(pmgSG_.stBa_.ShTgPNo, false, atlook_f); // && (st_.pstMyCh_.Motion.Mtype == dbmtSt)
+
+            //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
+            bool nortst_f = (st_.pstMyCh_.Motion.IsMFlags(dbmfDs))
+                            && (MyState.Coordinate.DsMuki == MyState.Coordinate.Muki);
+
+            //内野で向きに変わるときは振り向きシュート
+            if (IsInfield()
+                && (nortst_f == false)
+                && (lastMuki != MyState.Coordinate.Muki)
+               )
+            {
+                SetMtype(dbmtRtSh);
+            }
+            else
+            {
+                SetMtype(dbmtSh);
+            }
+#ifdef __K_DEBUG_SHIAI__
+            // シュート情報のログを書き出す
+            kdebug::DebugSystem::GetInstance().CreateShootDebugLog();
+            // 自動シュートフラグを落とす
+            if (isAutoShot)
+            {
+                pDs.SetAutoShootStep(kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_SHOOT);
+            }
+#endif // #ifdef __K_DEBUG_SHIAI__
+        }
+        else
+        {
+            if (shbtn2_f) //シュート入力おしっぱ
+            {
+                st_.pstMyCh_.MirPass_c = 0;
+            }
+
+            if (st_.pstMyCh_.MirPass_c > 0) //ミラーパス状態
+            {
+                if (pabtn2_f)
+                {
+                    if (Defines.UpToR(&st_.pstMyCh_.MirPass_c, MIRWAIT))
+                    {
+                        if (pmgSG_.stBa_.PaTgPNo != NGNUM)
+                        {
+                            if (st_.pmgMyTm_.st_.pmgMyCh_[pmgSG_.stBa_.PaTgPNo].IsDashman())
+                            {
+                                Passing(false);
+                            }
+                            else
+                            {
+                                st_.pstMyCh_.MirPass_c = 0;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    st_.pstMyCh_.MirPass_c = 0;
+                }
+            }
+
+            if (st_.pstMyCh_.MirShot_c > 0) //ミラーシュート状態
+            {
+                if (shbtn2_f && (pabtn2_f == false)) //シュート入力おしっぱ
+                {
+                    if (Defines.UpToR(&st_.pstMyCh_.MirShot_c, MIRWAIT))
+                    {
+                        LookTg(pmgSG_.stBa_.ShTgPNo, false, true); //居ないときはオートで探す
+
+                        //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
+                        bool nortst_f = (st_.pstMyCh_.Motion.IsMFlags(dbmfDs))
+                                        && (MyState.Coordinate.DsMuki == MyState.Coordinate.Muki);
+
+                        if (IsInfield()
+                            && (nortst_f == false)
+                            && (lastMuki != MyState.Coordinate.Muki)
+                           )
+                        {
+                            SetMtype(dbmtRtSh);
+                        }
+                        else
+                        {
+                            SetMtype(dbmtSh);
+                        }
+                    }
+                }
+                else
+                {
+                    st_.pstMyCh_.MirShot_c = 1;
+                }
+            }
+        }
+    }
+
+    void DegbugKill()
+    {
+        // #ifdef __K_DEBUG_SHIAI__
 //         if (kdebug::DebugSystem::GetInstance().IsEnemyLastOne())
 //         {
 //             // 今いるやつを全員殺す
@@ -1564,96 +1889,11 @@ public partial class CharaBehavior
 //             pmgGO_.pmgTm_[st_.ensideNo_].CheckChangePos();
 //         }
 // #endif
-//
-//         //チュートリアルのＮＧ行為（押し位置間違いチェック）
-//         if (pmgEO_.stShiai_.IsTuto() && (st_.mysideNo_ == SIDE0))
-//         {
-//             switch (st_.pmgRf_.GetTutoNo())
-//             {
-//                 case sta_DodgeAct:
-//                     if (dnpos_f)
-//                     {
-//                         st_.pmgRf_.SetTutoNG(st_.pmgRf_.GetTutoNo(), rta_dodge_ngpos);
-//                         ng_f = true;
-//                     }
-//                     break;
-//                 case sta_WalkAct:
-//                     if (uppos_f)
-//                     {
-//                         st_.pmgRf_.SetTutoNG(st_.pmgRf_.GetTutoNo(), rta_walk_ngpos);
-//                         ng_f = true;
-//                     }
-//                     break;
-//                 case sta_JumpAct:
-//                     if (uppos_f)
-//                     {
-//                         st_.pmgRf_.SetTutoNG(st_.pmgRf_.GetTutoNo(), rta_jump_ngpos);
-//                         ng_f = true;
-//                     }
-//                 case sta_CatchAct:
-//                     if (uppos_f)
-//                     {
-//                         st_.pmgRf_.SetTutoNG(st_.pmgRf_.GetTutoNo(), rta_catch_ngpos);
-//                         ng_f = true;
-//                     }
-//                     break;
-//                 case sta_DashAct:
-//                     if (uppos_f)
-//                     {
-//                         st_.pmgRf_.SetTutoNG(st_.pmgRf_.GetTutoNo(), rta_dash_ngpos);
-//                         ng_f = true;
-//                     }
-//                     shbtn_f = false;
-//                     pabtn_f = false;
-//                     break;
-//                 case sta_ShotAct:
-//                     if (uppos_f)
-//                     {
-//                         st_.pmgRf_.SetTutoNG(st_.pmgRf_.GetTutoNo(), rta_shot_ngpos);
-//                         ng_f = true;
-//                     }
-//                     break;
-//                 case sta_GameAct:
-//                     break;
-//                 default:
-//                     ng_f = true;
-//                     break;
-//             }
-//         }
-//
-//         if (ng_f)
-//         {
-//             pabtn_f = false;
-//             pabtn2_f = false;
-//             dgbtn_f = false;
-//             dgbtn2_f = false;
-//             cabtn_f = false;
-//             shbtn_f = false;
-//         }
-//
-//         if (st_.pstMyCh_.Nomove_f)
-//         {
-//             st_.pstMyCh_.Nomove_f = false;
-//             return;
-//         }
-//
-//         //シュートとパスは投げる瞬間にターゲットの方向を自動で向くようにする
-//         LastMukiKeep_f = true;
-//
-//         bool shotok_f = true;
-//
-//         //スマート
-//         if (st_.pstMyTm_.smart_f_)
-//         {
-//             //内野で立ち、歩きの時はシュートしない
-//             if (IsInfield()
-//                 && ((st_.pstMyCh_.Motion.Mtype == dbmtSt) || (st_.pstMyCh_.Motion.Mtype == dbmtWk)))
-//             {
-//                 shotok_f = false;
-//             }
-//         }
-//
-// #ifdef __K_DEBUG_SHIAI__
+    }
+
+    void DebugShot()
+    {
+//         #ifdef __K_DEBUG_SHIAI__
 //         kdebug::DebugSystem* pDs = kdebug::DebugSystem::GetInstance();
 //         bool isAutoShot = false;
 //         // 自動シュート状態を取得
@@ -1718,352 +1958,5 @@ public partial class CharaBehavior
 //             }
 //         }
 // #endif // #ifdef __K_DEBUG_SHIAI__
-//
-//         switch (st_.pstMyCh_.Motion.Mtype)
-//         {
-//             case dbmtCr:
-//                 break;
-//             case dbmtSt:
-//             case dbmtWk:
-//             case dbmtDs:
-//             case dbmtSl:
-//             {
-//                 switch (ATType)
-//                 {
-//                     case ATA: //攻撃/////////////////////////////////
-//                         if (pabtn_f) //
-//                         {
-//                             //内野の場合後ろ内野内パスなので、相手の方向を向かないと行けない
-//                             Passing(false);
-//                         }
-// #ifdef __K_DEBUG_SHIAI__
-//                         // シュート条件に自動シュートフラグも入れる
-//                         else if ((shbtn_f && shotok_f) || isAutoShot) //シュート入力
-// #else
-//                             else
-//                         if (shbtn_f && shotok_f) //シュート入力
-// #endif // #ifdef __K_DEBUG_SHIAI__
-//
-//                         {
-//                             //外野２３からＺ軸シュートのとき、一応相手の方向を向く
-//                             LookTg(pmgSG_.stBa_.ShTgPNo, false, atlook_f); // && (st_.pstMyCh_.Motion.Mtype == dbmtSt)
-//
-//                             //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
-//                             bool nortst_f = (st_.pstMyCh_.Motion.IsMFlags(dbmfDs))
-//                                             && (MyState.Coordinate.DsMuki == MyState.Coordinate.Muki);
-//
-//                             //内野で向きに変わるときは振り向きシュート
-//                             if (IsInfield()
-//                                 && (nortst_f == false)
-//                                 && (lastMuki != MyState.Coordinate.Muki)
-//                                )
-//                             {
-//                                 SetMtype(dbmtRtSh);
-//                             }
-//                             else
-//                             {
-//                                 SetMtype(dbmtSh);
-//                             }
-// #ifdef __K_DEBUG_SHIAI__
-//                             // シュート情報のログを書き出す
-//                             kdebug::DebugSystem::GetInstance().CreateShootDebugLog();
-//                             // 自動シュートフラグを落とす
-//                             if (isAutoShot)
-//                             {
-//                                 pDs.SetAutoShootStep(kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_SHOOT);
-//                             }
-// #endif // #ifdef __K_DEBUG_SHIAI__
-//                         }
-//                         else
-//                         {
-//                             if (shbtn2_f) //シュート入力おしっぱ
-//                             {
-//                                 st_.pstMyCh_.MirPass_c = 0;
-//                             }
-//
-//                             if (st_.pstMyCh_.MirPass_c > 0) //ミラーパス状態
-//                             {
-//                                 if (pabtn2_f)
-//                                 {
-//                                     if (Defines.UpToR(&st_.pstMyCh_.MirPass_c, MIRWAIT))
-//                                     {
-//                                         if (pmgSG_.stBa_.PaTgPNo != NGNUM)
-//                                         {
-//                                             if (st_.pmgMyTm_.st_.pmgMyCh_[pmgSG_.stBa_.PaTgPNo].IsDashman())
-//                                             {
-//                                                 Passing(false);
-//                                             }
-//                                             else
-//                                             {
-//                                                 st_.pstMyCh_.MirPass_c = 0;
-//                                             }
-//                                         }
-//                                     }
-//                                 }
-//                                 else
-//                                 {
-//                                     st_.pstMyCh_.MirPass_c = 0;
-//                                 }
-//                             }
-//
-//                             if (st_.pstMyCh_.MirShot_c > 0) //ミラーシュート状態
-//                             {
-//                                 if (shbtn2_f && (pabtn2_f == false)) //シュート入力おしっぱ
-//                                 {
-//                                     if (Defines.UpToR(&st_.pstMyCh_.MirShot_c, MIRWAIT))
-//                                     {
-//                                         LookTg(pmgSG_.stBa_.ShTgPNo, false, true); //居ないときはオートで探す
-//
-//                                         //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
-//                                         bool nortst_f = (st_.pstMyCh_.Motion.IsMFlags(dbmfDs))
-//                                                         && (MyState.Coordinate.DsMuki == MyState.Coordinate.Muki);
-//
-//                                         if (IsInfield()
-//                                             && (nortst_f == false)
-//                                             && (lastMuki != MyState.Coordinate.Muki)
-//                                            )
-//                                         {
-//                                             SetMtype(dbmtRtSh);
-//                                         }
-//                                         else
-//                                         {
-//                                             SetMtype(dbmtSh);
-//                                         }
-//                                     }
-//                                 }
-//                                 else
-//                                 {
-//                                     st_.pstMyCh_.MirShot_c = 1;
-//                                 }
-//                             }
-//                         }
-//                         break;
-//
-//                     case ATD: //守備/////////////////////////////////////
-//                         if (dgbtn_f) //避けボタン
-//                         {
-//                             SetMtype(dbmtDg);
-//                             CatchSE();
-//                             if (IsPickUpPos(false)) BallGet(false, false);
-//                         }
-//                         else if (cabtn_f && (st_.pstMyCh_.CatchW_c == 0)) //キャッチ入力
-//                         {
-//                             //キャッチもボール方向向くようにしてみる
-//                             SetCatchMuki();
-//                             SetMtype(dbmtCa);
-//                         }
-//                         else if (autoPickUp_f && IsPickUpPos(false)) //自動拾い★
-//                         {
-//                             BallGet(false, false);
-//                         }
-//                         break;
-//
-//                     case ATF: //拾い
-//                         if ((cabtn_f || dgbtn_f) //キャッチ入力
-//                             && (st_.pstMyCh_.CatchW_c == 0))
-//                         {
-//                             //キャッチもボール方向向くようにしてみる
-//                             SetCatchMuki();
-//                             SetMtype(dbmtCa);
-//                         }
-//                         else if (autoPickUp_f && IsPickUpPos(false)) //自動拾い★
-//                         {
-//                             BallGet(false, false);
-//                         }
-//                         break;
-//                 }
-//             }
-//                 break;
-//             case dbmtJCa:
-//                 if (IsPickUpPos(true))
-//                 {
-//                     BallGet(false, false);
-//                 }
-//                 break;
-//             case dbmtCa:
-//                 if (IsPickUpPos(true))
-//                 {
-//                     BallGet(false, false);
-//
-//                     if (IsInfield()
-//                         && (st_.pstMyCh_.Auto.AutoType == dbatFree)
-//                         && (st_.pstMyCh_.Motion.IsMFlags(dbmfDs)))
-//                     {
-//                         if (((MyState.Coordinate.DsMuki == mL)
-//                              && MyPad.IsCatchDash(dxL)) //キャッチ後ダッシュ継続入力
-//                             || ((MyState.Coordinate.DsMuki == mR)
-//                                 && MyPad.IsCatchDash(dxR)))
-//                         {
-//                             //継続なので向きセットも歩数リセットもいらない
-//                             SetMtype(dbmtDs);
-//                         }
-//                     }
-//                 }
-//                 break;
-//             case dbmtDg:
-//             case dbmtJDg:
-//                 //押しっぱなしで避け続けるようにする
-//                 if (dgbtn2_f
-//                     && (IsBall() == false))
-//                 {
-//                     st_.pstMyCh_.Anime.Ani_c = 0; //こんなんでいいのだろうか
-//                 }
-//                 break;
-//             case dbmtJUp:
-//             case dbmtJDn:
-// //      if ((st_.pstMyCh_.AirAct_f == false)
-// //        && st_.pstMyCh_.Motion.IsMFlags(dbmfAr)
-// //        && ((MyState.Coordinate.dY > 0) || (MyState.Coordinate.Y >= (JPINVALIDHEIGHT * XYMAG))))
-//                 if (
-//                     ((st_.pstMyCh_.AirAct_f == false)
-//                      && st_.pstMyCh_.Motion.IsMFlags(dbmfAr)
-//                      && ((MyState.Coordinate.dY > 0) || (MyState.Coordinate.Y >= (JPINVALIDHEIGHT * XYMAG)))
-//                     )
-//                     ||
-//                     ( //マリオネット効果中
-//                         (st_.pstMyCh_.symCtrl_f == true)
-//                         && st_.pstMyCh_.Motion.IsMFlags(dbmfAr)
-//                     )
-//                 )
-//                 {
-//                     if (ATType == ATA)
-//                     {
-//                         if (pabtn_f)
-//                         {
-//                             Passing(true);
-//                         }
-//                         else if (MyPad.IsJumpShot()) //ジャンプシュート入力
-//                         {
-//                             LookTg(pmgSG_.stBa_.ShTgPNo, false, atlook_f);
-//                             SetMtype(dbmtJSh);
-//                         }
-//                         else
-//                         {
-//                             if (shbtn2_f) //シュート入力おしっぱ
-//                             {
-//                                 st_.pstMyCh_.MirPass_c = 0;
-//                             }
-//
-//                             if (st_.pstMyCh_.MirPass_c > 0) //ミラーパス状態
-//                             {
-//                                 if (pabtn2_f)
-//                                 {
-//                                     if (Defines.UpToR(&st_.pstMyCh_.MirPass_c, MIRWAIT))
-//                                     {
-//                                         if (pmgSG_.stBa_.PaTgPNo != NGNUM)
-//                                         {
-//                                             if (st_.pmgMyTm_.st_.pmgMyCh_[pmgSG_.stBa_.PaTgPNo].IsDashman())
-//                                             {
-//                                                 Passing(true);
-//                                             }
-//                                             else
-//                                             {
-//                                                 st_.pstMyCh_.MirPass_c = 0;
-//                                             }
-//                                         }
-//                                     }
-//                                 }
-//                                 else
-//                                 {
-//                                     st_.pstMyCh_.MirPass_c = 0;
-//                                 }
-//                             }
-//
-//                             if (st_.pstMyCh_.MirShot_c > 0) //ミラーシュート状態
-//                             {
-//                                 if (shbtn2_f && (pabtn2_f == false)) //シュート入力おしっぱ
-//                                 {
-//                                     if (Defines.UpToR(&st_.pstMyCh_.MirShot_c, MIRWAIT))
-//                                     {
-//                                         LookTg(pmgSG_.stBa_.ShTgPNo, false, true);
-//                                         SetMtype(dbmtJSh);
-//                                     }
-//                                 }
-//                                 else
-//                                 {
-//                                     st_.pstMyCh_.MirShot_c = 1;
-//                                 }
-//                             }
-//                         }
-//                     }
-//                     else
-//                     {
-//                         if (dgbtn_f)
-//                         {
-//                             SetMtype(dbmtJDg);
-//                             CatchSE();
-//                             if ((st_.pmgMyTm_.st_.pstMyTm_.CtrlNo == pmgSG_.stBa_.PaTgPNo)
-//                                 && (pmgSG_.stBa_.Motion == bmPass)
-//                                 && (pmgSG_.stBa_.PaTgTNo == st_.mysideNo_)
-//                                 && (pmgSG_.stBa_.PaTgPNo <= (int)dbpoI3))
-//                             {
-//                                 st_.pmgMyTm_.SetCtrl(st_.pmgMyTm_.st_.pstMyTm_.CvrNo);
-//                                 st_.pmgMyTm_.st_.pmgMyCh_[st_.pmgMyTm_.st_.pstMyTm_.CtrlNo].st_.pstMyCh_.Nomove_f = true;
-//                                 st_.pmgMyTm_.SeekCover(st_.pmgMyTm_.st_.pstMyTm_.CtrlNo, pmgSG_.stBa_.PichPNo, pmgSG_.stBa_.PaTgPNo, true); //新しいカバーマン
-//                             }
-//                         }
-//                         else if (cabtn_f)
-//                         {
-//                             //キャッチもボール方向向くようにしてみる
-//                             SetCatchMuki();
-//                             SetMtype(dbmtJCa);
-//                             //                            CatchSE();
-//                             if (IsPickUpPos(true)) BallGet(false, false);
-//                         }
-//                         else if (autoPickUp_f && IsPickUpPos(false)) //自動拾い★
-//                         {
-//                             BallGet(false, false);
-//                         }
-//                     }
-//                 }
-//                 break;
-//             case dbmtSh: //振り向きシュート
-//                 if ((st_.pstMyCh_.Utrun_f == false)
-//                     && IsBall()
-//                     && IsInfield()
-//                     //&& (st_.pstMyCh_.Motion.IsMFlags(dbmfDs) || st_.pstMyCh_.Motion.IsMFlags(dbmfSlip))
-//                    )
-//                 {
-//                     bool utrn_f = false;
-//                     if ((MyState.Coordinate.Muki == mL)
-//                         && MyPad.IsWalk2(dxR)
-//                         && (st_.mysideNo_ == 0))
-//                     {
-//                         utrn_f = true;
-//                         MyState.Coordinate.Muki = mR;
-//                         MyState.Coordinate.MukiZ = mzN;
-//                         MyState.Shoot.Angle12 = 1; //1 2 3 4
-//                         SetMukiAgl(false, true, false, false);
-//                     }
-//                     else if ((MyState.Coordinate.Muki == mR)
-//                              && MyPad.IsWalk2(dxL)
-//                              && (st_.mysideNo_ == 1))
-//                     {
-//                         utrn_f = true;
-//                         MyState.Coordinate.Muki = mL;
-//                         MyState.Coordinate.MukiZ = mzN;
-//                         MyState.Shoot.Angle12 = 7; //7 8 9 10
-//                         SetMukiAgl(true, false, false, false);
-//                     }
-//
-//                     if (utrn_f)
-//                     {
-//                         SetMtype(dbmtRtSh);
-//                         //ダッシュに復帰
-//                         if (st_.pstMyCh_.Motion.IsMFlags(dbmfSlip))
-//                         {
-//                             st_.pstMyCh_.Motion.MFlags |= dbmfDs;
-//                         }
-//                     }
-//                 }
-//                 break;
-//         }
-//
-//         //モーション変更前の向き
-//         if (LastMukiKeep_f)
-//         {
-//             st_.pstMyCh_.LastMuki = lastMuki;
-//             st_.pstMyCh_.LastMukiZ = lastMukiZ;
-//         }
     }
 }

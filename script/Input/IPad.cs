@@ -9,3 +9,11 @@ public interface IPad
     public IButton ButtonA { get; }
     public IButton ButtonB { get; }
 }
+
+public static class IPadExtensions
+{
+    public static bool IsPressedAnyCross(this IPad pad)
+    {
+        return pad.KeyUp.IsPressed || pad.KeyDown.IsPressed || pad.KeyLeft.IsPressed || pad.KeyRight.IsPressed;
+    }
+}
