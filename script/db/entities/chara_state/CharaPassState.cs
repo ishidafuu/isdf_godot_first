@@ -9,10 +9,10 @@ public class CharaPassState
     public DownCounter PassStandWaitCount { get; set; }
 
     // ミラーパスカウンタ
-    public DownCounter MirrorPassCount { get; set; }
+    public UpCounter MirrorPassCount { get; set; }
 
     // ミラーパス的シュートカウンタ
-    public DownCounter MirrorShotCount { get; set; }
+    public UpCounter MirrorShotCount { get; set; }
 
     // ミラーパス的シュート受付時間
     public DownCounter MirrorShotLimitCount { get; set; }
