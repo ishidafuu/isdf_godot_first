@@ -26,9 +26,6 @@ public partial class CharaBehavior
             return;
         }
 
-        // 敵コート避け可能フラグ
-        var canEnemyCourtDodge = GetCanDodgeEnemyCourt();
-
         switch (MyState.Auto.AutoType)
         {
             // 自由
@@ -75,97 +72,262 @@ public partial class CharaBehavior
 
     private void AutoReturnAction()
     {
-        //     if (IsSelfControl//←いらないかも
-        //       || (IsCOM() == false))
-        //     {
-        //
-        //       bool muki_f = ((st_.mysideNo_ == 0) && (MyCoordinate.Muki == mL))
-        //         || ((st_.mysideNo_ == 1) && (MyCoordinate.Muki == mR));
-        //
-        //       switch (MyMotion.Mtype)
-        //       {
-        //       case dbmtCr:
-        //         break;
-        //       case dbmtSt:
-        //       case dbmtWk:
-        //       case dbmtDs:
-        //       case dbmtSl://スリップも追加オーバーラインの瞬間なぞのキャッチできてしまう
-        //         if ((MyECDdg_f == false) && (ecdgOK_f))
-        //         {
-        //           if (MyPad.IsJump()//ジャンプ入力
-        //             && muki_f
-        //             && (MyECDjp_f == false))
-        //           {
-        //             pCommon_.JumpSet(false, false, false);//ジャンプ
-        //             //mid::midLog("J0\n");
-        //             MyECDdg_f = true;//１回だけ
-        //             MyECDjp_f = true;//１回だけ
-        //           }
-        //           else if (MyPad.IsDodge())//よけ
-        //           {
-        //             pCommon_.SetMtype(dbmtDg);
-        //             MyECDdg_f = true;//１回だけ
-        //           }
-        //           //else if (MyPad.IsCatch())//キャッチ入力
-        //           //{
-        //           //  pCommon_.SetCatchMuki();
-        //           //  pCommon_.SetMtype(dbmtCa);
-        //           //  MyECDdg_f = true;//１回だけ
-        //           //}
-        //
-        //           if (MyECDdg_f)
-        //           {
-        //             pCommon_.CatchSE();
-        //             MyLastMuki = MyCoordinate.Muki;
-        //             MyLastMukiZ = MyCoordinate.MukiZ;
-        //           }
-        //         }
-        //         break;
-        //       case dbmtSh:
-        //       case dbmtPa:
-        //         if (ecdgOK_f) pCommon_.CanselJump(false);
-        //         break;
-        //       case dbmtCa:
-        //       case dbmtJCa:
-        //         if ((MyECDjp_f == false) && ecdgOK_f)
-        //         {
-        //           //mid::midLog("J1\n");
-        //           if (pCommon_.CanselJump(false) && muki_f)
-        //           {
-        //             MyECDjp_f = true;//１回だけ
-        //             MyECDdg_f = true;//１回だけ
-        //           }
-        //           else
-        //           {
-        //             pCommon_.AutoPickUp();
-        //           }
-        //         }
-        //         //オーバラインは審判息なのでもう不要
-        //         break;
-        //       case dbmtDg:
-        //         if ((MyECDjp_f == false) && ecdgOK_f)
-        //         {
-        //           //mid::midLog("J2\n");
-        //           if (pCommon_.CanselJump(false) && muki_f)
-        //           {
-        //             MyECDjp_f = true;//１回だけ
-        //             MyECDdg_f = true;//１回だけ
-        //           }
-        //           else
-        //           {
-        //             //よけ限界時間
-        //             ++MyECDdg_c;
-        //             if ((MyECDdg_c < pmgEO_.mgDt_.dtSet_.GetDtInfield(setEnCourtCrTime))
-        //               && MyPad.IsDodge2())//押しっぱなしで避け続けるようにする
-        //             {
-        //               MyAnime.Ani_c = 0;
-        //             }
-        //           }
-        //         }
-        //
-        //         break;
-        //       }
-        //     }
+        if (IsSelfControl == false && IsCom)
+        {
+            return;
+        }
+
+        bool muki_f = ((MySideIndex == 0) && (MyCoordinate.DirectionX == DirectionXType.Left))
+                      || ((MySideIndex == 1) && (MyCoordinate.DirectionX == DirectionXType.Right));
+
+        // 敵コート避け可能フラグ
+        var canEnemyCourtDodge = GetCanDodgeEnemyCourt();
+
+        switch (MyMotion.MotionType)
+        {
+            case CharaMotionType.St:
+            case CharaMotionType.Wk:
+            case CharaMotionType.Ds:
+            case CharaMotionType.Sl:
+                //スリップも追加オーバーラインの瞬間なぞのキャッチできてしまう
+                if (MyCourt.ECDdg_f == false && canEnemyCourtDodge)
+                {
+                    if (MyPad.IsJustPressedAbButton() //ジャンプ入力
+                        && muki_f
+                        && (MyCourt.ECDjp_f == false))
+                    {
+                        JumpSet(false, false, false); //ジャンプ
+                        MyCourt.ECDdg_f = true; //１回だけ
+                        MyCourt.ECDjp_f = true; //１回だけ
+                    }
+                    else if (MyPad.ButtonA.IsJustPressed) //よけ
+                    {
+                        SetMotionType(CharaMotionType.Dg);
+                        MyCourt.ECDdg_f = true; //１回だけ
+                    }
+
+                    if (MyCourt.ECDdg_f)
+                    {
+                        MyMove.LastDirectionX = MyCoordinate.DirectionX;
+                        MyMove.LastDirectionZ = MyCoordinate.DirectionZ;
+                    }
+                }
+
+                break;
+            case CharaMotionType.Breath:
+                break;
+
+            case CharaMotionType.JCr:
+                break;
+            case CharaMotionType.CJCr:
+                break;
+            case CharaMotionType.JUp:
+                break;
+            case CharaMotionType.JDn:
+                break;
+            case CharaMotionType.ARv:
+                break;
+            case CharaMotionType.Cr:
+                break;
+            case CharaMotionType.FlF:
+                break;
+            case CharaMotionType.FlB:
+                break;
+            case CharaMotionType.PHF:
+                break;
+            case CharaMotionType.PHB:
+                break;
+            case CharaMotionType.DnHF:
+                break;
+            case CharaMotionType.DnHB:
+                break;
+            case CharaMotionType.KG:
+                break;
+            case CharaMotionType.DnF:
+                break;
+            case CharaMotionType.DnB:
+                break;
+            case CharaMotionType.DRv:
+                break;
+            case CharaMotionType.CM:
+                break;
+            case CharaMotionType.JCM:
+                break;
+            case CharaMotionType.FB:
+                break;
+            case CharaMotionType.JFB:
+                break;
+            case CharaMotionType.PW:
+                break;
+            case CharaMotionType.PWWk:
+                break;
+            case CharaMotionType.PWDs:
+                break;
+                break;
+            case CharaMotionType.Sh:
+            case CharaMotionType.Pa:
+                if (canEnemyCourtDodge)
+                {
+                    CanselJump(false);
+                }
+                break;
+            case CharaMotionType.RtSh:
+                break;
+            case CharaMotionType.JSh:
+                break;
+            case CharaMotionType.RtJSh:
+                break;
+            case CharaMotionType.JPa:
+                break;
+            case CharaMotionType.Ca:
+                break;
+            case CharaMotionType.JCa:
+                break;
+            case CharaMotionType.Dg:
+                break;
+            case CharaMotionType.JDg:
+                break;
+            case CharaMotionType.RoF:
+                break;
+            case CharaMotionType.RoB:
+                break;
+            case CharaMotionType.DRAW:
+                break;
+            case CharaMotionType.WIN:
+                break;
+            case CharaMotionType.LOSE:
+                break;
+            case CharaMotionType.OvL:
+                break;
+            case CharaMotionType.USA:
+                break;
+            case CharaMotionType.USA2:
+                break;
+            case CharaMotionType.IKI:
+                break;
+            case CharaMotionType.LOOK:
+                break;
+            case CharaMotionType.LOOK2:
+                break;
+            case CharaMotionType.FALL:
+                break;
+            case CharaMotionType.AGE2:
+                break;
+            case CharaMotionType.AGE3:
+                break;
+            case CharaMotionType.AGE4:
+                break;
+            case CharaMotionType.AGE5:
+                break;
+            case CharaMotionType.DO1:
+                break;
+            case CharaMotionType.DO2:
+                break;
+            case CharaMotionType.ANG:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        {
+            case dbmtCr:
+            break;
+            case dbmtSt:
+            case dbmtWk:
+            case dbmtDs:
+            case dbmtSl:
+            break;
+            case dbmtSh:
+            case dbmtPa:
+            if (canEnemyCourtDodge) pCommon_.CanselJump(false);
+            break;
+            case dbmtCa:
+            case dbmtJCa:
+            if ((MyCourt.ECDjp_f == false) && canEnemyCourtDodge)
+            {
+                //mid::midLog("J1\n");
+                if (pCommon_.CanselJump(false) && muki_f)
+                {
+                    MyCourt.ECDjp_f = true; //１回だけ
+                    MyCourt.ECDdg_f = true; //１回だけ
+                }
+                else
+                {
+                    pCommon_.AutoPickUp();
+                }
+            }
+            //オーバラインは審判息なのでもう不要
+            break;
+            case dbmtDg:
+            if ((MyCourt.ECDjp_f == false) && canEnemyCourtDodge)
+            {
+                //mid::midLog("J2\n");
+                if (pCommon_.CanselJump(false) && muki_f)
+                {
+                    MyCourt.ECDjp_f = true; //１回だけ
+                    MyCourt.ECDdg_f = true; //１回だけ
+                }
+                else
+                {
+                    //よけ限界時間
+                    ++MyBallEffect.ECDdg_c;
+                    if ((MyBallEffect.ECDdg_c < pmgEO_.mgDt_.dtSet_.GetDtInfield(setEnCourtCrTime))
+                        && MyPad.IsDodge2()) //押しっぱなしで避け続けるようにする
+                    {
+                        MyAnime.Ani_c = 0;
+                    }
+                }
+            }
+
+            break;
+        }
+    }
+
+    //キャンセルジャンプ
+    bool CanselJump(bool canselDs_f)
+    {
+        //判定出るまでもしくは6f以内はジャンプキャンセル可能
+        //ココでも可能にして大丈夫か
+
+        if (MyMotion.HasFlag(CharaMotionFlag.Ar)
+            || MyMotion.MotionCount.Value >= GetSettingJump(SettingJumpType.JumpCanselTime)
+            || !IsSelfControl
+            || MyPad.IsJustPressedAbButton() == false)
+        {
+            return false;
+        }
+
+        //キャンセルが掛かる前のモーションの向きに戻す
+        MyCoordinate.DirectionX = MyMove.LastDirectionX;
+        MyCoordinate.DirectionZ = MyMove.LastDirectionZ;
+        JumpSet(false, canselDs_f, false); //ジャンプ
+
+        return true;
+    }
+
+    //ジャンプ
+    void JumpSet(bool mfCheck_f, bool canselDs_f, bool vjp_f)
+    {
+        if (MyMotion.HasFlag(CharaMotionFlag.PHit))
+        {
+            return;
+        }
+
+        if (mfCheck_f && MyMotion.HasFlag(CharaMotionFlag.JpOK) == false)
+        {
+            return;
+        }
+
+        if (canselDs_f || MyOrder.IsInfield == false) //外野はダッシュフラグ消す
+        {
+            MyMotion.SubMotionFlag(CharaMotionFlag.Ds);
+        }
+
+        SetMotionType(CharaMotionType.JCr);
+        MyAir.IsVerticalJump = vjp_f; //垂直ジャンプ
+        MyAir.IsLongJump = vjp_f; //垂直ジャンプ
+        MyAir.IsLongJump = MyMove.IsDashAccelIOS; //ロングジャンプ
+        MyCoordinate.ZeroVelocity();
     }
 
     private void AutoDodgeAction()
@@ -173,25 +335,25 @@ public partial class CharaBehavior
         //     //COMの的コートオートよけ
         //     if ((IsSelfControl == false)
         //       && (pmgSG_.stBa_.Motion == bmShoot)
-        //       && (ecdgOK_f))
+        //       && (canEnemyCourtDodge))
         //     {
         //       switch (MyMotion.Mtype)
         //       {
         //       case dbmtSt:
         //       case dbmtWk:
         //       case dbmtDs:
-        //         if (MyECDdg_f == false)
+        //         if (MyCourt.ECDdg_f == false)
         //         {
         //           pCommon_.SetMtype(dbmtDg);
         //           pCommon_.CatchSE();
-        //           //MyECDdg_f = true;//１回だけ
+        //           //MyCourt.ECDdg_f = true;//１回だけ
         //         }
         //         break;
         //       case dbmtDg:
         //         //よけ限界時間
-        //         ++MyECDdg_c;
+        //         ++MyBallEffect.ECDdg_c;
         //
-        //         if (MyECDdg_c < pmgEO_.mgDt_.dtSet_.GetDtInfield(setEnCourtCrTime))
+        //         if (MyBallEffect.ECDdg_c < pmgEO_.mgDt_.dtSet_.GetDtInfield(setEnCourtCrTime))
         //         {
         //           MyAnime.Ani_c = 0;
         //         }
@@ -245,33 +407,33 @@ public partial class CharaBehavior
 
     private bool GetCanDodgeEnemyCourt()
     {
-        bool canEnemyCourtDodge;
+        bool result;
         if (IsBallHolder || MyState.Order.IsOutfield)
         {
             // ボール持ち、外野はよけNG
-            canEnemyCourtDodge = false;
+            result = false;
         }
         else if (IsSelfControl || MyState.Auto.IsFreeAction)
         {
             // 自由状態
-            canEnemyCourtDodge = true;
+            result = true;
         }
         else if (BallState.MotionType == BallMotionType.Hold)
         {
             // 敵がボール保持
-            canEnemyCourtDodge = BallState.HolderSide == EnemySideIndex;
+            result = BallState.HolderSide == EnemySideIndex;
         }
         else if (BallState.MotionType == BallMotionType.Shoot)
         {
             // 味方がターゲットのシュート
-            canEnemyCourtDodge = BallState.ShotTargetSide == MySideIndex;
+            result = BallState.ShotTargetSide == MySideIndex;
         }
         else
         {
             // 敵ボール
-            canEnemyCourtDodge = BallState.TimerSide == EnemySideIndex;
+            result = BallState.TimerSide == EnemySideIndex;
         }
-        return canEnemyCourtDodge;
+        return result;
     }
 
     //勝手に拾う処理
@@ -1293,6 +1455,9 @@ public partial class CharaBehavior
         var lastDirectionX = MyCoordinate.DirectionX;
         var lastDirectionZ = MyCoordinate.DirectionZ;
 
+        MyMove.LastDirectionX = lastDirectionX;
+        MyMove.LastDirectionZ = lastDirectionZ;
+
         MyCoordinate.DirectionX = MyState.Auto.DirectionX switch
         {
             DirectionXType.Left => DirectionXType.Left,
@@ -1926,7 +2091,8 @@ public partial class CharaBehavior
     }
 
     //タゲ方向を向く
-    void LookTg(OrderIndexType TgPNo, bool Pa_f, bool AtLook_f)
+    void
+        LookTg(OrderIndexType TgPNo, bool Pa_f, bool AtLook_f)
     {
         TgPNo = 0;
 

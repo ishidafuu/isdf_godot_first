@@ -16,9 +16,15 @@ public static class IPadExtensions
     {
         return pad.KeyUp.IsPressed || pad.KeyDown.IsPressed || pad.KeyLeft.IsPressed || pad.KeyRight.IsPressed;
     }
-    
+
     public static bool IsJustPressedAnyButton(this IPad pad)
     {
         return pad.ButtonA.IsJustPressed || pad.ButtonB.IsJustPressed;
+    }
+
+    public static bool IsJustPressedAbButton(this IPad pad)
+    {
+        return pad.ButtonA.IsJustPressed && pad.ButtonB.IsPressed
+               || pad.ButtonA.IsPressed && pad.ButtonB.IsJustPressed;
     }
 }
