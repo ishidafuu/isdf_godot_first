@@ -114,56 +114,6 @@ public partial class CharaBehavior
                 }
 
                 break;
-            case CharaMotionType.Breath:
-                break;
-
-            case CharaMotionType.JCr:
-                break;
-            case CharaMotionType.CJCr:
-                break;
-            case CharaMotionType.JUp:
-                break;
-            case CharaMotionType.JDn:
-                break;
-            case CharaMotionType.ARv:
-                break;
-            case CharaMotionType.Cr:
-                break;
-            case CharaMotionType.FlF:
-                break;
-            case CharaMotionType.FlB:
-                break;
-            case CharaMotionType.PHF:
-                break;
-            case CharaMotionType.PHB:
-                break;
-            case CharaMotionType.DnHF:
-                break;
-            case CharaMotionType.DnHB:
-                break;
-            case CharaMotionType.KG:
-                break;
-            case CharaMotionType.DnF:
-                break;
-            case CharaMotionType.DnB:
-                break;
-            case CharaMotionType.DRv:
-                break;
-            case CharaMotionType.CM:
-                break;
-            case CharaMotionType.JCM:
-                break;
-            case CharaMotionType.FB:
-                break;
-            case CharaMotionType.JFB:
-                break;
-            case CharaMotionType.PW:
-                break;
-            case CharaMotionType.PWWk:
-                break;
-            case CharaMotionType.PWDs:
-                break;
-                break;
             case CharaMotionType.Sh:
             case CharaMotionType.Pa:
                 if (canEnemyCourtDodge)
@@ -171,115 +121,43 @@ public partial class CharaBehavior
                     CanselJump(false);
                 }
                 break;
-            case CharaMotionType.RtSh:
-                break;
-            case CharaMotionType.JSh:
-                break;
-            case CharaMotionType.RtJSh:
-                break;
-            case CharaMotionType.JPa:
-                break;
             case CharaMotionType.Ca:
-                break;
             case CharaMotionType.JCa:
-                break;
-            case CharaMotionType.Dg:
-                break;
-            case CharaMotionType.JDg:
-                break;
-            case CharaMotionType.RoF:
-                break;
-            case CharaMotionType.RoB:
-                break;
-            case CharaMotionType.DRAW:
-                break;
-            case CharaMotionType.WIN:
-                break;
-            case CharaMotionType.LOSE:
-                break;
-            case CharaMotionType.OvL:
-                break;
-            case CharaMotionType.USA:
-                break;
-            case CharaMotionType.USA2:
-                break;
-            case CharaMotionType.IKI:
-                break;
-            case CharaMotionType.LOOK:
-                break;
-            case CharaMotionType.LOOK2:
-                break;
-            case CharaMotionType.FALL:
-                break;
-            case CharaMotionType.AGE2:
-                break;
-            case CharaMotionType.AGE3:
-                break;
-            case CharaMotionType.AGE4:
-                break;
-            case CharaMotionType.AGE5:
-                break;
-            case CharaMotionType.DO1:
-                break;
-            case CharaMotionType.DO2:
-                break;
-            case CharaMotionType.ANG:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        {
-            case dbmtCr:
-            break;
-            case dbmtSt:
-            case dbmtWk:
-            case dbmtDs:
-            case dbmtSl:
-            break;
-            case dbmtSh:
-            case dbmtPa:
-            if (canEnemyCourtDodge) pCommon_.CanselJump(false);
-            break;
-            case dbmtCa:
-            case dbmtJCa:
-            if ((MyCourt.ECDjp_f == false) && canEnemyCourtDodge)
-            {
-                //mid::midLog("J1\n");
-                if (pCommon_.CanselJump(false) && muki_f)
+                if (MyCourt.ECDjp_f == false && canEnemyCourtDodge)
                 {
-                    MyCourt.ECDjp_f = true; //１回だけ
-                    MyCourt.ECDdg_f = true; //１回だけ
-                }
-                else
-                {
-                    pCommon_.AutoPickUp();
-                }
-            }
-            //オーバラインは審判息なのでもう不要
-            break;
-            case dbmtDg:
-            if ((MyCourt.ECDjp_f == false) && canEnemyCourtDodge)
-            {
-                //mid::midLog("J2\n");
-                if (pCommon_.CanselJump(false) && muki_f)
-                {
-                    MyCourt.ECDjp_f = true; //１回だけ
-                    MyCourt.ECDdg_f = true; //１回だけ
-                }
-                else
-                {
-                    //よけ限界時間
-                    ++MyBallEffect.ECDdg_c;
-                    if ((MyBallEffect.ECDdg_c < pmgEO_.mgDt_.dtSet_.GetDtInfield(setEnCourtCrTime))
-                        && MyPad.IsDodge2()) //押しっぱなしで避け続けるようにする
+                    if (CanselJump(false) && muki_f)
                     {
-                        MyAnime.Ani_c = 0;
+                        MyCourt.ECDjp_f = true; //１回だけ
+                        MyCourt.ECDdg_f = true; //１回だけ
+                    }
+                    else
+                    {
+                        AutoPickUp();
                     }
                 }
-            }
-
-            break;
+                break;
+            case CharaMotionType.Dg:
+                if (MyCourt.ECDdg_f == false && canEnemyCourtDodge)
+                {
+                    if (CanselJump(false) && muki_f)
+                    {
+                        MyCourt.ECDjp_f = true; //１回だけ
+                        MyCourt.ECDdg_f = true; //１回だけ
+                    }
+                    else
+                    {
+                        //よけ限界時間
+                        MyCourt.EnemyCortDodgeCount.Add();
+                        //押しっぱなしで避け続けるようにする
+                        if (MyPad.ButtonA.IsPressed
+                            && MyCourt.EnemyCortDodgeCount.Value < GetSettingInfield(SettingInfieldType.EnCourtCrTime))
+                        {
+                            // 他と合わせる
+                            // MyAnime.Ani_c = 0;
+                        }
+                    }
+                }
+                break;
         }
     }
 

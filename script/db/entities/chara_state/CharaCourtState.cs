@@ -13,9 +13,13 @@ public class CharaCourtState
 
     //敵コート避け
     public bool ECDdg_f { get; set; }
+    
 
     //敵コートジャンプ
     public bool ECDjp_f { get; set; }
+    
+    // 敵コート避け時間
+    public UpCounter EnemyCortDodgeCount { get; set; }
 
     public void Initialize()
     {
@@ -24,5 +28,6 @@ public class CharaCourtState
 
         ECDdg_f = false;
         ECDjp_f = false;
+        EnemyCortDodgeCount.Clear();
     }
 }

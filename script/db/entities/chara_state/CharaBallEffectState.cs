@@ -98,10 +98,6 @@ public class CharaBallEffectState
         stk2StPst_f = false;
         FlySkip = 0;
         FlySkip_c = 0;
-        ECDdg_f = false;
-        ECDjp_f = false;
-        VJump_f = false;
-        LJump_f = false;
     }
     
     public void DecrementHitMTimeCount()

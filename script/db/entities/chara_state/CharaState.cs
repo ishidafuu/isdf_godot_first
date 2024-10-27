@@ -20,7 +20,7 @@ public partial class CharaState
     public CharaViewState View { get; set; } = new();
     public CharaCatchState Catch { get; set; } = new();
     public CharaShootState Shoot { get; set; } = new();
-    public CharaDodgeState Dodge { get; set; } = new();
+    // public CharaDodgeState Dodge { get; set; } = new();
     public CharaCourtState Court { get; set; } = new();
     public CharaPassState Pass { get; set; } = new();
     public CharaDashmanState Dashman { get; set; } = new();
@@ -57,7 +57,7 @@ public partial class CharaState
         View.Initialize();
         Catch.Initialize();
         Shoot.Initialize();
-        Dodge.Initialize();
+        // Dodge.Initialize();
         Court.Initialize();
         Pass.Initialize();
         Dashman.Initialize();
