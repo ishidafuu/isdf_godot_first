@@ -264,10 +264,6 @@ public partial class CharaBehavior
         }
     }
 
-    private void ComAction()
-    {
-    }
-
     private ActionType GetActionType()
     {
         ActionType actionType;

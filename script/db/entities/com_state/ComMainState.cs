@@ -122,8 +122,6 @@ public class ComMainState
         NgTagNo = 0;
     }
 
-    public bool Isdm() //ダッシュマン作戦中
-    {
-        return DashmanF || DashmanFmWaitF;
-    }
+    //ダッシュマン作戦中
+    public bool Isdm() => DashmanF || DashmanFmWaitF;
 }

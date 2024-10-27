@@ -46,7 +46,7 @@ public partial class CharaBehavior
     public CharaViewState MyView => MyState.View;
     public CharaCatchState MyCatch => MyState.Catch;
     public CharaShootState MyShoot => MyState.Shoot;
-    public CharaDodgeState MyDodge => MyState.Dodge;
+    // public CharaDodgeState MyDodge => MyState.Dodge;
     public CharaCourtState MyCourt => MyState.Court;
     public CharaPassState MyPass => MyState.Pass;
     public CharaDashmanState MyDashman => MyState.Dashman;

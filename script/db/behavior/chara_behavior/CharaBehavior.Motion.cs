@@ -40,7 +40,7 @@ public partial class CharaBehavior
 
         MyState.Motion.MotionCount.Clear();
         MyState.Catch.CatchCount.Clear();
-        MyState.Dodge.EnemyCortDodgeCount.Clear();
+        MyState.Court.EnemyCortDodgeCount.Clear();
         MyState.Move.DashAccelCount.Clear();
         MyState.Coordinate.FrictionCount.Clear();
         MyState.Air.IsLandSet = false;
