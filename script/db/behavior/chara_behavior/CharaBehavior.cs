@@ -50,7 +50,7 @@ public partial class CharaBehavior
     public CharaCourtState MyCourt => MyState.Court;
     public CharaPassState MyPass => MyState.Pass;
     public CharaDashmanState MyDashman => MyState.Dashman;
-    public CharaComState MyCom => MyState.Com;
+    public CharaComOnlyState MyComOnly => MyState.ComOnly;
     public CharaBallEffectState MyBallEffect => MyState.BallEffect;
 
     public CharaBehavior()

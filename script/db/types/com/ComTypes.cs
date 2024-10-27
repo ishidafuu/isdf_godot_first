@@ -66,3 +66,11 @@ public enum ComActionType
     cmaChanceSh, //チャンスシュート//キャッチ不能ならする	する	しない	キャッチ不能ならしない//★
     cmaNiceCaSh, //ナイスキャッチシュート//前よりなら	する	しない	内野シュートなら//★
 }
+
+public enum ActionGroupType
+{
+    Type0NegaActive,
+    Type1PosiActive,
+    Type2NegaPassive,
+    Type3PosiPassive,
+}

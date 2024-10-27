@@ -24,7 +24,7 @@ public partial class CharaState
     public CharaCourtState Court { get; set; } = new();
     public CharaPassState Pass { get; set; } = new();
     public CharaDashmanState Dashman { get; set; } = new();
-    public CharaComState Com { get; set; } = new();
+    public CharaComOnlyState ComOnly { get; set; } = new();
     public CharaBallEffectState BallEffect { get; set; } = new();
 
     public CharaState(int sideIndex, int memberIndex)
@@ -61,7 +61,7 @@ public partial class CharaState
         Court.Initialize();
         Pass.Initialize();
         Dashman.Initialize();
-        Com.Initialize();
+        ComOnly.Initialize();
         BallEffect.Initialize();
     }
 

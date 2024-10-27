@@ -10,9 +10,9 @@ public partial class TeamState
     public TeamSemiAutoState SemiAutoState { get; } = new TeamSemiAutoState();
     public TeamMainState MainState { get; } = new TeamMainState();
 
-    private CharaState[] MySideCharas => CharaStateManager.Instance.GetSideCharas(SideIndex);
+    private CharaBehavior[] MySideCharas => CharaBehaviorManager.Instance.GetSideCharas(SideIndex);
     private CharaState[] MySideOrders => CharaStateManager.Instance.GetSideOrders(SideIndex);
-    private CharaState[] EnemySideCharas => CharaStateManager.Instance.GetSideCharas(EnemySideIndex);
+    private CharaBehavior[] EnemySideCharas =>  CharaBehaviorManager.Instance.GetSideCharas(EnemySideIndex);
     private CharaState[] EnemySideOrders => CharaStateManager.Instance.GetSideOrders(EnemySideIndex);
 
     public TeamState(int sideIndex)

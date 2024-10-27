@@ -5,6 +5,11 @@ namespace db;
 public partial class CharaBehavior
 {
     /// <summary>
+    /// アウト扱い
+    /// </summary>
+    public bool IsOut => MyState.Live.Hp == 0 || MyState.Live.IsAngel;
+    
+    /// <summary>
     /// サイド操作権を渡せるキャラか
     /// 死亡していない、ダメージ中でない、手動操作中でない
     /// </summary>
@@ -230,5 +235,17 @@ public partial class CharaBehavior
 
             return true;
         }
+    }
+
+    /// <summary>
+    /// ノーガード状態
+    /// isContainDamage:ダメージ状態含む
+    /// </summary>
+    /// <returns></returns>
+    public bool IsNoGuard(bool isContainDamage)
+    {
+        return IsKagami
+               || MyMotion.HasFlag(CharaMotionFlag.Dn)
+               || (isContainDamage && MyMotion.HasFlag(CharaMotionFlag.Dam));
     }
 }

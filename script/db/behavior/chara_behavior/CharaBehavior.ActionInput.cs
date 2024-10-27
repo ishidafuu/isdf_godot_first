@@ -372,8 +372,8 @@ public partial class CharaBehavior
         MyState.Damage.KagamiCount.Clear();
         MyState.Air.IsAirAction = false;
         MyState.Move.LastDirectionX = DirectionXType.Neutral;
-        MyState.Com.IsCatchCounter = false;
-        MyState.Com.IsComTossPassGet = false;
+        MyState.ComOnly.IsCatchCounter = false;
+        MyState.ComOnly.IsComTossPassGet = false;
         MyState.Pass.MirrorShotLimitCount.Set(Defines.MIRLIM);
 
         HoldBallSetMirrorState();

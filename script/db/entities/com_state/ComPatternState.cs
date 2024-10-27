@@ -8,13 +8,18 @@ namespace db;
 public class ComPatternState
 {
     public int[] PlanPattern { get; set; } = new int[ComPlanData.PlanTypeLength];
-    public int[][] ActionPattern { get; set; } = new int[ComActionData.ActionTypeLength][];
+    public int[][] ActionPattern { get; set; } = new int[Defines.MemberCount][];
 
+    public ActionGroupType GetActionPattern(OrderIndexType orderIndexType, ComActionType comActionType)
+    {
+        return (ActionGroupType)ActionPattern[(int)orderIndexType][(int)comActionType];
+    }
+    
     public ComPatternState()
     {
-        for (var i = 0; i < ComActionData.ActionTypeLength; i++)
+        for (var i = 0; i < Defines.MemberCount; i++)
         {
-            ActionPattern[i] = new int[Defines.MemberCount];
+            ActionPattern[i] = new int[ComActionData.ActionTypeLength];
         }
     }
 

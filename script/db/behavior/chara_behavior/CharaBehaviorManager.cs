@@ -8,9 +8,12 @@ public class CharaBehaviorManager
     /// <summary>
     /// 全キャラ（Index順）
     /// </summary>
-    private readonly CharaBehavior[] _allCharas = new CharaBehavior[Defines.AllCharaCount];
+    private readonly CharaBehavior[][] _allCharas = new CharaBehavior[Defines.SideCount][];
 
-    public CharaBehavior[] GetAllCharas() => _allCharas;
+    public CharaBehavior[] GetSideCharas(int sideIndex)
+    {
+        return _allCharas[sideIndex];
+    }
 
     public CharaBehavior GetChara(int sideIndex, int orderIndex)
     {
@@ -19,10 +22,9 @@ public class CharaBehaviorManager
 
     public CharaBehavior GetChara(int sideIndex, OrderIndexType orderIndex)
     {
-        foreach (var chara in _allCharas)
+        foreach (var chara in _allCharas[sideIndex])
         {
-            if (chara.MySideIndex == sideIndex
-                && chara.MyOrderIndex == orderIndex)
+            if (chara.MyOrderIndex == orderIndex)
             {
                 return chara;
             }
@@ -38,25 +40,34 @@ public class CharaBehaviorManager
 
     private void SetupAll()
     {
-        for (var i = 0; i < _allCharas.Length; i++)
+        for (var side = 0; side < Defines.SideCount; side++)
         {
-            _allCharas[i] = new CharaBehavior();
+            for (var member = 0; member < Defines.MemberCount; member++)
+            {
+                _allCharas[side][member] = new CharaBehavior();
+            }
         }
     }
 
     public void UpdateProgress()
     {
-        foreach (var chara in _allCharas)
+        for (var side = 0; side < Defines.SideCount; side++)
         {
-            chara.UpdateProgress();
+            for (var member = 0; member < Defines.MemberCount; member++)
+            {
+                _allCharas[side][member].UpdateProgress();
+            }
         }
     }
 
     public void UpdateActionInput()
     {
-        foreach (var chara in _allCharas)
+        for (var side = 0; side < Defines.SideCount; side++)
         {
-            chara.UpdateActionInput();
+            for (var member = 0; member < Defines.MemberCount; member++)
+            {
+                _allCharas[side][member].UpdateActionInput();
+            }
         }
     }
 }
