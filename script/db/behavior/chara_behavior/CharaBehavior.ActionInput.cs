@@ -82,7 +82,7 @@ public partial class CharaBehavior
         //       bool muki_f = ((st_.mysideNo_ == 0) && (MyCoordinate.Muki == mL))
         //         || ((st_.mysideNo_ == 1) && (MyCoordinate.Muki == mR));
         //
-        //       switch (st_.pstMyCh_.Motion.Mtype)
+        //       switch (MyMotion.Mtype)
         //       {
         //       case dbmtCr:
         //         break;
@@ -90,34 +90,34 @@ public partial class CharaBehavior
         //       case dbmtWk:
         //       case dbmtDs:
         //       case dbmtSl://スリップも追加オーバーラインの瞬間なぞのキャッチできてしまう
-        //         if ((st_.pstMyCh_.ECDdg_f == false) && (ecdgOK_f))
+        //         if ((MyECDdg_f == false) && (ecdgOK_f))
         //         {
         //           if (MyPad.IsJump()//ジャンプ入力
         //             && muki_f
-        //             && (st_.pstMyCh_.ECDjp_f == false))
+        //             && (MyECDjp_f == false))
         //           {
         //             pCommon_.JumpSet(false, false, false);//ジャンプ
         //             //mid::midLog("J0\n");
-        //             st_.pstMyCh_.ECDdg_f = true;//１回だけ
-        //             st_.pstMyCh_.ECDjp_f = true;//１回だけ
+        //             MyECDdg_f = true;//１回だけ
+        //             MyECDjp_f = true;//１回だけ
         //           }
         //           else if (MyPad.IsDodge())//よけ
         //           {
         //             pCommon_.SetMtype(dbmtDg);
-        //             st_.pstMyCh_.ECDdg_f = true;//１回だけ
+        //             MyECDdg_f = true;//１回だけ
         //           }
         //           //else if (MyPad.IsCatch())//キャッチ入力
         //           //{
         //           //  pCommon_.SetCatchMuki();
         //           //  pCommon_.SetMtype(dbmtCa);
-        //           //  st_.pstMyCh_.ECDdg_f = true;//１回だけ
+        //           //  MyECDdg_f = true;//１回だけ
         //           //}
         //
-        //           if (st_.pstMyCh_.ECDdg_f)
+        //           if (MyECDdg_f)
         //           {
         //             pCommon_.CatchSE();
-        //             st_.pstMyCh_.LastMuki = MyCoordinate.Muki;
-        //             st_.pstMyCh_.LastMukiZ = MyCoordinate.MukiZ;
+        //             MyLastMuki = MyCoordinate.Muki;
+        //             MyLastMukiZ = MyCoordinate.MukiZ;
         //           }
         //         }
         //         break;
@@ -127,13 +127,13 @@ public partial class CharaBehavior
         //         break;
         //       case dbmtCa:
         //       case dbmtJCa:
-        //         if ((st_.pstMyCh_.ECDjp_f == false) && ecdgOK_f)
+        //         if ((MyECDjp_f == false) && ecdgOK_f)
         //         {
         //           //mid::midLog("J1\n");
         //           if (pCommon_.CanselJump(false) && muki_f)
         //           {
-        //             st_.pstMyCh_.ECDjp_f = true;//１回だけ
-        //             st_.pstMyCh_.ECDdg_f = true;//１回だけ
+        //             MyECDjp_f = true;//１回だけ
+        //             MyECDdg_f = true;//１回だけ
         //           }
         //           else
         //           {
@@ -143,22 +143,22 @@ public partial class CharaBehavior
         //         //オーバラインは審判息なのでもう不要
         //         break;
         //       case dbmtDg:
-        //         if ((st_.pstMyCh_.ECDjp_f == false) && ecdgOK_f)
+        //         if ((MyECDjp_f == false) && ecdgOK_f)
         //         {
         //           //mid::midLog("J2\n");
         //           if (pCommon_.CanselJump(false) && muki_f)
         //           {
-        //             st_.pstMyCh_.ECDjp_f = true;//１回だけ
-        //             st_.pstMyCh_.ECDdg_f = true;//１回だけ
+        //             MyECDjp_f = true;//１回だけ
+        //             MyECDdg_f = true;//１回だけ
         //           }
         //           else
         //           {
         //             //よけ限界時間
-        //             ++st_.pstMyCh_.ECDdg_c;
-        //             if ((st_.pstMyCh_.ECDdg_c < pmgEO_.mgDt_.dtSet_.GetDtInfield(setEnCourtCrTime))
+        //             ++MyECDdg_c;
+        //             if ((MyECDdg_c < pmgEO_.mgDt_.dtSet_.GetDtInfield(setEnCourtCrTime))
         //               && MyPad.IsDodge2())//押しっぱなしで避け続けるようにする
         //             {
-        //               st_.pstMyCh_.Anime.Ani_c = 0;
+        //               MyAnime.Ani_c = 0;
         //             }
         //           }
         //         }
@@ -175,32 +175,32 @@ public partial class CharaBehavior
         //       && (pmgSG_.stBa_.Motion == bmShoot)
         //       && (ecdgOK_f))
         //     {
-        //       switch (st_.pstMyCh_.Motion.Mtype)
+        //       switch (MyMotion.Mtype)
         //       {
         //       case dbmtSt:
         //       case dbmtWk:
         //       case dbmtDs:
-        //         if (st_.pstMyCh_.ECDdg_f == false)
+        //         if (MyECDdg_f == false)
         //         {
         //           pCommon_.SetMtype(dbmtDg);
         //           pCommon_.CatchSE();
-        //           //st_.pstMyCh_.ECDdg_f = true;//１回だけ
+        //           //MyECDdg_f = true;//１回だけ
         //         }
         //         break;
         //       case dbmtDg:
         //         //よけ限界時間
-        //         ++st_.pstMyCh_.ECDdg_c;
+        //         ++MyECDdg_c;
         //
-        //         if (st_.pstMyCh_.ECDdg_c < pmgEO_.mgDt_.dtSet_.GetDtInfield(setEnCourtCrTime))
+        //         if (MyECDdg_c < pmgEO_.mgDt_.dtSet_.GetDtInfield(setEnCourtCrTime))
         //         {
-        //           st_.pstMyCh_.Anime.Ani_c = 0;
+        //           MyAnime.Ani_c = 0;
         //         }
         //         break;
         //       }
         //     }
         //     else
         //     {
-        //       switch (st_.pstMyCh_.Motion.Mtype)
+        //       switch (MyMotion.Mtype)
         //       {
         //       case dbmtSt:
         //       case dbmtWk:
@@ -210,7 +210,7 @@ public partial class CharaBehavior
         //         break;
         //       case dbmtDg:
         //         //避け続けるようにする
-        //         st_.pstMyCh_.Anime.Ani_c = 0;
+        //         MyAnime.Ani_c = 0;
         //         break;
         //       }
         //     }
@@ -328,7 +328,7 @@ public partial class CharaBehavior
 
         MyState.Damage.KagamiCount.Clear();
         MyState.Air.IsAirAction = false;
-        MyState.Move.LastDirectionXType = DirectionXType.Neutral;
+        MyState.Move.LastDirectionX = DirectionXType.Neutral;
         MyState.Com.IsCatchCounter = false;
         MyState.Com.IsComTossPassGet = false;
         MyState.Pass.MirrorShotLimitCount.Set(Defines.MIRLIM);
@@ -375,7 +375,7 @@ public partial class CharaBehavior
         //拾った瞬間dbaFreeのときはその瞬間のタゲをカーソルキャラに
         //それ以外はfreeに戻ったタイミング
         //chCommon_.
-        SetMukiAglFromDirection();
+        MyState.Shoot.Angle12 = GetMukiAglFromDirection();
 
         //最初のタゲを敵の操作キャラに
         //外野の可能性もでるのでなんとかする
@@ -390,7 +390,7 @@ public partial class CharaBehavior
         if (EnemyTeamState.IsAllOut == false)
         {
             //シュートタゲは向き反映
-            var orderIndex = GetTarget(false);
+            var orderIndex = GetShootTarget(MyState.Shoot.Angle12, false);
             if (orderIndex == OrderIndexType.Disabled)
             {
                 if (IsSelfControl == false)
@@ -405,7 +405,7 @@ public partial class CharaBehavior
             }
 
             //カーソルは強制的に内野
-            var enemyControlOrderIndex = GetTarget(true);
+            var enemyControlOrderIndex = GetShootTarget(MyState.Shoot.Angle12, true);
             if (enemyControlOrderIndex != OrderIndexType.Disabled) //ないとはおもうが
             {
                 CallEnemyTeamChangeControl(enemyControlOrderIndex);
@@ -469,17 +469,15 @@ public partial class CharaBehavior
         CallBallChangePassTarget(orderIndex);
     }
 
-    //タゲセット
-    //isIgnoreDirection向きを反映しない（強制的に内野タゲ）
-    private OrderIndexType GetTarget(bool isIgnoreDirection)
+    //シュートタゲセット
+    //isIgnoreDirection:向きを反映しない（強制的に内野タゲ）
+    private OrderIndexType GetShootTarget(int angle, bool isIgnoreDirection)
     {
         TmpStateManager.Instance.TmpState.Clear();
         var targetX = TmpStateManager.Instance.TmpState.targetX;
         var targetY = TmpStateManager.Instance.TmpState.targetY;
         var targetDist = TmpStateManager.Instance.TmpState.targetDist;
         var isSelectTarget = TmpStateManager.Instance.TmpState.isSelectTarget;
-
-        SetMukiAglFromDirection();
 
         //敵内野全員との角度を取る
         for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
@@ -497,16 +495,16 @@ public partial class CharaBehavior
             targetY[order] = enemyChara.MyCoordinate.Y - MyCoordinate.Y;
             targetDist[order] = Defines.Hypot(targetX[order], targetZ); //距離
 
-            //向きを反映しない（強制的に内野タゲ）
+            // 角度を無視しない場合は角度チェックを行う
             if (isIgnoreDirection == false)
             {
                 const int angle12 = 12;
-                var angle2 = GetTagAgl2(targetX[order], targetZ); //新12時法
+                var targetAngle = GetTagAgl2(targetX[order], targetZ); //新12時法
                 //メインアングルチェック
-                if (angle2 != (MyState.Shoot.Angle12 + 0) % angle12
-                    && angle2 != (MyState.Shoot.Angle12 + 1) % angle12
-                    && angle2 != (MyState.Shoot.Angle12 + 2) % angle12
-                    && angle2 != (MyState.Shoot.Angle12 + 3) % angle12)
+                if (targetAngle != (angle + 0) % angle12
+                    && targetAngle != (angle + 1) % angle12
+                    && targetAngle != (angle + 2) % angle12
+                    && targetAngle != (angle + 3) % angle12)
                 {
                     isSelectTarget[order] = enNaiyaTag.TGNG;
                 }
@@ -1317,7 +1315,7 @@ public partial class CharaBehavior
         if (isChanged)
         {
             //タゲも変える
-            SetMukiAglFromDirection();
+            MyState.Shoot.Angle12 = GetMukiAglFromDirection();
         }
 
         return isChanged;
@@ -1342,16 +1340,21 @@ public partial class CharaBehavior
         };
     }
 
-    private void SetMukiAglFromDirection()
+    private int GetMukiAglFromDirection()
     {
-        SetMukiAgl(MyCoordinate.DirectionX == DirectionXType.Left,
-            MyCoordinate.DirectionX == DirectionXType.Right,
-            MyCoordinate.DirectionZ == DirectionZType.Backward,
-            MyCoordinate.DirectionZ == DirectionZType.Forward);
+        return GetMukiAgl(MyCoordinate.DirectionX, MyCoordinate.DirectionZ);
+    }
+
+    private int GetMukiAgl(DirectionXType directionX, DirectionZType directionZ)
+    {
+        return GetMukiAgl(directionX == DirectionXType.Left,
+            directionX == DirectionXType.Right,
+            directionZ == DirectionZType.Backward,
+            directionZ == DirectionZType.Forward);
     }
 
     //ターゲッティング用向き
-    private void SetMukiAgl(bool isLeft, bool isRight, bool isUp, bool isDown)
+    private int GetMukiAgl(bool isLeft, bool isRight, bool isUp, bool isDown)
     {
         switch (MyState.Order.GetOrderFieldType())
         {
@@ -1360,41 +1363,36 @@ public partial class CharaBehavior
                 {
                     if (isUp)
                     {
-                        MyState.Shoot.Angle12 = 11; //11 0 1 2
+                        return 11; //11 0 1 2
                     }
-                    else if (isDown)
+                    if (isDown)
                     {
-                        MyState.Shoot.Angle12 = 3; //3 4 5 6
+                        return 3; //3 4 5 6
                     }
-                    else
-                    {
-                        MyState.Shoot.Angle12 = 1; //1 2 3 4
-                    }
+                    return 1; //1 2 3 4
                 }
-                else if (isLeft)
+
+                if (isLeft)
                 {
                     if (isUp)
                     {
-                        MyState.Shoot.Angle12 = 9; //9 10 11 0
+                        return 9; //9 10 11 0
                     }
-                    else if (isDown)
+                    if (isDown)
                     {
-                        MyState.Shoot.Angle12 = 5; //5 6 7 8
+                        return 5; //5 6 7 8
                     }
-                    else
-                    {
-                        MyState.Shoot.Angle12 = 7; //7 8 9 10
-                    }
+                    return 7; //7 8 9 10
                 }
                 break;
             case OrderFieldType.Outfield2:
                 if (isLeft)
                 {
-                    MyState.Shoot.Angle12 = 5; //5678
+                    return 5; //5678
                 }
-                else if (isRight)
+                if (isRight)
                 {
-                    MyState.Shoot.Angle12 = 3; //3456
+                    return 3; //3456
                 }
                 break;
             case OrderFieldType.Outfield3:
@@ -1412,36 +1410,29 @@ public partial class CharaBehavior
                 {
                     if (isUp)
                     {
-                        MyState.Shoot.Angle12 = 9; //9 10 11 0
+                        return 9; //9 10 11 0
                     }
-                    else if (isDown)
+                    if (isDown)
                     {
-                        MyState.Shoot.Angle12 = 5; //5 6 7 8
+                        return 5; //5 6 7 8
                     }
-                    else
-                    {
-                        MyState.Shoot.Angle12 = 7; //7 8 9 10
-                    }
+                    return 7; //7 8 9 10
                 }
-                else
+                if (isUp)
                 {
-                    if (isUp)
-                    {
-                        MyState.Shoot.Angle12 = 11; //11 0 1 2
-                    }
-                    else if (isDown)
-                    {
-                        MyState.Shoot.Angle12 = 3; //3 4 5 6
-                    }
-                    else
-                    {
-                        MyState.Shoot.Angle12 = 1; //1 2 3 4
-                    }
+                    return 11; //11 0 1 2
                 }
-                break;
+                if (isDown)
+                {
+                    return 3; //3 4 5 6
+                }
+                return 1; //1 2 3 4
             default:
                 throw new ArgumentOutOfRangeException();
         }
+
+        // 来ない想定
+        return 0;
     }
 
     /// <summary>
@@ -1460,7 +1451,7 @@ public partial class CharaBehavior
         //★ダッシュマンはだいじょぶ
         if (chara.IsDashman)
             //&& ((st_.pmgMyTm_.st_.pmgMyCh_[pos].MyCoordinate.dY >= (-XYMAG))
-            //  || (st_.pstMyCh_.MirPass_c > 0)))//下降ではない
+            //  || (MyMirPass_c > 0)))//下降ではない
         {
             return false;
         }
@@ -1502,16 +1493,14 @@ public partial class CharaBehavior
         // DegbugKill();
 
         // 処理検討
-        // if (st_.pstMyCh_.Nomove_f)
+        // if (MyNomove_f)
         // {
-        //     st_.pstMyCh_.Nomove_f = false;
+        //     MyNomove_f = false;
         //     return;
         // }
 
         //シュートとパスは投げる瞬間にターゲットの方向を自動で向くようにする
         LastMukiKeep_f = true;
-
-        bool shotok_f = true;
 
         switch (MyState.Motion.MotionType)
         {
@@ -1565,8 +1554,7 @@ public partial class CharaBehavior
                         utrn_f = true;
                         MyCoordinate.DirectionX = DirectionXType.Right;
                         MyCoordinate.DirectionZ = DirectionZType.Neutral;
-                        MyState.Shoot.Angle12 = 1; //1 2 3 4
-                        SetMukiAgl(false, true, false, false);
+                        MyState.Shoot.Angle12 = GetMukiAglFromDirection();
                     }
                     else if (MySideIndex == 1
                              && (MyCoordinate.DirectionX == DirectionXType.Right)
@@ -1575,8 +1563,7 @@ public partial class CharaBehavior
                         utrn_f = true;
                         MyCoordinate.DirectionX = DirectionXType.Left;
                         MyCoordinate.DirectionZ = DirectionZType.Neutral;
-                        MyState.Shoot.Angle12 = 7; //7 8 9 10
-                        SetMukiAgl(true, false, false, false);
+                        MyState.Shoot.Angle12 = GetMukiAglFromDirection();
                     }
 
                     if (utrn_f)
@@ -1621,7 +1608,7 @@ public partial class CharaBehavior
                 if (dgbtn2_f && IsBallHolder == false)
                 {
                     // ほかとアニメーション継続の形を合わせる
-                    // st_.pstMyCh_.Anime.Ani_c = 0; //こんなんでいいのだろうか
+                    // MyAnime.Ani_c = 0; //こんなんでいいのだろうか
                 }
                 break;
         }
@@ -1629,17 +1616,15 @@ public partial class CharaBehavior
         //モーション変更前の向き
         if (LastMukiKeep_f)
         {
-            MyState.Move.LastDirectionXType = lastMuki;
-            MyState.Move.LastDirectionZType = lastMukiZ;
+            MyState.Move.LastDirectionX = lastMuki;
+            MyState.Move.LastDirectionZ = lastMukiZ;
         }
     }
 
     void AirDefenceOrFree()
     {
-        bool isAutoPickUp = true;
         if (MyPad.ButtonA.IsJustPressed)
         {
-            isAutoPickUp = false;
             SetMotionType(CharaMotionType.Dg);
             // キャッチ時間で変えるとよいかも
             PlaySeCatchSe();
@@ -1660,8 +1645,7 @@ public partial class CharaBehavior
             SetMotionType(CharaMotionType.JCa);
             PlaySeCatchSe();
         }
-
-        if (isAutoPickUp && IsPickUpPos()) //自動拾い★
+        else if (IsPickUpPos()) //自動拾い★
         {
             HoldBall(false, false);
         }
@@ -1765,7 +1749,7 @@ public partial class CharaBehavior
     {
         if (MyPad.ButtonA.IsJustPressed)
         {
-            Passing(true);
+            Passing();
         }
         else if (MyPad.ButtonB.IsJustPressed)
         {
@@ -1775,198 +1759,154 @@ public partial class CharaBehavior
         }
         else
         {
-            if (MyPad.ButtonB.IsPressed) //シュート入力おしっぱ
-            {
-                MyPass.MirrorPassCount.Clear();
-            }
+            MirrorAttack();
+        }
+    }
 
-            if (MyPass.MirrorPassCount.Value > 0) //ミラーパス状態
+    private void MirrorAttack()
+    {
+        if (MyPad.ButtonB.IsPressed) //シュート入力おしっぱ
+        {
+            MyPass.MirrorPassCount.Clear();
+        }
+
+        if (MyPass.MirrorPassCount.Value > 0) //ミラーパス状態
+        {
+            if (MyPad.ButtonA.IsPressed)
             {
-                if (MyPad.ButtonA.IsPressed)
+                if (MyPass.MirrorPassCount.AddUntil(Defines.MIRWAIT))
                 {
-                    if (MyPass.MirrorPassCount.AddUntil(Defines.MIRWAIT))
+                    if (BallState.PassTargetOrder != OrderIndexType.Disabled)
                     {
-                        if (BallState.PassTargetOrder != OrderIndexType.Disabled)
+                        var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, BallState.PassTargetOrder);
+                        if (chara.IsDashman)
                         {
-                            var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, BallState.PassTargetOrder);
-                            if (chara.IsDashman)
-                            {
-                                Passing(true);
-                            }
-                            else
-                            {
-                                MyPass.MirrorPassCount.Clear();
-                            }
+                            Passing();
+                        }
+                        else
+                        {
+                            MyPass.MirrorPassCount.Clear();
                         }
                     }
                 }
-                else
+            }
+            else
+            {
+                MyPass.MirrorPassCount.Clear();
+            }
+        }
+
+        if (MyPass.MirrorShotCount.Value > 0) //ミラーシュート状態
+        {
+            if (MyPad.ButtonB.IsPressed && MyPad.ButtonA.IsPressed == false) //シュート入力おしっぱ
+            {
+                if (MyPass.MirrorPassCount.AddUntil(Defines.MIRWAIT))
                 {
-                    MyPass.MirrorPassCount.Clear();
+                    LookTg(BallState.ShotTargetOrder, false, true);
+                    Shooting();
                 }
             }
-
-            if (MyPass.MirrorShotCount.Value > 0) //ミラーシュート状態
+            else
             {
-                if (MyPad.ButtonB.IsPressed && MyPad.ButtonA.IsPressed == false) //シュート入力おしっぱ
-                {
-                    if (MyPass.MirrorPassCount.AddUntil(Defines.MIRWAIT))
-                    {
-                        LookTg(BallState.ShotTargetOrder, false, true);
-                        SetMotionType(CharaMotionType.JSh);
-                    }
-                }
-                else
-                {
-                    MyPass.MirrorShotCount.Set(1);
-                }
+                MyPass.MirrorShotCount.Set(1);
             }
         }
     }
 
     void GroundFree()
     {
-        if ((cabtn_f || dgbtn_f) //キャッチ入力
-            && (st_.pstMyCh_.CatchW_c == 0))
+        if (MyPad.IsJustPressedAnyButton() && MyCatch.CatchWaitCount.Value == 0)
         {
             //キャッチもボール方向向くようにしてみる
             SetCatchMuki();
-            SetMtype(dbmtCa);
+            SetMotionType(CharaMotionType.Ca);
         }
-        else if (autoPickUp_f && IsPickUpPos(false)) //自動拾い★
+        else if (IsPickUpPos()) //自動拾い★
         {
-            BallGet(false, false);
+            HoldBall(false, false);
         }
     }
 
     void GroundDefence()
     {
-        if (dgbtn_f) //避けボタン
+        if (MyPad.ButtonA.IsJustPressed) //避けボタン
         {
-            SetMtype(dbmtDg);
-            CatchSE();
-            if (IsPickUpPos(false)) BallGet(false, false);
+            SetMotionType(CharaMotionType.Dg);
+            PlaySeCatchSe();
         }
-        else if (cabtn_f && (st_.pstMyCh_.CatchW_c == 0)) //キャッチ入力
+        else if (MyPad.ButtonB.IsJustPressed && MyCatch.CatchWaitCount.Value == 0) //キャッチ入力
         {
             //キャッチもボール方向向くようにしてみる
             SetCatchMuki();
-            SetMtype(dbmtCa);
+            SetMotionType(CharaMotionType.Ca);
         }
-        else if (autoPickUp_f && IsPickUpPos(false)) //自動拾い★
+        else if (IsPickUpPos()) //自動拾い★
         {
-            BallGet(false, false);
+            HoldBall(false, false);
         }
     }
 
     void GroundAttack()
     {
-        if (pabtn_f) //
+        if (MyPad.ButtonA.IsJustPressed)
         {
             //内野の場合後ろ内野内パスなので、相手の方向を向かないと行けない
-            Passing(false);
+            Passing();
         }
 
         // DegbugShot();
 
-        if (shbtn_f && shotok_f) //シュート入力
+        if (MyPad.ButtonB.IsJustPressed) //シュート入力
         {
+            bool atlook_f = MyPad.IsPressedAnyCross() == false;
             //外野２３からＺ軸シュートのとき、一応相手の方向を向く
-            LookTg(pmgSG_.stBa_.ShTgPNo, false, atlook_f); // && (st_.pstMyCh_.Motion.Mtype == dbmtSt)
+            LookTg(BallState.ShotTargetOrder, false, atlook_f);
 
-            //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
-            bool nortst_f = (st_.pstMyCh_.Motion.IsMFlags(dbmfDs))
-                            && (MyCoordinate.DsMuki == MyCoordinate.Muki);
+            Shooting();
 
-            //内野で向きに変わるときは振り向きシュート
-            if (IsInfield()
-                && (nortst_f == false)
-                && (lastMuki != MyCoordinate.Muki)
-               )
-            {
-                SetMtype(dbmtRtSh);
-            }
-            else
-            {
-                SetMtype(dbmtSh);
-            }
-#ifdef __K_DEBUG_SHIAI__
-            // シュート情報のログを書き出す
-            kdebug::DebugSystem::GetInstance().CreateShootDebugLog();
-            // 自動シュートフラグを落とす
-            if (isAutoShot)
-            {
-                pDs.SetAutoShootStep(kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_SHOOT);
-            }
-#endif // #ifdef __K_DEBUG_SHIAI__
+            // #ifdef __K_DEBUG_SHIAI__
+//             // シュート情報のログを書き出す
+//             kdebug::DebugSystem::GetInstance().CreateShootDebugLog();
+//             // 自動シュートフラグを落とす
+//             if (isAutoShot)
+//             {
+//                 pDs.SetAutoShootStep(kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_SHOOT);
+//             }
+// #endif // #ifdef __K_DEBUG_SHIAI__
         }
         else
         {
-            if (shbtn2_f) //シュート入力おしっぱ
-            {
-                st_.pstMyCh_.MirPass_c = 0;
-            }
-
-            if (st_.pstMyCh_.MirPass_c > 0) //ミラーパス状態
-            {
-                if (pabtn2_f)
-                {
-                    if (Defines.UpToR(&st_.pstMyCh_.MirPass_c, MIRWAIT))
-                    {
-                        if (pmgSG_.stBa_.PaTgPNo != NGNUM)
-                        {
-                            if (st_.pmgMyTm_.st_.pmgMyCh_[pmgSG_.stBa_.PaTgPNo].IsDashman())
-                            {
-                                Passing(false);
-                            }
-                            else
-                            {
-                                st_.pstMyCh_.MirPass_c = 0;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    st_.pstMyCh_.MirPass_c = 0;
-                }
-            }
-
-            if (st_.pstMyCh_.MirShot_c > 0) //ミラーシュート状態
-            {
-                if (shbtn2_f && (pabtn2_f == false)) //シュート入力おしっぱ
-                {
-                    if (Defines.UpToR(&st_.pstMyCh_.MirShot_c, MIRWAIT))
-                    {
-                        LookTg(pmgSG_.stBa_.ShTgPNo, false, true); //居ないときはオートで探す
-
-                        //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
-                        bool nortst_f = (st_.pstMyCh_.Motion.IsMFlags(dbmfDs))
-                                        && (MyCoordinate.DsMuki == MyCoordinate.Muki);
-
-                        if (IsInfield()
-                            && (nortst_f == false)
-                            && (lastMuki != MyCoordinate.Muki)
-                           )
-                        {
-                            SetMtype(dbmtRtSh);
-                        }
-                        else
-                        {
-                            SetMtype(dbmtSh);
-                        }
-                    }
-                }
-                else
-                {
-                    st_.pstMyCh_.MirShot_c = 1;
-                }
-            }
+            MirrorAttack();
         }
     }
 
+    private void Shooting()
+    {
+        //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
+        bool nortst_f = MyMotion.HasFlag(CharaMotionFlag.Ds)
+                        && MyCoordinate.DashDirection == MyCoordinate.DirectionX;
+
+        //内野で向きに変わるときは振り向きシュート
+        bool isReturnShot = MyOrder.IsInfield
+                            && nortst_f == false
+                            && MyMove.LastDirectionX != MyCoordinate.DirectionX;
+
+        CharaMotionType shootMotion;
+
+        if (MyMotion.HasFlag(CharaMotionFlag.Ar))
+        {
+            shootMotion = CharaMotionType.JSh;
+        }
+        else
+        {
+            shootMotion = isReturnShot ? CharaMotionType.RtSh : CharaMotionType.Sh;
+        }
+
+        SetMotionType(shootMotion);
+    }
+
     //★パス開始処理
-    void Passing(bool Jp_f)
+    void Passing()
     {
         //パスタゲがパス出せないとき
         NGPaTagShift();
@@ -1976,17 +1916,13 @@ public partial class CharaBehavior
         //★ミラーダッシュマンのときはそちらを向かない
         //if (st_.pmgMyTm_.st_.pmgMyCh_[pmgSG_.stBa_.PaTgPNo].IsDashman() == false)
         //{
-        LookTg(pmgSG_.stBa_.PaTgPNo, TRUE, false);
+        LookTg(BallState.PassTargetOrder, true, false);
         //}
 
-        if (Jp_f)
-        {
-            SetMtype(dbmtJPa);
-        }
-        else
-        {
-            SetMtype(dbmtPa);
-        }
+        CharaMotionType passMotion = MyMotion.HasFlag(CharaMotionFlag.Ar)
+            ? CharaMotionType.JPa
+            : CharaMotionType.Pa;
+        SetMotionType(passMotion);
     }
 
     //タゲ方向を向く
@@ -2082,8 +2018,8 @@ public partial class CharaBehavior
         }
         else //タゲ無し
         {
-            if ((MyOrder.IsInfield == false)
-                || (IsSelfControl == false)
+            if (MyOrder.IsInfield == false
+                || IsSelfControl == false
                 || (AtLook_f && Notag_f))
             {
                 //２，３番外野が真横に投げてしまうのを阻止
@@ -2092,80 +2028,103 @@ public partial class CharaBehavior
                     case OrderIndexType.Outfield2:
                         MyAuto.DirectionZ = DirectionZType.Forward;
                         MukiSetAuto();
-                        ShTagSet(false);
+                        SetShTagFromMyShootAngle12(false);
                         break;
                     case OrderIndexType.Outfield3:
                         MyAuto.DirectionZ = DirectionZType.Backward;
                         MukiSetAuto();
-                        ShTagSet(false);
+                        SetShTagFromMyShootAngle12(false);
                         break;
                     case OrderIndexType.Outfield4:
                         MyAuto.DirectionX = MySideIndex == 0
                             ? DirectionXType.Left
                             : DirectionXType.Right;
                         MukiSetAuto();
-                        ShTagSet(false);
+                        SetShTagFromMyShootAngle12(false);
                         break;
                 }
 
-                if (Pa_f == false)
+                if (Pa_f == false && IsShTag() == false)
                 {
                     //全方向チェック
-                    enMukiType lastMuki = st_.pstMyCh_.Coordinate.Muki;
-                    enMukiZType lastMukiZ = st_.pstMyCh_.Coordinate.MukiZ;
-
-                    if (IsShTag()) return;
-
+                    var directionX = MyCoordinate.DirectionX;
                     //ニュートラルから探す
-                    MyAuto.DirectionZ = mzaN;
-                    MukiSetAuto();
-                    ShTagSet(false);
-                    if (IsShTag()) return;
+                    var directionZ = DirectionZType.Neutral;
+                    if (SearchShootTarget(directionX, directionZ))
+                    {
+                        SetAutoTarget(directionX, directionZ);
+                        return;
+                    }
 
-                    MyAuto.DirectionZ = mzaF;
-                    MukiSetAuto();
-                    ShTagSet(false);
-                    if (IsShTag()) return;
+                    directionZ = DirectionZType.Forward;
+                    if (SearchShootTarget(directionX, directionZ))
+                    {
+                        SetAutoTarget(directionX, directionZ);
+                        return;
+                    }
 
-                    MyAuto.DirectionZ = mzaB;
-                    MukiSetAuto();
-                    ShTagSet(false);
-                    if (IsShTag()) return;
+                    directionZ = DirectionZType.Backward;
+                    if (SearchShootTarget(directionX, directionZ))
+                    {
+                        SetAutoTarget(directionX, directionZ);
+                        return;
+                    }
 
                     //逆向き
-                    MyAuto.DirectionZ = mzaN;
-                    MyAuto.AMuki = (st_.pstMyCh_.Coordinate.Muki == mL)
-                        ? maR
-                        : maL;
-                    MukiSetAuto();
-                    ShTagSet(false);
-                    if (IsShTag()) return;
+                    directionX = MyCoordinate.DirectionX == DirectionXType.Left
+                        ? DirectionXType.Right
+                        : DirectionXType.Left;
 
-                    MyAuto.DirectionZ = mzaF;
-                    MukiSetAuto();
-                    ShTagSet(false);
-                    if (IsShTag()) return;
+                    //ニュートラルから探す
+                    directionZ = DirectionZType.Neutral;
+                    if (SearchShootTarget(directionX, directionZ))
+                    {
+                        SetAutoTarget(directionX, directionZ);
+                        return;
+                    }
 
-                    MyAuto.DirectionZ = mzaB;
-                    MukiSetAuto();
-                    ShTagSet(false);
-                    if (IsShTag()) return;
+                    directionZ = DirectionZType.Forward;
+                    if (SearchShootTarget(directionX, directionZ))
+                    {
+                        SetAutoTarget(directionX, directionZ);
+                        return;
+                    }
 
-                    //みつからなかった
-                    lastMuki = st_.pstMyCh_.LastMuki;
-                    lastMukiZ = st_.pstMyCh_.LastMukiZ;
+                    directionZ = DirectionZType.Backward;
+                    if (SearchShootTarget(directionX, directionZ))
+                    {
+                        SetAutoTarget(directionX, directionZ);
+                        return;
+                    }
                 }
             }
         }
     }
 
-    //シュートタゲセット
-    void ShTagSet(bool NoRefMuki_f)
+    private bool SearchShootTarget(DirectionXType directionX, DirectionZType directionZ)
     {
-        pmgSG_->stBa_.ShTgPNo = (st_.pmgRf_->IsCapOnlyCtrl())
-            ? 0
-            : GetTarget(NoRefMuki_f);
-        pmgSG_->stBa_.ShTgTNo = st_.ensideNo_;
+        var angle12 = GetMukiAgl(directionX, directionZ);
+        return (GetShootTarget(angle12, false) != OrderIndexType.Disabled);
+    }
+
+    private void SetAutoTarget(DirectionXType directionX, DirectionZType directionZ)
+    {
+        MyState.Auto.DirectionX = directionX;
+        MyState.Auto.DirectionZ = directionZ;
+        MukiSetAuto();
+        SetShTagFromMyShootAngle12(false);
+    }
+
+    bool IsShTag()
+    {
+        return BallState.ShotTargetSide != MySideIndex
+               || BallState.ShotTargetOrder == OrderIndexType.Disabled;
+    }
+
+    //シュートタゲセット
+    void SetShTagFromMyShootAngle12(bool isIgnoreDirection)
+    {
+        CallBallChangeShootTarget(GetShootTarget(MyShoot.Angle12, isIgnoreDirection));
     }
 
     void DegbugKill()
@@ -2176,15 +2135,15 @@ public partial class CharaBehavior
 //             // 今いるやつを全員殺す
 //             for (int i = 0; i < Defines.DBMEMBER_INF; i++)
 //             {
-//                 pmgGO_.pmgCh_[st_.ensideNo_][i].st_.pstMyCh_.ANGEL_f = true;
-//                 pmgGO_.pmgCh_[st_.ensideNo_][i].st_.pstMyCh_.HP = 0;
+//                 pmgGO_.pmgCh_[st_.ensideNo_][i].MyANGEL_f = true;
+//                 pmgGO_.pmgCh_[st_.ensideNo_][i].MyHP = 0;
 //             }
 //             pmgGO_.pmgTm_[st_.ensideNo_].CheckChangePos();
 //             // 一人を残して全員殺す
 //             for (int i = 0; i < Defines.DBMEMBER_INF - 2; i++)
 //             {
-//                 pmgGO_.pmgCh_[st_.ensideNo_][i].st_.pstMyCh_.ANGEL_f = true;
-//                 pmgGO_.pmgCh_[st_.ensideNo_][i].st_.pstMyCh_.HP = 0;
+//                 pmgGO_.pmgCh_[st_.ensideNo_][i].MyANGEL_f = true;
+//                 pmgGO_.pmgCh_[st_.ensideNo_][i].MyHP = 0;
 //             }
 //             pmgGO_.pmgTm_[st_.ensideNo_].CheckChangePos();
 //         }

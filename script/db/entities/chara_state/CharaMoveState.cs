@@ -24,10 +24,10 @@ public class CharaMoveState
     public bool IsNoMove { get; set; }
 
     // オート向き変えが入る前の向き
-    public DirectionXType LastDirectionXType { get; set; }
+    public DirectionXType LastDirectionX { get; set; }
 
     // オート向き変えが入る前の奥行き向き
-    public DirectionZType LastDirectionZType { get; set; }
+    public DirectionZType LastDirectionZ { get; set; }
     
     public void Initialize()
     {
@@ -37,8 +37,8 @@ public class CharaMoveState
         IsDashAccelIOS = false;
         LastKeyDirectionX = default;
         IsNoMove = false;
-        LastDirectionXType = default;
-        LastDirectionZType = default;
+        LastDirectionX = default;
+        LastDirectionZ = default;
     }
 
     public void IncrementMadStepCount()
