@@ -210,51 +210,58 @@ public partial class CharaBehavior
 
     private void AutoDodgeAction()
     {
-        //     //COMの的コートオートよけ
-        //     if ((IsSelfControl == false)
-        //       && (pmgSG_.stBa_.Motion == bmShoot)
-        //       && (canEnemyCourtDodge))
-        //     {
-        //       switch (MyMotion.Mtype)
-        //       {
-        //       case dbmtSt:
-        //       case dbmtWk:
-        //       case dbmtDs:
-        //         if (MyCourt.ECDdg_f == false)
-        //         {
-        //           pCommon_.SetMtype(dbmtDg);
-        //           pCommon_.CatchSE();
-        //           //MyCourt.ECDdg_f = true;//１回だけ
-        //         }
-        //         break;
-        //       case dbmtDg:
-        //         //よけ限界時間
-        //         ++MyBallEffect.ECDdg_c;
-        //
-        //         if (MyBallEffect.ECDdg_c < pmgEO_.mgDt_.dtSet_.GetDtInfield(setEnCourtCrTime))
-        //         {
-        //           MyAnime.Ani_c = 0;
-        //         }
-        //         break;
-        //       }
-        //     }
-        //     else
-        //     {
-        //       switch (MyMotion.Mtype)
-        //       {
-        //       case dbmtSt:
-        //       case dbmtWk:
-        //       case dbmtDs:
-        //         pCommon_.SetMtypeReset(dbmtDg);
-        //         pCommon_.CatchSE();
-        //         break;
-        //       case dbmtDg:
-        //         //避け続けるようにする
-        //         MyAnime.Ani_c = 0;
-        //         break;
-        //       }
-        //     }
-        //   }
+        // 敵コート避け可能フラグ
+        var canEnemyCourtDodge = GetCanDodgeEnemyCourt();
+
+        //COMの敵コートオートよけ
+        if (IsSelfControl == false
+            && BallState.MotionType == BallMotionType.Shoot
+            && canEnemyCourtDodge)
+        {
+            switch (MyMotion.MotionType)
+            {
+                case CharaMotionType.St:
+                case CharaMotionType.Wk:
+                case CharaMotionType.Ds:
+                    if (MyCourt.ECDdg_f == false)
+                    {
+                        SetMotionType(CharaMotionType.Dg);
+                    }
+                    break;
+
+                case CharaMotionType.Dg:
+                    if (MyCourt.ECDdg_f == false)
+                    {
+                        //よけ限界時間
+                        MyCourt.EnemyCortDodgeCount.Add();
+                        //押しっぱなしで避け続けるようにする
+                        if (MyPad.ButtonA.IsPressed
+                            && MyCourt.EnemyCortDodgeCount.Value < GetSettingInfield(SettingInfieldType.EnCourtCrTime))
+                        {
+                            // 他と合わせる
+                            // MyAnime.Ani_c = 0;
+                        }
+                    }
+                    break;
+            }
+        }
+        else
+        {
+            switch (MyMotion.MotionType)
+            {
+                case CharaMotionType.St:
+                case CharaMotionType.Wk:
+                case CharaMotionType.Ds:
+                    SetMotionType(CharaMotionType.Dg);
+                    break;
+
+                case CharaMotionType.Dg:
+                    // 他と合わせる
+                    // 避け続ける
+                    // MyAnime.Ani_c = 0;
+                    break;
+            }
+        }
     }
 
     private void ComAction()
