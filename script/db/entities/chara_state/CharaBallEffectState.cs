@@ -51,10 +51,6 @@ public class CharaBallEffectState
     public bool stk2StPst_f { get; set; } //１Fr前、判定２ジャッジでくっつき状態か･･･くっつき効果とは無関係
     public int FlySkip { get; set; } //吹っ飛びスキップ量
     public int FlySkip_c { get; set; } //吹っ飛びスキップ量
-    public bool ECDdg_f { get; set; } //敵コート避け
-    public bool ECDjp_f { get; set; } //敵コート避け
-    public bool VJump_f { get; set; } //垂直ジャンプ
-    public bool LJump_f { get; set; } //ロングジャンプ
 
     public void Initialize()
     {

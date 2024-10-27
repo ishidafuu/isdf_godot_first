@@ -43,6 +43,7 @@ public class CharaAirState
 
     // 垂直ジャンプ
     public bool IsVerticalJump { get; set; }
+    
     // ロングジャンプ
     public bool IsLongJump { get; set; }
 
