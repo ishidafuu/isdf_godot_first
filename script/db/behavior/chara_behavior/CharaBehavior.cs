@@ -29,7 +29,7 @@ public partial class CharaBehavior
     /// </summary>
     public CharaIndexState MyIndex => MyState.Index;
 
-    public CharaOrderState MyOrder => MyState.Order;
+    public ICharaOrderState MyOrder => MyState.Order;
     public CharaInputState MyInput => MyState.Input;
     public CharaLiveState MyLive => MyState.Live;
     public CoordinateState MyCoordinate => MyState.Coordinate;

@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace db;
+﻿namespace db;
 
 /// <summary>
 /// 生存・体力・判定に関するステータス
