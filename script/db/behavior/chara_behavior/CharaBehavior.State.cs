@@ -222,7 +222,7 @@ public partial class CharaBehavior
             // if (MyState.Live.IsDead
             //     || MyState.Live.Hp <= 0
             //     || MyState.Motion.HasFlag(CharaMotionFlag.ANG))
-            if (MyState.IsOut)
+            if (IsOut)
             {
                 return false;
             }
