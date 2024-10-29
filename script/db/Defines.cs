@@ -100,6 +100,7 @@ public static class Defines
     public const int PACAJPTIME = 13; //ジャンプパスキャッチタイミング
     public const int JPINVALIDHEIGHT = 16; // 操作無効高さ
     public const int JPGAIYAPER = 70; //外野斜めジャンプのXZ
+    public const int ZPER = 150;
 
     //baseからの引き継ぎ
     public const int NGNUM = -1;

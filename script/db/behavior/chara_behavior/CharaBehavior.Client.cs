@@ -108,11 +108,22 @@ public partial class CharaBehavior
 
     /// <summary>
     /// パスターゲット変更
+    /// SetPassTargetから呼び出す
     /// </summary>
     private void CallBallChangePassTarget(OrderIndexType passTargetOrderIndex)
     {
         BallBehaviorManager.Instance.Get().CallChangePassTarget(MySideIndex, passTargetOrderIndex);
     }
+    
+    /// <summary>
+    /// パスターゲット変更
+    /// SetPassTargetから呼び出す
+    /// </summary>
+    private void CallBallChangePassCutTarget(OrderIndexType passTargetOrderIndex)
+    {
+        BallBehaviorManager.Instance.Get().CallChangePassTarget(MySideIndex, passTargetOrderIndex);
+    }
+
 
     /// <summary>
     /// シュートターゲット変更

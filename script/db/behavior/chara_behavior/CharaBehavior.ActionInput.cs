@@ -687,6 +687,34 @@ public partial class CharaBehavior
     {
     }
 
+    //パスカットタゲセット
+    void PaCtTagSet(OrderIndexType orderIndex)
+    {
+        //パスカットキャラセット
+        var passTargetChara = CharaBehaviorManager.Instance.GetChara(MySideIndex, orderIndex);
+        var passTargetCharaX = passTargetChara.MyCoordinate.X;
+        var passTargetCharaZ = passTargetChara.MyCoordinate.Z;
+
+        var passCutOrderIndex = OrderIndexType.Disabled;
+        var maxDist = int.MaxValue;
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+        {
+            var targetX = passTargetCharaX - EnemySideOrders[order].Coordinate.X;
+            var targetZ = Defines.PercentageOf(passTargetCharaZ - EnemySideOrders[order].Coordinate.Z, Defines.ZPER);
+            var dist = Defines.Hypot(targetX, targetZ);
+
+            if (dist >= maxDist)
+            {
+                continue;
+            }
+
+            maxDist = dist;
+            passCutOrderIndex = (OrderIndexType)order;
+        }
+
+        CallBallChangePassTarget(passCutOrderIndex);
+    }
+
     //内野パスタゲセット★
     private OrderIndexType GetNaiyaPassTag()
     {

@@ -22,7 +22,7 @@ public class ComAttackState
     public int DsTagZ { get; set; } // ダッシュ目標
     public int DsTagZF { get; set; } // ダッシュ目標常にサーチ
 
-    public int PaTag { get; set; } // シングルパスタゲ
+    public OrderIndexType PaTag { get; set; } // シングルパスタゲ
 
     public void Initialize()
     {

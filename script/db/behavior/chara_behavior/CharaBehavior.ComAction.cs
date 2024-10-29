@@ -1,4 +1,5 @@
-﻿using isdf;
+﻿using System;
+using isdf;
 
 namespace db;
 
@@ -49,42 +50,60 @@ public partial class CharaBehavior
         }
 
         //セミオートでオーダーでシュート命令が出てないとき
-        if (MyTeamState.SemiAutoState.SemiF
-            && MyTeamState.SemiAutoState.SemiOrderF
-            && MyTeamState.SemiAutoState.SemiShotF == false)
-        {
-            st_.pmgMyTm_->st_.pstMyTm_->stCOM.paTag = (IsInfield())
-                ? pCommon_->GetNaiyaPassTag()
-                : pCommon_->GetGaiyaPassTag();
+        bool semiPass_f = MyTeamState.SemiAutoState.SemiF
+                          && MyTeamState.SemiAutoState.SemiOrderF
+                          && MyTeamState.SemiAutoState.SemiShotF == false;
 
-            COMPass(false); //シュート切り替えパス
-        }
-        else if (paok_f && (ngshng_f || shtgnone_f))
+        bool pass = semiPass_f || (paok_f && (ngshng_f || shtgnone_f));
+
+        if (pass)
         {
-            st_.pmgMyTm_->st_.pstMyTm_->stCOM.paTag = (IsInfield())
-                ? pCommon_->GetNaiyaPassTag()
-                : pCommon_->GetGaiyaPassTag();
+            // MyComState.AttackState.PaTag = MyOrder.IsInfield
+            //     ? GetNaiyaPassTag()
+            //     : GetGaiyaPassTag();
 
             COMPass(false); //シュート切り替えパス
         }
         else
         {
             //タゲ方向向く
-            pCommon_->LookTg(pmgSG_->stBa_.ShTgPNo, false, TRUE); //居ないときはオートで探す
-            switch (st_.pstMyCh_->Motion.Mtype)
+            //居ないときはオートで探す
+            LookTg(BallState.ShotTargetOrder, false, true);
+            switch (MyMotion.MotionType)
             {
-                case dbmtSt:
-                case dbmtWk:
-                case dbmtDs:
-                    pCommon_->SetMtype(dbmtSh);
+                case CharaMotionType.St or CharaMotionType.Wk or CharaMotionType.Ds:
+                    SetMotionType(CharaMotionType.Sh);
                     break;
-                case dbmtJUp:
-                case dbmtJDn:
-                    pCommon_->SetMtype(dbmtJSh);
-                    break;
-                default:
+                case CharaMotionType.JUp or CharaMotionType.JDn:
+                    SetMotionType(CharaMotionType.JSh);
                     break;
             }
+        }
+    }
+
+    //ＣＯＭパス
+    void COMPass(bool dmpass_f)
+    {
+        var paTag = MyOrder.IsInfield
+            ? GetNaiyaPassTag()
+            : GetGaiyaPassTag();
+
+        //パスタゲがパス出せないとき
+        SetPassTarget(paTag);
+
+        //パスカットキャラセット
+        PaCtTagSet(paTag);
+        //タゲの方を向く
+        LookTg(BallState.ShotTargetOrder, true, false);
+
+        switch (MyMotion.MotionType)
+        {
+            case CharaMotionType.St or CharaMotionType.Wk or CharaMotionType.Ds:
+                SetMotionType(CharaMotionType.Pa);
+                break;
+            case CharaMotionType.JUp or CharaMotionType.JDn:
+                SetMotionType(CharaMotionType.JPa);
+                break;
         }
     }
 
