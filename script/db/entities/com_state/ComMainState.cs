@@ -6,68 +6,68 @@
 /// </summary>
 public class ComMainState
 {
-    bool ResseiF { get; set; } // 劣勢
-    bool ResseiF2 { get; set; } // じつは劣勢
-    int FomRev { get; set; } // フォーメーション前後変動
-    bool QuickF { get; set; } // クイック行動
-    bool CCaScF { get; set; } // カウンターキャッチ成功
+    public bool ResseiF { get; set; } // 劣勢
+    public bool ResseiF2 { get; set; } // じつは劣勢
+    public int FomRev { get; set; } // フォーメーション前後変動
+    public bool QuickF { get; set; } // クイック行動
+    public bool CCaScF { get; set; } // カウンターキャッチ成功
 
-    bool HelpF { get; set; } // ヘルプガード7
+    public bool HelpF { get; set; } // ヘルプガード7
 
-    int DmWait { get; set; } // COMDM通常ウエイト
-    int DmFmWait { get; set; } // COMDM態勢ウエイト
-    int DmStWait { get; set; } // COMDMセッターウエイト
-    int DmDelay { get; set; } // COMDMディレイ
-    int DmPaItv { get; set; } // COMDMパスインターバル
-    int ChMakeLoop { get; set; } // COMチャンスメイクパスループ
+    public int DmWait { get; set; } // COMDM通常ウエイト
+    public int DmFmWait { get; set; } // COMDM態勢ウエイト
+    public int DmStWait { get; set; } // COMDMセッターウエイト
+    public int DmDelay { get; set; } // COMDMディレイ
+    public int DmPaItv { get; set; } // COMDMパスインターバル
+    public int ChMakeLoop { get; set; } // COMチャンスメイクパスループ
 
-    int BallTakePer { get; set; } // COMボール拾い行動確率
-    bool CatchF { get; set; } // COMキャッチ行動確率
+    public int BallTakePer { get; set; } // COMボール拾い行動確率
+    public bool CatchF { get; set; } // COMキャッチ行動確率
 
-    bool DsKeepF { get; set; } // ３メン、２メンでパス元もダッシュを継続する
-    bool DsOneItvWaitF { get; set; } // シングルの時は１インターバル待つ
+    public bool DsKeepF { get; set; } // ３メン、２メンでパス元もダッシュを継続する
+    public bool DsOneItvWaitF { get; set; } // シングルの時は１インターバル待つ
 
     //サイコロ振った時点で初期化
-    int ComatcStF { get; set; } // ＣＯＭ動作開始（ボール持った人が一旦フリーに鳴るのを待つ）
+    public int ComatcStF { get; set; } // ＣＯＭ動作開始（ボール持った人が一旦フリーに鳴るのを待つ）
 
-    int DmwaitC { get; set; } // ダッシュマン通常ウエイト
-    int DmfmwaitC { get; set; } // ダッシュマン態勢ウエイト
-    int DmstwaitC { get; set; } // ダッシュマンセッターウエイト
-    int DmclwaitC { get; set; } // ダッシュマンコールウエイト
-    int DmallC { get; set; } // ダッシュマン経過カウンタ
+    public int DmwaitC { get; set; } // ダッシュマン通常ウエイト
+    public int DmfmwaitC { get; set; } // ダッシュマン態勢ウエイト
+    public int DmstwaitC { get; set; } // ダッシュマンセッターウエイト
+    public int DmclwaitC { get; set; } // ダッシュマンコールウエイト
+    public int DmallC { get; set; } // ダッシュマン経過カウンタ
 
-    int DmstwaitStF { get; set; } // ダッシュマンセッターウエイト開始
+    public int DmstwaitStF { get; set; } // ダッシュマンセッターウエイト開始
 
-    bool DashmanF { get; set; } // ダッシュマン作戦
-    bool DashmanFmWaitF { get; set; } // ダッシュマン作戦態勢ウエイト中
-    bool DashmanShOkF { get; set; } // ダッシュマン作戦シュートＯＫでた
-    bool DashStCtrlF { get; set; } // 操作キャラのダッシュマン予約
+    public bool DashmanF { get; set; } // ダッシュマン作戦
+    public bool DashmanFmWaitF { get; set; } // ダッシュマン作戦態勢ウエイト中
+    public bool DashmanShOkF { get; set; } // ダッシュマン作戦シュートＯＫでた
+    public bool DashStCtrlF { get; set; } // 操作キャラのダッシュマン予約
 
-    int DmcallNum { get; set; } // ダッシュマン発動人数
-    int DmcalledNum { get; set; } // ダッシュマン発動した人数
-    int SetterNo { get; set; } // セッターNo
+    public int DmcallNum { get; set; } // ダッシュマン発動人数
+    public int DmcalledNum { get; set; } // ダッシュマン発動した人数
+    public int SetterNo { get; set; } // セッターNo
 
-    bool DmwaitOkF { get; set; } // ダッシュマンウエイトＯＫ
-    bool CallOkF { get; set; } // コールＯＫ
-    bool CallNgF { get; set; } // コールＮＧ
-    bool SetterOkF { get; set; } // セッターに渡った
-    bool SetterBmokWaitF { get; set; } // セッターのボールマンダッシュOKでウエイト
-    bool SetterBmRsvF { get; set; } // セッターのボールマンダッシュ
-    bool SetterBmRsvGoF { get; set; } // セッターのボールマンダッシュＯＫ
+    public bool DmwaitOkF { get; set; } // ダッシュマンウエイトＯＫ
+    public bool CallOkF { get; set; } // コールＯＫ
+    public bool CallNgF { get; set; } // コールＮＧ
+    public bool SetterOkF { get; set; } // セッターに渡った
+    public bool SetterBmokWaitF { get; set; } // セッターのボールマンダッシュOKでウエイト
+    public bool SetterBmRsvF { get; set; } // セッターのボールマンダッシュ
+    public bool SetterBmRsvGoF { get; set; } // セッターのボールマンダッシュＯＫ
 
-    int DmstopF { get; set; } // ダッシュマン作戦停止のタイミング
-    int TmwaitC { get; set; } // チーム行動ウエイトカウンタ
-    bool SgodpassF { get; set; } // シングルパスおよびオーダーパス
-    int ShcgpassC { get; set; } // パスカウンタ
-    int ChpassC { get; set; } // チャンスメイクパスカウンタ
-    int ComResetF { get; set; } // COM作戦リセットタイミング
-    int ShAfterC { get; set; } // シュートしてからカウンタ(守備用)
+    public int DmstopF { get; set; } // ダッシュマン作戦停止のタイミング
+    public int TmwaitC { get; set; } // チーム行動ウエイトカウンタ
+    public bool SgodpassF { get; set; } // シングルパスおよびオーダーパス
+    public int ShcgpassC { get; set; } // パスカウンタ
+    public int ChpassC { get; set; } // チャンスメイクパスカウンタ
+    public int ComResetF { get; set; } // COM作戦リセットタイミング
+    public int ShAfterC { get; set; } // シュートしてからカウンタ(守備用)
 
-    bool ChanceF { get; set; } // チャンス行動フラグ
-    bool VnChanceF { get; set; } // 至近距離チャンス
-    bool NgChanceF { get; set; } // ノーガードチャンス
-    int VnTagNo { get; set; } // 至近距離タゲ番号
-    int NgTagNo { get; set; } // ノーガードタゲ番号
+    public bool ChanceF { get; set; } // チャンス行動フラグ
+    public bool VnChanceF { get; set; } // 至近距離チャンス
+    public bool NgChanceF { get; set; } // ノーガードチャンス
+    public int VnTagNo { get; set; } // 至近距離タゲ番号
+    public int NgTagNo { get; set; } // ノーガードタゲ番号
 
     public void Initialize()
     {
@@ -124,4 +124,5 @@ public class ComMainState
 
     //ダッシュマン作戦中
     public bool Isdm() => DashmanF || DashmanFmWaitF;
+    
 }
