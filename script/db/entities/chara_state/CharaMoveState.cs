@@ -3,7 +3,7 @@
 /// <summary>
 /// 向き・移動・ダッシュ・汎用アクションに関するステータス
 /// </summary>
-public class CharaMoveState
+public class CharaMoveState : ICharaMoveState
 {
     // ジャンプしゃがみカウンタ
     public UpCounter JumpCrouchCount { get; set; }
@@ -28,7 +28,7 @@ public class CharaMoveState
 
     // オート向き変えが入る前の奥行き向き
     public DirectionZType LastDirectionZ { get; set; }
-    
+
     public void Initialize()
     {
         JumpCrouchCount.Clear();
@@ -45,4 +45,16 @@ public class CharaMoveState
     {
         MadStepCount.Add();
     }
+}
+
+public interface ICharaMoveState
+{
+    UpCounter JumpCrouchCount { get; }
+    UpCounter DashAccelCount { get; }
+    UpCounter MadStepCount { get; }
+    bool IsDashAccelIOS { get; }
+    DirectionXType LastKeyDirectionX { get; }
+    bool IsNoMove { get; }
+    DirectionXType LastDirectionX { get; }
+    DirectionZType LastDirectionZ { get; }
 }

@@ -5,7 +5,7 @@ namespace db;
 /// <summary>
 /// COMオート動作に関するステータス
 /// </summary>
-public class CharaComAutoState
+public class CharaComAutoState : ICharaComAutoState
 {
     public int JumpBallStep { get; set; }
     public int JumpBallWaitCount { get; set; }
@@ -26,5 +26,15 @@ public class CharaComAutoState
         MoveDirectionZ = default;
         Array.Clear(CatchRec, 0, CatchRec.Length);
     }
+}
 
+public interface ICharaComAutoState
+{
+    int JumpBallStep { get; }
+    int JumpBallWaitCount { get; }
+    int ComMoveCount { get; }
+    int KeepDirectionCount { get; }
+    DirectionXType MoveDirectionX { get; }
+    DirectionZType MoveDirectionZ { get; }
+    int[] CatchRec { get; }
 }

@@ -3,26 +3,26 @@
 /// <summary>
 /// ボールから受け取る吹っ飛び周りに関するステータス
 /// </summary>
-public class CharaBallEffectState
+public class CharaBallEffectState : ICharaBallEffectState
 {
     //ボールから受け取る吹っ飛び絡みのデータ
     public bool Stick_f { get; set; } //アッパーシュートくっつきフラグ
     public bool Sticking_f { get; set; } //くっつき"中"フラグ　くっつき中はヒット状態なので非ヒット状態になったらオフ
     public bool StickingPr_f { get; set; } //１Fr前くっつき"中"フラグ　くっつき中はヒット状態なので非ヒット状態になったらオフ
     public bool Sticked_f { get; set; } //くっつき"後"フラグ　ノーマル吹っ飛びに移行するけど無敵はダウンしてから
-    public int StickTime_c; //くっつき時間カウント　０でリリース＆↑０でもリリースorくっつき非発動
-    public bool suction_f; //12:吸引効果
-    public bool suction_c; //12:吸引効果発生時からのカウント
-    public int suctionLv; //12:吸引効果Lv
+    public int StickTime_c { get; set; } //くっつき時間カウント　０でリリース＆↑０でもリリースorくっつき非発動
+    public bool suction_f { get; set; } //12:吸引効果
+    public bool suction_c { get; set; } //12:吸引効果発生時からのカウント
+    public int suctionLv { get; set; } //12:吸引効果Lv
     public float suctionFlySpdBase { get; set; } //100%のときのXZ合計の速度･･･最初に読み込んでおく
     public float suctionFlySpdRatio { get; set; } //↑を０から倍々にしていく
     public bool suctionLockX_f { get; set; } //吸引効果でボールとキャラとの間が４以下になったらロックするためのフラグ
     public float suctionLockDistX { get; set; } //吸引効果ロック中のボール～キャラ間
     public bool suctionLockZ_f { get; set; } //吸引効果でボールとキャラとの間が４以下になったらロックするためのフラグ
     public float suctionLockDistZ { get; set; } //吸引効果ロック中のボール～キャラ間
-    public bool rndWorld_f; //12:世界一周効果
-    public int rndWorldLv; //12:世界一周効果Lv
-    public int flying_c; //12:吹っ飛び中カウント
+    public bool rndWorld_f { get; set; } //12:世界一周効果
+    public int rndWorldLv { get; set; } //12:世界一周効果Lv
+    public int flying_c { get; set; } //12:吹っ飛び中カウント
     public bool flyLoose_f { get; set; } //緩跳ね吹っ飛び
     public bool noMvDwn_f { get; set; } //その場吹っ飛び
     public bool noMvDwnLv { get; set; } //その場吹っ飛び
@@ -38,12 +38,12 @@ public class CharaBallEffectState
     public DownCounter hitMTime_cd { get; set; } //食らったあとの無敵時間カウント…減算
     public int hitMltDam { get; set; } //連続ヒット時のダメージ
     public bool noDmg_f { get; set; } //ダメナシフラグ
-    public int hitSound;
-    public bool rndWorldCh_f; //12:世界一周効果シュートのキャッチ
+    public int hitSound { get; set; }
+    public bool rndWorldCh_f { get; set; } //12:世界一周効果シュートのキャッチ
     public bool refHorCh_f { get; set; } //横跳ね吹っ飛び効果シュートのキャッチ
     public bool symCtrl_f { get; set; } //マリオネット効果フラグ
     public int seChiu { get; set; } //ちうちう用予約SE enSEID
-    CharaMotionType ctMotionPast { get; set; } //ChCount用１フレ前のモーションタイプ
+    public CharaMotionType ctMotionPast { get; set; } //ChCount用１フレ前のモーションタイプ
 
     public bool stk1StNow_f { get; set; } //現Fr時、判定１ジャッジでくっつき状態か･･･くっつき効果とは無関係
     public bool stk1StPst_f { get; set; } //１Fr前、判定１ジャッジでくっつき状態か･･･くっつき効果とは無関係
@@ -99,9 +99,57 @@ public class CharaBallEffectState
         FlySkip = 0;
         FlySkip_c = 0;
     }
-    
+
     public void DecrementHitMTimeCount()
     {
         hitMTime_cd.Sub();
     }
+}
+
+public interface ICharaBallEffectState
+{
+    bool Stick_f { get; }
+    bool Sticking_f { get; }
+    bool StickingPr_f { get; }
+    bool Sticked_f { get; }
+    int StickTime_c { get; }
+    bool suction_f { get; }
+    bool suction_c { get; }
+    int suctionLv { get; }
+    float suctionFlySpdBase { get; }
+    float suctionFlySpdRatio { get; }
+    bool suctionLockX_f { get; }
+    float suctionLockDistX { get; }
+    bool suctionLockZ_f { get; }
+    float suctionLockDistZ { get; }
+    bool rndWorld_f { get; }
+    int rndWorldLv { get; }
+    int flying_c { get; }
+    bool flyLoose_f { get; }
+    bool noMvDwn_f { get; }
+    bool noMvDwnLv { get; }
+    bool refVer_f { get; }
+    int refVerLv { get; }
+    bool refHor_f { get; }
+    int refHorLv { get; }
+    bool combo_f { get; }
+    int combo_c { get; }
+    int comboMax { get; }
+    int comboNoHitTime_c { get; }
+    bool flySpGrav_f { get; }
+    DownCounter hitMTime_cd { get; }
+    int hitMltDam { get; }
+    bool noDmg_f { get; }
+    int hitSound { get; }
+    bool rndWorldCh_f { get; }
+    bool refHorCh_f { get; }
+    bool symCtrl_f { get; }
+    int seChiu { get; }
+    CharaMotionType ctMotionPast { get; }
+    bool stk1StNow_f { get; }
+    bool stk1StPst_f { get; }
+    bool stk2StNow_f { get; }
+    bool stk2StPst_f { get; }
+    int FlySkip { get; }
+    int FlySkip_c { get; }
 }

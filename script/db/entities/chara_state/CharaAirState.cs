@@ -4,7 +4,7 @@
 /// 空中・ジャンプ・着地に関するステータス
 /// 地上についたときにリセットして構わない値のみ
 /// </summary>
-public class CharaAirState
+public class CharaAirState : ICharaAirState
 {
     // 滞空時間
     public UpCounter AirCount { get; set; }
@@ -73,4 +73,22 @@ public class CharaAirState
             ShootAirCount.Add();
         }
     }
+}
+
+public interface ICharaAirState
+{
+    UpCounter AirCount { get; }
+    UpCounter ShootAirCount { get; }
+    int TopTiming { get; }
+    bool IsAirCatch { get; }
+    bool IsAirAction { get; }
+    bool IsAirRev { get; }
+    bool IsRound { get; }
+    int LandX { get; }
+    int LandZ { get; }
+    int LandRest { get; }
+    int NowGravity { get; }
+    bool IsLandSet { get; }
+    bool IsVerticalJump { get; }
+    bool IsLongJump { get; }
 }

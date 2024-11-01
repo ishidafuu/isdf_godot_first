@@ -3,7 +3,7 @@
 /// <summary>
 /// シュート・ターゲットに関するステータス
 /// </summary>
-public class CharaShootState
+public class CharaShootState : ICharaShootState
 {
     // シュート待ちカウンタ
     public DownCounter ShootWaitCount { get; set; }
@@ -50,4 +50,17 @@ public class CharaShootState
         ShootWaitCount.Set(startCount);
         ShootEndWaitCount.Set(endCount);
     }
+}
+
+public interface ICharaShootState
+{
+    DownCounter ShootWaitCount { get; }
+    DownCounter ShootEndWaitCount { get; }
+    UpCounter Step { get; }
+    ShootTiming ShootTiming { get; }
+    int Angle12 { get; }
+    int ShCv { get; }
+    bool IsBackSh { get; }
+    bool IsUTurn { get; }
+    int FumbleCount { get; }
 }

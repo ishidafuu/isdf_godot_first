@@ -3,7 +3,7 @@
 /// <summary>
 /// キャッチングに関するステータス
 /// </summary>
-public class CharaCatchState
+public class CharaCatchState : ICharaCatchState
 {
     // ボールをキャッチできるカウンタ
     public UpCounter CatchCount { get; set; }
@@ -56,4 +56,16 @@ public class CharaCatchState
     {
         CatchWaitCount.Set(value);
     }
+}
+
+public interface ICharaCatchState
+{
+    UpCounter CatchCount { get; }
+    DownCounter CatchWaitCount { get; }
+    int BlockCount { get; }
+    int FricX { get; }
+    int FricZ { get; }
+    bool IsEnemyShotCatch { get; }
+    bool IsEnabledJump { get; }
+    bool IsEnabledShot { get; }
 }

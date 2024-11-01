@@ -3,7 +3,7 @@
 /// <summary>
 /// Com操作に関するステータス
 /// </summary>
-public class CharaComOnlyState
+public class CharaComOnlyState : ICharaComOnlyState
 {
     // 敵キャッチ確率
     public int ComCatchProbability { get; set; }
@@ -24,5 +24,12 @@ public class CharaComOnlyState
         IsCatchCounter = false;
         IsComTossPassGet = false;
     }
+}
 
+public interface ICharaComOnlyState
+{
+    int ComCatchProbability { get; }
+    int ComNiceCatchProbability { get; }
+    bool IsCatchCounter { get; }
+    bool IsComTossPassGet { get; }
 }

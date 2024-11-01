@@ -3,7 +3,7 @@
 /// <summary>
 /// 合成シュートに関するステータス
 /// </summary>
-public class CharaGouseiState
+public class CharaGouseiState : ICharaGouseiState
 {
     public ShotGouseiState[] GouseiShots { get; set; } = new ShotGouseiState[Defines.StepNum];
     public ShotGouseiState VJumpGouseiShots { get; set; }
@@ -27,4 +27,10 @@ public class CharaGouseiState
 
         VJumpGouseiShots.Initialize();
     }
+}
+
+public interface ICharaGouseiState
+{
+    ShotGouseiState[] GouseiShots { get; }
+    ShotGouseiState VJumpGouseiShots { get; }
 }

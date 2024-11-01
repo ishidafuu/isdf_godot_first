@@ -3,7 +3,7 @@
 /// <summary>
 /// アニメーション・見た目・セリフに関するステータス
 /// </summary>
-public class CharaViewState
+public class CharaViewState : ICharaViewState
 {
     // 息継ぎカウンタ
     public UpCounter BreathCount { get; set; }
@@ -29,9 +29,17 @@ public class CharaViewState
     {
         TargetCount.Add();
     }
-    
+
     public void ResetTargetCount()
     {
         TargetCount.Clear();
     }
+}
+
+public interface ICharaViewState
+{
+    UpCounter BreathCount { get; }
+    int LongKeepCount { get; }
+    int PassWaitCount { get; }
+    UpCounter TargetCount { get; }
 }

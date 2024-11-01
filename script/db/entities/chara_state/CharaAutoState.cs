@@ -3,7 +3,7 @@
 /// <summary>
 /// オート情報
 /// </summary>
-public class CharaAutoState
+public class CharaAutoState : ICharaAutoState
 {
     public AutoType AutoType { get; set; }
     public DirectionXType DirectionX { get; set; }
@@ -26,4 +26,14 @@ public class CharaAutoState
         IsDashStopped = false;
         IsFreeAction = false;
     }
+}
+
+public interface ICharaAutoState
+{
+    AutoType AutoType { get; }
+    DirectionXType DirectionX { get; }
+    DirectionZType DirectionZ { get; }
+    bool IsDash { get; }
+    bool IsDashStopped { get; }
+    bool IsFreeAction { get; }
 }

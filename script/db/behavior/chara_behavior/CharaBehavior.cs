@@ -25,33 +25,32 @@ public partial class CharaBehavior
     private IPad MyPad => PadBehaviorManager.Instance.Get(MySideIndex).Pad;
 
     /// <summary>
-    /// MyState ショートカット
+    /// MyState
+    /// Getアクセスインターフェイス
     /// </summary>
-    public CharaIndexState MyIndex => MyState.Index;
-
+    public ICharaIndexState MyIndex => MyState.Index;
     public ICharaOrderState MyOrder => MyState.Order;
-    public CharaInputState MyInput => MyState.Input;
-    public CharaLiveState MyLive => MyState.Live;
-    public CoordinateState MyCoordinate => MyState.Coordinate;
-    public CharaMotionState MyMotion => MyState.Motion;
-    public CharaAutoState MyAuto => MyState.Auto;
-    public CharaAutoState MyNextAuto => MyState.NextAuto;
-    public CharaComAutoState MyComAuto => MyState.ComAuto;
-    public CharaGouseiState MyGousei => MyState.Gousei;
-    public CharaDamageState MyDamage => MyState.Damage;
-    public CharaLevelState MyLevel => MyState.Level;
-    public CharaDistanceState MyDistance => MyState.Distance;
-    public CharaMoveState MyMove => MyState.Move;
-    public CharaAirState MyAir => MyState.Air;
-    public CharaViewState MyView => MyState.View;
-    public CharaCatchState MyCatch => MyState.Catch;
-    public CharaShootState MyShoot => MyState.Shoot;
-    // public CharaDodgeState MyDodge => MyState.Dodge;
-    public CharaCourtState MyCourt => MyState.Court;
-    public CharaPassState MyPass => MyState.Pass;
-    public CharaDashmanState MyDashman => MyState.Dashman;
-    public CharaComOnlyState MyComOnly => MyState.ComOnly;
-    public CharaBallEffectState MyBallEffect => MyState.BallEffect;
+    public ICharaInputState MyInput => MyState.Input;
+    public ICharaLiveState MyLive => MyState.Live;
+    public ICoordinateState MyCoordinate => MyState.Coordinate;
+    public ICharaMotionState MyMotion => MyState.Motion;
+    public ICharaAutoState MyAuto => MyState.Auto;
+    public ICharaAutoState MyNextAuto => MyState.NextAuto;
+    public ICharaComAutoState MyComAuto => MyState.ComAuto;
+    public ICharaGouseiState MyGousei => MyState.Gousei;
+    public ICharaDamageState MyDamage => MyState.Damage;
+    public ICharaLevelState MyLevel => MyState.Level;
+    public ICharaDistanceState MyDistance => MyState.Distance;
+    public ICharaMoveState MyMove => MyState.Move;
+    public ICharaAirState MyAir => MyState.Air;
+    public ICharaViewState MyView => MyState.View;
+    public ICharaCatchState MyCatch => MyState.Catch;
+    public ICharaShootState MyShoot => MyState.Shoot;
+    public ICharaCourtState MyCourt => MyState.Court;
+    public ICharaPassState MyPass => MyState.Pass;
+    public ICharaDashmanState MyDashman => MyState.Dashman;
+    public ICharaComOnlyState MyComOnly => MyState.ComOnly;
+    public ICharaBallEffectState MyBallEffect => MyState.BallEffect;
 
     public CharaBehavior()
     {

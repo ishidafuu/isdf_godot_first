@@ -3,7 +3,7 @@
 /// <summary>
 /// 座標と移動に関する状態を管理するクラス
 /// </summary>
-public class CoordinateState
+public class CoordinateState : ICoordinateState
 {
     public DirectionXType DirectionX { get; set; }
     public DirectionZType DirectionZ { get; set; }
@@ -107,4 +107,20 @@ public class CoordinateState
             : DirectionXType.Left;
         DirectionZ = DirectionZType.Neutral;
     }
+}
+
+public interface ICoordinateState
+{
+    DirectionXType DirectionX { get; }
+    DirectionZType DirectionZ { get; }
+    DirectionXType DashDirection { get; }
+    int X { get; }
+    int Y { get; }
+    int Z { get; }
+    int VelocityX { get; }
+    int VelocityY { get; }
+    int VelocityZ { get; }
+    DownCounter FrictionCount { get; }
+    int Priority { get; }
+    Rect HitBox { get; }
 }

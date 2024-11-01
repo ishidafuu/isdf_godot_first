@@ -3,7 +3,7 @@
 /// <summary>
 /// ダメージに関するステータス
 /// </summary>
-public class CharaDamageState
+public class CharaDamageState : ICharaDamageState
 {
     // キャッチダメージ顔
     public DownCounter DamageAfterCount { get; set; }
@@ -46,4 +46,16 @@ public class CharaDamageState
         FumbleCount.Sub();
         DamageAfterCount.Sub();
     }
+}
+
+public interface ICharaDamageState
+{
+    DownCounter DamageAfterCount { get; }
+    UpCounter DownCount { get; }
+    DownCounter RollCount { get; }
+    DownCounter KagamiCount { get; }
+    int KagamiRevCount { get; }
+    int KagamiRevKgNo { get; }
+    bool IsHitStop { get; }
+    DownCounter FumbleCount { get; }
 }

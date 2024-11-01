@@ -4,7 +4,7 @@
 /// ダッシュマンに関するステータス
 /// ダッシュマン・ダッシュ状態でなくなったらリセット
 /// </summary>
-public class CharaDashmanState
+public class CharaDashmanState : ICharaDashmanState
 {
     // ダッシュマン(操作ダッシュマンもあるので、ここでは呼ばれたダッシュマンフラグ)
     public bool IsCalledDashman { get; set; }
@@ -30,4 +30,12 @@ public class CharaDashmanState
     {
         EnabledPassCount.Sub();
     }
+}
+
+public interface ICharaDashmanState
+{
+    bool IsCalledDashman { get; }
+    int DashmanNo { get; }
+    int TargetZ { get; }
+    DownCounter EnabledPassCount { get; }
 }

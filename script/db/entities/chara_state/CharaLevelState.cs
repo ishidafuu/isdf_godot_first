@@ -3,7 +3,7 @@
 /// <summary>
 /// 能力値に関するステータス
 /// </summary>
-public class CharaLevelState
+public class CharaLevelState : ICharaLevelState
 {
     // レベル（チームレア＋補正）
     public int Level { get; set; }
@@ -32,4 +32,14 @@ public class CharaLevelState
         Tech = 0;
         Speed = 0;
     }
+}
+
+public interface ICharaLevelState
+{
+    int Level { get; }
+    int Power { get; }
+    int Guts { get; }
+    int Kire { get; }
+    int Tech { get; }
+    int Speed { get; }
 }

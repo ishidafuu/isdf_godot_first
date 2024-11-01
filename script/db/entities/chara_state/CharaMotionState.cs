@@ -5,7 +5,7 @@ namespace db;
 /// <summary>
 /// モーションに関するステータス
 /// </summary>
-public class CharaMotionState
+public class CharaMotionState : ICharaMotionState
 {
     public CharaMotionType MotionType { get; private set; }
     public CharaMotionFlag MotionFlag { get; private set; }
@@ -125,4 +125,19 @@ public class CharaMotionState
     {
         KomaNo.Set(LoopStartKomaNo);
     }
+}
+
+public interface ICharaMotionState
+{
+    CharaMotionType MotionType { get; }
+    CharaMotionFlag MotionFlag { get; }
+    UpCounter MotionCount { get; }
+    CharaMotionNo MotionNo { get; }
+    UpCounter KomaNo { get; }
+    UpCounter KomaFrameCount { get; }
+    DownCounter LoopCount { get; }
+    int LoopStartKomaNo { get; }
+    bool IsActionPoint { get; }
+
+    bool HasFlag(CharaMotionFlag flag);
 }

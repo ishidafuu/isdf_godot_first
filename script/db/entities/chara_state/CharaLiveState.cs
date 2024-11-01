@@ -3,7 +3,7 @@
 /// <summary>
 /// 生存・体力・判定に関するステータス
 /// </summary>
-public class CharaLiveState
+public class CharaLiveState : ICharaLiveState
 {
     // 生存
     public bool IsAlive { get; set; }
@@ -16,7 +16,7 @@ public class CharaLiveState
 
     // 体力
     public int Hp { get; set; }
-    
+
     // Max体力
     public int MaxHp { get; set; }
 
@@ -56,4 +56,19 @@ public class CharaLiveState
     {
         BiorhythmCount.Add();
     }
+}
+
+public interface ICharaLiveState
+{
+    bool IsAlive { get; }
+    bool IsDead { get; }
+    bool IsAngel { get; }
+    int Hp { get; }
+    int MaxHp { get; }
+    bool IsMaxHp { get; }
+    int AngelCount { get; }
+    int ReviveCount { get; }
+    int EtcCount { get; }
+    int LoopCount { get; }
+    UpCounter BiorhythmCount { get; }
 }
