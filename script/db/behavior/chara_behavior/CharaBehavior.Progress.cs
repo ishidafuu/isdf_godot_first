@@ -9,17 +9,17 @@ public partial class CharaBehavior
         // ボールとの距離も必要な場所に移動する
         UpdateBallDistance();
 
-        RawState.Motion.Progress();
-        RawState.Damage.Progress();
-        RawState.Catch.Progress();
+        MotionSet.Progress();
+        DamageSet.Progress();
+        CatchSet.Progress();
 
-        RawState.Pass.DecrementMirrorShotLimitCount();
-        RawState.Live.IncrementBiorhythmCount();
-        RawState.Dashman.DecrementEnabledPassCount();
+        PassSet.DecrementMirrorShotLimitCount();
+        LiveSet.IncrementBiorhythmCount();
+        Dashman.DecrementEnabledPassCount();
 
         if (BallState.MotionType == BallMotionType.Shoot)
         {
-            RawState.BallEffect.DecrementHitMTimeCount();
+            BallEffect.DecrementHitMTimeCount();
             // ボールと重なっていた過去を消す処理は、モーションがダウンから復帰したタイミングと、シュート開始のタイミングで行う
         }
         else
@@ -29,37 +29,37 @@ public partial class CharaBehavior
 
         // ダウンから起き上がった際に無敵フラグを消す
 
-        if (RawState.Motion.HasFlag(CharaMotionFlag.Ar))
+        if (Motion.HasFlag(CharaMotionFlag.Ar))
         {
-            var isProgressShootAirCount = RawState.Motion.MotionType != CharaMotionType.JSh
-                                          && RawState.Motion.MotionType != CharaMotionType.JCr;
-            RawState.Air.Progress(isProgressShootAirCount);
+            var isProgressShootAirCount = Motion.MotionType != CharaMotionType.JSh
+                                          && Motion.MotionType != CharaMotionType.JCr;
+            Air.Progress(isProgressShootAirCount);
         }
 
-        if (RawState.Motion.MotionType == CharaMotionType.Ds)
+        if (Motion.MotionType == CharaMotionType.Ds)
         {
-            RawState.Move.IncrementMadStepCount();
+            Move.IncrementMadStepCount();
         }
 
-        if (IsShotTarget && RawState.Motion.MotionType != CharaMotionType.ANG)
+        if (IsShotTarget && Motion.MotionType != CharaMotionType.ANG)
         {
-            RawState.View.IncrementTargetCount();
+            View.IncrementTargetCount();
         }
-        else if (IsPassTarget && RawState.Motion.MotionType != CharaMotionType.ANG)
+        else if (IsPassTarget && Motion.MotionType != CharaMotionType.ANG)
         {
             // パスターゲットのときは初期値２０から？
-            RawState.View.IncrementTargetCount();
+            View.IncrementTargetCount();
         }
         else
         {
-            RawState.View.ResetTargetCount();
+            View.ResetTargetCount();
         }
 
         var isProgressAnimation = true;
         
-        var isSetKagami = IsKagami && RawState.Auto.AutoType == AutoType.Free;
+        var isSetKagami = IsKagami && Auto.AutoType == AutoType.Free;
         
-        switch (RawState.Motion.MotionType)
+        switch (Motion.MotionType)
         {
             case CharaMotionType.St:
                 if (isSetKagami)
@@ -72,9 +72,9 @@ public partial class CharaBehavior
                 }
                 else if (IsBallHolder == false)
                 {
-                    if (RawState.View.BreathCount.AddUntil(GetSpeedRank(RankSpeedType.IkiItv)))
+                    if (View.BreathCount.AddUntil(GetSpeedRank(RankSpeedType.IkiItv)))
                     {
-                        RawState.View.BreathCount.Clear();
+                        View.BreathCount.Clear();
                         SetMotionType(CharaMotionType.Breath);
                     }
                 }
@@ -107,7 +107,7 @@ public partial class CharaBehavior
             case CharaMotionType.CJCr:
                 break;
             case CharaMotionType.JUp:
-                if (RawState.Coordinate.VelocityY < 0)
+                if (Coordinate.VelocityY < 0)
                 {
                     SetMotionType(CharaMotionType.JDn);
                 }
@@ -117,7 +117,7 @@ public partial class CharaBehavior
             case CharaMotionType.ARv:
                 break;
             case CharaMotionType.Cr:
-                if (RawState.Move.JumpCrouchCount.Value > 0)
+                if (Move.JumpCrouchCount.Value > 0)
                 {
                     isProgressAnimation = false;
                 }
@@ -132,13 +132,13 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.DnHF:
             case CharaMotionType.DnHB:
-                RawState.Damage.DownCount.AddUntil(GetHpRank(RankHpType.RevFrm));
+                Damage.DownCount.AddUntil(GetHpRank(RankHpType.RevFrm));
                 break;
             case CharaMotionType.KG:
                 break;
             case CharaMotionType.DnF:
             case CharaMotionType.DnB:
-                if (RawState.Damage.DownCount.AddUntil(GetHpRank(RankHpType.RevFrm)))
+                if (Damage.DownCount.AddUntil(GetHpRank(RankHpType.RevFrm)))
                 {
                     SetMotionType(CharaMotionType.DRv);
                 }
@@ -151,7 +151,7 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.FB:
                 // スリップ中は進行なし
-                if (RawState.Coordinate.FrictionCount.Value != 0)
+                if (Coordinate.FrictionCount.Value != 0)
                 {
                     isProgressAnimation = false;
                 }
@@ -178,7 +178,7 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.Sl:
                 // スリップ中は進行なし
-                if (RawState.Coordinate.VelocityX != 0)
+                if (Coordinate.VelocityX != 0)
                 {
                     isProgressAnimation = false;
                 }
@@ -187,7 +187,7 @@ public partial class CharaBehavior
             case CharaMotionType.RtSh:
             case CharaMotionType.JSh:
             case CharaMotionType.RtJSh:
-                if (RawState.Shoot.ShootWaitCount.Sub() == false)
+                if (Shoot.ShootWaitCount.Sub() == false)
                 {
                     isProgressAnimation = false;
                 }
@@ -197,10 +197,10 @@ public partial class CharaBehavior
                 // 指が離れたらクイックパス
                 if (IsSelfControl && MyPad.ButtonA.IsPressed == false)
                 {
-                    RawState.Pass.IsTossPass = false;
+                    Pass.IsTossPass = false;
                 }
 
-                if (RawState.Pass.PassStandWaitCount.Sub() == false)
+                if (Pass.PassStandWaitCount.Sub() == false)
                 {
                     isProgressAnimation = false;
                 }
@@ -208,16 +208,16 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.Ca:
             case CharaMotionType.JCa:
-                if (RawState.Catch.CatchCount.Value > 0)
+                if (Catch.CatchCount.Value > 0)
                 {
-                    if (IsOverCatchFrame(RawState.Catch.CatchCount.Value))
+                    if (IsOverCatchFrame(Catch.CatchCount.Value))
                     {
-                        RawState.Catch.CatchCount.Clear();
+                        Catch.CatchCount.Clear();
                         GotoNextKoma();
                     }
                     else
                     {
-                        RawState.Catch.CatchCount.Add();
+                        Catch.CatchCount.Add();
                     }
 
                     isProgressAnimation = false;
@@ -229,21 +229,21 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.RoF:
             case CharaMotionType.RoB:
-                if (RawState.Damage.RollCount.Sub())
+                if (Damage.RollCount.Sub())
                 {
-                    var isDead = RawState.Live.Hp <= 0 && MyTeamState.IsAllOut == false;
+                    var isDead = Live.Hp <= 0 && MyTeamState.IsAllOut == false;
                     if (isDead)
                     {
-                        RawState.Live.IsAngel = true;
+                        Live.IsAngel = true;
                         CallTeamCheckChangePos();
                         // TeamBehaviorがAngelにするかどうか決める
                     }
                     else
                     {
-                        SetMotionType(RawState.Motion.MotionType == CharaMotionType.RoF
+                        SetMotionType(Motion.MotionType == CharaMotionType.RoF
                             ? CharaMotionType.DnB
                             : CharaMotionType.DnF);
-                        RawState.Coordinate.ZeroVelocity();
+                        Coordinate.ZeroVelocity();
                     }
                 }
                 break;
@@ -281,7 +281,7 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.ANG:
                 // 天使になるタイミングで設定するように修正する
-                RawState.Live.IsAlive = false;
+                Live.IsAlive = false;
                 isProgressAnimation = false;
                 break;
             default:
@@ -301,7 +301,7 @@ public partial class CharaBehavior
     {
         // 敵のシュートボール
         var enemyShootBall = BallState.MotionType == BallMotionType.Shoot
-                             && BallState.ThrowerSideNo != RawState.Index.SideIndex;
+                             && BallState.ThrowerSideNo != Index.SideIndex;
 
         var catchFrame = enemyShootBall
             ? GetSettingCatch(SettingCatchType.CaMotionFrm)
@@ -317,10 +317,10 @@ public partial class CharaBehavior
     /// </summary>
     private void ProgressFrame(bool isForce)
     {
-        RawState.Motion.KomaFrameCount.Add();
+        Motion.KomaFrameCount.Add();
 
         //フレーム終了の時間がきた、もしくは強制次フレーム
-        if (isForce || RawState.Motion.KomaFrameCount.Value >= CurrentBaseMotionKoma.DefFrm)
+        if (isForce || Motion.KomaFrameCount.Value >= CurrentBaseMotionKoma.DefFrm)
         {
             bool isLoop = false;
             switch (CurrentBaseMotionKoma.LoopSt)
@@ -328,7 +328,7 @@ public partial class CharaBehavior
                 // ループ終了
                 case enBMLoopSt.Ed:
                 case enBMLoopSt.StEd:
-                    if (RawState.Motion.LoopCount.Sub() == false)
+                    if (Motion.LoopCount.Sub() == false)
                     {
                         isLoop = true;
                     }
@@ -359,7 +359,7 @@ public partial class CharaBehavior
     /// </summary>
     private void MotionEnd()
     {
-        switch (RawState.Motion.MotionType)
+        switch (Motion.MotionType)
         {
             // ジャンプしゃがみ
             case CharaMotionType.JCr:
@@ -384,7 +384,7 @@ public partial class CharaBehavior
             case CharaMotionType.KG:
                 if (IsKagami)
                 {
-                    RawState.Damage.KagamiCount.Sub();
+                    Damage.KagamiCount.Sub();
                     SetMotionType(CharaMotionType.KG);
                 }
                 else
@@ -394,13 +394,13 @@ public partial class CharaBehavior
                 break;
             // キャッチモーション
             case CharaMotionType.CM:
-                SetMotionType(RawState.Motion.HasFlag(CharaMotionFlag.Ds)
+                SetMotionType(Motion.HasFlag(CharaMotionFlag.Ds)
                     ? CharaMotionType.Ds
                     : CharaMotionType.St);
                 break;
             // シュート
             case CharaMotionType.Sh:
-                if (RawState.Shoot.ShootEndWaitCount.Sub())
+                if (Shoot.ShootEndWaitCount.Sub())
                 {
                     SetMotionType(CharaMotionType.St);
                 }
@@ -420,13 +420,13 @@ public partial class CharaBehavior
                 break;
             // キャッチ
             case CharaMotionType.Ca:
-                SetMotionType(RawState.Motion.HasFlag(CharaMotionFlag.Ds)
+                SetMotionType(Motion.HasFlag(CharaMotionFlag.Ds)
                     ? CharaMotionType.Ds
                     : CharaMotionType.St);
                 break;
             // その他
             default:
-                SetMotionType(RawState.Motion.HasFlag(CharaMotionFlag.Ar)
+                SetMotionType(Motion.HasFlag(CharaMotionFlag.Ar)
                     ? CharaMotionType.JDn
                     : CharaMotionType.St);
                 break;

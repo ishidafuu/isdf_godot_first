@@ -53,30 +53,30 @@ public partial class CharaBehavior
     /// Setアクセスインターフェイス
     /// </summary>
 
-    private ICharaIndexStateSetter SetIndex => RawState2.Index;
+    private ICharaIndexStateSetter IndexSet => RawState2.Index;
 
-    private ICharaOrderStateSetter SetOrder => RawState2.Order;
-    private ICharaInputStateSetter SetInput => RawState2.Input;
-    private ICharaLiveStateSetter SetLive => RawState2.Live;
-    private ICoordinateStateSetter SetCoordinate => RawState2.Coordinate;
-    private ICharaMotionStateSetter SetMotion => RawState2.Motion;
-    private ICharaAutoStateSetter SetAuto => RawState2.Auto;
-    private ICharaAutoStateSetter SetNextAuto => RawState2.NextAuto;
-    private ICharaComAutoStateSetter SetComAuto => RawState2.ComAuto;
-    private ICharaGouseiStateSetter SetGousei => RawState2.Gousei;
-    private ICharaDamageStateSetter SetDamage => RawState2.Damage;
-    private ICharaLevelStateSetter SetLevel => RawState2.Level;
-    private ICharaDistanceStateSetter SetDistance => RawState2.Distance;
-    private ICharaMoveStateSetter SetMove => RawState2.Move;
-    private ICharaAirStateSetter SetAir => RawState2.Air;
-    private ICharaViewStateSetter SetView => RawState2.View;
-    private ICharaCatchStateSetter SetCatch => RawState2.Catch;
-    private ICharaShootStateSetter SetShoot => RawState2.Shoot;
-    private ICharaCourtStateSetter SetCourt => RawState2.Court;
-    private ICharaPassStateSetter SetPass => RawState2.Pass;
-    private ICharaDashmanStateSetter SetDashman => RawState2.Dashman;
-    private ICharaComOnlyStateSetter SetComOnly => RawState2.ComOnly;
-    private ICharaBallEffectStateSetter SetBallEffect => RawState2.BallEffect;
+    private ICharaOrderStateSetter OrderSet => RawState2.Order;
+    private ICharaInputStateSetter InputSet => RawState2.Input;
+    private ICharaLiveStateSetter LiveSet => RawState2.Live;
+    private ICoordinateStateSetter CoordinateSet => RawState2.Coordinate;
+    private ICharaMotionStateSetter MotionSet => RawState2.Motion;
+    private ICharaAutoStateSetter AutoSet => RawState2.Auto;
+    private ICharaAutoStateSetter NextAutoSet => RawState2.NextAuto;
+    private ICharaComAutoStateSetter ComAutoSet => RawState2.ComAuto;
+    private ICharaGouseiStateSetter GouseiSet => RawState2.Gousei;
+    private ICharaDamageStateSetter DamageSet => RawState2.Damage;
+    private ICharaLevelStateSetter LevelSet => RawState2.Level;
+    private ICharaDistanceStateSetter DistanceSet => RawState2.Distance;
+    private ICharaMoveStateSetter MoveSet => RawState2.Move;
+    private ICharaAirStateSetter AirSet => RawState2.Air;
+    private ICharaViewStateSetter ViewSet => RawState2.View;
+    private ICharaCatchStateSetter CatchSet => RawState2.Catch;
+    private ICharaShootStateSetter ShootSet => RawState2.Shoot;
+    private ICharaCourtStateSetter CourtSet => RawState2.Court;
+    private ICharaPassStateSetter PassSet => RawState2.Pass;
+    private ICharaDashmanStateSetter DashmanSet => RawState2.Dashman;
+    private ICharaComOnlyStateSetter ComOnlySet => RawState2.ComOnly;
+    private ICharaBallEffectStateSetter BallEffectSet => RawState2.BallEffect;
 
     public CharaBehavior()
     {

@@ -7,9 +7,11 @@ public class CharaCatchStateGetter : ICharaCatchStateGetter, ICharaCatchStateSet
 {
     // ボールをキャッチできるカウンタ
     public UpCounter CatchCount { get; set; }
+    public int CatchCountValue => CatchCount.Value;
 
     // 次のキャッチまでのラグ
     public DownCounter CatchWaitCount { get; set; }
+    public int CatchWaitCountValue => CatchWaitCount.Value;
 
     // ブロックカウンタ
     public int BlockCount { get; set; }
@@ -60,8 +62,8 @@ public class CharaCatchStateGetter : ICharaCatchStateGetter, ICharaCatchStateSet
 
 public interface ICharaCatchStateGetter
 {
-    UpCounter CatchCount { get; }
-    DownCounter CatchWaitCount { get; }
+    int CatchCountValue { get; }
+    int CatchWaitCountValue { get; }
     int BlockCount { get; }
     int FricX { get; }
     int FricZ { get; }
@@ -72,8 +74,8 @@ public interface ICharaCatchStateGetter
 
 public interface ICharaCatchStateSetter
 {
-    UpCounter CatchCount { set; }
-    DownCounter CatchWaitCount { set; }
+    UpCounter CatchCount { get; }
+    DownCounter CatchWaitCount { get; }
     int BlockCount { set; }
     int FricX { set; }
     int FricZ { set; }

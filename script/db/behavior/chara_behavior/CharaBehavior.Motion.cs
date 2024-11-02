@@ -38,13 +38,13 @@ public partial class CharaBehavior
             return;
         }
 
-        Motion.MotionCount.Clear();
-        Catch.CatchCount.Clear();
-        Court.EnemyCortDodgeCount.Clear();
+        MotionSet.MotionCount.Clear();
+        CatchSet.CatchCount.Clear();
+        CourtSet.EnemyCortDodgeCount.Clear();
         Move.DashAccelCount.Clear();
-        Coordinate.FrictionCount.Clear();
-        Air.IsLandSet = false;
-        Shoot.IsUTurn = false;
+        CoordinateSet.FrictionCount.Clear();
+        AirSet.IsLandSet = false;
+        ShootSet.IsUTurn = false;
 
         // キャッチ待ち時間クリア
         if (motionType != CharaMotionType.St
@@ -52,7 +52,7 @@ public partial class CharaBehavior
             && motionType != CharaMotionType.Ca
             && motionType != CharaMotionType.JCa)
         {
-            Catch.ResetCacheWait();
+            CatchSet.ResetCacheWait();
         }
 
         // 立ちパス待ちカウンタ
@@ -69,7 +69,7 @@ public partial class CharaBehavior
             && motionType != CharaMotionType.DnHF
             && motionType != CharaMotionType.DnHB)
         {
-            Damage.DownCount.Clear();
+            DamageSet.DownCount.Clear();
         }
 
         // 歩数リセット
@@ -85,7 +85,7 @@ public partial class CharaBehavior
 
         if (motionType == CharaMotionType.ARv)
         {
-            Air.IsAirAction = true;
+            AirSet.IsAirAction = true;
         }
 
         if (motionType == CharaMotionType.DnF || motionType == CharaMotionType.DnB)
@@ -97,39 +97,39 @@ public partial class CharaBehavior
         if (motionType is CharaMotionType.Sh or CharaMotionType.RtSh or CharaMotionType.JSh
             or CharaMotionType.RtJSh)
         {
-            Shoot.SetWaitCount(GetLevelRank(RankLevelType.ShStMotion), GetLevelRank(RankLevelType.ShEdMotion));
+            ShootSet.SetWaitCount(GetLevelRank(RankLevelType.ShStMotion), GetLevelRank(RankLevelType.ShEdMotion));
             CallBallShootMotion();
         }
 
         // Uターンシュート
         if (motionType is CharaMotionType.RtSh or CharaMotionType.RtJSh)
         {
-            Coordinate.DirectionZ = DirectionZType.Neutral;
-            Shoot.IsUTurn = true;
+            CoordinateSet.DirectionZ = DirectionZType.Neutral;
+            ShootSet.IsUTurn = true;
         }
 
         if (motionType is CharaMotionType.Pa or CharaMotionType.JPa)
         {
             var passWait = GetSettingPass(SettingPassType.PaStWait);
-            Pass.ResetPassStandWaitCount(passWait);
-            Pass.IsTossPass = true;
+            PassSet.ResetPassStandWaitCount(passWait);
+            PassSet.IsTossPass = true;
         }
 
         if (motionType is CharaMotionType.JSh or CharaMotionType.RtJSh or CharaMotionType.JPa
             or CharaMotionType.JCa or CharaMotionType.JDg)
         {
-            Air.IsAirAction = true;
+            AirSet.IsAirAction = true;
         }
 
         if (motionType is CharaMotionType.JCa or CharaMotionType.JDg)
         {
-            Air.IsAirCatch = true;
+            AirSet.IsAirCatch = true;
         }
 
         if (motionType is CharaMotionType.Ca)
         {
             var catchWait = GetSettingCatch(SettingCatchType.CatchWait);
-            Catch.SetCacheWait(catchWait);
+            CatchSet.SetCacheWait(catchWait);
         }
 
         // ごろごろ
@@ -147,8 +147,8 @@ public partial class CharaBehavior
         // 天使
         if (motionType is CharaMotionType.ANG)
         {
-            Live.IsDead = true;
-            Coordinate.ZeroVelocity();
+            LiveSet.IsDead = true;
+            CoordinateSet.ZeroVelocity();
             //天使生成
             CallTeamGenerateAngel();
         }
@@ -156,21 +156,21 @@ public partial class CharaBehavior
         // ドロー、勝ち、負け
         if (motionType is CharaMotionType.DRAW or CharaMotionType.WIN or CharaMotionType.LOSE)
         {
-            Coordinate.SetGameOverCoordinate(MySideIndex, Order.IsInfield);
+            CoordinateSet.SetGameOverCoordinate(MySideIndex, Order.IsInfield);
         }
 
         // 接地した
         if (lastMotionFlag.HasFlag(CharaMotionFlag.Ar)
             && Motion.HasFlag(CharaMotionFlag.Ar) == false)
         {
-            Air.Initialize();
+            AirSet.Initialize();
         }
 
         // フリーアクションフラグ管理
         if (Auto.AutoType == AutoType.Free
             && Motion.HasFlag(CharaMotionFlag.Act))
         {
-            Auto.IsFreeAction = true;
+            AutoSet.IsFreeAction = true;
         }
         else if (motionType is CharaMotionType.JCr or CharaMotionType.JUp)
         {
@@ -178,14 +178,14 @@ public partial class CharaBehavior
         }
         else
         {
-            Auto.IsFreeAction = false;
+            AutoSet.IsFreeAction = false;
         }
 
         // ダッシュ終了
         if (Motion.HasFlag(CharaMotionFlag.Ds) == false
             && Dashman.IsCalledDashman)
         {
-            Dashman.Initialize();
+            DashmanSet.Initialize();
         }
 
         // コマスタート処理
@@ -282,26 +282,26 @@ public partial class CharaBehavior
         {
             // 立ち
             case CharaMotionType.St:
-                Motion.SetMotionNo(motionType, CharaMotionNo.STF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.STF,
                     CharaMotionFlag.JpOK | CharaMotionFlag.Muki | CharaMotionFlag.DmOK | CharaMotionFlag.AtCa,
                     Coordinate.DirectionZ);
                 break;
             // ブレス
             case CharaMotionType.Breath:
                 // 扱いは立ち状態
-                Motion.SetMotionNo(CharaMotionType.St, CharaMotionNo.BRF,
+                MotionSet.SetMotionNo(CharaMotionType.St, CharaMotionNo.BRF,
                     CharaMotionFlag.JpOK | CharaMotionFlag.Muki | CharaMotionFlag.DmOK | CharaMotionFlag.AtCa,
                     Coordinate.DirectionZ);
                 break;
             // 歩き
             case CharaMotionType.Wk:
-                Motion.SetMotionNo(motionType, CharaMotionNo.WKF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.WKF,
                     CharaMotionFlag.JpOK | CharaMotionFlag.Muki | CharaMotionFlag.DmOK | CharaMotionFlag.AtCa,
                     Coordinate.DirectionZ);
                 break;
             // ダッシュ
             case CharaMotionType.Ds:
-                Motion.SetMotionNo(motionType, CharaMotionNo.DS,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.DS,
                     CharaMotionFlag.Ds | CharaMotionFlag.JpOK | CharaMotionFlag.Muki | CharaMotionFlag.AtCa,
                     Coordinate.DirectionZ);
                 break;
@@ -311,14 +311,14 @@ public partial class CharaBehavior
                 var flag = Motion.HasFlag(CharaMotionFlag.Ds)
                     ? CharaMotionFlag.Act | CharaMotionFlag.Ar | CharaMotionFlag.Ds
                     : CharaMotionFlag.Act | CharaMotionFlag.Ar;
-                Motion.SetMotionNo(motionType, CharaMotionNo.JCF, flag,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.JCF, flag,
                     Coordinate.DirectionZ);
             }
                 break;
             // キャンセルジャンプ前しゃがみ
             case CharaMotionType.CJCr:
                 // ダッシュフラグ消す、扱いはジャンプ前しゃがみ
-                Motion.SetMotionNo(CharaMotionType.JCr, CharaMotionNo.CRF,
+                MotionSet.SetMotionNo(CharaMotionType.JCr, CharaMotionNo.CRF,
                     CharaMotionFlag.Act | CharaMotionFlag.Ar,
                     Coordinate.DirectionZ);
                 break;
@@ -332,19 +332,19 @@ public partial class CharaBehavior
                 var flag = Motion.HasFlag(CharaMotionFlag.Ds)
                     ? CharaMotionFlag.Ar | CharaMotionFlag.Muki | CharaMotionFlag.AtCa | CharaMotionFlag.Ds
                     : CharaMotionFlag.Ar | CharaMotionFlag.Muki | CharaMotionFlag.AtCa;
-                Motion.SetMotionNo(motionType, motionNo, flag,
+                MotionSet.SetMotionNo(motionType, motionNo, flag,
                     Coordinate.DirectionZ);
             }
                 break;
             // 空中復帰
             case CharaMotionType.ARv:
-                Motion.SetMotionNo(motionType, CharaMotionNo.AIRDNF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.AIRDNF,
                     CharaMotionFlag.Ar | CharaMotionFlag.Muki | CharaMotionFlag.AtCa,
                     Coordinate.DirectionZ);
                 break;
             // しゃがみ
             case CharaMotionType.Cr:
-                Motion.SetMotionNo(motionType, CharaMotionNo.CRF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.CRF,
                     CharaMotionFlag.Act | CharaMotionFlag.AtCa,
                     Coordinate.DirectionZ);
                 break;
@@ -355,7 +355,7 @@ public partial class CharaBehavior
                 var motionNo = motionType is CharaMotionType.FlF
                     ? CharaMotionNo.FLF
                     : CharaMotionNo.FLB;
-                Motion.SetMotionNo(motionType, motionNo,
+                MotionSet.SetMotionNo(motionType, motionNo,
                     CharaMotionFlag.Ar | CharaMotionFlag.Dam | CharaMotionFlag.MTK,
                     Coordinate.DirectionZ);
             }
@@ -367,7 +367,7 @@ public partial class CharaBehavior
                 var motionNo = motionType is CharaMotionType.PHF
                     ? CharaMotionNo.PHF
                     : CharaMotionNo.PHB;
-                Motion.SetMotionNo(motionType, motionNo, CharaMotionFlag.PHit, Coordinate.DirectionZ);
+                MotionSet.SetMotionNo(motionType, motionNo, CharaMotionFlag.PHit, Coordinate.DirectionZ);
             }
                 break;
             // ダウンヒット
@@ -377,7 +377,7 @@ public partial class CharaBehavior
                 var motionNo = motionType is CharaMotionType.DnHF
                     ? CharaMotionNo.DNHF
                     : CharaMotionNo.DNHB;
-                Motion.SetMotionNo(motionType, motionNo,
+                MotionSet.SetMotionNo(motionType, motionNo,
                     CharaMotionFlag.Dam | CharaMotionFlag.Dn, Coordinate.DirectionZ);
             }
                 break;
@@ -387,7 +387,7 @@ public partial class CharaBehavior
                 var motionNo = Live.Hp > Defines.KAGAMI2HP
                     ? CharaMotionNo.KG
                     : CharaMotionNo.KG2;
-                Motion.SetMotionNo(motionType, motionNo,
+                MotionSet.SetMotionNo(motionType, motionNo,
                     CharaMotionFlag.Dam | CharaMotionFlag.KG, Coordinate.DirectionZ);
             }
                 break;
@@ -398,57 +398,57 @@ public partial class CharaBehavior
                 var motionNo = motionType is CharaMotionType.DnF
                     ? CharaMotionNo.DNF
                     : CharaMotionNo.DNB;
-                Motion.SetMotionNo(motionType, motionNo,
+                MotionSet.SetMotionNo(motionType, motionNo,
                     CharaMotionFlag.Dam | CharaMotionFlag.Dn, Coordinate.DirectionZ);
             }
                 break;
             // ダウンからの復帰
             case CharaMotionType.DRv:
-                Motion.SetMotionNo(motionType, CharaMotionNo.DRVF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.DRVF,
                     CharaMotionFlag.Dam | CharaMotionFlag.Dn, Coordinate.DirectionZ);
                 break;
             // キャッチモーション
             case CharaMotionType.CM:
-                Motion.SetMotionNo(motionType, CharaMotionNo.CMF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.CMF,
                     CharaMotionFlag.Act, Coordinate.DirectionZ);
                 break;
             case CharaMotionType.JCM:
                 break;
             // ファンブル
             case CharaMotionType.FB:
-                Motion.SetMotionNo(motionType, CharaMotionNo.FBF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.FBF,
                     CharaMotionFlag.Act,
                     Coordinate.DirectionZ);
                 break;
             // ジャンプファンブル
             case CharaMotionType.JFB:
-                Motion.SetMotionNo(motionType, CharaMotionNo.JFBF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.JFBF,
                     CharaMotionFlag.Act,
                     Coordinate.DirectionZ);
                 break;
             // パス待ち
             case CharaMotionType.PW:
-                Motion.SetMotionNo(motionType, CharaMotionNo.PWF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.PWF,
                     CharaMotionFlag.JpOK | CharaMotionFlag.Muki | CharaMotionFlag.PW | CharaMotionFlag.DmOK,
                     Coordinate.DirectionZ);
                 break;
             // パス待ち歩き
             case CharaMotionType.PWWk:
                 // 歩き扱い
-                Motion.SetMotionNo(CharaMotionType.Wk, CharaMotionNo.PWWKF,
+                MotionSet.SetMotionNo(CharaMotionType.Wk, CharaMotionNo.PWWKF,
                     CharaMotionFlag.JpOK | CharaMotionFlag.Muki | CharaMotionFlag.PW | CharaMotionFlag.DmOK,
                     Coordinate.DirectionZ);
                 break;
             // パス待ちダッシュ
             case CharaMotionType.PWDs:
                 // ダッシュ扱い
-                Motion.SetMotionNo(CharaMotionType.Ds, CharaMotionNo.PWDS,
+                MotionSet.SetMotionNo(CharaMotionType.Ds, CharaMotionNo.PWDS,
                     CharaMotionFlag.Ds | CharaMotionFlag.JpOK | CharaMotionFlag.PW,
                     Coordinate.DirectionZ);
                 break;
             // スリップ
             case CharaMotionType.Sl:
-                Motion.SetMotionNo(motionType, CharaMotionNo.SL,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.SL,
                     CharaMotionFlag.Act | CharaMotionFlag.JpOK | CharaMotionFlag.Slip | CharaMotionFlag.AtCa,
                     Coordinate.DirectionZ);
                 break;
@@ -478,7 +478,7 @@ public partial class CharaBehavior
                     flag |= CharaMotionFlag.Ds;
                 }
 
-                Motion.SetMotionNo(type, motionNo, flag, Coordinate.DirectionZ);
+                MotionSet.SetMotionNo(type, motionNo, flag, Coordinate.DirectionZ);
             }
                 break;
             // ジャンプシュート、振り返りジャンプシュート、ジャンプパス
@@ -501,7 +501,7 @@ public partial class CharaBehavior
                     ? CharaMotionFlag.Ar | CharaMotionFlag.Act | CharaMotionFlag.Ds
                     : CharaMotionFlag.Ar | CharaMotionFlag.Act;
 
-                Motion.SetMotionNo(type, motionNo, flag, Coordinate.DirectionZ);
+                MotionSet.SetMotionNo(type, motionNo, flag, Coordinate.DirectionZ);
             }
                 break;
             // キャッチ
@@ -511,7 +511,7 @@ public partial class CharaBehavior
                     ? CharaMotionFlag.Act | CharaMotionFlag.Ds
                     : CharaMotionFlag.Act;
 
-                Motion.SetMotionNo(motionType, CharaMotionNo.CAF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.CAF,
                     flag, Coordinate.DirectionZ);
             }
                 break;
@@ -522,7 +522,7 @@ public partial class CharaBehavior
                     ? CharaMotionFlag.Ar | CharaMotionFlag.Act | CharaMotionFlag.Ds
                     : CharaMotionFlag.Ar | CharaMotionFlag.Act;
 
-                Motion.SetMotionNo(motionType, CharaMotionNo.CAF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.CAF,
                     flag, Coordinate.DirectionZ);
             }
                 break;
@@ -533,7 +533,7 @@ public partial class CharaBehavior
                     ? CharaMotionFlag.Act | CharaMotionFlag.Ds
                     : CharaMotionFlag.Act;
 
-                Motion.SetMotionNo(motionType, CharaMotionNo.DGF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.DGF,
                     flag, Coordinate.DirectionZ);
             }
                 break;
@@ -544,7 +544,7 @@ public partial class CharaBehavior
                     ? CharaMotionFlag.Ar | CharaMotionFlag.Act | CharaMotionFlag.Ds
                     : CharaMotionFlag.Ar | CharaMotionFlag.Act;
 
-                Motion.SetMotionNo(motionType, CharaMotionNo.JDGF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.JDGF,
                     flag, Coordinate.DirectionZ);
             }
                 break;
@@ -555,20 +555,20 @@ public partial class CharaBehavior
                 var motionNo = motionType is CharaMotionType.RoF
                     ? CharaMotionNo.ROF
                     : CharaMotionNo.ROB;
-                Motion.SetMotionNo(motionType, motionNo,
+                MotionSet.SetMotionNo(motionType, motionNo,
                     CharaMotionFlag.Dam | CharaMotionFlag.Dn, Coordinate.DirectionZ);
             }
                 break;
             case CharaMotionType.DRAW:
-                Motion.SetMotionNo(motionType, CharaMotionNo.DRAW,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.DRAW,
                     CharaMotionFlag.RES, Coordinate.DirectionZ);
                 break;
             case CharaMotionType.WIN:
-                Motion.SetMotionNo(motionType, CharaMotionNo.WIN,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.WIN,
                     CharaMotionFlag.RES, Coordinate.DirectionZ);
                 break;
             case CharaMotionType.LOSE:
-                Motion.SetMotionNo(motionType, CharaMotionNo.LOSE,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.LOSE,
                     CharaMotionFlag.RES, Coordinate.DirectionZ);
                 break;
             // オーバーライン
@@ -578,7 +578,7 @@ public partial class CharaBehavior
                     ? CharaMotionFlag.Act | CharaMotionFlag.Ds
                     : CharaMotionFlag.Act;
 
-                Motion.SetMotionNo(motionType, CharaMotionNo.JDGF,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.JDGF,
                     flag, Coordinate.DirectionZ);
             }
                 break;
@@ -607,7 +607,7 @@ public partial class CharaBehavior
             case CharaMotionType.DO2:
                 break;
             case CharaMotionType.ANG:
-                Motion.SetMotionNo(motionType, CharaMotionNo.ANG,
+                MotionSet.SetMotionNo(motionType, CharaMotionNo.ANG,
                     CharaMotionFlag.Ar | CharaMotionFlag.MTK | CharaMotionFlag.Dam | CharaMotionFlag.ANG,
                     Coordinate.DirectionZ);
                 break;
@@ -648,7 +648,7 @@ public partial class CharaBehavior
 
             case CharaMotionType.Ca:
             case CharaMotionType.JCa:
-                Catch.CatchCount.Clear();
+                CatchSet.CatchCount.Clear();
                 break;
             case CharaMotionType.OvL:
                 if (IsBallHolder)
@@ -665,7 +665,7 @@ public partial class CharaBehavior
     private void StartKoma(bool isInLoop)
     {
         var komaData = CurrentBaseMotionKoma;
-        Motion.StartKoma(komaData);
+        MotionSet.StartKoma(komaData);
         if (CurrentBaseMotionKoma.IsActionPoint)
         {
             InvokeActionPoint();
@@ -682,7 +682,7 @@ public partial class CharaBehavior
     /// </summary>
     private void GotoNextKoma()
     {
-        Motion.IncKomaNo();
+        MotionSet.IncKomaNo();
         StartKoma(false);
     }
 
@@ -691,7 +691,7 @@ public partial class CharaBehavior
     /// </summary>
     private void GotoLoopStartKoma()
     {
-        Motion.BackToLoopStartKomaNo();
+        MotionSet.BackToLoopStartKomaNo();
         StartKoma(true);
     }
 
@@ -708,19 +708,19 @@ public partial class CharaBehavior
             ? GetSettingJump(SettingJumpType.DashJump_vY0)
             : GetSettingJump(SettingJumpType.Jump_vY0);
 
-        Coordinate.VelocityY = velocityY;
+        CoordinateSet.VelocityY = velocityY;
 
         // 頂点タイミング
         var gravity = GetSettingGravity(SettingGravityType.GRV_Y);
         var topTiming = velocityY / gravity;
-        Air.TopTiming = topTiming;
+        AirSet.TopTiming = topTiming;
 
         if (IsControl == false
             && IsDashman == false
             && Air.IsVerticalJump)
         {
-            Coordinate.VelocityX = 0;
-            Coordinate.VelocityZ = 0;
+            CoordinateSet.VelocityX = 0;
+            CoordinateSet.VelocityZ = 0;
         }
         else if (Motion.HasFlag(CharaMotionFlag.Ds))
         {
@@ -739,7 +739,7 @@ public partial class CharaBehavior
                 ? GetSpeedRank(RankSpeedType.LDSJPX)
                 : GetSettingCourt(SetingCourtType.DashJpX);
 
-            Coordinate.VelocityX = xSign * dX;
+            CoordinateSet.VelocityX = xSign * dX;
 
             var zSign = 0;
             if (IsControl && IsCom == false)
@@ -754,7 +754,7 @@ public partial class CharaBehavior
                 }
             }
 
-            Coordinate.VelocityZ = zSign * DiagonalWalkJumpVelocityZ;
+            CoordinateSet.VelocityZ = zSign * DiagonalWalkJumpVelocityZ;
         }
         else
         {
@@ -802,8 +802,8 @@ public partial class CharaBehavior
                 dz = dz * Defines.Percent / Defines.JPGAIYAPER;
             }
 
-            Coordinate.VelocityX = dx;
-            Coordinate.VelocityZ = dz;
+            CoordinateSet.VelocityX = dx;
+            CoordinateSet.VelocityZ = dz;
         }
     }
 }

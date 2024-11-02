@@ -59,7 +59,7 @@ public interface ICharaDamageStateGetter
     int DownCountValue { get; }
     int RollCountValue { get; }
     int KagamiCountValue { get; }
-    int KagamiRevCountValue { get; }
+    int KagamiRevCount { get; }
     int KagamiRevKgNo { get; }
     bool IsHitStop { get; }
     int FumbleCountValue { get; }

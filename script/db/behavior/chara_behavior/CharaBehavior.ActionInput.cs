@@ -97,19 +97,19 @@ public partial class CharaBehavior
                         && (Court.ECDjp_f == false))
                     {
                         JumpSet(false, false, false); //ジャンプ
-                        SetCourt.ECDdg_f = true; //１回だけ
-                        SetCourt.ECDjp_f = true; //１回だけ
+                        CourtSet.ECDdg_f = true; //１回だけ
+                        CourtSet.ECDjp_f = true; //１回だけ
                     }
                     else if (MyPad.ButtonA.IsJustPressed) //よけ
                     {
                         SetMotionType(CharaMotionType.Dg);
-                        SetCourt.ECDdg_f = true; //１回だけ
+                        CourtSet.ECDdg_f = true; //１回だけ
                     }
 
                     if (Court.ECDdg_f)
                     {
-                        SetMove.LastDirectionX = Coordinate.DirectionX;
-                        SetMove.LastDirectionZ = Coordinate.DirectionZ;
+                        MoveSet.LastDirectionX = Coordinate.DirectionX;
+                        MoveSet.LastDirectionZ = Coordinate.DirectionZ;
                     }
                 }
 
@@ -127,8 +127,8 @@ public partial class CharaBehavior
                 {
                     if (CanselJump(false) && muki_f)
                     {
-                        SetCourt.ECDjp_f = true; //１回だけ
-                        SetCourt.ECDdg_f = true; //１回だけ
+                        CourtSet.ECDjp_f = true; //１回だけ
+                        CourtSet.ECDdg_f = true; //１回だけ
                     }
                     else
                     {
@@ -141,16 +141,16 @@ public partial class CharaBehavior
                 {
                     if (CanselJump(false) && muki_f)
                     {
-                        SetCourt.ECDjp_f = true; //１回だけ
-                        SetCourt.ECDdg_f = true; //１回だけ
+                        CourtSet.ECDjp_f = true; //１回だけ
+                        CourtSet.ECDdg_f = true; //１回だけ
                     }
                     else
                     {
                         //よけ限界時間
-                        Court.EnemyCortDodgeCount.Add();
+                        CourtSet.EnemyCortDodgeCount.Add();
                         //押しっぱなしで避け続けるようにする
                         if (MyPad.ButtonA.IsPressed
-                            && Court.EnemyCortDodgeCount.Value < GetSettingInfield(SettingInfieldType.EnCourtCrTime))
+                            && CourtSet.EnemyCortDodgeCount.Value < GetSettingInfield(SettingInfieldType.EnCourtCrTime))
                         {
                             // 他と合わせる
                             // MyAnime.Ani_c = 0;
@@ -168,7 +168,7 @@ public partial class CharaBehavior
         //ココでも可能にして大丈夫か
 
         if (Motion.HasFlag(CharaMotionFlag.Ar)
-            || Motion.MotionCount.Value >= GetSettingJump(SettingJumpType.JumpCanselTime)
+            || Motion.MotionCountValue >= GetSettingJump(SettingJumpType.JumpCanselTime)
             || !IsSelfControl
             || MyPad.IsJustPressedAbButton() == false)
         {
@@ -176,8 +176,8 @@ public partial class CharaBehavior
         }
 
         //キャンセルが掛かる前のモーションの向きに戻す
-        SetCoordinate.DirectionX = Move.LastDirectionX;
-        SetCoordinate.DirectionZ = Move.LastDirectionZ;
+        CoordinateSet.DirectionX = Move.LastDirectionX;
+        CoordinateSet.DirectionZ = Move.LastDirectionZ;
         JumpSet(false, canselDs_f, false); //ジャンプ
 
         return true;
@@ -198,14 +198,14 @@ public partial class CharaBehavior
 
         if (canselDs_f || Order.IsInfield == false) //外野はダッシュフラグ消す
         {
-            SetMotion.SubMotionFlag(CharaMotionFlag.Ds);
+            MotionSet.SubMotionFlag(CharaMotionFlag.Ds);
         }
 
         SetMotionType(CharaMotionType.JCr);
-        SetAir.IsVerticalJump = vjp_f; //垂直ジャンプ
-        SetAir.IsLongJump = vjp_f; //垂直ジャンプ
-        SetAir.IsLongJump = Move.IsDashAccelIOS; //ロングジャンプ
-        SetCoordinate.ZeroVelocity();
+        AirSet.IsVerticalJump = vjp_f; //垂直ジャンプ
+        AirSet.IsLongJump = vjp_f; //垂直ジャンプ
+        AirSet.IsLongJump = Move.IsDashAccelIOS; //ロングジャンプ
+        CoordinateSet.ZeroVelocity();
     }
 
     private void AutoDodgeAction()
@@ -233,10 +233,10 @@ public partial class CharaBehavior
                     if (Court.ECDdg_f == false)
                     {
                         //よけ限界時間
-                        Court.EnemyCortDodgeCount.Add();
+                        CourtSet.EnemyCortDodgeCount.Add();
                         //押しっぱなしで避け続けるようにする
                         if (MyPad.ButtonA.IsPressed
-                            && Court.EnemyCortDodgeCount.Value < GetSettingInfield(SettingInfieldType.EnCourtCrTime))
+                            && CourtSet.EnemyCortDodgeCount.Value < GetSettingInfield(SettingInfieldType.EnCourtCrTime))
                         {
                             // 他と合わせる
                             // MyAnime.Ani_c = 0;
@@ -369,11 +369,11 @@ public partial class CharaBehavior
         // 保持状況をチームに渡す
         CallTeamHoldBall();
 
-        SetDamage.KagamiCount.Clear();
-        SetAir.IsAirAction = false;
-        SetMove.LastDirectionX = DirectionXType.Neutral;
-        SetComOnly.IsCatchCounter = false;
-        SetComOnly.IsComTossPassGet = false;
+        DamageSet.KagamiCount.Clear();
+        AirSet.IsAirAction = false;
+        MoveSet.LastDirectionX = DirectionXType.Neutral;
+        ComOnlySet.IsCatchCounter = false;
+        ComOnlySet.IsComTossPassGet = false;
         Pass.MirrorShotLimitCount.Set(Defines.MIRLIM);
 
         HoldBallSetMirrorState();
@@ -382,7 +382,7 @@ public partial class CharaBehavior
         {
             ResetAutoDirection();
 
-            SetAuto.DirectionX = BallState.Coordinate.VelocityX switch
+            AutoSet.DirectionX = BallState.Coordinate.VelocityX switch
             {
                 > 0 => DirectionXType.Right,
                 < 0 => DirectionXType.Left,
@@ -391,7 +391,7 @@ public partial class CharaBehavior
 
             if (Math.Abs(BallState.Coordinate.VelocityZ) > Math.Abs(BallState.Coordinate.VelocityX))
             {
-                SetAuto.DirectionZ = BallState.Coordinate.VelocityZ switch
+                AutoSet.DirectionZ = BallState.Coordinate.VelocityZ switch
                 {
                     > 0 => DirectionZType.Backward,
                     < 0 => DirectionZType.Forward,
@@ -400,7 +400,7 @@ public partial class CharaBehavior
             }
             else
             {
-                SetAuto.DirectionZ = DirectionZType.Neutral;
+                AutoSet.DirectionZ = DirectionZType.Neutral;
             }
 
             MukiSetAuto();
@@ -418,7 +418,7 @@ public partial class CharaBehavior
         //拾った瞬間dbaFreeのときはその瞬間のタゲをカーソルキャラに
         //それ以外はfreeに戻ったタイミング
         //chCommon_.
-        SetShoot.Angle12 = GetMukiAglFromDirection();
+        ShootSet.Angle12 = GetMukiAglFromDirection();
 
         //最初のタゲを敵の操作キャラに
         //外野の可能性もでるのでなんとかする
@@ -1364,17 +1364,17 @@ public partial class CharaBehavior
         var lastDirectionX = Coordinate.DirectionX;
         var lastDirectionZ = Coordinate.DirectionZ;
 
-        SetMove.LastDirectionX = lastDirectionX;
-        SetMove.LastDirectionZ = lastDirectionZ;
+        MoveSet.LastDirectionX = lastDirectionX;
+        MoveSet.LastDirectionZ = lastDirectionZ;
 
-        SetCoordinate.DirectionX = Auto.DirectionX switch
+        CoordinateSet.DirectionX = Auto.DirectionX switch
         {
             DirectionXType.Left => DirectionXType.Left,
             DirectionXType.Right => DirectionXType.Right,
             _ => Coordinate.DirectionX
         };
 
-        SetCoordinate.DirectionZ = Auto.DirectionZ switch
+        CoordinateSet.DirectionZ = Auto.DirectionZ switch
         {
             DirectionZType.Forward => DirectionZType.Forward,
             DirectionZType.Backward => DirectionZType.Backward,
@@ -1389,7 +1389,7 @@ public partial class CharaBehavior
         if (isChanged)
         {
             //タゲも変える
-            SetShoot.Angle12 = GetMukiAglFromDirection();
+            ShootSet.Angle12 = GetMukiAglFromDirection();
         }
 
         return isChanged;
@@ -1398,14 +1398,14 @@ public partial class CharaBehavior
     // AUTO向き変え初期化
     private void ResetAutoDirection()
     {
-        SetAuto.DirectionX = Coordinate.DirectionX switch
+        AutoSet.DirectionX = Coordinate.DirectionX switch
         {
             DirectionXType.Left => DirectionXType.Left,
             DirectionXType.Neutral => DirectionXType.Neutral,
             DirectionXType.Right => DirectionXType.Right,
             _ => throw new ArgumentOutOfRangeException()
         };
-        SetAuto.DirectionZ = Coordinate.DirectionZ switch
+        AutoSet.DirectionZ = Coordinate.DirectionZ switch
         {
             DirectionZType.Forward => DirectionZType.Forward,
             DirectionZType.Neutral => DirectionZType.Neutral,
@@ -1472,11 +1472,11 @@ public partial class CharaBehavior
             case OrderFieldType.Outfield3:
                 if (isLeft)
                 {
-                    SetShoot.Angle12 = 9; //9 10 11 0
+                    ShootSet.Angle12 = 9; //9 10 11 0
                 }
                 else if (isRight)
                 {
-                    SetShoot.Angle12 = 11; //11 0 1 2
+                    ShootSet.Angle12 = 11; //11 0 1 2
                 }
                 break;
             case OrderFieldType.Outfield4:
@@ -1626,18 +1626,18 @@ public partial class CharaBehavior
                         && MyPad.KeyRight.IsPressed)
                     {
                         utrn_f = true;
-                        SetCoordinate.DirectionX = DirectionXType.Right;
-                        SetCoordinate.DirectionZ = DirectionZType.Neutral;
-                        SetShoot.Angle12 = GetMukiAglFromDirection();
+                        CoordinateSet.DirectionX = DirectionXType.Right;
+                        CoordinateSet.DirectionZ = DirectionZType.Neutral;
+                        ShootSet.Angle12 = GetMukiAglFromDirection();
                     }
                     else if (MySideIndex == 1
                              && (Coordinate.DirectionX == DirectionXType.Right)
                              && MyPad.KeyLeft.IsPressed)
                     {
                         utrn_f = true;
-                        SetCoordinate.DirectionX = DirectionXType.Left;
-                        SetCoordinate.DirectionZ = DirectionZType.Neutral;
-                        SetShoot.Angle12 = GetMukiAglFromDirection();
+                        CoordinateSet.DirectionX = DirectionXType.Left;
+                        CoordinateSet.DirectionZ = DirectionZType.Neutral;
+                        ShootSet.Angle12 = GetMukiAglFromDirection();
                     }
 
                     if (utrn_f)
@@ -1646,7 +1646,7 @@ public partial class CharaBehavior
                         //ダッシュに復帰
                         if (Motion.HasFlag(CharaMotionFlag.Slip))
                         {
-                            SetMotion.AddMotionFlag(CharaMotionFlag.Ds);
+                            MotionSet.AddMotionFlag(CharaMotionFlag.Ds);
                         }
                     }
                 }
@@ -1690,8 +1690,8 @@ public partial class CharaBehavior
         //モーション変更前の向き
         if (LastMukiKeep_f)
         {
-            SetMove.LastDirectionX = lastMuki;
-            SetMove.LastDirectionZ = lastMukiZ;
+            MoveSet.LastDirectionX = lastMuki;
+            MoveSet.LastDirectionZ = lastMukiZ;
         }
     }
 
@@ -1751,11 +1751,11 @@ public partial class CharaBehavior
 
         if (BallState.Coordinate.X < Coordinate.X)
         {
-            SetNextAuto.DirectionX = DirectionXType.Left;
+            NextAutoSet.DirectionX = DirectionXType.Left;
         }
         else if (BallState.Coordinate.X < Coordinate.X)
         {
-            SetNextAuto.DirectionX = DirectionXType.Right;
+            NextAutoSet.DirectionX = DirectionXType.Right;
         }
     }
 
@@ -1776,7 +1776,7 @@ public partial class CharaBehavior
                 return;
             }
             // パスの時はパス先を向く
-            SetNextAuto.DirectionZ = BallState.ThrowerOrderNo switch
+            NextAutoSet.DirectionZ = BallState.ThrowerOrderNo switch
             {
                 OrderIndexType.Outfield2 => DirectionZType.Backward,
                 OrderIndexType.Outfield3 => DirectionZType.Forward,
@@ -1789,24 +1789,24 @@ public partial class CharaBehavior
             {
                 if (BallState.Coordinate.Z < Coordinate.Z - Defines.DEFDISTZ)
                 {
-                    SetNextAuto.DirectionZ = DirectionZType.Forward;
+                    NextAutoSet.DirectionZ = DirectionZType.Forward;
                 }
                 else if (BallState.Coordinate.Z > Coordinate.Z - Defines.DEFDISTZ / 2
                          || NextAuto.DirectionZ == DirectionZType.Backward)
                 {
-                    SetNextAuto.DirectionZ = DirectionZType.Neutral;
+                    NextAutoSet.DirectionZ = DirectionZType.Neutral;
                 }
             }
             else
             {
                 if (BallState.Coordinate.Z > Coordinate.Z + Defines.DEFDISTZ)
                 {
-                    SetNextAuto.DirectionZ = DirectionZType.Backward;
+                    NextAutoSet.DirectionZ = DirectionZType.Backward;
                 }
                 else if (BallState.Coordinate.Z < Coordinate.Z + Defines.DEFDISTZ / 2
                          || NextAuto.DirectionZ == DirectionZType.Forward)
                 {
-                    SetNextAuto.DirectionZ = DirectionZType.Neutral;
+                    NextAutoSet.DirectionZ = DirectionZType.Neutral;
                 }
             }
         }
@@ -1815,8 +1815,8 @@ public partial class CharaBehavior
     //AUTO向き変え初期化
     void AutoMukiInit()
     {
-        SetAuto.DirectionX = Coordinate.DirectionX;
-        SetAuto.DirectionZ = Coordinate.DirectionZ;
+        AutoSet.DirectionX = Coordinate.DirectionX;
+        AutoSet.DirectionZ = Coordinate.DirectionZ;
     }
 
     void AirAttack()
@@ -1889,7 +1889,7 @@ public partial class CharaBehavior
 
     void GroundFree()
     {
-        if (MyPad.IsJustPressedAnyButton() && Catch.CatchWaitCount.Value == 0)
+        if (MyPad.IsJustPressedAnyButton() && Catch.CatchWaitCountValue == 0)
         {
             //キャッチもボール方向向くようにしてみる
             SetCatchMuki();
@@ -1908,7 +1908,7 @@ public partial class CharaBehavior
             SetMotionType(CharaMotionType.Dg);
             PlaySeCatchSe();
         }
-        else if (MyPad.ButtonB.IsJustPressed && Catch.CatchWaitCount.Value == 0) //キャッチ入力
+        else if (MyPad.ButtonB.IsJustPressed && Catch.CatchWaitCountValue == 0) //キャッチ入力
         {
             //キャッチもボール方向向くようにしてみる
             SetCatchMuki();
@@ -2062,7 +2062,7 @@ public partial class CharaBehavior
 
                 if (isSameDirection)
                 {
-                    SetAuto.DirectionX = (TgSt.Coordinate.X < futureX)
+                    AutoSet.DirectionX = (TgSt.Coordinate.X < futureX)
                         ? DirectionXType.Left
                         : DirectionXType.Right;
                 }
@@ -2070,7 +2070,7 @@ public partial class CharaBehavior
                 //ダッシュマンパス
                 if (dmPass_f)
                 {
-                    SetAuto.DirectionZ = DirectionZType.Neutral;
+                    AutoSet.DirectionZ = DirectionZType.Neutral;
                 }
                 else
                 {
@@ -2078,13 +2078,13 @@ public partial class CharaBehavior
 
                     if (Z_f)
                     {
-                        SetAuto.DirectionZ = TgSt.Coordinate.Z < futureZ
+                        AutoSet.DirectionZ = TgSt.Coordinate.Z < futureZ
                             ? DirectionZType.Forward
                             : DirectionZType.Backward;
                     }
                     else
                     {
-                        SetAuto.DirectionZ = DirectionZType.Neutral;
+                        AutoSet.DirectionZ = DirectionZType.Neutral;
                     }
                 }
 
@@ -2101,17 +2101,17 @@ public partial class CharaBehavior
                 switch (MyOrderIndex)
                 {
                     case OrderIndexType.Outfield2:
-                        SetAuto.DirectionZ = DirectionZType.Forward;
+                        AutoSet.DirectionZ = DirectionZType.Forward;
                         MukiSetAuto();
                         SetShTagFromMyShootAngle12(false);
                         break;
                     case OrderIndexType.Outfield3:
-                        SetAuto.DirectionZ = DirectionZType.Backward;
+                        AutoSet.DirectionZ = DirectionZType.Backward;
                         MukiSetAuto();
                         SetShTagFromMyShootAngle12(false);
                         break;
                     case OrderIndexType.Outfield4:
-                        SetAuto.DirectionX = MySideIndex == 0
+                        AutoSet.DirectionX = MySideIndex == 0
                             ? DirectionXType.Left
                             : DirectionXType.Right;
                         MukiSetAuto();
@@ -2184,8 +2184,8 @@ public partial class CharaBehavior
 
     private void SetAutoTarget(DirectionXType directionX, DirectionZType directionZ)
     {
-        SetAuto.DirectionX = directionX;
-        SetAuto.DirectionZ = directionZ;
+        AutoSet.DirectionX = directionX;
+        AutoSet.DirectionZ = directionZ;
         MukiSetAuto();
         SetShTagFromMyShootAngle12(false);
     }

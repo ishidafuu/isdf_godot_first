@@ -19,6 +19,7 @@ public class CharaCourtStateGetter : ICharaCourtStateGetter, ICharaCourtStateSet
 
     // 敵コート避け時間
     public UpCounter EnemyCortDodgeCount { get; set; }
+    public int EnemyCortDodgeCountValue => EnemyCortDodgeCount.Value;
 
     public void Initialize()
     {
@@ -37,7 +38,7 @@ public interface ICharaCourtStateGetter
     bool IsLandEnemyCourt { get; }
     bool ECDdg_f { get; }
     bool ECDjp_f { get; }
-    UpCounter EnemyCortDodgeCount { get; }
+    int EnemyCortDodgeCountValue { get; }
 }
 
 public interface ICharaCourtStateSetter
@@ -46,5 +47,5 @@ public interface ICharaCourtStateSetter
     bool IsLandEnemyCourt { set; }
     bool ECDdg_f { set; }
     bool ECDjp_f { set; }
-    UpCounter EnemyCortDodgeCount { set; }
+    UpCounter EnemyCortDodgeCount { get; }
 }

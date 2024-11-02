@@ -47,5 +47,6 @@ public interface ICharaDashmanStateSetter
     int TargetZ { set; }
     DownCounter EnabledPassCount { set; }
 
+    void Initialize();
     void DecrementEnabledPassCount();
 }

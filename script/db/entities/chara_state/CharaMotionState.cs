@@ -10,10 +10,14 @@ public class CharaMotionStateGetter : ICharaMotionStateGetter, ICharaMotionState
     public CharaMotionType MotionType { get; private set; }
     public CharaMotionFlag MotionFlag { get; private set; }
     public UpCounter MotionCount { get; private set; }
+    public int MotionCountValue => MotionCount.Value;
     public CharaMotionNo MotionNo { get; private set; }
     public UpCounter KomaNo { get; private set; }
+    public int KomaNoValue => KomaNo.Value;
     public UpCounter KomaFrameCount { get; set; }
+    public int KomaFrameCountValue => KomaFrameCount.Value;
     public DownCounter LoopCount { get; set; }
+    public int LoopCountValue => LoopCount.Value;
     public int LoopStartKomaNo { get; set; }
     public bool IsActionPoint { get; set; }
 
@@ -131,11 +135,11 @@ public interface ICharaMotionStateGetter
 {
     CharaMotionType MotionType { get; }
     CharaMotionFlag MotionFlag { get; }
-    UpCounter MotionCount { get; }
+    int MotionCountValue { get; }
     CharaMotionNo MotionNo { get; }
-    UpCounter KomaNo { get; }
-    UpCounter KomaFrameCount { get; }
-    DownCounter LoopCount { get; }
+    int KomaNoValue { get; }
+    int KomaFrameCountValue { get; }
+    int LoopCountValue { get; }
     int LoopStartKomaNo { get; }
     bool IsActionPoint { get; }
 
@@ -144,8 +148,9 @@ public interface ICharaMotionStateGetter
 
 public interface ICharaMotionStateSetter
 {
-    UpCounter KomaFrameCount { set; }
-    DownCounter LoopCount { set; }
+    UpCounter MotionCount { get; }
+    UpCounter KomaFrameCount { get; }
+    DownCounter LoopCount { get; }
     int LoopStartKomaNo { set; }
     bool IsActionPoint { set; }
 

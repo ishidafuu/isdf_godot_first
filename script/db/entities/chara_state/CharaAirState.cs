@@ -110,5 +110,7 @@ public interface ICharaAirStateSetter
     bool IsVerticalJump { set; }
     bool IsLongJump { set; }
 
+    
+    void void Initialize();
     void Progress(bool isProgressShootAirCount);
 }
