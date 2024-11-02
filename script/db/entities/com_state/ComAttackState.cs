@@ -3,7 +3,7 @@
 /// <summary>
 /// COMアクション思考に関するステータス
 /// </summary>
-public class ComAttackState
+public class ComAttackState : IComAttackStateGetter, IComAttackStateSetter
 {
     //キャラの手に渡った時点で初期化する系
     public int DmpawaitC { get; set; } // ダッシュマンパスインターバル用
@@ -27,4 +27,46 @@ public class ComAttackState
     public void Initialize()
     {
     }
+}
+
+public interface IComAttackStateGetter
+{
+    int DmpawaitC { get; }
+    bool QuickF { get; }
+    bool VnnojpF { get; }
+    bool ShF { get; }
+    bool PaF { get; }
+    bool JpF { get; }
+    bool DsF { get; }
+    bool OnestepF { get; }
+    bool TossF { get; }
+    bool DsposF { get; }
+    int WaitmoveC { get; }
+    bool DmpassF { get; }
+    int Getstep { get; }
+    int DsTagZ { get; }
+    int DsTagZF { get; }
+    OrderIndexType PaTag { get; }
+}
+
+public interface IComAttackStateSetter
+{
+    int DmpawaitC { set; }
+    bool QuickF { set; }
+    bool VnnojpF { set; }
+    bool ShF { set; }
+    bool PaF { set; }
+    bool JpF { set; }
+    bool DsF { set; }
+    bool OnestepF { set; }
+    bool TossF { set; }
+    bool DsposF { set; }
+    int WaitmoveC { set; }
+    bool DmpassF { set; }
+    int Getstep { set; }
+    int DsTagZ { set; }
+    int DsTagZF { set; }
+    OrderIndexType PaTag { set; }
+
+    void Initialize();
 }

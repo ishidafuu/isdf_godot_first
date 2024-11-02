@@ -1,6 +1,6 @@
 ﻿namespace db;
 
-public class BallPassState
+public class BallPassState : IBallPassStateGetter, IBallPassStateSetter
 {
     public int DistanceX { get; set; }
     public int DistanceZ { get; set; }
@@ -67,4 +67,59 @@ public class BallPassState
         PassArrivalCount = 0;
     }
 
+}
+
+public interface IBallPassStateGetter
+{
+    int DistanceX { get; }
+    int DistanceZ { get; }
+    int DistanceY { get; }
+    int DistanceXSign { get; }
+    int DistanceZSign { get; }
+    int DistanceYSign { get; }
+    PassLineType PassLineType { get; }
+    int TargetVelocityX { get; }
+    int TargetVelocityZ { get; }
+    int TargetVelocityY { get; }
+    int TargetGravity { get; }
+    int TargetDashmanMoveZTime { get; }
+    int TargetDashmanEndZ { get; }
+    bool IsTargetDashman { get; }
+    bool IsQuickPass { get; }
+    bool IsLate { get; }
+    bool IsStopDashman { get; }
+    int ArriveTime { get; }
+    int Alleyoop { get; }
+    int PassGravity { get; }
+    int PassSpeed { get; }
+    int HoldNo { get; }
+    int PassArrivalCount { get; }
+}
+
+public interface IBallPassStateSetter
+{
+    int DistanceX { set; }
+    int DistanceZ { set; }
+    int DistanceY { set; }
+    int DistanceXSign { set; }
+    int DistanceZSign { set; }
+    int DistanceYSign { set; }
+    PassLineType PassLineType { set; }
+    int TargetVelocityX { set; }
+    int TargetVelocityZ { set; }
+    int TargetVelocityY { set; }
+    int TargetGravity { set; }
+    int TargetDashmanMoveZTime { set; }
+    int TargetDashmanEndZ { set; }
+    bool IsTargetDashman { set; }
+    bool IsQuickPass { set; }
+    bool IsLate { set; }
+    bool IsStopDashman { set; }
+    int ArriveTime { set; }
+    int Alleyoop { set; }
+    int PassGravity { set; }
+    int PassSpeed { set; }
+    int HoldNo { set; }
+    int PassArrivalCount { set; }
+    void Initialize();
 }

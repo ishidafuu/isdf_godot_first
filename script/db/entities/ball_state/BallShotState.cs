@@ -1,6 +1,6 @@
 ﻿namespace db;
 
-public class BallShotState
+public class BallShotState : IBallShotStateGetter, IBallShotStateSetter
 {
     public ShotType ShotType { get; set; }
     public int ShotSpeed { get; set; }
@@ -58,4 +58,57 @@ public class BallShotState
         resttime = 0;
         orishno = 0;
     }
+}
+
+public interface IBallShotStateGetter
+{
+    ShotType ShotType { get; }
+    int ShotSpeed { get; }
+    int ShotRank { get; }
+    bool IsHShot { get; }
+    int HShotTiming { get; }
+    bool IsNoTargetHShot { get; }
+    int HShotAnime { get; }
+    int ShotPower { get; }
+    int ShotTech { get; }
+    bool IsNice { get; }
+    bool IsJumpShot { get; }
+    bool IsDashShot { get; }
+    bool IsNoTarget { get; }
+    int DistanceX { get; }
+    int DistanceZ { get; }
+    int DistanceY { get; }
+    int DistanceXSign { get; }
+    int DistanceZSign { get; }
+    int DistanceYSign { get; }
+    int resttime { get; }
+    int orishno { get; }
+    int crvtag { get; }
+}
+
+public interface IBallShotStateSetter
+{
+    ShotType ShotType { set; }
+    int ShotSpeed { set; }
+    int ShotRank { set; }
+    bool IsHShot { set; }
+    int HShotTiming { set; }
+    bool IsNoTargetHShot { set; }
+    int HShotAnime { set; }
+    int ShotPower { set; }
+    int ShotTech { set; }
+    bool IsNice { set; }
+    bool IsJumpShot { set; }
+    bool IsDashShot { set; }
+    bool IsNoTarget { set; }
+    int DistanceX { set; }
+    int DistanceZ { set; }
+    int DistanceY { set; }
+    int DistanceXSign { set; }
+    int DistanceZSign { set; }
+    int DistanceYSign { set; }
+    int resttime { set; }
+    int orishno { set; }
+    int crvtag { set; }
+    void Initialize();
 }

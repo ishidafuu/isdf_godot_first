@@ -4,7 +4,7 @@
 /// COM思考に関するステータス
 /// 一括で入っているんので、あとで細分化する
 /// </summary>
-public class ComMainState
+public class ComMainState : IComMainStateGetter, IComMainStateSetter
 {
     public bool ResseiF { get; set; } // 劣勢
     public bool ResseiF2 { get; set; } // じつは劣勢
@@ -124,5 +124,113 @@ public class ComMainState
 
     //ダッシュマン作戦中
     public bool Isdm() => DashmanF || DashmanFmWaitF;
-    
+
+}
+
+public interface IComMainStateGetter
+{
+    bool ResseiF { get; }
+    bool ResseiF2 { get; }
+    int FomRev { get; }
+    bool QuickF { get; }
+    bool CCaScF { get; }
+    bool HelpF { get; }
+    int DmWait { get; }
+    int DmFmWait { get; }
+    int DmStWait { get; }
+    int DmDelay { get; }
+    int DmPaItv { get; }
+    int ChMakeLoop { get; }
+    int BallTakePer { get; }
+    bool CatchF { get; }
+    bool DsKeepF { get; }
+    bool DsOneItvWaitF { get; }
+    int ComatcStF { get; }
+    int DmwaitC { get; }
+    int DmfmwaitC { get; }
+    int DmstwaitC { get; }
+    int DmclwaitC { get; }
+    int DmallC { get; }
+    int DmstwaitStF { get; }
+    bool DashmanF { get; }
+    bool DashmanFmWaitF { get; }
+    bool DashmanShOkF { get; }
+    bool DashStCtrlF { get; }
+    int DmcallNum { get; }
+    int DmcalledNum { get; }
+    int SetterNo { get; }
+    bool DmwaitOkF { get; }
+    bool CallOkF { get; }
+    bool CallNgF { get; }
+    bool SetterOkF { get; }
+    bool SetterBmokWaitF { get; }
+    bool SetterBmRsvF { get; }
+    bool SetterBmRsvGoF { get; }
+    int DmstopF { get; }
+    int TmwaitC { get; }
+    bool SgodpassF { get; }
+    int ShcgpassC { get; }
+    int ChpassC { get; }
+    int ComResetF { get; }
+    int ShAfterC { get; }
+    bool ChanceF { get; }
+    bool VnChanceF { get; }
+    bool NgChanceF { get; }
+    int VnTagNo { get; }
+    int NgTagNo { get; }
+}
+
+public interface IComMainStateSetter
+{
+    bool ResseiF { set; }
+    bool ResseiF2 { set; }
+    int FomRev { set; }
+    bool QuickF { set; }
+    bool CCaScF { set; }
+    bool HelpF { set; }
+    int DmWait { set; }
+    int DmFmWait { set; }
+    int DmStWait { set; }
+    int DmDelay { set; }
+    int DmPaItv { set; }
+    int ChMakeLoop { set; }
+    int BallTakePer { set; }
+    bool CatchF { set; }
+    bool DsKeepF { set; }
+    bool DsOneItvWaitF { set; }
+    int ComatcStF { set; }
+    int DmwaitC { set; }
+    int DmfmwaitC { set; }
+    int DmstwaitC { set; }
+    int DmclwaitC { set; }
+    int DmallC { set; }
+    int DmstwaitStF { set; }
+    bool DashmanF { set; }
+    bool DashmanFmWaitF { set; }
+    bool DashmanShOkF { set; }
+    bool DashStCtrlF { set; }
+    int DmcallNum { set; }
+    int DmcalledNum { set; }
+    int SetterNo { set; }
+    bool DmwaitOkF { set; }
+    bool CallOkF { set; }
+    bool CallNgF { set; }
+    bool SetterOkF { set; }
+    bool SetterBmokWaitF { set; }
+    bool SetterBmRsvF { set; }
+    bool SetterBmRsvGoF { set; }
+    int DmstopF { set; }
+    int TmwaitC { set; }
+    bool SgodpassF { set; }
+    int ShcgpassC { set; }
+    int ChpassC { set; }
+    int ComResetF { set; }
+    int ShAfterC { set; }
+    bool ChanceF { set; }
+    bool VnChanceF { set; }
+    bool NgChanceF { set; }
+    int VnTagNo { set; }
+    int NgTagNo { set; }
+
+    void Initialize();
 }

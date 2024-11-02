@@ -3,10 +3,10 @@
 /// <summary>
 /// オーダー番号に関するステータス
 /// </summary>
-public class TeamOrderState
+public class TeamOrderState : ITeamOrderStateGetter, ITeamOrderStateSetter
 {
-    public int[] MemberOfOrder { get; private set; } = new int[Defines.MemberCount];
-    public int[] OrderOfMember { get; private set; } = new int[Defines.MemberCount];
+    public int[] MemberOfOrder { get; } = new int[Defines.MemberCount];
+    public int[] OrderOfMember { get; } = new int[Defines.MemberCount];
 
     public int MemberIndex(int orderIndex)
     {
@@ -31,4 +31,17 @@ public class TeamOrderState
         OrderOfMember[memberA] = orderB;
         OrderOfMember[memberB] = orderA;
     }
+}
+
+public interface ITeamOrderStateGetter
+{
+    int[] MemberOfOrder { get; }
+    int[] OrderOfMember { get; }
+    int MemberIndex(int orderIndex);
+    int OrderIndex(int memberIndex);
+}
+
+public interface ITeamOrderStateSetter
+{
+    void ChangeOrder(int orderA, int orderB);
 }

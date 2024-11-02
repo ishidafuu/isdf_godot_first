@@ -2,7 +2,7 @@
 
 namespace db;
 
-public class ShotElementState
+public class ShotElementState : IShotElementStateGetter, IShotElementStateSetter
 {
     public int ShotId { get; set; }
     public int[] Element { get; set; } = new int[Defines.HsElemMax];
@@ -21,4 +21,25 @@ public class ShotElementState
         Array.Clear(Element, 0, Element.Length);
         Array.Clear(Rarity, 0, Rarity.Length);
     }
+}
+
+public interface IShotElementStateGetter
+{
+    int ShotId { get; }
+    int[] Element { get; }
+    int[] Rarity { get; }
+    int Power { get; }
+    int Spin { get; }
+    int OriginalNameNo { get; }
+}
+
+public interface IShotElementStateSetter
+{
+    int ShotId { set; }
+    int[] Element { set; }
+    int[] Rarity { set; }
+    int Power { set; }
+    int Spin { set; }
+    int OriginalNameNo { set; }
+    void Initialize();
 }

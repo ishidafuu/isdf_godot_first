@@ -3,7 +3,7 @@
 /// <summary>
 /// チームに関するステータス
 /// </summary>
-public class TeamMainState
+public class TeamMainState : ITeamMainStateGetter, ITeamMainStateSetter
 {
     public ResultType RType { get; set; } // 試合結果
     public bool ComOverTimeF { get; set; } // ＣＯＭ思考強制シュート
@@ -63,7 +63,7 @@ public class TeamMainState
     public bool CallingDashmanF { get; set; } // Calling開始
     public bool CallingDashmanF2 { get; set; } // Switchでオン
     public bool CallingDashmanF3 { get; set; } // 発動
-    public int CallingNo;
+    public int CallingNo { get; set; }
     public int RdNo { get; set; } // チームリーダー番号（posNoではなく、charNo）
     public int ComNo { get; set; } // リーダーに応じたＣＯＭ番号
     public int FomNo { get; set; }
@@ -134,4 +134,123 @@ public class TeamMainState
         DamC = 0;
         Dampos = 0;
     }
+}
+
+public interface ITeamMainStateGetter
+{
+    ResultType RType { get; }
+    bool ComOverTimeF { get; }
+    bool RsvResetComF { get; }
+    bool CallingDmResetF { get; }
+    bool CallingRdCgF { get; }
+    OrderIndexType ControlOrderIndex { get; }
+    int DmCallmanNo { get; }
+    int CtrlRsvNo { get; }
+    int CvrNo { get; }
+    int Cvr2No { get; }
+    int GetNo { get; }
+    int NoInputC { get; }
+    bool IsCancelActionInput { get; }
+    int DrwHsNo { get; }
+    int DrwHsC { get; }
+    int DrwPosX { get; }
+    int BallCrtSideL { get; }
+    int BallCrtPosL { get; }
+    int BallCrtSideZ { get; }
+    int BallCrtPosZ { get; }
+    int DashmanCallNo { get; }
+    bool DashmanAllF { get; }
+    OrderIndexType DashmanNoBm { get; }
+    DashmanType DashmanType { get; }
+    int DashmanCallC { get; }
+    int IoChangeC { get; }
+    int UseMotoGaiyaC { get; }
+    int DeadC { get; }
+    int TmUedaC { get; }
+    int DbgSerifuPNo { get; }
+    int DbgSerifuTypeNo { get; }
+    bool OfsideF { get; }
+    bool NosideF { get; }
+    bool RandresetF { get; }
+    bool GetJpballF { get; }
+    bool SideMaruhiF { get; }
+    bool MaruhiCallF { get; }
+    bool ManSideF { get; }
+    bool ManSidePadNo { get; }
+    bool OmksSideF { get; }
+    int OmakaseC { get; }
+    int EncrC { get; }
+    int TutoWaitC { get; }
+    bool CallingDashmanF { get; }
+    bool CallingDashmanF2 { get; }
+    bool CallingDashmanF3 { get; }
+    int CallingNo { get; }
+    int RdNo { get; }
+    int ComNo { get; }
+    int FomNo { get; }
+    int LastBallmanNo { get; }
+    bool NeedTimeRedrawF { get; }
+    bool SmartF { get; }
+    int DamC { get; }
+    int Dampos { get; }
+}
+
+public interface ITeamMainStateSetter
+{
+    ResultType RType { set; }
+    bool ComOverTimeF { set; }
+    bool RsvResetComF { set; }
+    bool CallingDmResetF { set; }
+    bool CallingRdCgF { set; }
+    OrderIndexType ControlOrderIndex { set; }
+    int DmCallmanNo { set; }
+    int CtrlRsvNo { set; }
+    int CvrNo { set; }
+    int Cvr2No { set; }
+    int GetNo { set; }
+    int NoInputC { set; }
+    bool IsCancelActionInput { set; }
+    int DrwHsNo { set; }
+    int DrwHsC { set; }
+    int DrwPosX { set; }
+    int BallCrtSideL { set; }
+    int BallCrtPosL { set; }
+    int BallCrtSideZ { set; }
+    int BallCrtPosZ { set; }
+    int DashmanCallNo { set; }
+    bool DashmanAllF { set; }
+    OrderIndexType DashmanNoBm { set; }
+    DashmanType DashmanType { set; }
+    int DashmanCallC { set; }
+    int IoChangeC { set; }
+    int UseMotoGaiyaC { set; }
+    int DeadC { set; }
+    int TmUedaC { set; }
+    int DbgSerifuPNo { set; }
+    int DbgSerifuTypeNo { set; }
+    bool OfsideF { set; }
+    bool NosideF { set; }
+    bool RandresetF { set; }
+    bool GetJpballF { set; }
+    bool SideMaruhiF { set; }
+    bool MaruhiCallF { set; }
+    bool ManSideF { set; }
+    bool ManSidePadNo { set; }
+    bool OmksSideF { set; }
+    int OmakaseC { set; }
+    int EncrC { set; }
+    int TutoWaitC { set; }
+    bool CallingDashmanF { set; }
+    bool CallingDashmanF2 { set; }
+    bool CallingDashmanF3 { set; }
+    int CallingNo { set; }
+    int RdNo { set; }
+    int ComNo { set; }
+    int FomNo { set; }
+    int LastBallmanNo { set; }
+    bool NeedTimeRedrawF { set; }
+    bool SmartF { set; }
+    int DamC { set; }
+    int Dampos { set; }
+    void Initialize();
 }

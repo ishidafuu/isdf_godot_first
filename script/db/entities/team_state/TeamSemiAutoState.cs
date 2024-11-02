@@ -3,7 +3,7 @@
 /// <summary>
 /// セミオートに関するステータス
 /// </summary>
-public class TeamSemiAutoState
+public class TeamSemiAutoState : ITeamSemiAutoStateGetter, ITeamSemiAutoStateSetter
 {
     //セミオート用追加変数
     public bool SemiF { get; set; } // セミオート
@@ -28,4 +28,31 @@ public class TeamSemiAutoState
         SemiCaPos = 0;
         SemiNCaLen = 0;
     }
+}
+
+public interface ITeamSemiAutoStateGetter
+{
+    bool SemiF { get; }
+    bool SemiOrderF { get; }
+    int SemiCatchC { get; }
+    int SemiCatchingC { get; }
+    bool SemiShotF { get; }
+    int SemiShotC { get; }
+    int SemiAi { get; }
+    int SemiCaPos { get; }
+    int SemiNCaLen { get; }
+}
+
+public interface ITeamSemiAutoStateSetter
+{
+    bool SemiF { set; }
+    bool SemiOrderF { set; }
+    int SemiCatchC { set; }
+    int SemiCatchingC { set; }
+    bool SemiShotF { set; }
+    int SemiShotC { set; }
+    int SemiAi { set; }
+    int SemiCaPos { set; }
+    int SemiNCaLen { set; }
+    void Initialize();
 }

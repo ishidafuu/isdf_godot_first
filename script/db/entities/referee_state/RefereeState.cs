@@ -1,6 +1,6 @@
 ﻿namespace db;
 
-public class RefereeState
+public class RefereeState : IRefereeStateGetter, IRefereeStateSetter
 {
 
     // //BOOL TutoEnd_f;
@@ -85,7 +85,6 @@ public class RefereeState
     public int act_c { get; set; }
     public uint PlayTime_c { get; set; }
     public bool isTimeAttackMode_ { get; set; }
-    
 
     public void Initialize()
     {
@@ -133,4 +132,90 @@ public class RefereeState
     {
         return ShiaiPahse == ShiaiPhase.Shiai;
     }
+}
+
+public interface IRefereeStateGetter
+{
+    bool TutoEnd_f { get; }
+    bool Demo_f { get; }
+    bool DisCnct_f { get; }
+    bool IsGameSet { get; }
+    bool JglSE_f { get; }
+    bool NoSE_f { get; }
+    bool Option_f { get; }
+    bool PauseStepNext_f { get; }
+    bool PauseStep_f { get; }
+    bool Pause_f { get; }
+    bool Prev_f { get; }
+    bool Suddun_f { get; }
+    bool TimeUp_f { get; }
+    bool Tour_f { get; }
+    bool TutoGameAct_f { get; }
+    bool TutoSend_f { get; }
+    bool actbtn_f { get; }
+    bool prevreturn_f { get; }
+    DirectionXType Muki { get; }
+    RefereeMotion Motion { get; }
+    ShiaiPhase ShiaiPahse { get; }
+    int Ani_c { get; }
+    int DrawLimitTime { get; }
+    int JglTime { get; }
+    int Jgl_c { get; }
+    int LimitTime { get; }
+    int M_c { get; }
+    int PauseCsrPos { get; }
+    int Slow_c { get; }
+    int TutoNo { get; }
+    int TutoRcv { get; }
+    int TutoSend { get; }
+    int Whistle_c { get; }
+    int WinSide { get; }
+    int Win_c { get; }
+    int act_c { get; }
+    uint PlayTime_c { get; }
+    bool isTimeAttackMode_ { get; }
+    bool IsShiai();
+}
+
+public interface IRefereeStateSetter
+{
+    bool TutoEnd_f { set; }
+    bool Demo_f { set; }
+    bool DisCnct_f { set; }
+    bool IsGameSet { set; }
+    bool JglSE_f { set; }
+    bool NoSE_f { set; }
+    bool Option_f { set; }
+    bool PauseStepNext_f { set; }
+    bool PauseStep_f { set; }
+    bool Pause_f { set; }
+    bool Prev_f { set; }
+    bool Suddun_f { set; }
+    bool TimeUp_f { set; }
+    bool Tour_f { set; }
+    bool TutoGameAct_f { set; }
+    bool TutoSend_f { set; }
+    bool actbtn_f { set; }
+    bool prevreturn_f { set; }
+    DirectionXType Muki { set; }
+    RefereeMotion Motion { set; }
+    ShiaiPhase ShiaiPahse { set; }
+    int Ani_c { set; }
+    int DrawLimitTime { set; }
+    int JglTime { set; }
+    int Jgl_c { set; }
+    int LimitTime { set; }
+    int M_c { set; }
+    int PauseCsrPos { set; }
+    int Slow_c { set; }
+    int TutoNo { set; }
+    int TutoRcv { set; }
+    int TutoSend { set; }
+    int Whistle_c { set; }
+    int WinSide { set; }
+    int Win_c { set; }
+    int act_c { set; }
+    uint PlayTime_c { set; }
+    bool isTimeAttackMode_ { set; }
+    void Initialize();
 }

@@ -3,7 +3,7 @@
 /// <summary>
 /// 座標と移動に関する状態を管理するクラス
 /// </summary>
-public class CoordinateState : ICoordinateState
+public class CoordinateState : ICoordinateStateGetter, ICoordinateStateSetter
 {
     public DirectionXType DirectionX { get; set; }
     public DirectionZType DirectionZ { get; set; }
@@ -109,7 +109,7 @@ public class CoordinateState : ICoordinateState
     }
 }
 
-public interface ICoordinateState
+public interface ICoordinateStateGetter
 {
     DirectionXType DirectionX { get; }
     DirectionZType DirectionZ { get; }
@@ -123,4 +123,27 @@ public interface ICoordinateState
     DownCounter FrictionCount { get; }
     int Priority { get; }
     Rect HitBox { get; }
+    int SignVelocityX();
+    int SignVelocityZ();
+    int DistanceXZ(CoordinateState target);
+    int DistanceXZ(int targetX, int targetZ);
+}
+
+public interface ICoordinateStateSetter
+{
+    DirectionXType DirectionX { set; }
+    DirectionZType DirectionZ { set; }
+    DirectionXType DashDirection { set; }
+    int X { set; }
+    int Y { set; }
+    int Z { set; }
+    int VelocityX { set; }
+    int VelocityY { set; }
+    int VelocityZ { set; }
+    DownCounter FrictionCount { set; }
+    int Priority { set; }
+    Rect HitBox { set; }
+    void Initialize();
+    void ZeroVelocity();
+    void SetGameOverCoordinate(int sideNo, bool isInfield);
 }
