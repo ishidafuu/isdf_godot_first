@@ -15,11 +15,11 @@ public partial class CharaBehavior
 
         PassSet.DecrementMirrorShotLimitCount();
         LiveSet.IncrementBiorhythmCount();
-        Dashman.DecrementEnabledPassCount();
+        DashmanSet.DecrementEnabledPassCount();
 
         if (BallState.MotionType == BallMotionType.Shoot)
         {
-            BallEffect.DecrementHitMTimeCount();
+            BallEffectSet.hitMTime_cd.Sub();
             // ボールと重なっていた過去を消す処理は、モーションがダウンから復帰したタイミングと、シュート開始のタイミングで行う
         }
         else
@@ -33,26 +33,26 @@ public partial class CharaBehavior
         {
             var isProgressShootAirCount = Motion.MotionType != CharaMotionType.JSh
                                           && Motion.MotionType != CharaMotionType.JCr;
-            Air.Progress(isProgressShootAirCount);
+            AirSet.Progress(isProgressShootAirCount);
         }
 
         if (Motion.MotionType == CharaMotionType.Ds)
         {
-            Move.IncrementMadStepCount();
+            MoveSet.IncrementMadStepCount();
         }
 
         if (IsShotTarget && Motion.MotionType != CharaMotionType.ANG)
         {
-            View.IncrementTargetCount();
+            ViewSet.IncrementTargetCount();
         }
         else if (IsPassTarget && Motion.MotionType != CharaMotionType.ANG)
         {
             // パスターゲットのときは初期値２０から？
-            View.IncrementTargetCount();
+            ViewSet.IncrementTargetCount();
         }
         else
         {
-            View.ResetTargetCount();
+            ViewSet.ResetTargetCount();
         }
 
         var isProgressAnimation = true;
@@ -132,13 +132,13 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.DnHF:
             case CharaMotionType.DnHB:
-                Damage.DownCount.AddUntil(GetHpRank(RankHpType.RevFrm));
+                DamageSet.DownCount.AddUntil(GetHpRank(RankHpType.RevFrm));
                 break;
             case CharaMotionType.KG:
                 break;
             case CharaMotionType.DnF:
             case CharaMotionType.DnB:
-                if (Damage.DownCount.AddUntil(GetHpRank(RankHpType.RevFrm)))
+                if (DamageSet.DownCount.AddUntil(GetHpRank(RankHpType.RevFrm)))
                 {
                     SetMotionType(CharaMotionType.DRv);
                 }
@@ -151,7 +151,7 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.FB:
                 // スリップ中は進行なし
-                if (Coordinate.FrictionCount.Value != 0)
+                if (CoordinateSet.FrictionCount.Value != 0)
                 {
                     isProgressAnimation = false;
                 }
@@ -197,7 +197,7 @@ public partial class CharaBehavior
                 // 指が離れたらクイックパス
                 if (IsSelfControl && MyPad.ButtonA.IsPressed == false)
                 {
-                    Pass.IsTossPass = false;
+                    PassSet.IsTossPass = false;
                 }
 
                 if (Pass.PassStandWaitCount.Sub() == false)
@@ -208,16 +208,16 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.Ca:
             case CharaMotionType.JCa:
-                if (Catch.CatchCount.Value > 0)
+                if (CatchSet.CatchCount.Value > 0)
                 {
-                    if (IsOverCatchFrame(Catch.CatchCount.Value))
+                    if (IsOverCatchFrame(Catch.CatchCountValue))
                     {
-                        Catch.CatchCount.Clear();
+                        CatchSet.CatchCount.Clear();
                         GotoNextKoma();
                     }
                     else
                     {
-                        Catch.CatchCount.Add();
+                        CatchSet.CatchCount.Add();
                     }
 
                     isProgressAnimation = false;
@@ -229,12 +229,12 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.RoF:
             case CharaMotionType.RoB:
-                if (Damage.RollCount.Sub())
+                if (DamageSet.RollCount.Sub())
                 {
                     var isDead = Live.Hp <= 0 && MyTeamState.IsAllOut == false;
                     if (isDead)
                     {
-                        Live.IsAngel = true;
+                        LiveSet.IsAngel = true;
                         CallTeamCheckChangePos();
                         // TeamBehaviorがAngelにするかどうか決める
                     }
@@ -243,7 +243,7 @@ public partial class CharaBehavior
                         SetMotionType(Motion.MotionType == CharaMotionType.RoF
                             ? CharaMotionType.DnB
                             : CharaMotionType.DnF);
-                        Coordinate.ZeroVelocity();
+                        CoordinateSet.ZeroVelocity();
                     }
                 }
                 break;
@@ -281,7 +281,7 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.ANG:
                 // 天使になるタイミングで設定するように修正する
-                Live.IsAlive = false;
+                LiveSet.IsAlive = false;
                 isProgressAnimation = false;
                 break;
             default:
@@ -317,10 +317,10 @@ public partial class CharaBehavior
     /// </summary>
     private void ProgressFrame(bool isForce)
     {
-        Motion.KomaFrameCount.Add();
+        MotionSet.KomaFrameCount.Add();
 
         //フレーム終了の時間がきた、もしくは強制次フレーム
-        if (isForce || Motion.KomaFrameCount.Value >= CurrentBaseMotionKoma.DefFrm)
+        if (isForce || MotionSet.KomaFrameCount.Value >= CurrentBaseMotionKoma.DefFrm)
         {
             bool isLoop = false;
             switch (CurrentBaseMotionKoma.LoopSt)
@@ -328,7 +328,7 @@ public partial class CharaBehavior
                 // ループ終了
                 case enBMLoopSt.Ed:
                 case enBMLoopSt.StEd:
-                    if (Motion.LoopCount.Sub() == false)
+                    if (MotionSet.LoopCount.Sub() == false)
                     {
                         isLoop = true;
                     }
@@ -384,7 +384,7 @@ public partial class CharaBehavior
             case CharaMotionType.KG:
                 if (IsKagami)
                 {
-                    Damage.KagamiCount.Sub();
+                    DamageSet.KagamiCount.Sub();
                     SetMotionType(CharaMotionType.KG);
                 }
                 else

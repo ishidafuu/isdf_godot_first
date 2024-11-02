@@ -43,7 +43,7 @@ public class CharaAirStateGetter : ICharaAirStateGetter, ICharaAirStateSetter
 
     // 垂直ジャンプ
     public bool IsVerticalJump { get; set; }
-    
+
     // ロングジャンプ
     public bool IsLongJump { get; set; }
 
@@ -110,7 +110,6 @@ public interface ICharaAirStateSetter
     bool IsVerticalJump { set; }
     bool IsLongJump { set; }
 
-    
-    void void Initialize();
+    void Initialize();
     void Progress(bool isProgressShootAirCount);
 }

@@ -99,11 +99,6 @@ public class CharaBallEffectStateGetter : ICharaBallEffectStateGetter, ICharaBal
         FlySkip = 0;
         FlySkip_c = 0;
     }
-
-    public void DecrementHitMTimeCount()
-    {
-        hitMTime_cd.Sub();
-    }
 }
 
 public interface ICharaBallEffectStateGetter
@@ -185,7 +180,7 @@ public interface ICharaBallEffectStateSetter
     int comboMax { set; }
     int comboNoHitTime_c { set; }
     bool flySpGrav_f { set; }
-    DownCounter hitMTime_cd { set; }
+    DownCounter hitMTime_cd { get; }
     int hitMltDam { set; }
     bool noDmg_f { set; }
     int hitSound { set; }
