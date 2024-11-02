@@ -7,15 +7,15 @@ public partial class CharaBehavior
     /// <summary>
     /// アウト扱い
     /// </summary>
-    public bool IsOut => MyState.Live.Hp == 0 || MyState.Live.IsAngel;
+    public bool IsOut => RawState.Live.Hp == 0 || RawState.Live.IsAngel;
     
     /// <summary>
     /// サイド操作権を渡せるキャラか
     /// 死亡していない、ダメージ中でない、手動操作中でない
     /// </summary>
-    public bool CanControl => MyState.Live.IsDead == false
-                              && MyState.Motion.HasFlag(CharaMotionFlag.Dam) == false
-                              && MyState.Input.IsManualControl == false;
+    public bool CanControl => RawState.Live.IsDead == false
+                              && RawState.Motion.HasFlag(CharaMotionFlag.Dam) == false
+                              && RawState.Input.IsManualControl == false;
 
     /// <summary>
     /// 操作権キャラ
@@ -25,12 +25,12 @@ public partial class CharaBehavior
     /// <summary>
     /// COM操作中かどうか
     /// </summary>
-    public bool IsCom => MyState.Input.IsManualControl == false || MyTeamState.IsCom;
+    public bool IsCom => RawState.Input.IsManualControl == false || MyTeamState.IsCom;
 
     /// <summary>
     /// 自分で操作するキャラかどうか
     /// </summary>
-    public bool IsSelfControl => MyState.Input.IsManualControl
+    public bool IsSelfControl => RawState.Input.IsManualControl
                                  || (IsControl && IsCom == false);
 
     /// <summary>
@@ -53,35 +53,35 @@ public partial class CharaBehavior
     /// </summary>
     public bool IsPassWait => IsPassTarget
                               && IsBallHolder == false
-                              && MyState.Input.IsManualControl;
+                              && RawState.Input.IsManualControl;
 
     /// <summary>
     /// かがみ中（予約中）かどうか
     /// </summary>
-    public bool IsKagami => MyState.Damage.KagamiCount.Value > 0;
+    public bool IsKagami => RawState.Damage.KagamiCount.Value > 0;
 
     /// <summary>
     /// 現在のモーションデータ
     /// </summary>
     /// <returns></returns>
-    public BaseMotionData CurrentBaseMotionData => MasterManager.Instance.BaseMotionMaster.Get(MyState.Motion.MotionType);
+    public BaseMotionData CurrentBaseMotionData => MasterManager.Instance.BaseMotionMaster.Get(RawState.Motion.MotionType);
 
     /// <summary>
     /// 現在のモーションのコマデータ
     /// </summary>
     /// <returns></returns>
-    public BaseMotionKomaData CurrentBaseMotionKoma => CurrentBaseMotionData.Get(MyState.Motion.KomaNo.Value);
+    public BaseMotionKomaData CurrentBaseMotionKoma => CurrentBaseMotionData.Get(RawState.Motion.KomaNo.Value);
 
     /// <summary>
     /// 現在のモーションのコマデータ
     /// </summary>
     /// <returns></returns>
-    public BaseMotionKomaData NextBaseMotionKoma => CurrentBaseMotionData.Get(MyState.Motion.KomaNo.Value);
+    public BaseMotionKomaData NextBaseMotionKoma => CurrentBaseMotionData.Get(RawState.Motion.KomaNo.Value);
 
     /// <summary>
     /// 最終コマか
     /// </summary>
-    public bool IsLastKoma => MyState.Motion.KomaNo.Value == CurrentBaseMotionData.KomaCount - 1;
+    public bool IsLastKoma => RawState.Motion.KomaNo.Value == CurrentBaseMotionData.KomaCount - 1;
 
     /// <summary>
     /// ダッシュマン（メンバー操作も含む）
@@ -96,16 +96,16 @@ public partial class CharaBehavior
                 return false;
             }
 
-            if (MyState.Auto.AutoType == AutoType.Dashman)
+            if (RawState.Auto.AutoType == AutoType.Dashman)
             {
                 return true;
             }
 
             //メンバー操作＆下降開始まで＆（敵方向ダッシュＯＲコート前方ジャンプ）でダッシュマン扱い
-            var isForwardJump = MyState.Motion.HasFlag(CharaMotionFlag.Ds)
-                                && MyState.Motion.HasFlag(CharaMotionFlag.Ar)
-                                && MyState.Motion.MotionType != CharaMotionType.Sl
-                                && MyState.Coordinate.VelocityY > Defines.DIVELIMDY
+            var isForwardJump = RawState.Motion.HasFlag(CharaMotionFlag.Ds)
+                                && RawState.Motion.HasFlag(CharaMotionFlag.Ar)
+                                && RawState.Motion.MotionType != CharaMotionType.Sl
+                                && RawState.Coordinate.VelocityY > Defines.DIVELIMDY
                                 && LeftCourtX > Defines.DBCRT_CLXL;
 
             // 前方ジャンプ状態であればダッシュマン扱い（ミラーパスの対象とするため）
@@ -115,12 +115,12 @@ public partial class CharaBehavior
             }
 
             // 敵コート方向へのダッシュ
-            var isForwardDash = MyState.Motion.MotionType == CharaMotionType.Ds
-                                && ((MySideIndex == 0 && MyState.Coordinate.DashDirection == DirectionXType.Right)
-                                    || (MySideIndex == 1 && MyState.Coordinate.DashDirection == DirectionXType.Left));
+            var isForwardDash = RawState.Motion.MotionType == CharaMotionType.Ds
+                                && ((MySideIndex == 0 && RawState.Coordinate.DashDirection == DirectionXType.Right)
+                                    || (MySideIndex == 1 && RawState.Coordinate.DashDirection == DirectionXType.Left));
 
             // マニュアル操作ダッシュマン
-            return MyState.Input.IsManualControl
+            return RawState.Input.IsManualControl
                    && IsBallHolder == false
                    && (isForwardDash || isForwardJump);
         }
@@ -136,10 +136,10 @@ public partial class CharaBehavior
         get
         {
             // T0の外野とT1の内野は右に居るので反転
-            var isLeftCrt = MyState.Order.IsInfield ^ (MySideIndex != 0);
+            var isLeftCrt = RawState.Order.IsInfield ^ (MySideIndex != 0);
             return isLeftCrt
-                ? MyState.Coordinate.X
-                : Defines.DBCRT_W - MyState.Coordinate.X;
+                ? RawState.Coordinate.X
+                : Defines.DBCRT_W - RawState.Coordinate.X;
         }
     }
 
@@ -148,12 +148,12 @@ public partial class CharaBehavior
     /// </summary>
     public bool IsFree(bool isCheckAutoType)
     {
-        if (MyState.Live.IsDead
-            || !MyState.Live.IsAlive
+        if (RawState.Live.IsDead
+            || !RawState.Live.IsAlive
             || IsKagami
-            || MyState.Motion.HasFlag(CharaMotionFlag.Dam)
-            || MyState.Motion.HasFlag(CharaMotionFlag.ANG)
-            || MyState.Motion.HasFlag(CharaMotionFlag.PHit))
+            || RawState.Motion.HasFlag(CharaMotionFlag.Dam)
+            || RawState.Motion.HasFlag(CharaMotionFlag.ANG)
+            || RawState.Motion.HasFlag(CharaMotionFlag.PHit))
         {
             return false;
         }
@@ -161,7 +161,7 @@ public partial class CharaBehavior
         if (isCheckAutoType) //オートの時
         {
             //どれかならＯＫ
-            return MyState.Auto.AutoType
+            return RawState.Auto.AutoType
                 is AutoType.Free
                 or AutoType.Get
                 or AutoType.Alleyoop
@@ -184,13 +184,13 @@ public partial class CharaBehavior
         get
         {
             if (IsSelfControl == false
-                || MyState.Motion.HasFlag(CharaMotionFlag.Ds) == false)
+                || RawState.Motion.HasFlag(CharaMotionFlag.Ds) == false)
             {
                 return false;
             }
 
-            return MyState.Coordinate.DashDirection == DirectionXType.Left && MyPad.KeyLeft.IsPressed
-                   || MyState.Coordinate.DashDirection == DirectionXType.Right && MyPad.KeyRight.IsPressed;
+            return RawState.Coordinate.DashDirection == DirectionXType.Left && MyPad.KeyLeft.IsPressed
+                   || RawState.Coordinate.DashDirection == DirectionXType.Right && MyPad.KeyRight.IsPressed;
         }
     }
 
@@ -202,11 +202,11 @@ public partial class CharaBehavior
     {
         get
         {
-            var isForwardDash = (MySideIndex == 0 && MyState.Coordinate.DashDirection == DirectionXType.Right)
-                                || (MySideIndex == 1 && MyState.Coordinate.DashDirection == DirectionXType.Left);
+            var isForwardDash = (MySideIndex == 0 && RawState.Coordinate.DashDirection == DirectionXType.Right)
+                                || (MySideIndex == 1 && RawState.Coordinate.DashDirection == DirectionXType.Left);
 
-            return MyState.Motion.HasFlag(CharaMotionFlag.Ds)
-                   && MyState.Motion.HasFlag(CharaMotionFlag.Ar) == false
+            return RawState.Motion.HasFlag(CharaMotionFlag.Ds)
+                   && RawState.Motion.HasFlag(CharaMotionFlag.Ar) == false
                    && isForwardDash;
         }
     }
@@ -227,10 +227,10 @@ public partial class CharaBehavior
                 return false;
             }
 
-            if (MyState.Motion.HasFlag(CharaMotionFlag.Ar)
-                && MyState.Motion.HasFlag(CharaMotionFlag.Dam))
+            if (RawState.Motion.HasFlag(CharaMotionFlag.Ar)
+                && RawState.Motion.HasFlag(CharaMotionFlag.Dam))
             {
-                return MyState.Coordinate.Y <= GetSettingShoot(SettingShotType.FlyTagHeight) * Defines.Percent;
+                return RawState.Coordinate.Y <= GetSettingShoot(SettingShotType.FlyTagHeight) * Defines.Percent;
             }
 
             return true;
@@ -245,7 +245,7 @@ public partial class CharaBehavior
     public bool IsNoGuard(bool isContainDamage)
     {
         return IsKagami
-               || MyMotion.HasFlag(CharaMotionFlag.Dn)
-               || (isContainDamage && MyMotion.HasFlag(CharaMotionFlag.Dam));
+               || Motion.HasFlag(CharaMotionFlag.Dn)
+               || (isContainDamage && Motion.HasFlag(CharaMotionFlag.Dam));
     }
 }

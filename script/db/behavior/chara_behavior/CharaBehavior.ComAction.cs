@@ -12,7 +12,7 @@ public partial class CharaBehavior
     {
         //アクション中は来ない
         //ボールマンだけ
-        if (MyMotion.HasFlag(CharaMotionFlag.Act)
+        if (Motion.HasFlag(CharaMotionFlag.Act)
             || IsBallHolder == false)
         {
             return;
@@ -69,7 +69,7 @@ public partial class CharaBehavior
             //タゲ方向向く
             //居ないときはオートで探す
             LookTg(BallState.ShotTargetOrder, false, true);
-            switch (MyMotion.MotionType)
+            switch (Motion.MotionType)
             {
                 case CharaMotionType.St or CharaMotionType.Wk or CharaMotionType.Ds:
                     SetMotionType(CharaMotionType.Sh);
@@ -84,7 +84,7 @@ public partial class CharaBehavior
     //ＣＯＭパス
     void COMPass(bool dmpass_f)
     {
-        var paTag = MyOrder.IsInfield
+        var paTag = Order.IsInfield
             ? GetNaiyaPassTag()
             : GetGaiyaPassTag();
 
@@ -96,7 +96,7 @@ public partial class CharaBehavior
         //タゲの方を向く
         LookTg(BallState.ShotTargetOrder, true, false);
 
-        switch (MyMotion.MotionType)
+        switch (Motion.MotionType)
         {
             case CharaMotionType.St or CharaMotionType.Wk or CharaMotionType.Ds:
                 SetMotionType(CharaMotionType.Pa);

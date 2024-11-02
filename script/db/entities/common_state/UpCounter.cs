@@ -2,7 +2,7 @@
 
 namespace db;
 
-public struct UpCounter
+public struct UpCounter 
 {
     public int Value { get; private set; }
 

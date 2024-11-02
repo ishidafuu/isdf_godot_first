@@ -17,22 +17,22 @@ public partial class CharaBehavior
         // 操作可能キャラのみ
         if (CanControl)
         {
-            ballDist = MyState.Coordinate.DistanceXZ(BallState.Coordinate);
+            ballDist = RawState.Coordinate.DistanceXZ(BallState.Coordinate);
             ballLandDist = ballDist;
             ballLandLineDist = ballDist;
 
             // 着地予定のみ
             if (BallState.MotionType is BallMotionType.Bound or BallMotionType.Pass)
             {
-                ballLandDist = MyState.Coordinate.DistanceXZ(BallState.LandX, BallState.LandZ);
+                ballLandDist = RawState.Coordinate.DistanceXZ(BallState.LandX, BallState.LandZ);
 
                 // ライン超える場合のみ
                 ballLandLineDist = BallState.LandLine
-                    ? MyState.Coordinate.DistanceXZ(BallState.LandXLine, BallState.LandZLine)
+                    ? RawState.Coordinate.DistanceXZ(BallState.LandXLine, BallState.LandZLine)
                     : ballLandDist;
             }
         }
 
-        MyState.Distance.Set(ballDist, ballLandDist, ballLandLineDist);
+        RawState.Distance.Set(ballDist, ballLandDist, ballLandLineDist);
     }
 }

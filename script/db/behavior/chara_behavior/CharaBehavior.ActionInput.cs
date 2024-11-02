@@ -14,9 +14,9 @@ public partial class CharaBehavior
             return;
         }
 
-        if (MyState.Motion.HasFlag(CharaMotionFlag.Dam)
-            || MyState.Motion.HasFlag(CharaMotionFlag.ANG)
-            || MyState.Live.IsDead)
+        if (Motion.HasFlag(CharaMotionFlag.Dam)
+            || Motion.HasFlag(CharaMotionFlag.ANG)
+            || Live.IsDead)
         {
             return;
         }
@@ -26,7 +26,7 @@ public partial class CharaBehavior
             return;
         }
 
-        switch (MyState.Auto.AutoType)
+        switch (Auto.AutoType)
         {
             // 自由
             case AutoType.Free:
@@ -45,7 +45,7 @@ public partial class CharaBehavior
                 break;
             // 拾いに行く
             case AutoType.Get:
-                if (MyState.Motion.MotionType
+                if (Motion.MotionType
                     is CharaMotionType.St
                     or CharaMotionType.Wk
                     or CharaMotionType.Ds)
@@ -77,39 +77,39 @@ public partial class CharaBehavior
             return;
         }
 
-        bool muki_f = ((MySideIndex == 0) && (MyCoordinate.DirectionX == DirectionXType.Left))
-                      || ((MySideIndex == 1) && (MyCoordinate.DirectionX == DirectionXType.Right));
+        bool muki_f = ((MySideIndex == 0) && (Coordinate.DirectionX == DirectionXType.Left))
+                      || ((MySideIndex == 1) && (Coordinate.DirectionX == DirectionXType.Right));
 
         // 敵コート避け可能フラグ
         var canEnemyCourtDodge = GetCanDodgeEnemyCourt();
 
-        switch (MyMotion.MotionType)
+        switch (Motion.MotionType)
         {
             case CharaMotionType.St:
             case CharaMotionType.Wk:
             case CharaMotionType.Ds:
             case CharaMotionType.Sl:
                 //スリップも追加オーバーラインの瞬間なぞのキャッチできてしまう
-                if (MyCourt.ECDdg_f == false && canEnemyCourtDodge)
+                if (Court.ECDdg_f == false && canEnemyCourtDodge)
                 {
                     if (MyPad.IsJustPressedAbButton() //ジャンプ入力
                         && muki_f
-                        && (MyCourt.ECDjp_f == false))
+                        && (Court.ECDjp_f == false))
                     {
                         JumpSet(false, false, false); //ジャンプ
-                        MyState.Court.ECDdg_f = true; //１回だけ
-                        MyState.Court.ECDjp_f = true; //１回だけ
+                        SetCourt.ECDdg_f = true; //１回だけ
+                        SetCourt.ECDjp_f = true; //１回だけ
                     }
                     else if (MyPad.ButtonA.IsJustPressed) //よけ
                     {
                         SetMotionType(CharaMotionType.Dg);
-                        MyState.Court.ECDdg_f = true; //１回だけ
+                        SetCourt.ECDdg_f = true; //１回だけ
                     }
 
-                    if (MyCourt.ECDdg_f)
+                    if (Court.ECDdg_f)
                     {
-                        MyState.Move.LastDirectionX = MyCoordinate.DirectionX;
-                        MyState.Move.LastDirectionZ = MyCoordinate.DirectionZ;
+                        SetMove.LastDirectionX = Coordinate.DirectionX;
+                        SetMove.LastDirectionZ = Coordinate.DirectionZ;
                     }
                 }
 
@@ -123,12 +123,12 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.Ca:
             case CharaMotionType.JCa:
-                if (MyCourt.ECDjp_f == false && canEnemyCourtDodge)
+                if (Court.ECDjp_f == false && canEnemyCourtDodge)
                 {
                     if (CanselJump(false) && muki_f)
                     {
-                        MyState.Court.ECDjp_f = true; //１回だけ
-                        MyState.Court.ECDdg_f = true; //１回だけ
+                        SetCourt.ECDjp_f = true; //１回だけ
+                        SetCourt.ECDdg_f = true; //１回だけ
                     }
                     else
                     {
@@ -137,20 +137,20 @@ public partial class CharaBehavior
                 }
                 break;
             case CharaMotionType.Dg:
-                if (MyCourt.ECDdg_f == false && canEnemyCourtDodge)
+                if (Court.ECDdg_f == false && canEnemyCourtDodge)
                 {
                     if (CanselJump(false) && muki_f)
                     {
-                        MyState.Court.ECDjp_f = true; //１回だけ
-                        MyState.Court.ECDdg_f = true; //１回だけ
+                        SetCourt.ECDjp_f = true; //１回だけ
+                        SetCourt.ECDdg_f = true; //１回だけ
                     }
                     else
                     {
                         //よけ限界時間
-                        MyCourt.EnemyCortDodgeCount.Add();
+                        Court.EnemyCortDodgeCount.Add();
                         //押しっぱなしで避け続けるようにする
                         if (MyPad.ButtonA.IsPressed
-                            && MyCourt.EnemyCortDodgeCount.Value < GetSettingInfield(SettingInfieldType.EnCourtCrTime))
+                            && Court.EnemyCortDodgeCount.Value < GetSettingInfield(SettingInfieldType.EnCourtCrTime))
                         {
                             // 他と合わせる
                             // MyAnime.Ani_c = 0;
@@ -167,8 +167,8 @@ public partial class CharaBehavior
         //判定出るまでもしくは6f以内はジャンプキャンセル可能
         //ココでも可能にして大丈夫か
 
-        if (MyMotion.HasFlag(CharaMotionFlag.Ar)
-            || MyMotion.MotionCount.Value >= GetSettingJump(SettingJumpType.JumpCanselTime)
+        if (Motion.HasFlag(CharaMotionFlag.Ar)
+            || Motion.MotionCount.Value >= GetSettingJump(SettingJumpType.JumpCanselTime)
             || !IsSelfControl
             || MyPad.IsJustPressedAbButton() == false)
         {
@@ -176,8 +176,8 @@ public partial class CharaBehavior
         }
 
         //キャンセルが掛かる前のモーションの向きに戻す
-        MyCoordinate.DirectionX = MyMove.LastDirectionX;
-        MyCoordinate.DirectionZ = MyMove.LastDirectionZ;
+        SetCoordinate.DirectionX = Move.LastDirectionX;
+        SetCoordinate.DirectionZ = Move.LastDirectionZ;
         JumpSet(false, canselDs_f, false); //ジャンプ
 
         return true;
@@ -186,26 +186,26 @@ public partial class CharaBehavior
     //ジャンプ
     void JumpSet(bool mfCheck_f, bool canselDs_f, bool vjp_f)
     {
-        if (MyMotion.HasFlag(CharaMotionFlag.PHit))
+        if (Motion.HasFlag(CharaMotionFlag.PHit))
         {
             return;
         }
 
-        if (mfCheck_f && MyMotion.HasFlag(CharaMotionFlag.JpOK) == false)
+        if (mfCheck_f && Motion.HasFlag(CharaMotionFlag.JpOK) == false)
         {
             return;
         }
 
-        if (canselDs_f || MyOrder.IsInfield == false) //外野はダッシュフラグ消す
+        if (canselDs_f || Order.IsInfield == false) //外野はダッシュフラグ消す
         {
-            MyMotion.SubMotionFlag(CharaMotionFlag.Ds);
+            SetMotion.SubMotionFlag(CharaMotionFlag.Ds);
         }
 
         SetMotionType(CharaMotionType.JCr);
-        MyAir.IsVerticalJump = vjp_f; //垂直ジャンプ
-        MyAir.IsLongJump = vjp_f; //垂直ジャンプ
-        MyAir.IsLongJump = MyMove.IsDashAccelIOS; //ロングジャンプ
-        MyCoordinate.ZeroVelocity();
+        SetAir.IsVerticalJump = vjp_f; //垂直ジャンプ
+        SetAir.IsLongJump = vjp_f; //垂直ジャンプ
+        SetAir.IsLongJump = Move.IsDashAccelIOS; //ロングジャンプ
+        SetCoordinate.ZeroVelocity();
     }
 
     private void AutoDodgeAction()
@@ -218,25 +218,25 @@ public partial class CharaBehavior
             && BallState.MotionType == BallMotionType.Shoot
             && canEnemyCourtDodge)
         {
-            switch (MyMotion.MotionType)
+            switch (Motion.MotionType)
             {
                 case CharaMotionType.St:
                 case CharaMotionType.Wk:
                 case CharaMotionType.Ds:
-                    if (MyCourt.ECDdg_f == false)
+                    if (Court.ECDdg_f == false)
                     {
                         SetMotionType(CharaMotionType.Dg);
                     }
                     break;
 
                 case CharaMotionType.Dg:
-                    if (MyCourt.ECDdg_f == false)
+                    if (Court.ECDdg_f == false)
                     {
                         //よけ限界時間
-                        MyCourt.EnemyCortDodgeCount.Add();
+                        Court.EnemyCortDodgeCount.Add();
                         //押しっぱなしで避け続けるようにする
                         if (MyPad.ButtonA.IsPressed
-                            && MyCourt.EnemyCortDodgeCount.Value < GetSettingInfield(SettingInfieldType.EnCourtCrTime))
+                            && Court.EnemyCortDodgeCount.Value < GetSettingInfield(SettingInfieldType.EnCourtCrTime))
                         {
                             // 他と合わせる
                             // MyAnime.Ani_c = 0;
@@ -247,7 +247,7 @@ public partial class CharaBehavior
         }
         else
         {
-            switch (MyMotion.MotionType)
+            switch (Motion.MotionType)
             {
                 case CharaMotionType.St:
                 case CharaMotionType.Wk:
@@ -289,12 +289,12 @@ public partial class CharaBehavior
     private bool GetCanDodgeEnemyCourt()
     {
         bool result;
-        if (IsBallHolder || MyState.Order.IsOutfield)
+        if (IsBallHolder || Order.IsOutfield)
         {
             // ボール持ち、外野はよけNG
             result = false;
         }
-        else if (IsSelfControl || MyState.Auto.IsFreeAction)
+        else if (IsSelfControl || Auto.IsFreeAction)
         {
             // 自由状態
             result = true;
@@ -320,7 +320,7 @@ public partial class CharaBehavior
     //勝手に拾う処理
     private void AutoPickUp()
     {
-        if (MyState.Motion.HasFlag(CharaMotionFlag.Act) == false
+        if (Motion.HasFlag(CharaMotionFlag.Act) == false
             && IsFree(false)
             && IsPickUpPos())
         {
@@ -343,7 +343,7 @@ public partial class CharaBehavior
         if (BallState.IsNGGet)
         {
             if (BallState.NGGetTNo == MySideIndex
-                && BallState.NGGetPNo == MemberIndex)
+                && BallState.NGGetPNo == MyMemberIndex)
             {
                 return false;
             }
@@ -359,8 +359,8 @@ public partial class CharaBehavior
 
         //当たり
         var atariDepth = GetSettingBall(SettingBallType.FAtariDepth2);
-        var isHitDepth = Math.Abs(BallState.Coordinate.Z - MyCoordinate.Z) <= atariDepth;
-        return isHitDepth && MyCoordinate.HitBox.IsPile(BallState.Atari);
+        var isHitDepth = Math.Abs(BallState.Coordinate.Z - Coordinate.Z) <= atariDepth;
+        return isHitDepth && Coordinate.HitBox.IsPile(BallState.Atari);
     }
 
     //ボール持った処理
@@ -369,12 +369,12 @@ public partial class CharaBehavior
         // 保持状況をチームに渡す
         CallTeamHoldBall();
 
-        MyState.Damage.KagamiCount.Clear();
-        MyState.Air.IsAirAction = false;
-        MyState.Move.LastDirectionX = DirectionXType.Neutral;
-        MyState.ComOnly.IsCatchCounter = false;
-        MyState.ComOnly.IsComTossPassGet = false;
-        MyState.Pass.MirrorShotLimitCount.Set(Defines.MIRLIM);
+        SetDamage.KagamiCount.Clear();
+        SetAir.IsAirAction = false;
+        SetMove.LastDirectionX = DirectionXType.Neutral;
+        SetComOnly.IsCatchCounter = false;
+        SetComOnly.IsComTossPassGet = false;
+        Pass.MirrorShotLimitCount.Set(Defines.MIRLIM);
 
         HoldBallSetMirrorState();
 
@@ -382,25 +382,25 @@ public partial class CharaBehavior
         {
             ResetAutoDirection();
 
-            MyState.Auto.DirectionX = BallState.Coordinate.VelocityX switch
+            SetAuto.DirectionX = BallState.Coordinate.VelocityX switch
             {
                 > 0 => DirectionXType.Right,
                 < 0 => DirectionXType.Left,
-                _ => MyState.Auto.DirectionX
+                _ => Auto.DirectionX
             };
 
             if (Math.Abs(BallState.Coordinate.VelocityZ) > Math.Abs(BallState.Coordinate.VelocityX))
             {
-                MyState.Auto.DirectionZ = BallState.Coordinate.VelocityZ switch
+                SetAuto.DirectionZ = BallState.Coordinate.VelocityZ switch
                 {
                     > 0 => DirectionZType.Backward,
                     < 0 => DirectionZType.Forward,
-                    _ => MyState.Auto.DirectionZ
+                    _ => Auto.DirectionZ
                 };
             }
             else
             {
-                MyState.Auto.DirectionZ = DirectionZType.Neutral;
+                SetAuto.DirectionZ = DirectionZType.Neutral;
             }
 
             MukiSetAuto();
@@ -418,12 +418,12 @@ public partial class CharaBehavior
         //拾った瞬間dbaFreeのときはその瞬間のタゲをカーソルキャラに
         //それ以外はfreeに戻ったタイミング
         //chCommon_.
-        MyState.Shoot.Angle12 = GetMukiAglFromDirection();
+        SetShoot.Angle12 = GetMukiAglFromDirection();
 
         //最初のタゲを敵の操作キャラに
         //外野の可能性もでるのでなんとかする
         //ShTagSet(false); //拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
-        var passTargetOrderIndex = MyState.Order.IsInfield
+        var passTargetOrderIndex = Order.IsInfield
             ? GetNaiyaPassTag()
             : GetGaiyaPassTag();
 
@@ -433,7 +433,7 @@ public partial class CharaBehavior
         if (EnemyTeamState.IsAllOut == false)
         {
             //シュートタゲは向き反映
-            var orderIndex = GetShootTarget(MyState.Shoot.Angle12, false);
+            var orderIndex = GetShootTarget(Shoot.Angle12, false);
             if (orderIndex == OrderIndexType.Disabled)
             {
                 if (IsSelfControl == false)
@@ -448,7 +448,7 @@ public partial class CharaBehavior
             }
 
             //カーソルは強制的に内野
-            var enemyControlOrderIndex = GetShootTarget(MyState.Shoot.Angle12, true);
+            var enemyControlOrderIndex = GetShootTarget(Shoot.Angle12, true);
             if (enemyControlOrderIndex != OrderIndexType.Disabled) //ないとはおもうが
             {
                 CallEnemyTeamChangeControl(enemyControlOrderIndex);
@@ -533,9 +533,9 @@ public partial class CharaBehavior
             }
 
             isSelectTarget[order] = enNaiyaTag.TGOK;
-            targetX[order] = enemyChara.MyCoordinate.X - MyCoordinate.X;
-            var targetZ = enemyChara.MyCoordinate.Z - MyCoordinate.Z;
-            targetY[order] = enemyChara.MyCoordinate.Y - MyCoordinate.Y;
+            targetX[order] = enemyChara.Coordinate.X - Coordinate.X;
+            var targetZ = enemyChara.Coordinate.Z - Coordinate.Z;
+            targetY[order] = enemyChara.Coordinate.Y - Coordinate.Y;
             targetDist[order] = Defines.Hypot(targetX[order], targetZ); //距離
 
             // 角度を無視しない場合は角度チェックを行う
@@ -692,8 +692,8 @@ public partial class CharaBehavior
     {
         //パスカットキャラセット
         var passTargetChara = CharaBehaviorManager.Instance.GetChara(MySideIndex, orderIndex);
-        var passTargetCharaX = passTargetChara.MyCoordinate.X;
-        var passTargetCharaZ = passTargetChara.MyCoordinate.Z;
+        var passTargetCharaX = passTargetChara.Coordinate.X;
+        var passTargetCharaZ = passTargetChara.Coordinate.Z;
 
         var passCutOrderIndex = OrderIndexType.Disabled;
         var maxDist = int.MaxValue;
@@ -721,8 +721,8 @@ public partial class CharaBehavior
         var isNoneTarget = true; //完全にタゲが居ない
         var isNoneAngleTarget = true; //向き方向にタゲが居ない
 
-        var passDirectionX = MyCoordinate.DirectionX;
-        var passDirectionZ = MyCoordinate.DirectionZ;
+        var passDirectionX = Coordinate.DirectionX;
+        var passDirectionZ = Coordinate.DirectionZ;
 
         var isLeftKey = false;
         var isRightKey = false;
@@ -755,8 +755,8 @@ public partial class CharaBehavior
         //ダッシュマンへパス
         var isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
 
-        var distO2 = Math.Abs(MyCoordinate.Z - Defines.DBCRT_BL);
-        var distO3 = Math.Abs(MyCoordinate.Z - Defines.DBCRT_FL);
+        var distO2 = Math.Abs(Coordinate.Z - Defines.DBCRT_BL);
+        var distO3 = Math.Abs(Coordinate.Z - Defines.DBCRT_FL);
         var isNearO2 = distO2 < distO3;
 
         TmpStateManager.Instance.TmpState.Clear();
@@ -773,7 +773,7 @@ public partial class CharaBehavior
                 continue;
             }
 
-            targetDist[order] = MyCoordinate.DistanceXZ(MySideOrders[order].Coordinate);
+            targetDist[order] = Coordinate.DistanceXZ(MySideOrders[order].Coordinate);
         }
 
         //パスが出せるダッシュマンがいるか
@@ -806,13 +806,13 @@ public partial class CharaBehavior
                 }
 
                 //奥にダッシュマンがいる
-                if (chara.MyCoordinate.Z > MyCoordinate.Z)
+                if (chara.Coordinate.Z > Coordinate.Z)
                 {
                     isBackwardPosition = false;
                 }
 
                 //手前にダッシュマンがいる
-                if (chara.MyCoordinate.Z < MyCoordinate.Z)
+                if (chara.Coordinate.Z < Coordinate.Z)
                 {
                     isFrontPosition = false;
                 }
@@ -840,7 +840,7 @@ public partial class CharaBehavior
 
                 var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
 
-                if (IsCheckNoAgl(chara.MyCoordinate.X, chara.MyCoordinate.Z))
+                if (IsCheckNoAgl(chara.Coordinate.X, chara.Coordinate.Z))
                 {
                     //向きに居ない
                     isSelectTarget[order] = enNaiyaTag.TGNOAGL;
@@ -859,13 +859,13 @@ public partial class CharaBehavior
                 }
 
                 //奥にいる
-                if (chara.MyCoordinate.Z > MyCoordinate.Z)
+                if (chara.Coordinate.Z > Coordinate.Z)
                 {
                     isBackwardPosition = false;
                 }
 
                 //手前にいる
-                if (chara.MyCoordinate.Z < MyCoordinate.Z)
+                if (chara.Coordinate.Z < Coordinate.Z)
                 {
                     isFrontPosition = false;
                 }
@@ -911,7 +911,7 @@ public partial class CharaBehavior
         }
         else if ((isInfieldDirection == false && isTopPosition) || isNoneTarget) //右向き時しかも先頭もしくは孤立(→外野パス)
         {
-            if (MyState.Motion.MotionType == CharaMotionType.Ds) //ダッシュ中
+            if (Motion.MotionType == CharaMotionType.Ds) //ダッシュ中
             {
                 if (IsSelfControl)
                 {
@@ -924,7 +924,7 @@ public partial class CharaBehavior
                         : OrderIndexType.Outfield3;
                 }
 
-                return MyState.Auto.DirectionZ switch
+                return Auto.DirectionZ switch
                 {
                     DirectionZType.Backward => OrderIndexType.Outfield2,
                     DirectionZType.Forward => OrderIndexType.Outfield3,
@@ -975,8 +975,8 @@ public partial class CharaBehavior
 
                 //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
                 var tgZ = isDashmanPass
-                    ? chara.MyState.Dashman.TargetZ
-                    : chara.MyCoordinate.Z;
+                    ? chara.Dashman.TargetZ
+                    : chara.Coordinate.Z;
 
                 //上
                 if (isUpKey)
@@ -991,11 +991,11 @@ public partial class CharaBehavior
                 //上下が入ってるとき用に合計値
                 if (isLeftKey) //左
                 {
-                    sortValue[order] += chara.MyCoordinate.X; //Ｘ（左ほど優先）
+                    sortValue[order] += chara.Coordinate.X; //Ｘ（左ほど優先）
                 }
                 else if (isRightKey) //右
                 {
-                    sortValue[order] -= chara.MyCoordinate.X; //Ｘのマイナス（右ほど優先）
+                    sortValue[order] -= chara.Coordinate.X; //Ｘのマイナス（右ほど優先）
                 }
             }
 
@@ -1039,10 +1039,10 @@ public partial class CharaBehavior
         //ダッシュマンへパス
         var isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
 
-        var passDirectionX = MyCoordinate.DirectionX;
-        var passDirectionZ = MyCoordinate.DirectionZ;
+        var passDirectionX = Coordinate.DirectionX;
+        var passDirectionZ = Coordinate.DirectionZ;
 
-        var lastXKey = MyState.Input.LastXKey;
+        var lastXKey = Input.LastXKey;
 
         var isLeftKey = false;
         var isRightKey = false;
@@ -1069,7 +1069,7 @@ public partial class CharaBehavior
         var postMan = MyTeamState.PositionState.Postman;
 
         //とりあえずパスタゲを出す
-        switch (MyState.Order.OrderIndex)
+        switch (Order.OrderIndex)
         {
             case OrderIndexType.Outfield2:
                 if (lastXKey == DirectionXType.Neutral)
@@ -1133,8 +1133,8 @@ public partial class CharaBehavior
                             break;
                         default:
                         {
-                            var distO2 = Math.Abs(MyCoordinate.Z - Defines.DBCRT_BL);
-                            var distO3 = Math.Abs(MyCoordinate.Z - Defines.DBCRT_FL);
+                            var distO2 = Math.Abs(Coordinate.Z - Defines.DBCRT_BL);
+                            var distO3 = Math.Abs(Coordinate.Z - Defines.DBCRT_FL);
 
                             passTarget = distO2 < distO3
                                 ? OrderIndexType.Outfield2
@@ -1179,7 +1179,7 @@ public partial class CharaBehavior
             //X距離外野はGetLeftCrtX()が左コートなので絶対値を使う
             targetX[order] = chara.LeftCourtX; //自分より右に居れば＋
             //Z距離
-            var targetZ = Math.Abs(chara.MyCoordinate.Z - MyCoordinate.Z); //自分より上にいれば＋
+            var targetZ = Math.Abs(chara.Coordinate.Z - Coordinate.Z); //自分より上にいれば＋
             //距離
             targetDist[order] = Defines.Hypot(targetX[order], targetZ);
         }
@@ -1220,7 +1220,7 @@ public partial class CharaBehavior
                 //     ? chara.MyState.Dashman.TargetZ
                 //     : chara.MyCoordinate.Z;
                 //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
-                var tgZ = chara.MyState.Dashman.TargetZ;
+                var tgZ = chara.Dashman.TargetZ;
 
                 //上
                 if (isUpKey)
@@ -1234,11 +1234,11 @@ public partial class CharaBehavior
 
                 if (isLeftKey) //左
                 {
-                    sortValue[order] += chara.MyCoordinate.X; //Ｘ（左ほど優先）
+                    sortValue[order] += chara.Coordinate.X; //Ｘ（左ほど優先）
                 }
                 else if (isRightKey) //右
                 {
-                    sortValue[order] -= chara.MyCoordinate.X; //Ｘのマイナス（右ほど優先）
+                    sortValue[order] -= chara.Coordinate.X; //Ｘのマイナス（右ほど優先）
                 }
                 //else//ニュートラル
                 //{
@@ -1297,30 +1297,30 @@ public partial class CharaBehavior
     {
         var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
         var tLandX = MySideIndex == 0
-            ? chara.MyState.Air.LandX
-            : Defines.DBCRT_CL - (chara.MyState.Air.LandX - Defines.DBCRT_CL);
+            ? chara.Air.LandX
+            : Defines.DBCRT_CL - (chara.Air.LandX - Defines.DBCRT_CL);
 
-        return chara.MyState.Order.IsInfield && tLandX > Defines.DBCRT_CLI;
+        return chara.Order.IsInfield && tLandX > Defines.DBCRT_CLI;
     }
 
     //角度に入っていない
     private bool IsCheckNoAgl(int targetX, int targetZ)
     {
-        var isInAngle = MyCoordinate.DirectionZ switch
+        var isInAngle = Coordinate.DirectionZ switch
         {
-            DirectionZType.Forward => targetZ < MyCoordinate.Z,
+            DirectionZType.Forward => targetZ < Coordinate.Z,
             DirectionZType.Neutral => true,
-            DirectionZType.Backward => targetZ > MyCoordinate.Z,
+            DirectionZType.Backward => targetZ > Coordinate.Z,
             _ => throw new ArgumentOutOfRangeException()
         };
 
         if (isInAngle)
         {
-            isInAngle = MyCoordinate.DirectionX switch
+            isInAngle = Coordinate.DirectionX switch
             {
-                DirectionXType.Left => targetX < MyCoordinate.X,
+                DirectionXType.Left => targetX < Coordinate.X,
                 DirectionXType.Neutral => true,
-                DirectionXType.Right => targetX > MyCoordinate.X,
+                DirectionXType.Right => targetX > Coordinate.X,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -1336,60 +1336,60 @@ public partial class CharaBehavior
         if (BallState.MotionType == BallMotionType.Pass
             && BallState.ThrowerSideNo == MySideIndex)
         {
-            MyState.Pass.MirrorShotCount.Set(activeCount);
+            Pass.MirrorShotCount.Set(activeCount);
 
             var mirrorPassCount = MyPad.ButtonB.IsPressed
                 ? activeCount
                 : inactiveCount;
-            MyState.Pass.MirrorPassCount.Set(mirrorPassCount);
+            Pass.MirrorPassCount.Set(mirrorPassCount);
         }
         else
         {
-            MyState.Pass.MirrorPassCount.Set(inactiveCount);
+            Pass.MirrorPassCount.Set(inactiveCount);
 
             // キャッチボタン不要で取れるボール
             var isActiveMirrorShot = BallState.MotionType is BallMotionType.Free or BallMotionType.Bound or BallMotionType.Referee
-                                     && MyState.Damage.FumbleCount.Value == 0;
+                                     && Damage.FumbleCountValue == 0;
 
             var mirrorShotCount = isActiveMirrorShot
                 ? activeCount
                 : inactiveCount;
-            MyState.Pass.MirrorShotCount.Set(mirrorShotCount);
+            Pass.MirrorShotCount.Set(mirrorShotCount);
         }
     }
 
     //向き変え(強制的にAUTOMUKIに向かせる)
     private bool MukiSetAuto()
     {
-        var lastDirectionX = MyCoordinate.DirectionX;
-        var lastDirectionZ = MyCoordinate.DirectionZ;
+        var lastDirectionX = Coordinate.DirectionX;
+        var lastDirectionZ = Coordinate.DirectionZ;
 
-        MyMove.LastDirectionX = lastDirectionX;
-        MyMove.LastDirectionZ = lastDirectionZ;
+        SetMove.LastDirectionX = lastDirectionX;
+        SetMove.LastDirectionZ = lastDirectionZ;
 
-        MyCoordinate.DirectionX = MyState.Auto.DirectionX switch
+        SetCoordinate.DirectionX = Auto.DirectionX switch
         {
             DirectionXType.Left => DirectionXType.Left,
             DirectionXType.Right => DirectionXType.Right,
-            _ => MyCoordinate.DirectionX
+            _ => Coordinate.DirectionX
         };
 
-        MyCoordinate.DirectionZ = MyState.Auto.DirectionZ switch
+        SetCoordinate.DirectionZ = Auto.DirectionZ switch
         {
             DirectionZType.Forward => DirectionZType.Forward,
             DirectionZType.Backward => DirectionZType.Backward,
             DirectionZType.Neutral => DirectionZType.Neutral,
-            _ => MyCoordinate.DirectionZ
+            _ => Coordinate.DirectionZ
         };
 
         // 向き変えありかどうか
-        var isChanged = lastDirectionX != MyCoordinate.DirectionX
-                        || lastDirectionZ != MyCoordinate.DirectionZ;
+        var isChanged = lastDirectionX != Coordinate.DirectionX
+                        || lastDirectionZ != Coordinate.DirectionZ;
 
         if (isChanged)
         {
             //タゲも変える
-            MyState.Shoot.Angle12 = GetMukiAglFromDirection();
+            SetShoot.Angle12 = GetMukiAglFromDirection();
         }
 
         return isChanged;
@@ -1398,14 +1398,14 @@ public partial class CharaBehavior
     // AUTO向き変え初期化
     private void ResetAutoDirection()
     {
-        MyState.Auto.DirectionX = MyCoordinate.DirectionX switch
+        SetAuto.DirectionX = Coordinate.DirectionX switch
         {
             DirectionXType.Left => DirectionXType.Left,
             DirectionXType.Neutral => DirectionXType.Neutral,
             DirectionXType.Right => DirectionXType.Right,
             _ => throw new ArgumentOutOfRangeException()
         };
-        MyState.Auto.DirectionZ = MyCoordinate.DirectionZ switch
+        SetAuto.DirectionZ = Coordinate.DirectionZ switch
         {
             DirectionZType.Forward => DirectionZType.Forward,
             DirectionZType.Neutral => DirectionZType.Neutral,
@@ -1416,7 +1416,7 @@ public partial class CharaBehavior
 
     private int GetMukiAglFromDirection()
     {
-        return GetMukiAgl(MyCoordinate.DirectionX, MyCoordinate.DirectionZ);
+        return GetMukiAgl(Coordinate.DirectionX, Coordinate.DirectionZ);
     }
 
     private int GetMukiAgl(DirectionXType directionX, DirectionZType directionZ)
@@ -1430,7 +1430,7 @@ public partial class CharaBehavior
     //ターゲッティング用向き
     private int GetMukiAgl(bool isLeft, bool isRight, bool isUp, bool isDown)
     {
-        switch (MyState.Order.GetOrderFieldType())
+        switch (Order.GetOrderFieldType())
         {
             case OrderFieldType.Infield:
                 if (isRight)
@@ -1472,11 +1472,11 @@ public partial class CharaBehavior
             case OrderFieldType.Outfield3:
                 if (isLeft)
                 {
-                    MyState.Shoot.Angle12 = 9; //9 10 11 0
+                    SetShoot.Angle12 = 9; //9 10 11 0
                 }
                 else if (isRight)
                 {
-                    MyState.Shoot.Angle12 = 11; //11 0 1 2
+                    SetShoot.Angle12 = 11; //11 0 1 2
                 }
                 break;
             case OrderFieldType.Outfield4:
@@ -1532,7 +1532,7 @@ public partial class CharaBehavior
 
         //空中の人はパスタゲにならないように
         return chara.IsFree(true) == false
-               || chara.MyState.Motion.HasFlag(CharaMotionFlag.Ar);
+               || chara.Motion.HasFlag(CharaMotionFlag.Ar);
     }
 
     bool IsNGPassTag(int order)
@@ -1546,8 +1546,8 @@ public partial class CharaBehavior
         var actionType = GetActionType();
 
         //モーション変更前の向き
-        var lastMuki = MyCoordinate.DirectionX;
-        var lastMukiZ = MyCoordinate.DirectionZ;
+        var lastMuki = Coordinate.DirectionX;
+        var lastMukiZ = Coordinate.DirectionZ;
         bool LastMukiKeep_f = false;
         bool atlook_f = MyPad.IsPressedAnyCross() == false;
 
@@ -1576,7 +1576,7 @@ public partial class CharaBehavior
         //シュートとパスは投げる瞬間にターゲットの方向を自動で向くようにする
         LastMukiKeep_f = true;
 
-        switch (MyState.Motion.MotionType)
+        switch (Motion.MotionType)
         {
             case CharaMotionType.St:
             case CharaMotionType.Wk:
@@ -1597,10 +1597,10 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.JUp:
             case CharaMotionType.JDn:
-                var canAirAction = MyState.Air.IsAirAction == false
-                                   && MyState.Motion.HasFlag(CharaMotionFlag.Ar)
-                                   && (MyCoordinate.VelocityY > 0 || MyCoordinate.Y >= Defines.JPINVALIDHEIGHT);
-                var isMarionette = MyState.BallEffect.symCtrl_f && MyState.Motion.HasFlag(CharaMotionFlag.Ar);
+                var canAirAction = Air.IsAirAction == false
+                                   && Motion.HasFlag(CharaMotionFlag.Ar)
+                                   && (Coordinate.VelocityY > 0 || Coordinate.Y >= Defines.JPINVALIDHEIGHT);
+                var isMarionette = BallEffect.symCtrl_f && Motion.HasFlag(CharaMotionFlag.Ar);
 
                 if (canAirAction || isMarionette)
                 {
@@ -1617,36 +1617,36 @@ public partial class CharaBehavior
                 break;
             case CharaMotionType.Sh:
                 if (IsBallHolder
-                    && MyState.Shoot.IsUTurn == false
-                    && MyState.Order.IsInfield)
+                    && Shoot.IsUTurn == false
+                    && Order.IsInfield)
                 {
                     bool utrn_f = false;
                     if (MySideIndex == 0
-                        && (MyCoordinate.DirectionX == DirectionXType.Left)
+                        && (Coordinate.DirectionX == DirectionXType.Left)
                         && MyPad.KeyRight.IsPressed)
                     {
                         utrn_f = true;
-                        MyCoordinate.DirectionX = DirectionXType.Right;
-                        MyCoordinate.DirectionZ = DirectionZType.Neutral;
-                        MyState.Shoot.Angle12 = GetMukiAglFromDirection();
+                        SetCoordinate.DirectionX = DirectionXType.Right;
+                        SetCoordinate.DirectionZ = DirectionZType.Neutral;
+                        SetShoot.Angle12 = GetMukiAglFromDirection();
                     }
                     else if (MySideIndex == 1
-                             && (MyCoordinate.DirectionX == DirectionXType.Right)
+                             && (Coordinate.DirectionX == DirectionXType.Right)
                              && MyPad.KeyLeft.IsPressed)
                     {
                         utrn_f = true;
-                        MyCoordinate.DirectionX = DirectionXType.Left;
-                        MyCoordinate.DirectionZ = DirectionZType.Neutral;
-                        MyState.Shoot.Angle12 = GetMukiAglFromDirection();
+                        SetCoordinate.DirectionX = DirectionXType.Left;
+                        SetCoordinate.DirectionZ = DirectionZType.Neutral;
+                        SetShoot.Angle12 = GetMukiAglFromDirection();
                     }
 
                     if (utrn_f)
                     {
                         SetMotionType(CharaMotionType.RtSh);
                         //ダッシュに復帰
-                        if (MyState.Motion.HasFlag(CharaMotionFlag.Slip))
+                        if (Motion.HasFlag(CharaMotionFlag.Slip))
                         {
-                            MyState.Motion.AddMotionFlag(CharaMotionFlag.Ds);
+                            SetMotion.AddMotionFlag(CharaMotionFlag.Ds);
                         }
                     }
                 }
@@ -1657,12 +1657,12 @@ public partial class CharaBehavior
                     HoldBall(false, false);
 
                     // キャッチダッシュ継続
-                    if (MyState.Order.IsInfield
-                        && MyState.Auto.AutoType == AutoType.Free
-                        && MyState.Motion.HasFlag(CharaMotionFlag.Ds))
+                    if (Order.IsInfield
+                        && Auto.AutoType == AutoType.Free
+                        && Motion.HasFlag(CharaMotionFlag.Ds))
                     {
-                        if ((MyCoordinate.DashDirection == DirectionXType.Left && MyPad.KeyLeft.IsPressed)
-                            || (MyCoordinate.DashDirection == DirectionXType.Right && MyPad.KeyRight.IsPressed))
+                        if ((Coordinate.DashDirection == DirectionXType.Left && MyPad.KeyLeft.IsPressed)
+                            || (Coordinate.DashDirection == DirectionXType.Right && MyPad.KeyRight.IsPressed))
                         {
                             //継続なので向きセットも歩数リセットもいらない
                             SetMotionType(CharaMotionType.Ds);
@@ -1690,8 +1690,8 @@ public partial class CharaBehavior
         //モーション変更前の向き
         if (LastMukiKeep_f)
         {
-            MyState.Move.LastDirectionX = lastMuki;
-            MyState.Move.LastDirectionZ = lastMukiZ;
+            SetMove.LastDirectionX = lastMuki;
+            SetMove.LastDirectionZ = lastMukiZ;
         }
     }
 
@@ -1741,7 +1741,7 @@ public partial class CharaBehavior
         }
 
         //自分がタゲでパスが飛んできてるときはそのままの向き自分が投げたときも
-        if (MyOrder.IsInfield == false
+        if (Order.IsInfield == false
             && BallState.MotionType == BallMotionType.Pass
             && BallState.ThrowerSideNo == MySideIndex
             && BallState.ThrowerOrderNo == MyOrderIndex)
@@ -1749,13 +1749,13 @@ public partial class CharaBehavior
             return;
         }
 
-        if (BallState.Coordinate.X < MyCoordinate.X)
+        if (BallState.Coordinate.X < Coordinate.X)
         {
-            MyNextAuto.DirectionX = DirectionXType.Left;
+            SetNextAuto.DirectionX = DirectionXType.Left;
         }
-        else if (BallState.Coordinate.X < MyCoordinate.X)
+        else if (BallState.Coordinate.X < Coordinate.X)
         {
-            MyNextAuto.DirectionX = DirectionXType.Right;
+            SetNextAuto.DirectionX = DirectionXType.Right;
         }
     }
 
@@ -1768,7 +1768,7 @@ public partial class CharaBehavior
 
         // 自分がタゲでパスが飛んできてるときはそのままの向き
         // 自分が投げたときも
-        if (MyOrder.IsInfield == false && BallState.MotionType == BallMotionType.Pass)
+        if (Order.IsInfield == false && BallState.MotionType == BallMotionType.Pass)
         {
             if (BallState.ThrowerSideNo == MySideIndex
                 && BallState.ThrowerOrderNo == MyOrderIndex)
@@ -1776,7 +1776,7 @@ public partial class CharaBehavior
                 return;
             }
             // パスの時はパス先を向く
-            MyNextAuto.DirectionZ = BallState.ThrowerOrderNo switch
+            SetNextAuto.DirectionZ = BallState.ThrowerOrderNo switch
             {
                 OrderIndexType.Outfield2 => DirectionZType.Backward,
                 OrderIndexType.Outfield3 => DirectionZType.Forward,
@@ -1785,28 +1785,28 @@ public partial class CharaBehavior
         }
         else
         {
-            if (BallState.Coordinate.Z < MyCoordinate.Z)
+            if (BallState.Coordinate.Z < Coordinate.Z)
             {
-                if (BallState.Coordinate.Z < MyCoordinate.Z - Defines.DEFDISTZ)
+                if (BallState.Coordinate.Z < Coordinate.Z - Defines.DEFDISTZ)
                 {
-                    MyNextAuto.DirectionZ = DirectionZType.Forward;
+                    SetNextAuto.DirectionZ = DirectionZType.Forward;
                 }
-                else if (BallState.Coordinate.Z > MyCoordinate.Z - Defines.DEFDISTZ / 2
-                         || MyNextAuto.DirectionZ == DirectionZType.Backward)
+                else if (BallState.Coordinate.Z > Coordinate.Z - Defines.DEFDISTZ / 2
+                         || NextAuto.DirectionZ == DirectionZType.Backward)
                 {
-                    MyNextAuto.DirectionZ = DirectionZType.Neutral;
+                    SetNextAuto.DirectionZ = DirectionZType.Neutral;
                 }
             }
             else
             {
-                if (BallState.Coordinate.Z > MyCoordinate.Z + Defines.DEFDISTZ)
+                if (BallState.Coordinate.Z > Coordinate.Z + Defines.DEFDISTZ)
                 {
-                    MyNextAuto.DirectionZ = DirectionZType.Backward;
+                    SetNextAuto.DirectionZ = DirectionZType.Backward;
                 }
-                else if (BallState.Coordinate.Z < MyCoordinate.Z + Defines.DEFDISTZ / 2
-                         || MyNextAuto.DirectionZ == DirectionZType.Forward)
+                else if (BallState.Coordinate.Z < Coordinate.Z + Defines.DEFDISTZ / 2
+                         || NextAuto.DirectionZ == DirectionZType.Forward)
                 {
-                    MyNextAuto.DirectionZ = DirectionZType.Neutral;
+                    SetNextAuto.DirectionZ = DirectionZType.Neutral;
                 }
             }
         }
@@ -1815,8 +1815,8 @@ public partial class CharaBehavior
     //AUTO向き変え初期化
     void AutoMukiInit()
     {
-        MyAuto.DirectionX = MyCoordinate.DirectionX;
-        MyAuto.DirectionZ = MyCoordinate.DirectionZ;
+        SetAuto.DirectionX = Coordinate.DirectionX;
+        SetAuto.DirectionZ = Coordinate.DirectionZ;
     }
 
     void AirAttack()
@@ -1841,14 +1841,14 @@ public partial class CharaBehavior
     {
         if (MyPad.ButtonB.IsPressed) //シュート入力おしっぱ
         {
-            MyPass.MirrorPassCount.Clear();
+            Pass.MirrorPassCount.Clear();
         }
 
-        if (MyPass.MirrorPassCount.Value > 0) //ミラーパス状態
+        if (Pass.MirrorPassCount.Value > 0) //ミラーパス状態
         {
             if (MyPad.ButtonA.IsPressed)
             {
-                if (MyPass.MirrorPassCount.AddUntil(Defines.MIRWAIT))
+                if (Pass.MirrorPassCount.AddUntil(Defines.MIRWAIT))
                 {
                     if (BallState.PassTargetOrder != OrderIndexType.Disabled)
                     {
@@ -1859,22 +1859,22 @@ public partial class CharaBehavior
                         }
                         else
                         {
-                            MyPass.MirrorPassCount.Clear();
+                            Pass.MirrorPassCount.Clear();
                         }
                     }
                 }
             }
             else
             {
-                MyPass.MirrorPassCount.Clear();
+                Pass.MirrorPassCount.Clear();
             }
         }
 
-        if (MyPass.MirrorShotCount.Value > 0) //ミラーシュート状態
+        if (Pass.MirrorShotCount.Value > 0) //ミラーシュート状態
         {
             if (MyPad.ButtonB.IsPressed && MyPad.ButtonA.IsPressed == false) //シュート入力おしっぱ
             {
-                if (MyPass.MirrorPassCount.AddUntil(Defines.MIRWAIT))
+                if (Pass.MirrorPassCount.AddUntil(Defines.MIRWAIT))
                 {
                     LookTg(BallState.ShotTargetOrder, false, true);
                     Shooting();
@@ -1882,14 +1882,14 @@ public partial class CharaBehavior
             }
             else
             {
-                MyPass.MirrorShotCount.Set(1);
+                Pass.MirrorShotCount.Set(1);
             }
         }
     }
 
     void GroundFree()
     {
-        if (MyPad.IsJustPressedAnyButton() && MyCatch.CatchWaitCount.Value == 0)
+        if (MyPad.IsJustPressedAnyButton() && Catch.CatchWaitCount.Value == 0)
         {
             //キャッチもボール方向向くようにしてみる
             SetCatchMuki();
@@ -1908,7 +1908,7 @@ public partial class CharaBehavior
             SetMotionType(CharaMotionType.Dg);
             PlaySeCatchSe();
         }
-        else if (MyPad.ButtonB.IsJustPressed && MyCatch.CatchWaitCount.Value == 0) //キャッチ入力
+        else if (MyPad.ButtonB.IsJustPressed && Catch.CatchWaitCount.Value == 0) //キャッチ入力
         {
             //キャッチもボール方向向くようにしてみる
             SetCatchMuki();
@@ -1957,17 +1957,17 @@ public partial class CharaBehavior
     private void Shooting()
     {
         //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
-        bool nortst_f = MyMotion.HasFlag(CharaMotionFlag.Ds)
-                        && MyCoordinate.DashDirection == MyCoordinate.DirectionX;
+        bool nortst_f = Motion.HasFlag(CharaMotionFlag.Ds)
+                        && Coordinate.DashDirection == Coordinate.DirectionX;
 
         //内野で向きに変わるときは振り向きシュート
-        bool isReturnShot = MyOrder.IsInfield
+        bool isReturnShot = Order.IsInfield
                             && nortst_f == false
-                            && MyMove.LastDirectionX != MyCoordinate.DirectionX;
+                            && Move.LastDirectionX != Coordinate.DirectionX;
 
         CharaMotionType shootMotion;
 
-        if (MyMotion.HasFlag(CharaMotionFlag.Ar))
+        if (Motion.HasFlag(CharaMotionFlag.Ar))
         {
             shootMotion = CharaMotionType.JSh;
         }
@@ -1993,7 +1993,7 @@ public partial class CharaBehavior
         LookTg(BallState.PassTargetOrder, true, false);
         //}
 
-        CharaMotionType passMotion = MyMotion.HasFlag(CharaMotionFlag.Ar)
+        CharaMotionType passMotion = Motion.HasFlag(CharaMotionFlag.Ar)
             ? CharaMotionType.JPa
             : CharaMotionType.Pa;
         SetMotionType(passMotion);
@@ -2040,29 +2040,29 @@ public partial class CharaBehavior
         }
 
         // シュートタイミングの位置
-        futureX = MyCoordinate.X + MyCoordinate.VelocityX * Defines.SHLAG;
-        futureZ = MyCoordinate.Z + MyCoordinate.VelocityZ * Defines.SHLAG;
+        futureX = Coordinate.X + Coordinate.VelocityX * Defines.SHLAG;
+        futureZ = Coordinate.Z + Coordinate.VelocityZ * Defines.SHLAG;
 
         //タゲあり
         if (Notag_f == false && TgSt != null)
         {
-            bool near_f = Math.Abs(TgSt.MyCoordinate.X - futureX) < Defines.NEARDISTX
-                          && Math.Abs(TgSt.MyCoordinate.Z - futureZ) < Defines.NEARDISTZ;
+            bool near_f = Math.Abs(TgSt.Coordinate.X - futureX) < Defines.NEARDISTX
+                          && Math.Abs(TgSt.Coordinate.Z - futureZ) < Defines.NEARDISTZ;
 
-            if (MyState.Order.IsInfield == false
+            if (Order.IsInfield == false
                 || Pa_f
                 || near_f == false)
             {
                 //オート向き初期化
                 AutoMukiInit();
 
-                var nowDist = TgSt.MyCoordinate.X - MyCoordinate.X;
-                var futureDist = TgSt.MyCoordinate.X - futureX;
+                var nowDist = TgSt.Coordinate.X - Coordinate.X;
+                var futureDist = TgSt.Coordinate.X - futureX;
                 var isSameDirection = nowDist * futureDist > 0;
 
                 if (isSameDirection)
                 {
-                    MyAuto.DirectionX = (TgSt.MyCoordinate.X < futureX)
+                    SetAuto.DirectionX = (TgSt.Coordinate.X < futureX)
                         ? DirectionXType.Left
                         : DirectionXType.Right;
                 }
@@ -2070,21 +2070,21 @@ public partial class CharaBehavior
                 //ダッシュマンパス
                 if (dmPass_f)
                 {
-                    MyAuto.DirectionZ = DirectionZType.Neutral;
+                    SetAuto.DirectionZ = DirectionZType.Neutral;
                 }
                 else
                 {
-                    bool Z_f = Math.Abs(TgSt.MyCoordinate.Z - futureZ) > Math.Abs(TgSt.MyCoordinate.X - futureX); //★斜めのとき
+                    bool Z_f = Math.Abs(TgSt.Coordinate.Z - futureZ) > Math.Abs(TgSt.Coordinate.X - futureX); //★斜めのとき
 
                     if (Z_f)
                     {
-                        MyAuto.DirectionZ = TgSt.MyCoordinate.Z < futureZ
+                        SetAuto.DirectionZ = TgSt.Coordinate.Z < futureZ
                             ? DirectionZType.Forward
                             : DirectionZType.Backward;
                     }
                     else
                     {
-                        MyAuto.DirectionZ = DirectionZType.Neutral;
+                        SetAuto.DirectionZ = DirectionZType.Neutral;
                     }
                 }
 
@@ -2093,7 +2093,7 @@ public partial class CharaBehavior
         }
         else //タゲ無し
         {
-            if (MyOrder.IsInfield == false
+            if (Order.IsInfield == false
                 || IsSelfControl == false
                 || (AtLook_f && Notag_f))
             {
@@ -2101,17 +2101,17 @@ public partial class CharaBehavior
                 switch (MyOrderIndex)
                 {
                     case OrderIndexType.Outfield2:
-                        MyAuto.DirectionZ = DirectionZType.Forward;
+                        SetAuto.DirectionZ = DirectionZType.Forward;
                         MukiSetAuto();
                         SetShTagFromMyShootAngle12(false);
                         break;
                     case OrderIndexType.Outfield3:
-                        MyAuto.DirectionZ = DirectionZType.Backward;
+                        SetAuto.DirectionZ = DirectionZType.Backward;
                         MukiSetAuto();
                         SetShTagFromMyShootAngle12(false);
                         break;
                     case OrderIndexType.Outfield4:
-                        MyAuto.DirectionX = MySideIndex == 0
+                        SetAuto.DirectionX = MySideIndex == 0
                             ? DirectionXType.Left
                             : DirectionXType.Right;
                         MukiSetAuto();
@@ -2122,7 +2122,7 @@ public partial class CharaBehavior
                 if (Pa_f == false && IsShTag() == false)
                 {
                     //全方向チェック
-                    var directionX = MyCoordinate.DirectionX;
+                    var directionX = Coordinate.DirectionX;
                     //ニュートラルから探す
                     var directionZ = DirectionZType.Neutral;
                     if (SearchShootTarget(directionX, directionZ))
@@ -2146,7 +2146,7 @@ public partial class CharaBehavior
                     }
 
                     //逆向き
-                    directionX = MyCoordinate.DirectionX == DirectionXType.Left
+                    directionX = Coordinate.DirectionX == DirectionXType.Left
                         ? DirectionXType.Right
                         : DirectionXType.Left;
 
@@ -2184,8 +2184,8 @@ public partial class CharaBehavior
 
     private void SetAutoTarget(DirectionXType directionX, DirectionZType directionZ)
     {
-        MyState.Auto.DirectionX = directionX;
-        MyState.Auto.DirectionZ = directionZ;
+        SetAuto.DirectionX = directionX;
+        SetAuto.DirectionZ = directionZ;
         MukiSetAuto();
         SetShTagFromMyShootAngle12(false);
     }
@@ -2199,7 +2199,7 @@ public partial class CharaBehavior
     //シュートタゲセット
     void SetShTagFromMyShootAngle12(bool isIgnoreDirection)
     {
-        CallBallChangeShootTarget(GetShootTarget(MyShoot.Angle12, isIgnoreDirection));
+        CallBallChangeShootTarget(GetShootTarget(Shoot.Angle12, isIgnoreDirection));
     }
 
     void DegbugKill()

@@ -2,7 +2,7 @@
 
 public partial class CharaBehavior
 {
-    private void SetPass()
+    private void SetPassing()
     {
         
     }

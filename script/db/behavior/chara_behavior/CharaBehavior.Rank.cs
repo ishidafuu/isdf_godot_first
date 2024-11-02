@@ -7,7 +7,7 @@ public partial class CharaBehavior
     /// </summary>
     private int GetLevelRank(RankLevelType levelType)
     {
-        return MasterManager.Instance.RankMaster.GetLevel(levelType, MyState.Level.Level);
+        return MasterManager.Instance.RankMaster.GetLevel(levelType, RawState.Level.Level);
     }
 
     /// <summary>
@@ -15,7 +15,7 @@ public partial class CharaBehavior
     /// </summary>
     private int GetSpeedRank(RankSpeedType speedType)
     {
-        return MasterManager.Instance.RankMaster.GetSpeed(speedType, MyState.Level.Speed);
+        return MasterManager.Instance.RankMaster.GetSpeed(speedType, RawState.Level.Speed);
     }
 
     /// <summary>
@@ -23,7 +23,7 @@ public partial class CharaBehavior
     /// </summary>
     private int GetHpRank(RankHpType hpType)
     {
-        var hpRateRank = MasterManager.Instance.RankMaster.GetHpRateRank(MyState.Live.Hp, MyState.Live.MaxHp);
+        var hpRateRank = MasterManager.Instance.RankMaster.GetHpRateRank(RawState.Live.Hp, RawState.Live.MaxHp);
         return MasterManager.Instance.RankMaster.GetHp(hpType, hpRateRank);
     }
 
@@ -32,7 +32,7 @@ public partial class CharaBehavior
     /// </summary>
     private int GetTechRank(RankTechType techType, int targetTech)
     {
-        var techRate = MasterManager.Instance.RankMaster.GetTechRateRank(MyState.Level.Tech, targetTech);
+        var techRate = MasterManager.Instance.RankMaster.GetTechRateRank(RawState.Level.Tech, targetTech);
         return MasterManager.Instance.RankMaster.GetTech(techType, techRate);
     }
 
@@ -41,7 +41,7 @@ public partial class CharaBehavior
     /// </summary>
     private int GetPowerRank(RankPowerType powerType, int targetPower)
     {
-        var powerRate = MasterManager.Instance.RankMaster.GetPowerRateRank(MyState.Level.Power, targetPower);
+        var powerRate = MasterManager.Instance.RankMaster.GetPowerRateRank(RawState.Level.Power, targetPower);
         return MasterManager.Instance.RankMaster.GetPower(powerType, powerRate);
     }
 

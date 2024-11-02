@@ -15,6 +15,8 @@ public class CoordinateState : ICoordinateStateGetter, ICoordinateStateSetter
     public int VelocityY { get; set; }
     public int VelocityZ { get; set; }
     public DownCounter FrictionCount { get; set; }
+    public int FrictionCountValue => FrictionCount.Value;
+
     public int Priority { get; set; }
     public Rect HitBox { get; set; }
 
@@ -120,7 +122,7 @@ public interface ICoordinateStateGetter
     int VelocityX { get; }
     int VelocityY { get; }
     int VelocityZ { get; }
-    DownCounter FrictionCount { get; }
+    int FrictionCountValue { get; }
     int Priority { get; }
     Rect HitBox { get; }
     int SignVelocityX();
@@ -139,8 +141,8 @@ public interface ICoordinateStateSetter
     int Z { set; }
     int VelocityX { set; }
     int VelocityY { set; }
-    int VelocityZ { set; }
-    DownCounter FrictionCount { set; }
+    int VelocityZ { set; } 
+    DownCounter FrictionCount { get; }
     int Priority { set; }
     Rect HitBox { set; }
     void Initialize();

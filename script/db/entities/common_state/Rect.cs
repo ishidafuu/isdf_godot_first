@@ -1,6 +1,6 @@
 ﻿namespace db;
 
-public struct Rect
+public struct Rect : IRectGetter, IRectSetter
 {
     public int X { get; set; }
     public int Y { get; set; }
@@ -43,4 +43,20 @@ public struct Rect
                && Y <= y
                && y <= Y + Height;
     }
+}
+
+public interface IRectGetter
+{
+    int X { get; }
+    int Y { get; }
+    int Width { get; }
+    int Height { get; }
+    bool IsPile(Rect targetRect);
+    bool IsPile(int x, int y);
+}
+
+public interface IRectSetter
+{
+    void Set(int x, int y, int width, int height);
+    void Initialize();
 }

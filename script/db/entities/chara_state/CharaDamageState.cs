@@ -7,15 +7,19 @@ public class CharaDamageStateGetter : ICharaDamageStateGetter, ICharaDamageState
 {
     // キャッチダメージ顔
     public DownCounter DamageAfterCount { get; set; }
+    public int DamageAfterCountValue => DamageAfterCount.Value;
 
     // ダウンカウンタ
     public UpCounter DownCount { get; set; }
+    public int DownCountValue => DownCount.Value;
 
     // 回転カウンタ
     public DownCounter RollCount { get; set; }
+    public int RollCountValue => RollCount.Value;
 
     // 屈みカウンタ
     public DownCounter KagamiCount { get; set; }
+    public int KagamiCountValue => KagamiCount.Value;
 
     // よりコート中心に戻れるカウンタ
     public int KagamiRevCount { get; set; }
@@ -28,6 +32,7 @@ public class CharaDamageStateGetter : ICharaDamageStateGetter, ICharaDamageState
 
     // ファンブルカウンタ
     public DownCounter FumbleCount { get; set; }
+    public int FumbleCountValue => FumbleCount.Value;
 
     public void Initialize()
     {
@@ -50,26 +55,26 @@ public class CharaDamageStateGetter : ICharaDamageStateGetter, ICharaDamageState
 
 public interface ICharaDamageStateGetter
 {
-    DownCounter DamageAfterCount { get; }
-    UpCounter DownCount { get; }
-    DownCounter RollCount { get; }
-    DownCounter KagamiCount { get; }
-    int KagamiRevCount { get; }
+    int DamageAfterCountValue { get; }
+    int DownCountValue { get; }
+    int RollCountValue { get; }
+    int KagamiCountValue { get; }
+    int KagamiRevCountValue { get; }
     int KagamiRevKgNo { get; }
     bool IsHitStop { get; }
-    DownCounter FumbleCount { get; }
+    int FumbleCountValue { get; }
 }
 
 public interface ICharaDamageStateSetter
 {
-    DownCounter DamageAfterCount { set; }
-    UpCounter DownCount { set; }
-    DownCounter RollCount { set; }
-    DownCounter KagamiCount { set; }
+    DownCounter DamageAfterCount { get; }
+    UpCounter DownCount { get; }
+    DownCounter RollCount { get; }
+    DownCounter KagamiCount { get; }
     int KagamiRevCount { set; }
     int KagamiRevKgNo { set; }
     bool IsHitStop { set; }
-    DownCounter FumbleCount { set; }
+    DownCounter FumbleCount { get; }
 
     void Progress();
 }

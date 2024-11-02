@@ -2,7 +2,7 @@
 
 public partial class CharaBehavior
 {
-    private void SetShoot(bool isJumpShoot)
+    private void SetShooting(bool isJumpShoot)
     {
         
     }
