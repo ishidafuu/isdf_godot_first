@@ -22,5 +22,7 @@ public partial class TeamState
     }
 
     public bool IsCom => SemiAutoState.SemiF || MainState.ManSideF == false;
+    
+    
 
 }

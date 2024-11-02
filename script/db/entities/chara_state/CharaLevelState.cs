@@ -23,6 +23,9 @@ public class CharaLevelStateGetter : ICharaLevelStateGetter, ICharaLevelStateSet
     // すぴーど（ランク）
     public int Speed { get; set; }
 
+    // アタックライン
+    public int AttackLine { get; set; }
+
     public void Initialize()
     {
         Level = 0;
@@ -31,6 +34,7 @@ public class CharaLevelStateGetter : ICharaLevelStateGetter, ICharaLevelStateSet
         Kire = 0;
         Tech = 0;
         Speed = 0;
+        AttackLine = 0;
     }
 }
 
@@ -42,6 +46,7 @@ public interface ICharaLevelStateGetter
     int Kire { get; }
     int Tech { get; }
     int Speed { get; }
+    int AttackLine { get; }
 }
 
 public interface ICharaLevelStateSetter
@@ -52,6 +57,7 @@ public interface ICharaLevelStateSetter
     int Kire { set; }
     int Tech { set; }
     int Speed { set; }
+    int AttackLine { set; }
 
     void Initialize();
 }

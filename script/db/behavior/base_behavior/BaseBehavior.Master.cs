@@ -1,11 +1,11 @@
 ﻿namespace db;
 
-public partial class CharaBehavior
+public partial class BaseBehavior
 {
     /// <summary>
     /// SettingMaster重力
     /// </summary>
-    private int GetSettingGravity(SettingGravityType value)
+    protected int GetSettingGravity(SettingGravityType value)
     {
         return MasterManager.Instance.SettingMaster.GetGravity(value);
     }
@@ -13,7 +13,7 @@ public partial class CharaBehavior
     /// <summary>
     /// SettingMasterダメージ
     /// </summary>
-    private int GetSettingDamage(SettingDamageType value)
+    protected int GetSettingDamage(SettingDamageType value)
     {
         return MasterManager.Instance.SettingMaster.GetDamage(value);
     }
@@ -21,7 +21,7 @@ public partial class CharaBehavior
     /// <summary>
     /// SettingMasterジャンプ
     /// </summary>
-    private int GetSettingJump(SettingJumpType value)
+    protected int GetSettingJump(SettingJumpType value)
     {
         return MasterManager.Instance.SettingMaster.GetJump(value);
     }
@@ -29,7 +29,7 @@ public partial class CharaBehavior
     /// <summary>
     /// SettingMasterコート
     /// </summary>
-    private int GetSettingCourt(SetingCourtType value)
+    protected int GetSettingCourt(SetingCourtType value)
     {
         return MasterManager.Instance.SettingMaster.GetCourt(value);
     }
@@ -37,7 +37,7 @@ public partial class CharaBehavior
     /// <summary>
     /// SettingMasterボール
     /// </summary>
-    private int GetSettingBall(SettingBallType value)
+    protected int GetSettingBall(SettingBallType value)
     {
         return MasterManager.Instance.SettingMaster.GetBall(value);
     }
@@ -45,7 +45,7 @@ public partial class CharaBehavior
     /// <summary>
     /// SettingMaster壁
     /// </summary>
-    private int GetSettingWall(SettingWallType value)
+    protected int GetSettingWall(SettingWallType value)
     {
         return MasterManager.Instance.SettingMaster.GetWall(value);
     }
@@ -53,7 +53,7 @@ public partial class CharaBehavior
     /// <summary>
     /// SettingMaster内野
     /// </summary>
-    private int GetSettingInfield(SettingInfieldType value)
+    protected int GetSettingInfield(SettingInfieldType value)
     {
         return MasterManager.Instance.SettingMaster.GetInfield(value);
     }
@@ -61,7 +61,7 @@ public partial class CharaBehavior
     /// <summary>
     /// SettingMasterキャッチ
     /// </summary>
-    private int GetSettingCatch(SettingCatchType value)
+    protected int GetSettingCatch(SettingCatchType value)
     {
         return MasterManager.Instance.SettingMaster.GetCatch(value);
     }
@@ -69,7 +69,7 @@ public partial class CharaBehavior
     /// <summary>
     /// SettingMasterシュート
     /// </summary>
-    private int GetSettingShoot(SettingShotType value)
+    protected int GetSettingShoot(SettingShotType value)
     {
         return MasterManager.Instance.SettingMaster.GetShoot(value);
     }
@@ -77,7 +77,7 @@ public partial class CharaBehavior
     /// <summary>
     /// SettingMasterパス
     /// </summary>
-    private int GetSettingPass(SettingPassType value)
+    protected int GetSettingPass(SettingPassType value)
     {
         return MasterManager.Instance.SettingMaster.GetPass(value);
     }
@@ -85,7 +85,7 @@ public partial class CharaBehavior
     /// <summary>
     /// SettingMasterフォーメーション
     /// </summary>
-    private int GetSettingFormation(SettingFormationType value)
+    protected int GetSettingFormation(SettingFormationType value)
     {
         return MasterManager.Instance.SettingMaster.GetFormation(value);
     }
@@ -93,7 +93,7 @@ public partial class CharaBehavior
     /// <summary>
     /// SettingMasterCOM思考
     /// </summary>
-    private int GetSettingComPlan(SettingComType value)
+    protected int GetSettingComPlan(SettingComType value)
     {
         return MasterManager.Instance.SettingMaster.GetCom(value);
     }
@@ -101,7 +101,7 @@ public partial class CharaBehavior
     /// <summary>
     /// SettingMaster入力
     /// </summary>
-    private int GetSettingInput(SettingInputType value)
+    protected int GetSettingInput(SettingInputType value)
     {
         return MasterManager.Instance.SettingMaster.GetInput(value);
     }

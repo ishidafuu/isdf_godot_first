@@ -3,7 +3,7 @@ using isdf;
 
 namespace db;
 
-public class PadBehaviorManager
+public class PadBehaviorManager : BaseBehavior
 {
     private static PadBehaviorManager _instance;
     public static PadBehaviorManager Instance => _instance ??= new PadBehaviorManager();

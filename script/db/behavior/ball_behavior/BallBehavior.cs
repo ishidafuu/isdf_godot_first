@@ -1,6 +1,6 @@
 ﻿namespace db;
 
-public partial class BallBehavior
+public partial class BallBehavior : BaseBehavior
 {
     private RefereeState RefereeState => RefereeStateManager.Instance.RefereeState;
     private BallState BallState => BallStateManager.Instance.BallState;

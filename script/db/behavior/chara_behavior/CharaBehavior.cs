@@ -2,7 +2,7 @@
 
 namespace db;
 
-public partial class CharaBehavior
+public partial class CharaBehavior : BaseBehavior
 {
     private int EnemySideIndex => MySideIndex == 0 ? 1 : 0;
     private int MyMemberIndex => RawState2.Index.MemberIndex;
@@ -14,10 +14,12 @@ public partial class CharaBehavior
     private RefereeState RefereeState => RefereeStateManager.Instance.RefereeState;
     private TeamState MyTeamState => TeamStateManager.Instance.Get(MySideIndex);
     private TeamComState MyTeamComState => TeamComStateManager.Instance.Get(MySideIndex);
+    private TeamComActionState MyTeamComActionState => MyTeamComState.ActionState[MyMemberIndex];
     private TeamState EnemyTeamState => TeamStateManager.Instance.Get(EnemySideIndex);
     private TeamBehavior MyTeamBehavior => TeamBehaviorManager.Instance.Get(MySideIndex);
     private IPad MyPad => PadBehaviorManager.Instance.Get(MySideIndex).Pad;
 
+    
     /// <summary>
     /// Getアクセスインターフェイス
     /// </summary>

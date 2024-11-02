@@ -121,12 +121,9 @@ public partial class CharaBehavior
             //飛ばないダッシュマン
             if (MyTeamBehavior.IsNoJpDashman())
             {
-                
-                MyTeamComState.ActionState[MyMemberIndex]
-                // Shoot.Step
                 //歩数過ぎたら投げてイイ
-                if ((st_.pstMyCh_->Step_c >= st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].DShStep)
-                    || (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(FALSE, TRUE))) //ジャンプしないダッシュマンはこのラインが最大限界
+                if (Shoot.StepValue >= MyTeamComActionState.DShStep
+                    || LeftCourtX > MyTeamBehavior.GetAtcLineX(false, true)) //ジャンプしないダッシュマンはこのラインが最大限界
                 {
                     COMAction_DM_Sh();
                 }
@@ -140,40 +137,62 @@ public partial class CharaBehavior
         {
             COMAction_DM_Pa(); //パス回し
         }
-        
     }
 
-    //ＣＯＭ思考行動ダッシュマン★★
-    void TChAction::COMAction_DM()
+    void COMAction_DM_Sh() //シュート指示が出てる
     {
-        //ダッシュマン作戦に完全に入ってる必要がある（態勢ウエイトはなにもしない）
-        if (st_.pmgMyTm_->st_.pstMyTm_->COMDt.dashman_f == FALSE) return;
-
-        //シュート指示が出てる
-        if (st_.pmgMyTm_->st_.pstMyTm_->COMDt.dashmanShOK_f)
+        //空中攻撃
+        if (st_.pmgMyTm_->st_.pstMyTm_->stCOM.jp_f
+            || st_.pstMyCh_->Motion.IsMFlags(dbmfAr))
         {
-            //飛ばないダッシュマン
-            if (st_.pmgMyTm_->IsNoJpDashman())
+            if (st_.pstMyCh_->Motion.IsMFlags(dbmfAr) //ジャンプ状態
+                && (st_.pstMyCh_->Air_c >= st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].JShTime)) //予定時間こえてる
             {
-                //歩数過ぎたら投げてイイ
-                if ((st_.pstMyCh_->Step_c >= st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].DShStep)
-                    || (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(FALSE, TRUE))) //ジャンプしないダッシュマンはこのラインが最大限界
-                {
-                    COMAction_DM_Sh();
-                }
-            }
-            else
-            {
-                COMAction_DM_Sh();
+                //シュート
+                COMShootAct();
             }
         }
-        else //パス回し
+        else //地上攻撃
         {
-            COMAction_DM_Pa(); //パス回し
+            if ((IsInfield() == FALSE) //外野
+                || (st_.pstMyCh_->Step_c >= st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].DShStep) //予定歩数超えた
+                || (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(FALSE, TRUE))) //センターライン超えそう
+            {
+                //シュート
+                COMShootAct();
+            }
+        }
+    }
+
+    void COMAction_DM_Pa() //パス回し
+    {
+        //既にメンバー走り出しに入ってる
+        if (st_.pmgMyTm_->st_.pstMyTm_->COMDt.callOK_f)
+        {
+            //ダッシュマンパス（タイミングなどは関数内）
+            COMDMPassAct();
+        }
+        else if (st_.pmgMyTm_->st_.pstMyTm_->COMDt.setterOK_f == FALSE) //セッターにボールが渡ってない
+        {
+            //空中攻撃
+            if (st_.pmgMyTm_->st_.pstMyTm_->stCOM.jp_f
+                || st_.pstMyCh_->Motion.IsMFlags(dbmfAr))
+            {
+                if (st_.pstMyCh_->Motion.IsMFlags(dbmfAr) //ジャンプ状態
+                    && (st_.pstMyCh_->Air_c >= st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].JShTime)) //予定時間こえてる
+                {
+                    COMPass(FALSE); //セッターパス
+                }
+            }
+            else //地上攻撃
+            {
+                COMPass(FALSE); //セッターパス
+            }
         }
     }
 
     void COMAction_Std()
     {
     }
+
 }
