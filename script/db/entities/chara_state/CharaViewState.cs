@@ -3,7 +3,7 @@
 /// <summary>
 /// アニメーション・見た目・セリフに関するステータス
 /// </summary>
-public class CharaViewState : ICharaViewState
+public class CharaViewStateGetter : ICharaViewStateGetter, ICharaViewStateSetter
 {
     // 息継ぎカウンタ
     public UpCounter BreathCount { get; set; }
@@ -36,10 +36,22 @@ public class CharaViewState : ICharaViewState
     }
 }
 
-public interface ICharaViewState
+public interface ICharaViewStateGetter
 {
     UpCounter BreathCount { get; }
     int LongKeepCount { get; }
     int PassWaitCount { get; }
     UpCounter TargetCount { get; }
+}
+
+public interface ICharaViewStateSetter
+{
+    UpCounter BreathCount { set; }
+    int LongKeepCount { set; }
+    int PassWaitCount { set; }
+    UpCounter TargetCount { set; }
+
+    void Initialize();
+    void IncrementTargetCount();
+    void ResetTargetCount();
 }

@@ -2,29 +2,29 @@
 
 public partial class CharaState
 {
-    public CharaIndexState Index { get; set; } = new();
-    public CharaOrderState Order { get; set; } = new();
-    public CharaInputState Input { get; set; } = new();
-    public CharaLiveState Live { get; set; } = new();
+    public CharaIndexStateGetter Index { get; set; } = new();
+    public CharaOrderStateGetter Order { get; set; } = new();
+    public CharaInputStateGetter Input { get; set; } = new();
+    public CharaLiveStateGetter Live { get; set; } = new();
     public CoordinateState Coordinate { get; set; } = new();
-    public CharaMotionState Motion { get; set; } = new();
-    public CharaAutoState Auto { get; set; } = new();
-    public CharaAutoState NextAuto { get; set; } = new();
-    public CharaComAutoState ComAuto { get; set; } = new();
-    public CharaGouseiState Gousei { get; set; } = new();
-    public CharaDamageState Damage { get; set; } = new();
-    public CharaLevelState Level { get; set; } = new();
-    public CharaDistanceState Distance { get; set; } = new();
-    public CharaMoveState Move { get; set; } = new();
-    public CharaAirState Air { get; set; } = new();
-    public CharaViewState View { get; set; } = new();
-    public CharaCatchState Catch { get; set; } = new();
-    public CharaShootState Shoot { get; set; } = new();
-    public CharaCourtState Court { get; set; } = new();
-    public CharaPassState Pass { get; set; } = new();
-    public CharaDashmanState Dashman { get; set; } = new();
-    public CharaComOnlyState ComOnly { get; set; } = new();
-    public CharaBallEffectState BallEffect { get; set; } = new();
+    public CharaMotionStateGetter Motion { get; set; } = new();
+    public CharaAutoStateGetter Auto { get; set; } = new();
+    public CharaAutoStateGetter NextAuto { get; set; } = new();
+    public CharaComAutoStateGetter ComAuto { get; set; } = new();
+    public CharaGouseiStateGetter Gousei { get; set; } = new();
+    public CharaDamageStateGetter Damage { get; set; } = new();
+    public CharaLevelStateGetter Level { get; set; } = new();
+    public CharaDistanceStateGetter Distance { get; set; } = new();
+    public CharaMoveStateGetter Move { get; set; } = new();
+    public CharaAirStateGetter Air { get; set; } = new();
+    public CharaViewStateGetter View { get; set; } = new();
+    public CharaCatchStateGetter Catch { get; set; } = new();
+    public CharaShootStateGetter Shoot { get; set; } = new();
+    public CharaCourtStateGetter Court { get; set; } = new();
+    public CharaPassStateGetter Pass { get; set; } = new();
+    public CharaDashmanStateGetter Dashman { get; set; } = new();
+    public CharaComOnlyStateGetter ComOnly { get; set; } = new();
+    public CharaBallEffectStateGetter BallEffect { get; set; } = new();
 
     public CharaState(int sideIndex, int memberIndex)
     {

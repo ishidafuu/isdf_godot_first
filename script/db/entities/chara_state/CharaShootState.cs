@@ -3,7 +3,7 @@
 /// <summary>
 /// シュート・ターゲットに関するステータス
 /// </summary>
-public class CharaShootState : ICharaShootState
+public class CharaShootStateGetter : ICharaShootStateGetter, ICharaShootStateSetter
 {
     // シュート待ちカウンタ
     public DownCounter ShootWaitCount { get; set; }
@@ -52,7 +52,7 @@ public class CharaShootState : ICharaShootState
     }
 }
 
-public interface ICharaShootState
+public interface ICharaShootStateGetter
 {
     DownCounter ShootWaitCount { get; }
     DownCounter ShootEndWaitCount { get; }
@@ -63,4 +63,20 @@ public interface ICharaShootState
     bool IsBackSh { get; }
     bool IsUTurn { get; }
     int FumbleCount { get; }
+}
+
+public interface ICharaShootStateSetter
+{
+    DownCounter ShootWaitCount { set; }
+    DownCounter ShootEndWaitCount { set; }
+    UpCounter Step { set; }
+    ShootTiming ShootTiming { set; }
+    int Angle12 { set; }
+    int ShCv { set; }
+    bool IsBackSh { set; }
+    bool IsUTurn { set; }
+    int FumbleCount { set; }
+
+    void Initialize();
+    void SetWaitCount(int startCount, int endCount);
 }

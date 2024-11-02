@@ -5,7 +5,7 @@ namespace db;
 /// <summary>
 /// COMオート動作に関するステータス
 /// </summary>
-public class CharaComAutoState : ICharaComAutoState
+public class CharaComAutoStateGetter : ICharaComAutoStateGetter, ICharaComAutoStateSetter
 {
     public int JumpBallStep { get; set; }
     public int JumpBallWaitCount { get; set; }
@@ -28,7 +28,7 @@ public class CharaComAutoState : ICharaComAutoState
     }
 }
 
-public interface ICharaComAutoState
+public interface ICharaComAutoStateGetter
 {
     int JumpBallStep { get; }
     int JumpBallWaitCount { get; }
@@ -37,4 +37,15 @@ public interface ICharaComAutoState
     DirectionXType MoveDirectionX { get; }
     DirectionZType MoveDirectionZ { get; }
     int[] CatchRec { get; }
+}
+
+public interface ICharaComAutoStateSetter
+{
+    int JumpBallStep { set; }
+    int JumpBallWaitCount { set; }
+    int ComMoveCount { set; }
+    int KeepDirectionCount { set; }
+    DirectionXType MoveDirectionX { set; }
+    DirectionZType MoveDirectionZ { set; }
+    int[] CatchRec { set; }
 }

@@ -28,29 +28,29 @@ public partial class CharaBehavior
     /// MyState
     /// Getアクセスインターフェイス
     /// </summary>
-    public ICharaIndexState MyIndex => MyState.Index;
-    public ICharaOrderState MyOrder => MyState.Order;
-    public ICharaInputState MyInput => MyState.Input;
-    public ICharaLiveState MyLive => MyState.Live;
+    public ICharaIndexStateGetter MyIndex => MyState.Index;
+    public ICharaOrderStateGetter MyOrder => MyState.Order;
+    public ICharaInputStateGetter MyInput => MyState.Input;
+    public ICharaLiveStateGetter MyLive => MyState.Live;
     public ICoordinateState MyCoordinate => MyState.Coordinate;
-    public ICharaMotionState MyMotion => MyState.Motion;
-    public ICharaAutoState MyAuto => MyState.Auto;
-    public ICharaAutoState MyNextAuto => MyState.NextAuto;
-    public ICharaComAutoState MyComAuto => MyState.ComAuto;
-    public ICharaGouseiState MyGousei => MyState.Gousei;
-    public ICharaDamageState MyDamage => MyState.Damage;
-    public ICharaLevelState MyLevel => MyState.Level;
-    public ICharaDistanceState MyDistance => MyState.Distance;
-    public ICharaMoveState MyMove => MyState.Move;
-    public ICharaAirState MyAir => MyState.Air;
-    public ICharaViewState MyView => MyState.View;
-    public ICharaCatchState MyCatch => MyState.Catch;
-    public ICharaShootState MyShoot => MyState.Shoot;
-    public ICharaCourtState MyCourt => MyState.Court;
-    public ICharaPassState MyPass => MyState.Pass;
-    public ICharaDashmanState MyDashman => MyState.Dashman;
-    public ICharaComOnlyState MyComOnly => MyState.ComOnly;
-    public ICharaBallEffectState MyBallEffect => MyState.BallEffect;
+    public ICharaMotionStateGetter MyMotion => MyState.Motion;
+    public ICharaAutoStateGetter MyAuto => MyState.Auto;
+    public ICharaAutoStateGetter MyNextAuto => MyState.NextAuto;
+    public ICharaComAutoStateGetter MyComAuto => MyState.ComAuto;
+    public ICharaGouseiStateGetter MyGousei => MyState.Gousei;
+    public ICharaDamageStateGetter MyDamage => MyState.Damage;
+    public ICharaLevelStateGetter MyLevel => MyState.Level;
+    public ICharaDistanceStateGetter MyDistance => MyState.Distance;
+    public ICharaMoveStateGetter MyMove => MyState.Move;
+    public ICharaAirStateGetter MyAir => MyState.Air;
+    public ICharaViewStateGetter MyView => MyState.View;
+    public ICharaCatchStateGetter MyCatch => MyState.Catch;
+    public ICharaShootStateGetter MyShoot => MyState.Shoot;
+    public ICharaCourtStateGetter MyCourt => MyState.Court;
+    public ICharaPassStateGetter MyPass => MyState.Pass;
+    public ICharaDashmanStateGetter MyDashman => MyState.Dashman;
+    public ICharaComOnlyStateGetter MyComOnly => MyState.ComOnly;
+    public ICharaBallEffectStateGetter MyBallEffect => MyState.BallEffect;
 
     public CharaBehavior()
     {

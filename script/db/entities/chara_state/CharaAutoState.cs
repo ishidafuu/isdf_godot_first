@@ -3,7 +3,7 @@
 /// <summary>
 /// オート情報
 /// </summary>
-public class CharaAutoState : ICharaAutoState
+public class CharaAutoStateGetter : ICharaAutoStateGetter, ICharaAutoStateSetter
 {
     public AutoType AutoType { get; set; }
     public DirectionXType DirectionX { get; set; }
@@ -28,7 +28,7 @@ public class CharaAutoState : ICharaAutoState
     }
 }
 
-public interface ICharaAutoState
+public interface ICharaAutoStateGetter
 {
     AutoType AutoType { get; }
     DirectionXType DirectionX { get; }
@@ -36,4 +36,14 @@ public interface ICharaAutoState
     bool IsDash { get; }
     bool IsDashStopped { get; }
     bool IsFreeAction { get; }
+}
+
+public interface ICharaAutoStateSetter
+{
+    AutoType AutoType { set; }
+    DirectionXType DirectionX { set; }
+    DirectionZType DirectionZ { set; }
+    bool IsDash { set; }
+    bool IsDashStopped { set; }
+    bool IsFreeAction { set; }
 }

@@ -3,12 +3,12 @@
 /// <summary>
 /// 合成シュートに関するステータス
 /// </summary>
-public class CharaGouseiState : ICharaGouseiState
+public class CharaGouseiStateGetter : ICharaGouseiStateGetter, ICharaGouseiStateSetter
 {
     public ShotGouseiState[] GouseiShots { get; set; } = new ShotGouseiState[Defines.StepNum];
     public ShotGouseiState VJumpGouseiShots { get; set; }
 
-    public CharaGouseiState()
+    public CharaGouseiStateGetter()
     {
         for (var i = 0; i < Defines.StepNum; i++)
         {
@@ -29,8 +29,16 @@ public class CharaGouseiState : ICharaGouseiState
     }
 }
 
-public interface ICharaGouseiState
+public interface ICharaGouseiStateGetter
 {
     ShotGouseiState[] GouseiShots { get; }
     ShotGouseiState VJumpGouseiShots { get; }
+}
+
+public interface ICharaGouseiStateSetter
+{
+    ShotGouseiState[] GouseiShots { set; }
+    ShotGouseiState VJumpGouseiShots { set; }
+
+    void Initialize();
 }

@@ -5,7 +5,7 @@ namespace db;
 /// <summary>
 /// モーションに関するステータス
 /// </summary>
-public class CharaMotionState : ICharaMotionState
+public class CharaMotionStateGetter : ICharaMotionStateGetter, ICharaMotionStateSetter
 {
     public CharaMotionType MotionType { get; private set; }
     public CharaMotionFlag MotionFlag { get; private set; }
@@ -127,7 +127,7 @@ public class CharaMotionState : ICharaMotionState
     }
 }
 
-public interface ICharaMotionState
+public interface ICharaMotionStateGetter
 {
     CharaMotionType MotionType { get; }
     CharaMotionFlag MotionFlag { get; }
@@ -140,4 +140,21 @@ public interface ICharaMotionState
     bool IsActionPoint { get; }
 
     bool HasFlag(CharaMotionFlag flag);
+}
+
+public interface ICharaMotionStateSetter
+{
+    UpCounter KomaFrameCount { set; }
+    DownCounter LoopCount { set; }
+    int LoopStartKomaNo { set; }
+    bool IsActionPoint { set; }
+
+    void Initialize();
+    void SubMotionFlag(CharaMotionFlag targetFlag);
+    void AddMotionFlag(CharaMotionFlag flag);
+    void Progress();
+    void SetMotionNo(CharaMotionType motionType, CharaMotionNo motionNo, CharaMotionFlag motionFlag, DirectionZType directionZType);
+    void StartKoma(BaseMotionKomaData komaData);
+    void IncKomaNo();
+    void BackToLoopStartKomaNo();
 }

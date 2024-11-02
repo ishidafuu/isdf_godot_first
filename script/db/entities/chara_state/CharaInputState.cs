@@ -5,7 +5,7 @@ namespace db;
 /// <summary>
 /// 入力に関するステータス
 /// </summary>
-public class CharaInputState : ICharaInputState
+public class CharaInputStateGetter : ICharaInputStateGetter, ICharaInputStateSetter
 {
     /// <summary>
     /// 操作キャラ
@@ -22,8 +22,16 @@ public class CharaInputState : ICharaInputState
 
 }
 
-public interface ICharaInputState
+public interface ICharaInputStateGetter
 {
     bool IsManualControl { get; }
     DirectionXType LastXKey { get; }
+}
+
+public interface ICharaInputStateSetter
+{
+    bool IsManualControl { set; }
+    DirectionXType LastXKey { set; }
+
+    void Initialize();
 }

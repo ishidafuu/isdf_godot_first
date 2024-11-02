@@ -3,7 +3,7 @@
 /// <summary>
 /// ダメージに関するステータス
 /// </summary>
-public class CharaDamageState : ICharaDamageState
+public class CharaDamageStateGetter : ICharaDamageStateGetter, ICharaDamageStateSetter
 {
     // キャッチダメージ顔
     public DownCounter DamageAfterCount { get; set; }
@@ -48,7 +48,7 @@ public class CharaDamageState : ICharaDamageState
     }
 }
 
-public interface ICharaDamageState
+public interface ICharaDamageStateGetter
 {
     DownCounter DamageAfterCount { get; }
     UpCounter DownCount { get; }
@@ -58,4 +58,18 @@ public interface ICharaDamageState
     int KagamiRevKgNo { get; }
     bool IsHitStop { get; }
     DownCounter FumbleCount { get; }
+}
+
+public interface ICharaDamageStateSetter
+{
+    DownCounter DamageAfterCount { set; }
+    UpCounter DownCount { set; }
+    DownCounter RollCount { set; }
+    DownCounter KagamiCount { set; }
+    int KagamiRevCount { set; }
+    int KagamiRevKgNo { set; }
+    bool IsHitStop { set; }
+    DownCounter FumbleCount { set; }
+
+    void Progress();
 }

@@ -3,7 +3,7 @@
 /// <summary>
 /// キャラ情報に関するステータス
 /// </summary>
-public class CharaProfileState : ICharaProfileState
+public class CharaProfileStateGetter : ICharaProfileStateGetter, ICharaProfileStateSetter
 {
     // キャラID
     public long CharaId { get; private set; }
@@ -14,7 +14,12 @@ public class CharaProfileState : ICharaProfileState
     }
 }
 
-public interface ICharaProfileState
+public interface ICharaProfileStateGetter
 {
     long CharaId { get; }
+}
+
+public interface ICharaProfileStateSetter
+{
+    void Initialize();
 }

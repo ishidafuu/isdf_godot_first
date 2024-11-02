@@ -3,7 +3,7 @@
 /// <summary>
 /// ドッジボールのコートに関するステータス
 /// </summary>
-public class CharaCourtState : ICharaCourtState
+public class CharaCourtStateGetter : ICharaCourtStateGetter, ICharaCourtStateSetter
 {
     //外野でもオーバーラインになるフラグ
     public bool IsOutFieldOverLine { get; set; }
@@ -31,11 +31,20 @@ public class CharaCourtState : ICharaCourtState
     }
 }
 
-public interface ICharaCourtState
+public interface ICharaCourtStateGetter
 {
     bool IsOutFieldOverLine { get; }
     bool IsLandEnemyCourt { get; }
     bool ECDdg_f { get; }
     bool ECDjp_f { get; }
     UpCounter EnemyCortDodgeCount { get; }
+}
+
+public interface ICharaCourtStateSetter
+{
+    bool IsOutFieldOverLine { set; }
+    bool IsLandEnemyCourt { set; }
+    bool ECDdg_f { set; }
+    bool ECDjp_f { set; }
+    UpCounter EnemyCortDodgeCount { set; }
 }

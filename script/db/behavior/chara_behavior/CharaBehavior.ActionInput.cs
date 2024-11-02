@@ -97,19 +97,19 @@ public partial class CharaBehavior
                         && (MyCourt.ECDjp_f == false))
                     {
                         JumpSet(false, false, false); //ジャンプ
-                        MyCourt.ECDdg_f = true; //１回だけ
-                        MyCourt.ECDjp_f = true; //１回だけ
+                        MyState.Court.ECDdg_f = true; //１回だけ
+                        MyState.Court.ECDjp_f = true; //１回だけ
                     }
                     else if (MyPad.ButtonA.IsJustPressed) //よけ
                     {
                         SetMotionType(CharaMotionType.Dg);
-                        MyCourt.ECDdg_f = true; //１回だけ
+                        MyState.Court.ECDdg_f = true; //１回だけ
                     }
 
                     if (MyCourt.ECDdg_f)
                     {
-                        MyMove.LastDirectionX = MyCoordinate.DirectionX;
-                        MyMove.LastDirectionZ = MyCoordinate.DirectionZ;
+                        MyState.Move.LastDirectionX = MyCoordinate.DirectionX;
+                        MyState.Move.LastDirectionZ = MyCoordinate.DirectionZ;
                     }
                 }
 
@@ -127,8 +127,8 @@ public partial class CharaBehavior
                 {
                     if (CanselJump(false) && muki_f)
                     {
-                        MyCourt.ECDjp_f = true; //１回だけ
-                        MyCourt.ECDdg_f = true; //１回だけ
+                        MyState.Court.ECDjp_f = true; //１回だけ
+                        MyState.Court.ECDdg_f = true; //１回だけ
                     }
                     else
                     {
@@ -141,8 +141,8 @@ public partial class CharaBehavior
                 {
                     if (CanselJump(false) && muki_f)
                     {
-                        MyCourt.ECDjp_f = true; //１回だけ
-                        MyCourt.ECDdg_f = true; //１回だけ
+                        MyState.Court.ECDjp_f = true; //１回だけ
+                        MyState.Court.ECDdg_f = true; //１回だけ
                     }
                     else
                     {

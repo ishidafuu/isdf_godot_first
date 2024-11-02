@@ -3,7 +3,7 @@
 /// <summary>
 /// パスに関するステータス
 /// </summary>
-public class CharaPassState : ICharaPassState
+public class CharaPassStateGetter : ICharaPassStateGetter, ICharaPassStateSetter
 {
     // 立ちパス待ちカウンタ
     public DownCounter PassStandWaitCount { get; set; }
@@ -43,11 +43,24 @@ public class CharaPassState : ICharaPassState
     }
 }
 
-public interface ICharaPassState
+public interface ICharaPassStateGetter
 {
     DownCounter PassStandWaitCount { get; }
     UpCounter MirrorPassCount { get; }
     UpCounter MirrorShotCount { get; }
     DownCounter MirrorShotLimitCount { get; }
     bool IsTossPass { get; }
+}
+
+public interface ICharaPassStateSetter
+{
+    DownCounter PassStandWaitCount { set; }
+    UpCounter MirrorPassCount { set; }
+    UpCounter MirrorShotCount { set; }
+    DownCounter MirrorShotLimitCount { set; }
+    bool IsTossPass { set; }
+
+    void Initialize();
+    void DecrementMirrorShotLimitCount();
+    void ResetPassStandWaitCount(int value);
 }

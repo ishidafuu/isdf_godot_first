@@ -3,7 +3,7 @@
 /// <summary>
 /// ボールから受け取る吹っ飛び周りに関するステータス
 /// </summary>
-public class CharaBallEffectState : ICharaBallEffectState
+public class CharaBallEffectStateGetter : ICharaBallEffectStateGetter, ICharaBallEffectStateSetter
 {
     //ボールから受け取る吹っ飛び絡みのデータ
     public bool Stick_f { get; set; } //アッパーシュートくっつきフラグ
@@ -106,7 +106,7 @@ public class CharaBallEffectState : ICharaBallEffectState
     }
 }
 
-public interface ICharaBallEffectState
+public interface ICharaBallEffectStateGetter
 {
     bool Stick_f { get; }
     bool Sticking_f { get; }
@@ -152,4 +152,52 @@ public interface ICharaBallEffectState
     bool stk2StPst_f { get; }
     int FlySkip { get; }
     int FlySkip_c { get; }
+}
+
+public interface ICharaBallEffectStateSetter
+{
+    bool Stick_f { set; }
+    bool Sticking_f { set; }
+    bool StickingPr_f { set; }
+    bool Sticked_f { set; }
+    int StickTime_c { set; }
+    bool suction_f { set; }
+    bool suction_c { set; }
+    int suctionLv { set; }
+    float suctionFlySpdBase { set; }
+    float suctionFlySpdRatio { set; }
+    bool suctionLockX_f { set; }
+    float suctionLockDistX { set; }
+    bool suctionLockZ_f { set; }
+    float suctionLockDistZ { set; }
+    bool rndWorld_f { set; }
+    int rndWorldLv { set; }
+    int flying_c { set; }
+    bool flyLoose_f { set; }
+    bool noMvDwn_f { set; }
+    bool noMvDwnLv { set; }
+    bool refVer_f { set; }
+    int refVerLv { set; }
+    bool refHor_f { set; }
+    int refHorLv { set; }
+    bool combo_f { set; }
+    int combo_c { set; }
+    int comboMax { set; }
+    int comboNoHitTime_c { set; }
+    bool flySpGrav_f { set; }
+    DownCounter hitMTime_cd { set; }
+    int hitMltDam { set; }
+    bool noDmg_f { set; }
+    int hitSound { set; }
+    bool rndWorldCh_f { set; }
+    bool refHorCh_f { set; }
+    bool symCtrl_f { set; }
+    int seChiu { set; }
+    CharaMotionType ctMotionPast { set; }
+    bool stk1StNow_f { set; }
+    bool stk1StPst_f { set; }
+    bool stk2StNow_f { set; }
+    bool stk2StPst_f { set; }
+    int FlySkip { set; }
+    int FlySkip_c { set; }
 }

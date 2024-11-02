@@ -4,7 +4,7 @@
 /// ダッシュマンに関するステータス
 /// ダッシュマン・ダッシュ状態でなくなったらリセット
 /// </summary>
-public class CharaDashmanState : ICharaDashmanState
+public class CharaDashmanStateGetter : ICharaDashmanStateGetter, ICharaDashmanStateSetter
 {
     // ダッシュマン(操作ダッシュマンもあるので、ここでは呼ばれたダッシュマンフラグ)
     public bool IsCalledDashman { get; set; }
@@ -32,10 +32,20 @@ public class CharaDashmanState : ICharaDashmanState
     }
 }
 
-public interface ICharaDashmanState
+public interface ICharaDashmanStateGetter
 {
     bool IsCalledDashman { get; }
     int DashmanNo { get; }
     int TargetZ { get; }
     DownCounter EnabledPassCount { get; }
+}
+
+public interface ICharaDashmanStateSetter
+{
+    bool IsCalledDashman { set; }
+    int DashmanNo { set; }
+    int TargetZ { set; }
+    DownCounter EnabledPassCount { set; }
+
+    void DecrementEnabledPassCount();
 }
