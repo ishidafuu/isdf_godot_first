@@ -3,7 +3,7 @@
 /// <summary>
 /// COM思考内野に関するステータス
 /// </summary>
-public class ComInfieldState : IComInfieldStateGetter, IComInfieldStateSetter
+public class TeamComInfieldState : IComInfieldStateGetter, IComInfieldStateSetter
 {
     //避けタイプ
     public enDodgeType DgType { get; set; }

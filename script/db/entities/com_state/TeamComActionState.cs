@@ -3,7 +3,7 @@
 /// <summary>
 /// COMアクション思考に関するステータス
 /// </summary>
-public class ComActionState : IComActionStateGetter, IComActionStateSetter
+public class TeamComActionState : IComActionStateGetter, IComActionStateSetter
 {
     //COMシングルオーダーパスする
     public bool SgOdPaF { get; set; }

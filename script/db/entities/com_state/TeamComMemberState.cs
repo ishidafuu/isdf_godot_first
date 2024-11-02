@@ -3,7 +3,7 @@
 /// <summary>
 /// COM思考メンバー全員に関するステータス
 /// </summary>
-public class ComMemberState : IComMemberStateGetter, IComMemberStateSetter
+public class TeamComMemberState : IComMemberStateGetter, IComMemberStateSetter
 {
     //パスを呼んでる
     public bool CallingPa_f { get; set; }

@@ -1,6 +1,4 @@
-﻿using Godot;
-
-namespace db;
+﻿namespace db;
 
 public partial class CharaBehavior
 {

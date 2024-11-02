@@ -12,7 +12,7 @@ public partial class TeamBehavior
     private BallState BallState => BallStateManager.Instance.BallState;
     private RefereeState RefereeState => RefereeStateManager.Instance.RefereeState;
     private TeamState MyTeam => TeamStateManager.Instance.Get(MySide);
-    private ComState MyCom => ComStateManager.Instance.Get(MySide);
+    private TeamComState MyTeamCom => TeamComStateManager.Instance.Get(MySide);
     private TeamState EnemyTeam => TeamStateManager.Instance.Get(EnemySide);
 
     public TeamBehavior()

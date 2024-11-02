@@ -4,7 +4,7 @@
 /// COM思考に関するステータス
 /// 一括で入っているんので、あとで細分化する
 /// </summary>
-public class ComMainState : IComMainStateGetter, IComMainStateSetter
+public class TeamComMainState : IComMainStateGetter, IComMainStateSetter
 {
     public bool ResseiF { get; set; } // 劣勢
     public bool ResseiF2 { get; set; } // じつは劣勢

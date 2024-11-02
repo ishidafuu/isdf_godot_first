@@ -24,7 +24,7 @@ public partial class CharaBehavior
             COMShootAct();
             MyTeamState.SemiAutoState.SemiShotF = false;
         }
-        else if (MyComState.MainState.Isdm())
+        else if (MyTeamComState.MainState.Isdm())
         {
             COMAction_DM();
         }
@@ -45,7 +45,7 @@ public partial class CharaBehavior
 
         if (shtgnone_f == false)
         {
-            ngshng_f = MyComState.PatternState.GetActionPattern(MyOrderIndex, ComActionType.cmaChanceSh) == ActionGroupType.Type3PosiPassive
+            ngshng_f = MyTeamComState.PatternState.GetActionPattern(MyOrderIndex, ComActionType.cmaChanceSh) == ActionGroupType.Type3PosiPassive
                        && CharaBehaviorManager.Instance.GetChara(EnemySideIndex, BallState.ShotTargetOrder).IsNoGuard(true);
         }
 
@@ -110,65 +110,68 @@ public partial class CharaBehavior
     void COMAction_DM()
     {
         //ダッシュマン作戦に完全に入ってる必要がある（態勢ウエイトはなにもしない）
-        if (MyComState.MainState.DashmanF == false)
+        if (MyTeamComState.MainState.DashmanF == false)
         {
             return;
         }
 
         //シュート指示が出てる
-        // if (MyComState.MainState.DashmanShOkF == false)
-        // {
-        //     //飛ばないダッシュマン
-        //     if (MyTeamBehavior.IsNoJpDashman())
-        //     {
-        //         //歩数過ぎたら投げてイイ
-        //         if ((st_.pstMyCh_->Step_c >= st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].DShStep)
-        //             || (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(FALSE, TRUE))) //ジャンプしないダッシュマンはこのラインが最大限界
-        //         {
-        //             COMAction_DM_Sh();
-        //         }
-        //     }
-        //     else
-        //     {
-        //         COMAction_DM_Sh();
-        //     }
-        // }
-        // else //パス回し
-        // {
-        //     COMAction_DM_Pa(); //パス回し
-        // }
+        if (MyTeamComState.MainState.DashmanShOkF == false)
+        {
+            //飛ばないダッシュマン
+            if (MyTeamBehavior.IsNoJpDashman())
+            {
+                
+                MyTeamComState.ActionState[MyMemberIndex]
+                // Shoot.Step
+                //歩数過ぎたら投げてイイ
+                if ((st_.pstMyCh_->Step_c >= st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].DShStep)
+                    || (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(FALSE, TRUE))) //ジャンプしないダッシュマンはこのラインが最大限界
+                {
+                    COMAction_DM_Sh();
+                }
+            }
+            else
+            {
+                COMAction_DM_Sh();
+            }
+        }
+        else //パス回し
+        {
+            COMAction_DM_Pa(); //パス回し
+        }
         
     }
 
     //ＣＯＭ思考行動ダッシュマン★★
-    // void TChAction::COMAction_DM()
-    // {
-    //     //ダッシュマン作戦に完全に入ってる必要がある（態勢ウエイトはなにもしない）
-    //     if (st_.pmgMyTm_->st_.pstMyTm_->COMDt.dashman_f == FALSE) return;
-    //
-    //     //シュート指示が出てる
-    //     if (st_.pmgMyTm_->st_.pstMyTm_->COMDt.dashmanShOK_f)
-    //     {
-    //         //飛ばないダッシュマン
-    //         if (st_.pmgMyTm_->IsNoJpDashman())
-    //         {
-    //             //歩数過ぎたら投げてイイ
-    //             if ((st_.pstMyCh_->Step_c >= st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].DShStep)
-    //                 || (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(FALSE, TRUE))) //ジャンプしないダッシュマンはこのラインが最大限界
-    //             {
-    //                 COMAction_DM_Sh();
-    //             }
-    //         }
-    //         else
-    //         {
-    //             COMAction_DM_Sh();
-    //         }
-    //     }
-    //     else //パス回し
-    //     {
-    //         COMAction_DM_Pa(); //パス回し
-    //     }
-    // }
+    void TChAction::COMAction_DM()
+    {
+        //ダッシュマン作戦に完全に入ってる必要がある（態勢ウエイトはなにもしない）
+        if (st_.pmgMyTm_->st_.pstMyTm_->COMDt.dashman_f == FALSE) return;
+
+        //シュート指示が出てる
+        if (st_.pmgMyTm_->st_.pstMyTm_->COMDt.dashmanShOK_f)
+        {
+            //飛ばないダッシュマン
+            if (st_.pmgMyTm_->IsNoJpDashman())
+            {
+                //歩数過ぎたら投げてイイ
+                if ((st_.pstMyCh_->Step_c >= st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].DShStep)
+                    || (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(FALSE, TRUE))) //ジャンプしないダッシュマンはこのラインが最大限界
+                {
+                    COMAction_DM_Sh();
+                }
+            }
+            else
+            {
+                COMAction_DM_Sh();
+            }
+        }
+        else //パス回し
+        {
+            COMAction_DM_Pa(); //パス回し
+        }
+    }
 
     void COMAction_Std()
     {

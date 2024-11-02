@@ -3,7 +3,7 @@
 /// <summary>
 /// COMアクション思考に関するステータス
 /// </summary>
-public class ComAttackState : IComAttackStateGetter, IComAttackStateSetter
+public class TeamComAttackState : IComAttackStateGetter, IComAttackStateSetter
 {
     //キャラの手に渡った時点で初期化する系
     public int DmpawaitC { get; set; } // ダッシュマンパスインターバル用
