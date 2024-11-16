@@ -8,9 +8,11 @@ public class CharaAirStateGetter : ICharaAirStateGetter, ICharaAirStateSetter
 {
     // 滞空時間
     public UpCounter AirCount { get; set; }
+    public int AirCountValue => AirCount.Value;
 
     // シュートタイミング用滞空時間
     public UpCounter ShootAirCount { get; set; }
+    public int ShootAirCountValue => ShootAirCount.Value;
 
     // 頂点の時間
     public int TopTiming { get; set; }
@@ -77,8 +79,8 @@ public class CharaAirStateGetter : ICharaAirStateGetter, ICharaAirStateSetter
 
 public interface ICharaAirStateGetter
 {
-    UpCounter AirCount { get; }
-    UpCounter ShootAirCount { get; }
+    int AirCountValue { get; }
+    int ShootAirCountValue { get; }
     int TopTiming { get; }
     bool IsAirCatch { get; }
     bool IsAirAction { get; }
@@ -95,8 +97,8 @@ public interface ICharaAirStateGetter
 
 public interface ICharaAirStateSetter
 {
-    UpCounter AirCount { set; }
-    UpCounter ShootAirCount { set; }
+    UpCounter AirCount { get; }
+    UpCounter ShootAirCount { get; }
     int TopTiming { set; }
     bool IsAirCatch { set; }
     bool IsAirAction { set; }

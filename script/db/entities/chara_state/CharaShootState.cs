@@ -12,11 +12,7 @@ public class CharaShootStateGetter : ICharaShootStateGetter, ICharaShootStateSet
     // シュート終了待ちカウンタ
     public DownCounter ShootEndWaitCount { get; set; }
     public int ShootEndWaitCountValue => ShootEndWaitCount.Value;
-
-    // 必殺タイミング
-    public UpCounter Step { get; set; }
-    public int StepValue => Step.Value;
-
+    
     // 必殺アシスト状態
     public ShootTiming ShootTiming { get; set; }
 
@@ -39,7 +35,6 @@ public class CharaShootStateGetter : ICharaShootStateGetter, ICharaShootStateSet
     {
         ShootWaitCount.Clear();
         ShootEndWaitCount.Clear();
-        Step.Clear();
         ShootTiming = default;
         Angle12 = -1;
         ShCv = 0;
@@ -59,7 +54,6 @@ public interface ICharaShootStateGetter
 {
     int ShootWaitCountValue { get; }
     int ShootEndWaitCountValue { get; }
-    int StepValue { get; }
     ShootTiming ShootTiming { get; }
     int Angle12 { get; }
     int ShCv { get; }
@@ -72,7 +66,6 @@ public interface ICharaShootStateSetter
 {
     DownCounter ShootWaitCount { get; }
     DownCounter ShootEndWaitCount { get; }
-    UpCounter Step { get; }
     ShootTiming ShootTiming { set; }
     int Angle12 { set; }
     int ShCv { set; }

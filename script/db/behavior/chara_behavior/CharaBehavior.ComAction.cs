@@ -18,13 +18,13 @@ public partial class CharaBehavior
             return;
         }
 
-        if (MyTeamState.SemiAutoState.SemiShotF
-            || MyTeamState.MainState.ComOverTimeF)
+        if (MyTeam.SemiAuto.SemiShotF
+            || MyTeam.MainState.ComOverTimeF)
         {
             COMShootAct();
-            MyTeamState.SemiAutoState.SemiShotF = false;
+            MyTeam.SemiAuto.SemiShotF = false;
         }
-        else if (MyTeamComState.MainState.Isdm())
+        else if (MyTeam.MainState.Isdm())
         {
             COMAction_DM();
         }
@@ -37,7 +37,7 @@ public partial class CharaBehavior
     void COMShootAct()
     {
         //ノーガードは狙わない場合
-        bool paok_f = (MyTeamState.MainState.ComOverTimeF == false);
+        bool paok_f = (MyTeam.MainState.ComOverTimeF == false);
 
         bool ngshng_f = false;
 
@@ -45,14 +45,14 @@ public partial class CharaBehavior
 
         if (shtgnone_f == false)
         {
-            ngshng_f = MyTeamComState.PatternState.GetActionPattern(MyOrderIndex, ComActionType.cmaChanceSh) == ActionGroupType.Type3PosiPassive
+            ngshng_f = MyTeam.PatternState.GetActionPattern(MyOrderIndex, ComActionType.cmaChanceSh) == ActionGroupType.Type3PosiPassive
                        && CharaBehaviorManager.Instance.GetChara(EnemySideIndex, BallState.ShotTargetOrder).IsNoGuard(true);
         }
 
         //セミオートでオーダーでシュート命令が出てないとき
-        bool semiPass_f = MyTeamState.SemiAutoState.SemiF
-                          && MyTeamState.SemiAutoState.SemiOrderF
-                          && MyTeamState.SemiAutoState.SemiShotF == false;
+        bool semiPass_f = MyTeam.SemiAuto.SemiF
+                          && MyTeam.SemiAuto.SemiOrderF
+                          && MyTeam.SemiAuto.SemiShotF == false;
 
         bool pass = semiPass_f || (paok_f && (ngshng_f || shtgnone_f));
 
@@ -110,19 +110,19 @@ public partial class CharaBehavior
     void COMAction_DM()
     {
         //ダッシュマン作戦に完全に入ってる必要がある（態勢ウエイトはなにもしない）
-        if (MyTeamComState.MainState.DashmanF == false)
+        if (MyTeam.ComMain.DashmanF == false)
         {
             return;
         }
 
         //シュート指示が出てる
-        if (MyTeamComState.MainState.DashmanShOkF == false)
+        if (MyTeam.ComMain.DashmanShOkF == false)
         {
             //飛ばないダッシュマン
             if (MyTeam.IsNoJpDashman())
             {
                 //歩数過ぎたら投げてイイ
-                if (Shoot.StepValue >= MyTeamComActionState.DShStep
+                if (Shoot.StepValue >= MyTeamComAction.DShStep
                     || LeftCourtX > MyTeam.GetAtcLineX(false, true)) //ジャンプしないダッシュマンはこのラインが最大限界
                 {
                     COMAction_DM_Sh();
@@ -142,11 +142,12 @@ public partial class CharaBehavior
     void COMAction_DM_Sh() //シュート指示が出てる
     {
         //空中攻撃
-        if (st_.pmgMyTm_->st_.pstMyTm_->stCOM.jp_f
-            || st_.pstMyCh_->Motion.IsMFlags(dbmfAr))
+        if (MyTeam.ComAttack.JpF
+            || Motion.HasFlag(CharaMotionFlag.Ar))
         {
-            if (st_.pstMyCh_->Motion.IsMFlags(dbmfAr) //ジャンプ状態
-                && (st_.pstMyCh_->Air_c >= st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].JShTime)) //予定時間こえてる
+          
+            if (Motion.HasFlag(CharaMotionFlag.Ar) //ジャンプ状態
+                && (Air.AirCountValue >= MyTeamComAction.JShTime)) //予定時間こえてる
             {
                 //シュート
                 COMShootAct();
@@ -154,9 +155,10 @@ public partial class CharaBehavior
         }
         else //地上攻撃
         {
-            if ((IsInfield() == FALSE) //外野
+            
+            if ((Order.IsInfield == false) //外野
                 || (st_.pstMyCh_->Step_c >= st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].DShStep) //予定歩数超えた
-                || (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(FALSE, TRUE))) //センターライン超えそう
+                || (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(false, TRUE))) //センターライン超えそう
             {
                 //シュート
                 COMShootAct();
@@ -172,7 +174,7 @@ public partial class CharaBehavior
             //ダッシュマンパス（タイミングなどは関数内）
             COMDMPassAct();
         }
-        else if (st_.pmgMyTm_->st_.pstMyTm_->COMDt.setterOK_f == FALSE) //セッターにボールが渡ってない
+        else if (st_.pmgMyTm_->st_.pstMyTm_->COMDt.setterOK_f == false) //セッターにボールが渡ってない
         {
             //空中攻撃
             if (st_.pmgMyTm_->st_.pstMyTm_->stCOM.jp_f
@@ -181,12 +183,12 @@ public partial class CharaBehavior
                 if (st_.pstMyCh_->Motion.IsMFlags(dbmfAr) //ジャンプ状態
                     && (st_.pstMyCh_->Air_c >= st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[st_.posNo_].JShTime)) //予定時間こえてる
                 {
-                    COMPass(FALSE); //セッターパス
+                    COMPass(false); //セッターパス
                 }
             }
             else //地上攻撃
             {
-                COMPass(FALSE); //セッターパス
+                COMPass(false); //セッターパス
             }
         }
     }

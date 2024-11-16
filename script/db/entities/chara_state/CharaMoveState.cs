@@ -5,14 +5,21 @@
 /// </summary>
 public class CharaMoveStateGetter : ICharaMoveStateGetter, ICharaMoveStateSetter
 {
+    // 必殺タイミング
+    public UpCounter StepCount { get; set; }
+    public int StepCountValue => StepCount.Value;
+    
     // ジャンプしゃがみカウンタ
     public UpCounter JumpCrouchCount { get; set; }
+    public int JumpCrouchCountValue => JumpCrouchCount.Value;
 
     // ダッシュ加速カウンタ
     public UpCounter DashAccelCount { get; set; }
+    public int DashAccelCountValue => DashAccelCount.Value;
 
     // 泥足場ステップ数
     public UpCounter MadStepCount { get; set; }
+    public int MadStepCountValue => MadStepCount.Value;
 
     // ダッシュ加速IOSフラグ
     public bool IsDashAccelIOS { get; set; }
@@ -31,6 +38,7 @@ public class CharaMoveStateGetter : ICharaMoveStateGetter, ICharaMoveStateSetter
 
     public void Initialize()
     {
+        StepCount.Clear();
         JumpCrouchCount.Clear();
         DashAccelCount.Clear();
         MadStepCount.Clear();
@@ -49,9 +57,10 @@ public class CharaMoveStateGetter : ICharaMoveStateGetter, ICharaMoveStateSetter
 
 public interface ICharaMoveStateGetter
 {
-    UpCounter JumpCrouchCount { get; }
-    UpCounter DashAccelCount { get; }
-    UpCounter MadStepCount { get; }
+    int StepCountValue { get; }
+    int JumpCrouchCountValue { get; }
+    int DashAccelCountValue { get; }
+    int MadStepCountValue { get; }
     bool IsDashAccelIOS { get; }
     DirectionXType LastKeyDirectionX { get; }
     bool IsNoMove { get; }
@@ -61,9 +70,10 @@ public interface ICharaMoveStateGetter
 
 public interface ICharaMoveStateSetter
 {
-    UpCounter JumpCrouchCount { set; }
-    UpCounter DashAccelCount { set; }
-    UpCounter MadStepCount { set; }
+    UpCounter StepCount { get; }
+    UpCounter JumpCrouchCount { get; }
+    UpCounter DashAccelCount { get; }
+    UpCounter MadStepCount { get; }
     bool IsDashAccelIOS { set; }
     DirectionXType LastKeyDirectionX { set; }
     bool IsNoMove { set; }

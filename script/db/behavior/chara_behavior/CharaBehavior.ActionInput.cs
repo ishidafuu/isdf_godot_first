@@ -430,7 +430,7 @@ public partial class CharaBehavior
         SetPassTarget(passTargetOrderIndex);
 
         // 拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
-        if (EnemyTeamState.IsAllOut == false)
+        if (EnemyTeam.IsAllOut == false)
         {
             //シュートタゲは向き反映
             var orderIndex = GetShootTarget(Shoot.Angle12, false);
@@ -439,7 +439,7 @@ public partial class CharaBehavior
                 if (IsSelfControl == false)
                 {
                     //CPUだけ無理矢理。後で外すかも
-                    CallBallChangeShootTarget(EnemyTeamState.MainState.ControlOrderIndex);
+                    CallBallChangeShootTarget(EnemyTeam.MainState.ControlOrderIndex);
                 }
             }
             else
@@ -496,11 +496,11 @@ public partial class CharaBehavior
             }
             else
             {
-                if (MyTeamState.PositionState.PassAbleCount > 0
-                    && MyOrderIndex != MyTeamState.PositionState.Postman
-                    && IsNGPassTag(MyTeamState.PositionState.Postman) == false)
+                if (MyTeam.Position.PassAbleCount > 0
+                    && MyOrderIndex != MyTeam.Position.Postman
+                    && IsNGPassTag(MyTeam.Position.Postman) == false)
                 {
-                    orderIndex = MyTeamState.PositionState.Postman;
+                    orderIndex = MyTeam.Position.Postman;
                 }
                 else
                 {
@@ -667,11 +667,11 @@ public partial class CharaBehavior
             }
             else
             {
-                if (MyTeamState.PositionState.PassAbleCount > 0
-                    && MyOrderIndex != MyTeamState.PositionState.Postman
-                    && IsNGPassTag(MyTeamState.PositionState.Postman) == false)
+                if (MyTeam.Position.PassAbleCount > 0
+                    && MyOrderIndex != MyTeam.Position.Postman
+                    && IsNGPassTag(MyTeam.Position.Postman) == false)
                 {
-                    orderIndex = MyTeamState.PositionState.Postman;
+                    orderIndex = MyTeam.Position.Postman;
                 }
                 else
                 {
@@ -753,7 +753,7 @@ public partial class CharaBehavior
         var isBackwardPosition = true; //一番奥にいる
 
         //ダッシュマンへパス
-        var isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
+        var isDashmanPass = MyTeam.Position.DashmanNum > 0;
 
         var distO2 = Math.Abs(Coordinate.Z - Defines.DBCRT_BL);
         var distO3 = Math.Abs(Coordinate.Z - Defines.DBCRT_FL);
@@ -1037,7 +1037,7 @@ public partial class CharaBehavior
             : DirectionXType.Right;
 
         //ダッシュマンへパス
-        var isDashmanPass = MyTeamState.PositionState.DashmanNum > 0;
+        var isDashmanPass = MyTeam.Position.DashmanNum > 0;
 
         var passDirectionX = Coordinate.DirectionX;
         var passDirectionZ = Coordinate.DirectionZ;
@@ -1066,7 +1066,7 @@ public partial class CharaBehavior
         //十字入ってない
         var isNeutralKey = (isLeftKey || isRightKey || isUpKey || isDownKey) == false;
 
-        var postMan = MyTeamState.PositionState.Postman;
+        var postMan = MyTeam.Position.Postman;
 
         //とりあえずパスタゲを出す
         switch (Order.OrderIndex)
@@ -1706,7 +1706,7 @@ public partial class CharaBehavior
             // パスをスルーしてカバーマンに操作権を渡す
             if (BallState.MotionType == BallMotionType.Pass
                 && BallState.PassTargetSide == MySideIndex
-                && MyTeamState.MainState.ControlOrderIndex == BallState.PassTargetOrder
+                && MyTeam.MainState.ControlOrderIndex == BallState.PassTargetOrder
                 && BallState.PassTargetOrder >= OrderIndexType.Infield0
                 && BallState.PassTargetOrder <= OrderIndexType.Infield3)
             {
