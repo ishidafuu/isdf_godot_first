@@ -158,7 +158,7 @@ public interface ITeamAiMainStateGetter
     bool DashStCtrlF { get; }
     int DmcallNum { get; }
     int DmcalledNum { get; }
-    int SetterNo { get; }
+    OrderIndexType SetterNo { get; }
     bool DmwaitOkF { get; }
     bool CallOkF { get; }
     bool CallNgF { get; }

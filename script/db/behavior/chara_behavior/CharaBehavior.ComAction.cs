@@ -312,109 +312,109 @@ public partial class CharaBehavior
         {
             switch ( MyTeam.AiPattern.GetPlanPattern(AiPlanType.comDMPaNum))
             {
-                case 0: //一人一回パスの場合
+                case ActionGroupType.Type0NegaActive: //一人一回パスの場合
                     //全員呼んだ＆触ってない人がいない
-                    if (MyTeam.AiMain.dmcalledNum == MyTeam.AiMain.dmcallNum
-                        && st_.pmgMyTm_->st_.pstMyTm_->PosMove.DashmanNum_Run_NT == 0)
+                    if (MyTeam.AiMain.DmcallNum == MyTeam.AiMain.DmcalledNum
+                        && MyTeam.Position.DashmanNum_Run_NT == 0)
                     {
                         //歩数きたら投げる
-                        MyTeam.AiMain.dashmanShOK_f = TRUE;
+                        // MyTeam.AiMain.DashmanShOkF = true;
                     }
                     break;
                 //case 1://無限パス
                 //  break;
-                case 2: //パスしない場合
+                case ActionGroupType.Type2NegaPassive: //パスしない場合
                     //歩数きたら投げる
-                    MyTeam.AiMain.dashmanShOK_f = TRUE;
+                    // MyTeam.AiMain.DashmanShOkF = true;
                     break;
             }
         }
 
         //パスしない場合
-        if (MyTeam.AiMain.comPtn[comDMPaNum] == 2)
+        if (MyTeam.AiPattern.GetPlanPattern(AiPlanType.comDMPaNum) == ActionGroupType.Type2NegaPassive)
         {
             return;
         }
 
         //シュートタイミング
-        BOOL shtiming_f = false;
+        bool shtiming_f = false;
 
         //セッター以外の内野ダッシュマンもしくはボールマンダッシュセッター
-        BOOL setter_f = MyTeam.AiMain.setterNo == st_.posNo_;
+        bool setter_f = MyTeam.AiMain.SetterNo == MyOrderIndex;
 
         if (Order.IsInfield
             && Motion.HasFlag(CharaMotionFlag.Ds) //ダッシュしてる
             && (setter_f == false || MyTeam.AiMain.setterBMRsvGo_f))
         {
             //現状パスのjpが入っているので
-            int pwsh = MyTeam.AiMain.actdt[st_.posNo_].comactPtn[cmaPwShType];
+            int pwsh = MyTeam.AiMain.actdt[MyOrderIndex].comactPtn[cmaPwShType];
 
             switch (pwsh)
             {
                 case 0: //ＤＪＳ
-                    if (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(TRUE, TRUE) //攻撃ライン超えた
+                    if (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(true, true) //攻撃ライン超えた
                         && Motion.HasFlag(CharaMotionFlag.Ar) //ジャンプ状態
-                        && Air.Air_c >= MyTeam.AiMain.actdt[st_.posNo_].JShTime) //予定時間こえてる
+                        && Air.Air_c >= MyTeam.AiMain.actdt[MyOrderIndex].JShTime) //予定時間こえてる
                     {
-                        shtiming_f = TRUE;
+                        shtiming_f = true;
                     }
                     break;
                 case 1: //ＤＳ
                     if (Motion.HasFlag(CharaMotionFlag.Ar) == false
-                        && (Air.Step_c >= MyTeam.AiMain.actdt[st_.posNo_].DShStep //予定歩数超えた
-                            || GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(false, TRUE))) //攻撃ライン超えた
+                        && (Air.Step_c >= MyTeam.AiMain.actdt[MyOrderIndex].DShStep //予定歩数超えた
+                            || GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(false, true))) //攻撃ライン超えた
                     {
-                        shtiming_f = TRUE;
+                        shtiming_f = true;
                     }
                     break;
                 case 3: //ＪＳ
                     if (Motion.HasFlag(CharaMotionFlag.Ar) //ジャンプ状態
-                        && Air.Air_c >= MyTeam.AiMain.actdt[st_.posNo_].JShTime) //予定時間こえてる
+                        && Air.Air_c >= MyTeam.AiMain.actdt[MyOrderIndex].JShTime) //予定時間こえてる
                     {
-                        shtiming_f = TRUE;
+                        shtiming_f = true;
                     }
                     break;
                 default: //一歩ダッシュＳ
                     if (Motion.HasFlag(CharaMotionFlag.Ar) == false
                         && (Air.Step_c >= 1 //予定歩数超えた
-                            || GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(false, TRUE))) //攻撃ライン超えた
+                            || GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(false, true))) //攻撃ライン超えた
                     {
-                        shtiming_f = TRUE;
+                        shtiming_f = true;
                     }
                     break;
             }
         }
         else
         {
-            shtiming_f = TRUE; //外野およびセッターなら無条件でシュートタイミングでいいか
+            shtiming_f = true; //外野およびセッターなら無条件でシュートタイミングでいいか
         }
 
         //パスタゲ(完全ＯＫのみ)
-        int oktag = GetCOMDMPassTag(TRUE);
+        int oktag = GetCOMDMPassTag(true);
 
-        BOOL act_f = false;
+        bool act_f = false;
 
         //行動するかどうか//最低数フレ待つ（全員が走り出す前に投げてしまう）
         if (oktag != NGNUM && MyTeam.AiAttack.dmpawait_c > 1)
         {
             const int WAITSTEP = 2;
 
-            BOOL setterBMPaOK_f = MyTeam.AiMain.setterBMRsvGo_f
+            bool setterBMPaOK_f = MyTeam.AiMain.setterBMRsvGo_f
                                   && Motion.HasFlag(CharaMotionFlag.Ds)
                                   && Air.Step_c > WAITSTEP;
 
             //セッターでなくて、ダッシュしていないキャラ
-            BOOL scndSetter_f = MyTeam.AiMain.setterNo != st_.posNo_
+            bool scndSetter_f = MyTeam.AiMain.setterNo != MyOrderIndex
                                 && Motion.HasFlag(CharaMotionFlag.Ds) == false;
 
             //セッターダッシュしない、もしくは、セッターダッシュ開始後
-            BOOL setterOK_f = Order.IsInfield == false
+            bool setterOK_f = Order.IsInfield == false
                               || (MyTeam.AiMain.setterBMRsv_f == false || setterBMPaOK_f);
 
             //セカンドセッター
             if (scndSetter_f)
             {
-                act_f = TRUE; //無条件ＯＫ
+                act_f = true; //無条件ＯＫ
             }
             else if (setter_f == false || setterOK_f)
             {
@@ -422,7 +422,7 @@ public partial class CharaBehavior
                 if (Order.IsInfield)
                 {
                     //内野セッター（もしくはセッターでないのにボールを渡された人）
-                    BOOL infsetter_f = MyTeam.AiMain.setterNo == st_.posNo_
+                    bool infsetter_f = MyTeam.AiMain.setterNo == MyOrderIndex
                                        || Motion.HasFlag(CharaMotionFlag.Ds) == false;
 
                     switch (MyTeam.AiMain.comPtn[comDMPaTime])
@@ -430,26 +430,26 @@ public partial class CharaBehavior
                         case 0: //パス先が前衛ライン超えたら
                             if (st_.pmgMyTm_->st_.pmgMyCh_[oktag]->GetLeftCrtX() > DBCRT_CLXL)
                             {
-                                act_f = TRUE;
+                                act_f = true;
                             }
                             break;
                         case 1: //パスインターバル後
                             if (st_.pmgMyTm_->IsDMPaItvTime(infsetter_f))
                             {
-                                act_f = TRUE;
+                                act_f = true;
                             }
                             break;
                         case 2: //自分のシュートタイミング★
                             act_f = shtiming_f;
                             break;
                         default: //パス先がダッシュ開始したら
-                            act_f = TRUE; //タゲOKになってる時点で走ってるはず
+                            act_f = true; //タゲOKになってる時点で走ってるはず
                             break;
                     }
                 }
                 else
                 {
-                    act_f = TRUE; //外野は無条件ＯＫ
+                    act_f = true; //外野は無条件ＯＫ
                 }
             }
 
@@ -461,18 +461,18 @@ public partial class CharaBehavior
                 //パスタイプ
 
                 int patype = Order.IsInfield
-                    ? MyTeam.AiMain.actdt[st_.posNo_].comactPtn[cmaPaTypeInf]
-                    : MyTeam.AiMain.actdt[st_.posNo_].comactPtn[cmaPaType];
+                    ? MyTeam.AiMain.actdt[MyOrderIndex].comactPtn[cmaPaTypeInf]
+                    : MyTeam.AiMain.actdt[MyOrderIndex].comactPtn[cmaPaType];
 
                 st_.pmgMyTm_->SetPassType(patype);
 
-                COMPass(TRUE); //パス
+                COMPass(true); //パス
 
                 //１回だけパスの場合
                 if (MyTeam.AiMain.comPtn[comDMPaNum] == 3)
                 {
                     //シュートOK
-                    MyTeam.AiMain.dashmanShOK_f = TRUE;
+                    MyTeam.AiMain.dashmanShOK_f = true;
                 }
             }
         }
@@ -486,24 +486,24 @@ public partial class CharaBehavior
                 //const int LIMTIME = pmgEO_->mgDt_.dtFomation_.GetComDt(cmvJShTime, 0);
                 //位置も最低限指定しないとポストマンジャンプの次点で判定されてしまう//パスカットもあるのでダッシュフラグに
                 //if ((Air.Air_c >= LIMTIME)
-                //  && GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(TRUE, TRUE)
+                //  && GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(true, true)
                 //  && Motion.HasFlag(CharaMotionFlag.Ds))
-                if (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(TRUE, TRUE) //攻撃ライン超えた
-                    && Air.Air_c >= MyTeam.AiMain.actdt[st_.posNo_].JShTime) //予定時間こえてる
+                if (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(true, true) //攻撃ライン超えた
+                    && Air.Air_c >= MyTeam.AiMain.actdt[MyOrderIndex].JShTime) //予定時間こえてる
                 {
                     //シュートOK
-                    MyTeam.AiMain.dashmanShOK_f = TRUE;
+                    MyTeam.AiMain.dashmanShOK_f = true;
                 }
             }
             else
             {
                 //ジャンプするダッシュマン用
-                const int LIMLINE = st_.pmgMyTm_->GetAtcLineX(false, TRUE);
+                const int LIMLINE = st_.pmgMyTm_->GetAtcLineX(false, true);
 
                 if (GetLeftCrtX() > LIMLINE)
                 {
                     //シュートOK
-                    MyTeam.AiMain.dashmanShOK_f = TRUE;
+                    MyTeam.AiMain.dashmanShOK_f = true;
                 }
             }
         }
