@@ -508,4 +508,5 @@ public partial class CharaBehavior
             }
         }
     }
+
 }
