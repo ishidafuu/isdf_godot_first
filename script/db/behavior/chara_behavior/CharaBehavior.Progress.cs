@@ -58,7 +58,7 @@ public partial class CharaBehavior
 
         var isProgressAnimation = true;
         
-        var isSetKagami = Composite.IsKagami && Auto.AutoType == AutoType.Free;
+        var isSetKagami = IsKagami && Auto.AutoType == AutoType.Free;
         
         switch (Motion.MotionType)
         {
@@ -67,11 +67,11 @@ public partial class CharaBehavior
                 {
                     SetMotionType(CharaMotionType.KG);
                 }
-                else if (Composite.IsPassWait)
+                else if (IsPassWait)
                 {
                     SetMotionType(CharaMotionType.PW);
                 }
-                else if (Composite.IsBallHolder == false)
+                else if (IsBallHolder == false)
                 {
                     if (View.BreathCount.AddUntil(GetSpeedRank(RankSpeedType.IkiItv)))
                     {
@@ -88,7 +88,7 @@ public partial class CharaBehavior
                 {
                     SetMotionType(CharaMotionType.KG);
                 }
-                else if (Composite.IsPassWait)
+                else if (IsPassWait)
                 {
                     SetMotionType(CharaMotionType.PWWk);
                 }
@@ -98,7 +98,7 @@ public partial class CharaBehavior
                 {
                     SetMotionType(CharaMotionType.KG);
                 }
-                else if (Composite.IsPassWait)
+                else if (IsPassWait)
                 {
                     SetMotionType(CharaMotionType.PWDs);
                 }
@@ -118,7 +118,7 @@ public partial class CharaBehavior
             case CharaMotionType.ARv:
                 break;
             case CharaMotionType.Cr:
-                if (Move.JumpCrouchCountValue > 0)
+                if (Move.JumpCrouchCount.Value > 0)
                 {
                     isProgressAnimation = false;
                 }
@@ -160,19 +160,19 @@ public partial class CharaBehavior
             case CharaMotionType.JFB:
                 break;
             case CharaMotionType.PW:
-                if (Composite.IsPassWait == false)
+                if (IsPassWait == false)
                 {
                     SetMotionType(CharaMotionType.St);
                 }
                 break;
             case CharaMotionType.PWWk:
-                if (Composite.IsPassWait == false)
+                if (IsPassWait == false)
                 {
                     SetMotionType(CharaMotionType.Wk);
                 }
                 break;
             case CharaMotionType.PWDs:
-                if (Composite.IsPassWait == false)
+                if (IsPassWait == false)
                 {
                     SetMotionType(CharaMotionType.Ds);
                 }
@@ -196,7 +196,7 @@ public partial class CharaBehavior
             case CharaMotionType.Pa:
             case CharaMotionType.JPa:
                 // 指が離れたらクイックパス
-                if (Composite.IsSelfControl && Pad.ButtonA.IsPressed == false)
+                if (IsSelfControl && Pad.ButtonA.IsPressed == false)
                 {
                     PassSet.IsTossPass = false;
                 }
@@ -321,10 +321,10 @@ public partial class CharaBehavior
         MotionSet.KomaFrameCount.Add();
 
         //フレーム終了の時間がきた、もしくは強制次フレーム
-        if (isForce || MotionSet.KomaFrameCount.Value >= Composite.CurrentBaseMotionKoma.DefFrm)
+        if (isForce || MotionSet.KomaFrameCount.Value >= CurrentBaseMotionKoma.DefFrm)
         {
             bool isLoop = false;
-            switch (Composite.CurrentBaseMotionKoma.LoopSt)
+            switch (CurrentBaseMotionKoma.LoopSt)
             {
                 // ループ終了
                 case enBMLoopSt.Ed:
@@ -342,7 +342,7 @@ public partial class CharaBehavior
             }
             else
             {
-                if (Composite.IsLastKoma)
+                if (IsLastKoma)
                 {
                     // ラスコマ
                     MotionEnd();
@@ -383,7 +383,7 @@ public partial class CharaBehavior
 
             // 屈み
             case CharaMotionType.KG:
-                if (Composite.IsKagami)
+                if (IsKagami)
                 {
                     DamageSet.KagamiCount.Sub();
                     SetMotionType(CharaMotionType.KG);
@@ -409,8 +409,8 @@ public partial class CharaBehavior
             // パス
             case CharaMotionType.Pa:
                 // ボールダッシュマン
-                if (Composite.CanContinuationDash
-                    && MyTeam.Main.DashmanNoBm == MyOrderIndex) //予約状態でもある
+                if (CanContinuationDash
+                    && MyTeamState.MainState.DashmanNoBm == MyOrderIndex) //予約状態でもある
                 {
                     SetMotionType(CharaMotionType.Ds);
                 }
