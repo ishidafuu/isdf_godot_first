@@ -384,8 +384,8 @@ public partial class CharaBehavior
         DamageSet.KagamiCount.Clear();
         AirSet.IsAirAction = false;
         MoveSet.LastDirectionX = DirectionXType.Neutral;
-        ComOnlySet.IsComCounter = false;
-        ComOnlySet.IsComTossPassGet = false;
+        ComAutoSet.IsComCounter = false;
+        ComAutoSet.IsComTossPassGet = false;
         Pass.MirrorShotLimitCount.Set(Defines.MIRLIM);
 
         HoldBallSetMirrorState();
@@ -1321,49 +1321,48 @@ public partial class CharaBehavior
 
 
     //COMダッシュマンパスタゲセット★★
-    int TChAction::GetCOMDMPassTag(BOOL nowOKonly_f)
+    private int GetCOMDMPassTag(bool nowOKonly_f)
     {
-        int sltgX[DBMEMBER_INF];
-        int sltgZ[DBMEMBER_INF];
-        int sltgXZ[DBMEMBER_INF];
-        enDMTag sltg_f[DBMEMBER_INF];
-        int tgOrd[DBMEMBER_INF];
+        TmpStateManager.Instance.TmpState.Clear();
+        var targetX = TmpStateManager.Instance.TmpState.targetX;
+        var targetDist = TmpStateManager.Instance.TmpState.targetDist;
+        var isSelectTarget = TmpStateManager.Instance.TmpState.isSelectTarget;
+        var targetOrder = TmpStateManager.Instance.TmpState.targetOrder;
+        var sortValue = TmpStateManager.Instance.TmpState.sortValue;
 
-        BOOL topord_f = TRUE; //最上位オーダーフラグ
-        BOOL bottom_f = TRUE; //最後尾フラグ
+        bool topord_f = true; //最上位オーダーフラグ
+        bool bottom_f = true; //最後尾フラグ
 
-        int sortDt[DBMEMBER_INF];
+        // int sortDt[DBMEMBER_INF];
 
-        BOOL Notag_f = TRUE; //完全にパスタゲが居ない
-        BOOL NoOKtag_f = TRUE; //今パスを出せるタゲが居ない
+        bool Notag_f = true; //完全にパスタゲが居ない
+        bool NoOKtag_f = true; //今パスを出せるタゲが居ない
 
         //パスのタイプ
-        enCOMDMPassType patype = (enCOMDMPassType)st_.pmgMyTm_->st_.pstMyTm_->COMDt.comPtn[comDMPaTag];
+        enCOMDMPassType patype = (enCOMDMPassType)MyTeam.AiPattern.GetPlanPattern(AiPlanType.comDMPaTag);
         //触ってない人だけ
-        BOOL NTOnly_f = st_.pmgMyTm_->st_.pstMyTm_->COMDt.comPtn[comDMPaNum] == 0;
-
-        //優先順位初期化
-        for (int i = 0; i < DBMEMBER_INF; ++i)
-        {
-            tgOrd[i] = NGNUM;
-        }
+        bool NTOnly_f = MyTeam.AiPattern.GetPlanPattern(AiPlanType.comDMPaNum) == 0;
 
         //内野全員との距離を取る
-        for (int i = 0; i < DBMEMBER_INF; ++i)
+        for (int order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
-            if (i != st_.posNo_)
+            if ((OrderIndexType)order == MyOrderIndex)
             {
-                //X距離
-                sltgX[i] = st_.pmgMyTm_->st_.pmgMyCh_[i]->GetLeftCrtX() - GetLeftCrtX(); //自分より右に居れば＋
-                //Z距離
-                sltgZ[i] = st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.Z - st_.pstMyCh_->Zahyou.Z; //自分より上にいれば＋
-                //距離
-                sltgXZ[i] = (int)lib_num::Hypot(sltgX[i], sltgZ[i]);
+                continue;
             }
+            
+            var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
+            //X距離外野はGetLeftCrtX()が左コートなので絶対値を使う
+            targetX[order] = chara.Composite.LeftCourtX; //自分より右に居れば＋
+            //Z距離
+            var targetZ = Math.Abs(chara.Coordinate.Z - Coordinate.Z); //自分より上にいれば＋
+            //距離
+            targetDist[order] = Defines.Hypot(targetX[order], targetZ);
         }
 
+        
         //ダッシュマンパススピード
-        int paspd = pmgEO_->mgDt_.dtSet_.GetDtPass(setDMPaSpd);
+        int paspd = GetSettingPass(SettingPassType.DMPaSpd);
 
         //内野全員との角度を取る
         for (int i = 0; i < DBMEMBER_INF; ++i)

@@ -74,3 +74,11 @@ public enum ActionGroupType
     Type2NegaPassive,
     Type3PosiPassive,
 }
+
+enum enCOMDMPassType//COMDMパス
+{
+    cpmUpOrder,//上位オーダー
+    cpmNear,//近い
+    cpmFar,//遠い
+    cpmRear,//後ろ
+};
