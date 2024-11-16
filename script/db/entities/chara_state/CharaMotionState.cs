@@ -5,7 +5,7 @@ namespace db;
 /// <summary>
 /// モーションに関するステータス
 /// </summary>
-public class CharaMotionStateGetter : ICharaMotionStateGetter, ICharaMotionStateSetter
+public class CharaMotionState : ICharaMotionStateGetter, ICharaMotionStateSetter
 {
     public CharaMotionType MotionType { get; private set; }
     public CharaMotionFlag MotionFlag { get; private set; }

@@ -3,7 +3,7 @@
 /// <summary>
 /// 向き・移動・ダッシュ・汎用アクションに関するステータス
 /// </summary>
-public class CharaMoveStateGetter : ICharaMoveStateGetter, ICharaMoveStateSetter
+public class CharaMoveState : ICharaMoveStateGetter, ICharaMoveStateSetter
 {
     // 必殺タイミング
     public UpCounter StepCount { get; set; }

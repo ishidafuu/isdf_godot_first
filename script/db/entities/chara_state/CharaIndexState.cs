@@ -4,7 +4,7 @@
 /// インデックスに関するステータス
 /// 生成後変化しない
 /// </summary>
-public class CharaIndexStateGetter : ICharaIndexStateGetter, ICharaIndexStateSetter
+public class CharaIndexState : ICharaIndexStateGetter, ICharaIndexStateSetter
 {
     // サイド番号（0～1）
     public int SideIndex { get; private set; }

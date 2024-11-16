@@ -3,7 +3,7 @@
 /// <summary>
 /// 距離に関するステータス
 /// </summary>
-public class CharaDistanceStateGetter : ICharaDistanceStateGetter, ICharaDistanceStateSetter
+public class CharaDistanceState : ICharaDistanceStateGetter, ICharaDistanceStateSetter
 {
     // ボールとの距離
     public int BallDist { get; set; }

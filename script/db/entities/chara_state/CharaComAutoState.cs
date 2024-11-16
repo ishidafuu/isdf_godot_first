@@ -5,7 +5,7 @@ namespace db;
 /// <summary>
 /// COMオート動作に関するステータス
 /// </summary>
-public class CharaComAutoStateGetter : ICharaComAutoStateGetter, ICharaComAutoStateSetter
+public class CharaComAutoState : ICharaComAutoStateGetter, ICharaComAutoStateSetter
 {
     public int JumpBallStep { get; set; }
     public int JumpBallWaitCount { get; set; }

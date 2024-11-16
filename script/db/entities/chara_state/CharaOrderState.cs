@@ -3,7 +3,7 @@
 /// <summary>
 /// 番号・ポジションに関するステータス
 /// </summary>
-public class CharaOrderStateGetter : ICharaOrderStateGetter, ICharaOrderStateSetter
+public class CharaOrderState : ICharaOrderStateGetter, ICharaOrderStateSetter
 {
     // ポジション番号（0～6）
     public OrderIndexType OrderIndex { get; set; }

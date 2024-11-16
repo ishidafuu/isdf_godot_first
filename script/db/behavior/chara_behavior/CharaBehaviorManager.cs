@@ -15,12 +15,12 @@ public class CharaBehaviorManager
         return _allCharas[sideIndex];
     }
 
-    public CharaBehavior GetChara(int sideIndex, int orderIndex)
+    public CharaBehavior GetOrderChara(int sideIndex, int orderIndex)
     {
-        return GetChara(sideIndex, (OrderIndexType)orderIndex);
+        return GetOrderChara(sideIndex, (OrderIndexType)orderIndex);
     }
 
-    public CharaBehavior GetChara(int sideIndex, OrderIndexType orderIndex)
+    public CharaBehavior GetOrderChara(int sideIndex, OrderIndexType orderIndex)
     {
         foreach (var chara in _allCharas[sideIndex])
         {

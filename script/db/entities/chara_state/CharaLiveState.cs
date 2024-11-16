@@ -3,7 +3,7 @@
 /// <summary>
 /// 生存・体力・判定に関するステータス
 /// </summary>
-public class CharaLiveStateGetter : ICharaLiveStateGetter, ICharaLiveStateSetter
+public class CharaLiveState : ICharaLiveStateGetter, ICharaLiveStateSetter
 {
     // 生存
     public bool IsAlive { get; set; }

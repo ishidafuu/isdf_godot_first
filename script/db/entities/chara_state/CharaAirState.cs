@@ -4,7 +4,7 @@
 /// 空中・ジャンプ・着地に関するステータス
 /// 地上についたときにリセットして構わない値のみ
 /// </summary>
-public class CharaAirStateGetter : ICharaAirStateGetter, ICharaAirStateSetter
+public class CharaAirState : ICharaAirStateGetter, ICharaAirStateSetter
 {
     // 滞空時間
     public UpCounter AirCount { get; set; }

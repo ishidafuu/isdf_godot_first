@@ -4,7 +4,7 @@
 /// ダッシュマンに関するステータス
 /// ダッシュマン・ダッシュ状態でなくなったらリセット
 /// </summary>
-public class CharaDashmanStateGetter : ICharaDashmanStateGetter, ICharaDashmanStateSetter
+public class CharaDashmanState : ICharaDashmanStateGetter, ICharaDashmanStateSetter
 {
     // ダッシュマン(操作ダッシュマンもあるので、ここでは呼ばれたダッシュマンフラグ)
     public bool IsCalledDashman { get; set; }

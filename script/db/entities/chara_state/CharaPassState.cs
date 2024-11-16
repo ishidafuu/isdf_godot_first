@@ -3,7 +3,7 @@
 /// <summary>
 /// パスに関するステータス
 /// </summary>
-public class CharaPassStateGetter : ICharaPassStateGetter, ICharaPassStateSetter
+public class CharaPassState : ICharaPassStateGetter, ICharaPassStateSetter
 {
     // 立ちパス待ちカウンタ
     public DownCounter PassStandWaitCount { get; set; }

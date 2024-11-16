@@ -5,9 +5,9 @@ public class BallBehaviorManager
     private static BallBehaviorManager _instance;
     public static BallBehaviorManager Instance => _instance ??= new BallBehaviorManager();
 
-    private readonly BallBehavior _referee = new BallBehavior();
+    private readonly BallBehavior _ball = new();
 
-    public BallBehavior Get() => _referee;
+    public BallBehavior Get() => _ball;
 
     private BallBehaviorManager()
     {

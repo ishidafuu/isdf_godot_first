@@ -3,7 +3,7 @@
 /// <summary>
 /// ダメージに関するステータス
 /// </summary>
-public class CharaDamageStateGetter : ICharaDamageStateGetter, ICharaDamageStateSetter
+public class CharaDamageState : ICharaDamageStateGetter, ICharaDamageStateSetter
 {
     // キャッチダメージ顔
     public DownCounter DamageAfterCount { get; set; }

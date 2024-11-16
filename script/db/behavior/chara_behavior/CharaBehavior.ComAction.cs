@@ -53,12 +53,12 @@ public partial class CharaBehavior
 
         bool ngshng_f = false;
 
-        bool shtgnone_f = BallState.ShotTargetOrder == OrderIndexType.Disabled;
+        bool shtgnone_f = BallMainState.ShotTargetOrder == OrderIndexType.Disabled;
 
         if (shtgnone_f == false)
         {
             ngshng_f = MyTeam.AiPattern.GetActionPattern(MyOrderIndex, ComActionType.cmaChanceSh) == ActionGroupType.Type3PosiPassive
-                       && CharaBehaviorManager.Instance.GetChara(EnemySideIndex, BallState.ShotTargetOrder).IsNoGuard(true);
+                       && CharaBehaviorManager.Instance.GetOrderChara(EnemySideIndex, BallMainState.ShotTargetOrder).IsNoGuard(true);
         }
 
         //セミオートでオーダーでシュート命令が出てないとき
@@ -80,7 +80,7 @@ public partial class CharaBehavior
         {
             //タゲ方向向く
             //居ないときはオートで探す
-            LookTg(BallState.ShotTargetOrder, false, true);
+            LookTg(BallMainState.ShotTargetOrder, false, true);
 
             switch (Motion.MotionType)
             {
@@ -108,7 +108,7 @@ public partial class CharaBehavior
         //パスカットキャラセット
         PaCtTagSet(paTag);
         //タゲの方を向く
-        LookTg(BallState.ShotTargetOrder, true, false);
+        LookTg(BallMainState.ShotTargetOrder, true, false);
 
         switch (Motion.MotionType)
         {

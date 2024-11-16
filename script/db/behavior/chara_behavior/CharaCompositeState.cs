@@ -10,7 +10,7 @@ public class CharaCompositeState : BaseBehavior, ICompositeStateGetter
     private CharaState RawState => CharaStateManager.Instance.Get(MySideIndex, MyMemberIndex);
     private CharaState[] MySideOrders => CharaStateManager.Instance.GetSideOrders(MySideIndex);
     private CharaState[] EnemySideOrders => CharaStateManager.Instance.GetSideOrders(EnemySideIndex);
-    private BallState BallState => BallStateManager.Instance.BallState;
+    private BallBehavior Ball => BallBehaviorManager.Instance.Get();
     private RefereeState RefereeState => RefereeStateManager.Instance.RefereeState;
     private TeamBehavior MyTeam => TeamBehaviorManager.Instance.Get(MySideIndex);
     private ITeamAiActionStateGetter MyTeamAiAction => MyTeam.ComAction(MyMemberIndex);
@@ -76,21 +76,27 @@ public class CharaCompositeState : BaseBehavior, ICompositeStateGetter
     /// </summary>
     public bool IsSelfControl => Input.IsManualControl
                                  || (IsControl && IsCom == false);
+    
+    /// <summary>
+    /// ボール保持者かどうか
+    /// </summary>
+    public bool IsBallHolder => MySideIndex == Ball.MainState.HolderSide
+                                && MyOrderIndex == Ball.MainState.HolderOrder;
 
     /// <summary>
-    /// ボール持ちかどうか
+    /// シュートターゲットかどうか
     /// </summary>
-    public bool IsBallHolder => BallState.IsBallHolder(MySideIndex, MyOrderIndex);
+    public bool IsShotTarget => Ball.MainState.MotionType is BallMotionType.Hold or BallMotionType.Shoot
+                                && MySideIndex == Ball.MainState.ShotTargetSide
+                                && MyOrderIndex == Ball.MainState.ShotTargetOrder;
 
     /// <summary>
-    /// 自分がシュートターゲット
+    /// パスターゲットかどうか
     /// </summary>
-    public bool IsShotTarget => BallState.IsShotTarget(MySideIndex, MyOrderIndex);
-
-    /// <summary>
-    /// 自分がパスターゲット
-    /// </summary>
-    public bool IsPassTarget => BallState.IsPassTarget(MySideIndex, MyOrderIndex);
+    public bool IsPassTarget => Ball.MainState.MotionType is BallMotionType.Hold
+                                && MySideIndex == Ball.MainState.PassTargetSide
+                                && MyOrderIndex == Ball.MainState.PassTargetOrder
+                                && Ball.MainState.OvLine == false;
 
     /// <summary>
     /// パス待ち状態

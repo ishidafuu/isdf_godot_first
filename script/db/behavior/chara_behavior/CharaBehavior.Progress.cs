@@ -17,7 +17,7 @@ public partial class CharaBehavior
         LiveSet.IncrementBiorhythmCount();
         DashmanSet.DecrementEnabledPassCount();
 
-        if (BallState.MotionType == BallMotionType.Shoot)
+        if (BallMainState.MotionType == BallMotionType.Shoot)
         {
             BallEffectSet.hitMTime_cd.Sub();
             // ボールと重なっていた過去を消す処理は、モーションがダウンから復帰したタイミングと、シュート開始のタイミングで行う
@@ -300,8 +300,8 @@ public partial class CharaBehavior
     private bool IsOverCatchFrame(int nowCatchCount)
     {
         // 敵のシュートボール
-        var enemyShootBall = BallState.MotionType == BallMotionType.Shoot
-                             && BallState.ThrowerSideNo != Index.SideIndex;
+        var enemyShootBall = BallMainState.MotionType == BallMotionType.Shoot
+                             && BallMainState.ThrowerSideNo != Index.SideIndex;
 
         var catchFrame = enemyShootBall
             ? GetSettingCatch(SettingCatchType.CaMotionFrm)

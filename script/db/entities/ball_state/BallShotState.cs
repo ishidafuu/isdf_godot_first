@@ -33,7 +33,7 @@ public class BallShotState : IBallShotStateGetter, IBallShotStateSetter
     public int resttime { get; set; }
     public int orishno { get; set; }
     public int crvtag { get; set; }
-
+    
     public void Initialize()
     {
         ShotType = default;

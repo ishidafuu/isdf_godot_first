@@ -3,7 +3,7 @@
 /// <summary>
 /// アニメーション・見た目・セリフに関するステータス
 /// </summary>
-public class CharaViewStateGetter : ICharaViewStateGetter, ICharaViewStateSetter
+public class CharaViewState : ICharaViewStateGetter, ICharaViewStateSetter
 {
     // 息継ぎカウンタ
     public UpCounter BreathCount { get; set; }

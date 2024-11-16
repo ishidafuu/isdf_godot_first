@@ -3,7 +3,7 @@
 /// <summary>
 /// シュート・ターゲットに関するステータス
 /// </summary>
-public class CharaShootStateGetter : ICharaShootStateGetter, ICharaShootStateSetter
+public class CharaShootState : ICharaShootStateGetter, ICharaShootStateSetter
 {
     // シュート待ちカウンタ
     public DownCounter ShootWaitCount { get; set; }

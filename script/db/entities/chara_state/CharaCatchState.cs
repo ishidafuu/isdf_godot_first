@@ -3,7 +3,7 @@
 /// <summary>
 /// キャッチングに関するステータス
 /// </summary>
-public class CharaCatchStateGetter : ICharaCatchStateGetter, ICharaCatchStateSetter
+public class CharaCatchState : ICharaCatchStateGetter, ICharaCatchStateSetter
 {
     // ボールをキャッチできるカウンタ
     public UpCounter CatchCount { get; set; }

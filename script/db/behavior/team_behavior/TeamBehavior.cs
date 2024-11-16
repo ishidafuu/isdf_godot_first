@@ -5,17 +5,21 @@ public partial class TeamBehavior : BaseBehavior
     private int MySideIndex => MyTeamState.SideIndex;
     private int EnemySideIndex => MySideIndex == 0 ? 1 : 0;
 
-    private CharaState[] MySideCharas => CharaStateManager.Instance.GetSideCharas(MySideIndex);
-    private CharaState[] MySideOrders => CharaStateManager.Instance.GetSideOrders(MySideIndex);
-    private CharaState[] EnemySideCharas => CharaStateManager.Instance.GetSideCharas(EnemySideIndex);
-    private CharaState[] EnemySideOrders => CharaStateManager.Instance.GetSideOrders(EnemySideIndex);
-    private BallState BallState => BallStateManager.Instance.BallState;
+    // private CharaState[] MySideCharas => CharaStateManager.Instance.GetSideCharas(MySideIndex);
+    // private CharaState[] MySideOrders => CharaStateManager.Instance.GetSideOrders(MySideIndex);
+    private CharaBehavior[] MySideOrders => CharaBehaviorManager.Instance.GetSideCharas(MySideIndex);
+
+    private CharaBehavior[] EnemySideOrders => CharaBehaviorManager.Instance.GetSideCharas(EnemySideIndex);
+    // private CharaState[] EnemySideCharas => CharaStateManager.Instance.GetSideCharas(EnemySideIndex);
+    // private CharaState[] EnemySideOrders => CharaStateManager.Instance.GetSideOrders(EnemySideIndex);
+
+    private BallMainState BallMainState => BallStateManager.Instance.BallState;
     private RefereeState RefereeState => RefereeStateManager.Instance.RefereeState;
     private TeamState MyTeamState => TeamStateManager.Instance.Get(MySideIndex);
     private TeamAiState MyTeamAiState => TeamAiStateManager.Instance.Get(MySideIndex);
     private TeamBehavior EnemyTeam => TeamBehaviorManager.Instance.Get(EnemySideIndex);
 
-    public CharaState CaptainChara => MySideCharas[0];
+    public CharaBehavior CaptainChara => MySideOrders[0];
 
     public ITeamOrderStateGetter Order => MyTeamState.Order;
     public ITeamPositionStateGetter Position => MyTeamState.Position;

@@ -5,7 +5,7 @@ namespace db;
 /// <summary>
 /// 入力に関するステータス
 /// </summary>
-public class CharaInputStateGetter : ICharaInputStateGetter, ICharaInputStateSetter
+public class CharaInputState : ICharaInputStateGetter, ICharaInputStateSetter
 {
     /// <summary>
     /// 操作キャラ

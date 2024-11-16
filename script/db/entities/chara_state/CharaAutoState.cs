@@ -3,7 +3,7 @@
 /// <summary>
 /// オート情報
 /// </summary>
-public class CharaAutoStateGetter : ICharaAutoStateGetter, ICharaAutoStateSetter
+public class CharaAutoState : ICharaAutoStateGetter, ICharaAutoStateSetter
 {
     public AutoType AutoType { get; set; }
     public DirectionXType DirectionX { get; set; }

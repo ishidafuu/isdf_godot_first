@@ -17,18 +17,18 @@ public partial class CharaBehavior
         // 操作可能キャラのみ
         if (CanControl)
         {
-            ballDist = Coordinate.DistanceXZ(BallState.Coordinate);
+            ballDist = Coordinate.DistanceXZ(BallMainState.Coordinate);
             ballLandDist = ballDist;
             ballLandLineDist = ballDist;
 
             // 着地予定のみ
-            if (BallState.MotionType is BallMotionType.Bound or BallMotionType.Pass)
+            if (BallMainState.MotionType is BallMotionType.Bound or BallMotionType.Pass)
             {
-                ballLandDist = Coordinate.DistanceXZ(BallState.LandX, BallState.LandZ);
+                ballLandDist = Coordinate.DistanceXZ(BallMainState.LandX, BallMainState.LandZ);
 
                 // ライン超える場合のみ
-                ballLandLineDist = BallState.LandLine
-                    ? Coordinate.DistanceXZ(BallState.LandXLine, BallState.LandZLine)
+                ballLandLineDist = BallMainState.LandLine
+                    ? Coordinate.DistanceXZ(BallMainState.LandXLine, BallMainState.LandZLine)
                     : ballLandDist;
             }
         }
