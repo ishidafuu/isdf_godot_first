@@ -64,7 +64,7 @@ public class CharaCompositeState : BaseBehavior, ICompositeStateGetter
     /// <summary>
     /// 操作権キャラ
     /// </summary>
-    public bool IsControl => MyTeam.MainState.ControlOrderIndex == MyOrderIndex;
+    public bool IsControl => MyTeam.Main.ControlOrderIndex == MyOrderIndex;
 
     /// <summary>
     /// COM操作中かどうか
@@ -80,23 +80,23 @@ public class CharaCompositeState : BaseBehavior, ICompositeStateGetter
     /// <summary>
     /// ボール保持者かどうか
     /// </summary>
-    public bool IsBallHolder => MySideIndex == Ball.MainState.HolderSide
-                                && MyOrderIndex == Ball.MainState.HolderOrder;
+    public bool IsBallHolder => MySideIndex == Ball.Main.HolderSide
+                                && MyOrderIndex == Ball.Main.HolderOrder;
 
     /// <summary>
     /// シュートターゲットかどうか
     /// </summary>
-    public bool IsShotTarget => Ball.MainState.MotionType is BallMotionType.Hold or BallMotionType.Shoot
-                                && MySideIndex == Ball.MainState.ShotTargetSide
-                                && MyOrderIndex == Ball.MainState.ShotTargetOrder;
+    public bool IsShotTarget => Ball.Main.MotionType is BallMotionType.Hold or BallMotionType.Shoot
+                                && MySideIndex == Ball.Main.ShotTargetSide
+                                && MyOrderIndex == Ball.Main.ShotTargetOrder;
 
     /// <summary>
     /// パスターゲットかどうか
     /// </summary>
-    public bool IsPassTarget => Ball.MainState.MotionType is BallMotionType.Hold
-                                && MySideIndex == Ball.MainState.PassTargetSide
-                                && MyOrderIndex == Ball.MainState.PassTargetOrder
-                                && Ball.MainState.OvLine == false;
+    public bool IsPassTarget => Ball.Main.MotionType is BallMotionType.Hold
+                                && MySideIndex == Ball.Main.PassTargetSide
+                                && MyOrderIndex == Ball.Main.PassTargetOrder
+                                && Ball.Main.OvLine == false;
 
     /// <summary>
     /// パス待ち状態

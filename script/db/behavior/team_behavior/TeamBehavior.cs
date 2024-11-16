@@ -13,7 +13,7 @@ public partial class TeamBehavior : BaseBehavior
     // private CharaState[] EnemySideCharas => CharaStateManager.Instance.GetSideCharas(EnemySideIndex);
     // private CharaState[] EnemySideOrders => CharaStateManager.Instance.GetSideOrders(EnemySideIndex);
 
-    private BallMainState BallMainState => BallStateManager.Instance.BallState;
+    private BallBehavior Ball => BallBehaviorManager.Instance.Get();
     private RefereeState RefereeState => RefereeStateManager.Instance.RefereeState;
     private TeamState MyTeamState => TeamStateManager.Instance.Get(MySideIndex);
     private TeamAiState MyTeamAiState => TeamAiStateManager.Instance.Get(MySideIndex);
@@ -24,7 +24,7 @@ public partial class TeamBehavior : BaseBehavior
     public ITeamOrderStateGetter Order => MyTeamState.Order;
     public ITeamPositionStateGetter Position => MyTeamState.Position;
     public ITeamSemiAutoStateGetter SemiAuto => MyTeamState.SemiAuto;
-    public ITeamMainStateGetter MainState => MyTeamState.MainState;
+    public ITeamMainStateGetter Main => MyTeamState.MainState;
     public ITeamAiMainStateGetter AiMain => MyTeamAiState.Main;
     public ITeamAiMemberStateGetter AiMember => MyTeamAiState.Member;
     public ITeamAiPatternStateGetter AiPattern => MyTeamAiState.Pattern;

@@ -59,7 +59,7 @@ public partial class TeamBehavior
     }
 
 
-    public bool IsCom => SemiAuto.SemiF || MainState.ManSideF == false;
+    public bool IsCom => SemiAuto.SemiF || Main.ManSideF == false;
 
 
     //待ち時間超えてる

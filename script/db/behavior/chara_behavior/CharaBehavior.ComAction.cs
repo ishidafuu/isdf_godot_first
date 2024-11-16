@@ -16,7 +16,7 @@ public partial class CharaBehavior
         }
 
         if (MyTeam.SemiAuto.SemiShotF
-            || MyTeam.MainState.ComOverTimeF)
+            || MyTeam.Main.ComOverTimeF)
         {
             COMShootAct();
             // MyTeam.SemiAuto.SemiShotF = false;
@@ -49,7 +49,7 @@ public partial class CharaBehavior
     private void COMShootAct()
     {
         //ノーガードは狙わない場合
-        bool paok_f = MyTeam.MainState.ComOverTimeF == false;
+        bool paok_f = MyTeam.Main.ComOverTimeF == false;
 
         bool ngshng_f = false;
 

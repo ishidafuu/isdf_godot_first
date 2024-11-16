@@ -2,7 +2,7 @@
 
 namespace db;
 
-public partial class BallMainState : IBallMainStateGetter, IBallMainStateSetter
+public class BallMainState : IBallMainStateGetter, IBallMainStateSetter
 {
     public bool Invs { get; set; }
     public bool LandLine { get; set; }
@@ -83,6 +83,28 @@ public partial class BallMainState : IBallMainStateGetter, IBallMainStateSetter
     public int[] BufX { get; set; } = new int[Defines.BufferPositionMax];
     public int[] BufY { get; set; } = new int[Defines.BufferPositionMax];
     public int[] BufZ { get; set; } = new int[Defines.BufferPositionMax];
+
+
+    /// <summary>
+    /// 獲得可能なジャンプボール
+    /// </summary>
+    /// <returns></returns>
+    public bool CanHoldJumpBall(int side)
+    {
+        switch (JumpBallType)
+        {
+            case JumpBallType.Normal:
+                return true;
+            case JumpBallType.Jpball:
+                return Coordinate.VelocityY < 0;
+            case JumpBallType.Side0:
+                return side == 0;
+            case JumpBallType.Side1:
+                return side == 1;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
 
 
     public void Initialize()
@@ -245,6 +267,8 @@ public interface IBallMainStateGetter
     int[] BufX { get; }
     int[] BufY { get; }
     int[] BufZ { get; }
+
+    bool CanHoldJumpBall(int side);
 }
 
 

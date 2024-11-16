@@ -21,7 +21,7 @@ public partial class CharaBehavior
             return;
         }
 
-        if (MyTeam.MainState.IsCancelActionInput)
+        if (MyTeam.Main.IsCancelActionInput)
         {
             return;
         }
@@ -439,7 +439,7 @@ public partial class CharaBehavior
                 if (Composite.IsSelfControl == false)
                 {
                     //CPUだけ無理矢理。後で外すかも
-                    CallBallChangeShootTarget(EnemyTeam.MainState.ControlOrderIndex);
+                    CallBallChangeShootTarget(EnemyTeam.Main.ControlOrderIndex);
                 }
             }
             else
@@ -1706,7 +1706,7 @@ public partial class CharaBehavior
             // パスをスルーしてカバーマンに操作権を渡す
             if (BallMainState.MotionType == BallMotionType.Pass
                 && BallMainState.PassTargetSide == MySideIndex
-                && MyTeam.MainState.ControlOrderIndex == BallMainState.PassTargetOrder
+                && MyTeam.Main.ControlOrderIndex == BallMainState.PassTargetOrder
                 && BallMainState.PassTargetOrder >= OrderIndexType.Infield0
                 && BallMainState.PassTargetOrder <= OrderIndexType.Infield3)
             {
