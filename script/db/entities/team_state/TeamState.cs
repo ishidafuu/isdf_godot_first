@@ -5,9 +5,9 @@ public partial class TeamState
     public int SideIndex { get; }
     private int EnemySideIndex => SideIndex == 0 ? 1 : 0;
 
-    public TeamOrderState OrderState { get; } = new TeamOrderState();
-    public TeamPositionState PositionState { get; } = new TeamPositionState();
-    public TeamSemiAutoState SemiAutoState { get; } = new TeamSemiAutoState();
+    public TeamOrderState Order { get; } = new TeamOrderState();
+    public TeamPositionState Position { get; } = new TeamPositionState();
+    public TeamSemiAutoState SemiAuto { get; } = new TeamSemiAutoState();
     public TeamMainState MainState { get; } = new TeamMainState();
 
     private CharaBehavior[] MySideCharas => CharaBehaviorManager.Instance.GetSideCharas(SideIndex);

@@ -12,12 +12,9 @@ public partial class CharaBehavior : BaseBehavior
     private CharaState[] EnemySideOrders => CharaStateManager.Instance.GetSideOrders(EnemySideIndex);
     private BallState BallState => BallStateManager.Instance.BallState;
     private RefereeState RefereeState => RefereeStateManager.Instance.RefereeState;
-    private TeamState MyTeamState => TeamStateManager.Instance.Get(MySideIndex);
-    private TeamComState MyTeamComState => TeamComStateManager.Instance.Get(MySideIndex);
-    private TeamComActionState MyTeamComActionState => MyTeamComState.ActionState[MyMemberIndex];
-    private TeamState EnemyTeamState => TeamStateManager.Instance.Get(EnemySideIndex);
-    private TeamBehavior MyTeamBehavior => TeamBehaviorManager.Instance.Get(MySideIndex);
-    private IPad MyPad => PadBehaviorManager.Instance.Get(MySideIndex).Pad;
+    private TeamBehavior MyTeam => TeamBehaviorManager.Instance.Get(MySideIndex);
+    private TeamBehavior EnemyTeam => TeamBehaviorManager.Instance.Get(EnemySideIndex);
+    private IPad Pad => PadBehaviorManager.Instance.Get(MySideIndex).Pad;
 
     
     /// <summary>

@@ -187,7 +187,7 @@ public partial class CharaBehavior
             case CharaMotionType.RtSh:
             case CharaMotionType.JSh:
             case CharaMotionType.RtJSh:
-                if (Shoot.ShootWaitCount.Sub() == false)
+                if (ShootSet.ShootWaitCount.Sub() == false)
                 {
                     isProgressAnimation = false;
                 }
@@ -195,7 +195,7 @@ public partial class CharaBehavior
             case CharaMotionType.Pa:
             case CharaMotionType.JPa:
                 // 指が離れたらクイックパス
-                if (IsSelfControl && MyPad.ButtonA.IsPressed == false)
+                if (IsSelfControl && Pad.ButtonA.IsPressed == false)
                 {
                     PassSet.IsTossPass = false;
                 }
@@ -231,7 +231,7 @@ public partial class CharaBehavior
             case CharaMotionType.RoB:
                 if (DamageSet.RollCount.Sub())
                 {
-                    var isDead = Live.Hp <= 0 && MyTeamState.IsAllOut == false;
+                    var isDead = Live.Hp <= 0 && MyTeam.IsAllOut == false;
                     if (isDead)
                     {
                         LiveSet.IsAngel = true;
@@ -400,7 +400,7 @@ public partial class CharaBehavior
                 break;
             // シュート
             case CharaMotionType.Sh:
-                if (Shoot.ShootEndWaitCount.Sub())
+                if (ShootSet.ShootEndWaitCount.Sub())
                 {
                     SetMotionType(CharaMotionType.St);
                 }

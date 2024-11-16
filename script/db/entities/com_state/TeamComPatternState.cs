@@ -5,7 +5,7 @@ namespace db;
 /// <summary>
 /// COM思考パターンに関するステータス
 /// </summary>
-public class TeamComPatternState : IComPatternStateGetter, IComPatternStateSetter
+public class TeamComPatternState : ITeamComPatternStateGetter, ITeamComPatternStateSetter
 {
     public int[] PlanPattern { get; set; } = new int[ComPlanData.PlanTypeLength];
     public int[][] ActionPattern { get; set; } = new int[Defines.MemberCount][];
@@ -34,14 +34,14 @@ public class TeamComPatternState : IComPatternStateGetter, IComPatternStateSette
     }
 }
 
-public interface IComPatternStateGetter
+public interface ITeamComPatternStateGetter
 {
     int[] PlanPattern { get; }
     int[][] ActionPattern { get; }
     ActionGroupType GetActionPattern(OrderIndexType orderIndexType, ComActionType comActionType);
 }
 
-public interface IComPatternStateSetter
+public interface ITeamComPatternStateSetter
 {
     int[] PlanPattern { set; }
     int[][] ActionPattern { set; }

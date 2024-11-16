@@ -3,25 +3,25 @@
 public class TeamComState
 {
     public int SideIndex { get; }
-    public TeamComMainState MainState { get; } = new TeamComMainState();
-    public TeamComMemberState MemberState { get; } = new TeamComMemberState();
-    public TeamComPatternState PatternState { get; } = new TeamComPatternState();
-    public TeamComAttackState AttackState { get; } = new TeamComAttackState();
-    public TeamComActionState[] ActionState { get; } = new TeamComActionState[Defines.MemberCount];
-    public TeamComInfieldState[] InfieldState { get; } = new TeamComInfieldState[Defines.InfieldCount];
+    public TeamComMainState Main { get; } = new TeamComMainState();
+    public TeamComMemberState Member { get; } = new TeamComMemberState();
+    public TeamComPatternState Pattern { get; } = new TeamComPatternState();
+    public TeamComAttackState Attack { get; } = new TeamComAttackState();
+    public TeamComActionState[] Action { get; } = new TeamComActionState[Defines.MemberCount];
+    public TeamComInfieldState[] Infield { get; } = new TeamComInfieldState[Defines.InfieldCount];
 
     public TeamComState(int sideIndex)
     {
         SideIndex = sideIndex;
 
-        for (var i = 0; i < ActionState.Length; i++)
+        for (var i = 0; i < Action.Length; i++)
         {
-            ActionState[i] = new TeamComActionState();
+            Action[i] = new TeamComActionState();
         }
 
-        for (var i = 0; i < InfieldState.Length; i++)
+        for (var i = 0; i < Infield.Length; i++)
         {
-            InfieldState[i] = new TeamComInfieldState();
+            Infield[i] = new TeamComInfieldState();
         }
 
         Initialize();

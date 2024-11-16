@@ -119,11 +119,11 @@ public partial class CharaBehavior
         if (MyTeamComState.MainState.DashmanShOkF == false)
         {
             //飛ばないダッシュマン
-            if (MyTeamBehavior.IsNoJpDashman())
+            if (MyTeam.IsNoJpDashman())
             {
                 //歩数過ぎたら投げてイイ
                 if (Shoot.StepValue >= MyTeamComActionState.DShStep
-                    || LeftCourtX > MyTeamBehavior.GetAtcLineX(false, true)) //ジャンプしないダッシュマンはこのラインが最大限界
+                    || LeftCourtX > MyTeam.GetAtcLineX(false, true)) //ジャンプしないダッシュマンはこのラインが最大限界
                 {
                     COMAction_DM_Sh();
                 }

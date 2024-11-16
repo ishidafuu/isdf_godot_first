@@ -187,8 +187,8 @@ public partial class CharaBehavior
                 return false;
             }
 
-            return Coordinate.DashDirection == DirectionXType.Left && MyPad.KeyLeft.IsPressed
-                   || Coordinate.DashDirection == DirectionXType.Right && MyPad.KeyRight.IsPressed;
+            return Coordinate.DashDirection == DirectionXType.Left && Pad.KeyLeft.IsPressed
+                   || Coordinate.DashDirection == DirectionXType.Right && Pad.KeyRight.IsPressed;
         }
     }
 

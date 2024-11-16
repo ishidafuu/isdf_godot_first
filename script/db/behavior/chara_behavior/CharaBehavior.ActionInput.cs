@@ -21,7 +21,7 @@ public partial class CharaBehavior
             return;
         }
 
-        if (MyTeamState.MainState.IsCancelActionInput)
+        if (MyTeam.MainState.IsCancelActionInput)
         {
             return;
         }
@@ -92,7 +92,7 @@ public partial class CharaBehavior
                 //スリップも追加オーバーラインの瞬間なぞのキャッチできてしまう
                 if (Court.ECDdg_f == false && canEnemyCourtDodge)
                 {
-                    if (MyPad.IsJustPressedAbButton() //ジャンプ入力
+                    if (Pad.IsJustPressedAbButton() //ジャンプ入力
                         && muki_f
                         && (Court.ECDjp_f == false))
                     {
@@ -100,7 +100,7 @@ public partial class CharaBehavior
                         CourtSet.ECDdg_f = true; //１回だけ
                         CourtSet.ECDjp_f = true; //１回だけ
                     }
-                    else if (MyPad.ButtonA.IsJustPressed) //よけ
+                    else if (Pad.ButtonA.IsJustPressed) //よけ
                     {
                         SetMotionType(CharaMotionType.Dg);
                         CourtSet.ECDdg_f = true; //１回だけ
@@ -149,7 +149,7 @@ public partial class CharaBehavior
                         //よけ限界時間
                         CourtSet.EnemyCortDodgeCount.Add();
                         //押しっぱなしで避け続けるようにする
-                        if (MyPad.ButtonA.IsPressed
+                        if (Pad.ButtonA.IsPressed
                             && CourtSet.EnemyCortDodgeCount.Value < GetSettingInfield(SettingInfieldType.EnCourtCrTime))
                         {
                             // 他と合わせる
@@ -170,7 +170,7 @@ public partial class CharaBehavior
         if (Motion.HasFlag(CharaMotionFlag.Ar)
             || Motion.MotionCountValue >= GetSettingJump(SettingJumpType.JumpCanselTime)
             || !IsSelfControl
-            || MyPad.IsJustPressedAbButton() == false)
+            || Pad.IsJustPressedAbButton() == false)
         {
             return false;
         }
@@ -235,7 +235,7 @@ public partial class CharaBehavior
                         //よけ限界時間
                         CourtSet.EnemyCortDodgeCount.Add();
                         //押しっぱなしで避け続けるようにする
-                        if (MyPad.ButtonA.IsPressed
+                        if (Pad.ButtonA.IsPressed
                             && CourtSet.EnemyCortDodgeCount.Value < GetSettingInfield(SettingInfieldType.EnCourtCrTime))
                         {
                             // 他と合わせる
@@ -731,10 +731,10 @@ public partial class CharaBehavior
 
         if (IsSelfControl)
         {
-            isLeftKey = MyPad.KeyLeft.IsPressed; //パス方向入力
-            isRightKey = MyPad.KeyRight.IsPressed;
-            isUpKey = MyPad.KeyUp.IsPressed;
-            isDownKey = MyPad.KeyDown.IsPressed;
+            isLeftKey = Pad.KeyLeft.IsPressed; //パス方向入力
+            isRightKey = Pad.KeyRight.IsPressed;
+            isUpKey = Pad.KeyUp.IsPressed;
+            isDownKey = Pad.KeyDown.IsPressed;
         }
 
         //内野方向を向いてる
@@ -1051,10 +1051,10 @@ public partial class CharaBehavior
 
         if (IsSelfControl)
         {
-            isLeftKey = MyPad.KeyLeft.IsPressed; //パス方向入力
-            isRightKey = MyPad.KeyRight.IsPressed;
-            isUpKey = MyPad.KeyUp.IsPressed;
-            isDownKey = MyPad.KeyDown.IsPressed;
+            isLeftKey = Pad.KeyLeft.IsPressed; //パス方向入力
+            isRightKey = Pad.KeyRight.IsPressed;
+            isUpKey = Pad.KeyUp.IsPressed;
+            isDownKey = Pad.KeyDown.IsPressed;
         }
 
         //内野向きが押されてる
@@ -1338,7 +1338,7 @@ public partial class CharaBehavior
         {
             Pass.MirrorShotCount.Set(activeCount);
 
-            var mirrorPassCount = MyPad.ButtonB.IsPressed
+            var mirrorPassCount = Pad.ButtonB.IsPressed
                 ? activeCount
                 : inactiveCount;
             Pass.MirrorPassCount.Set(mirrorPassCount);
@@ -1549,16 +1549,16 @@ public partial class CharaBehavior
         var lastMuki = Coordinate.DirectionX;
         var lastMukiZ = Coordinate.DirectionZ;
         bool LastMukiKeep_f = false;
-        bool atlook_f = MyPad.IsPressedAnyCross() == false;
+        bool atlook_f = Pad.IsPressedAnyCross() == false;
 
         //プレビュー中パス禁止
-        bool pabtn_f = MyPad.ButtonA.IsJustPressed;
-        bool pabtn2_f = MyPad.ButtonA.IsPressed;
-        bool dgbtn_f = MyPad.ButtonA.IsJustPressed;
-        bool dgbtn2_f = MyPad.ButtonA.IsPressed;
-        bool cabtn_f = MyPad.ButtonA.IsJustPressed;
-        bool shbtn_f = MyPad.ButtonB.IsJustPressed;
-        bool shbtn2_f = MyPad.ButtonB.IsPressed;
+        bool pabtn_f = Pad.ButtonA.IsJustPressed;
+        bool pabtn2_f = Pad.ButtonA.IsPressed;
+        bool dgbtn_f = Pad.ButtonA.IsJustPressed;
+        bool dgbtn2_f = Pad.ButtonA.IsPressed;
+        bool cabtn_f = Pad.ButtonA.IsJustPressed;
+        bool shbtn_f = Pad.ButtonB.IsJustPressed;
+        bool shbtn2_f = Pad.ButtonB.IsPressed;
         bool uppos_f = (pabtn_f || dgbtn_f);
         bool dnpos_f = (cabtn_f || shbtn_f);
 
@@ -1623,7 +1623,7 @@ public partial class CharaBehavior
                     bool utrn_f = false;
                     if (MySideIndex == 0
                         && (Coordinate.DirectionX == DirectionXType.Left)
-                        && MyPad.KeyRight.IsPressed)
+                        && Pad.KeyRight.IsPressed)
                     {
                         utrn_f = true;
                         CoordinateSet.DirectionX = DirectionXType.Right;
@@ -1632,7 +1632,7 @@ public partial class CharaBehavior
                     }
                     else if (MySideIndex == 1
                              && (Coordinate.DirectionX == DirectionXType.Right)
-                             && MyPad.KeyLeft.IsPressed)
+                             && Pad.KeyLeft.IsPressed)
                     {
                         utrn_f = true;
                         CoordinateSet.DirectionX = DirectionXType.Left;
@@ -1661,8 +1661,8 @@ public partial class CharaBehavior
                         && Auto.AutoType == AutoType.Free
                         && Motion.HasFlag(CharaMotionFlag.Ds))
                     {
-                        if ((Coordinate.DashDirection == DirectionXType.Left && MyPad.KeyLeft.IsPressed)
-                            || (Coordinate.DashDirection == DirectionXType.Right && MyPad.KeyRight.IsPressed))
+                        if ((Coordinate.DashDirection == DirectionXType.Left && Pad.KeyLeft.IsPressed)
+                            || (Coordinate.DashDirection == DirectionXType.Right && Pad.KeyRight.IsPressed))
                         {
                             //継続なので向きセットも歩数リセットもいらない
                             SetMotionType(CharaMotionType.Ds);
@@ -1697,7 +1697,7 @@ public partial class CharaBehavior
 
     void AirDefenceOrFree()
     {
-        if (MyPad.ButtonA.IsJustPressed)
+        if (Pad.ButtonA.IsJustPressed)
         {
             SetMotionType(CharaMotionType.Dg);
             // キャッチ時間で変えるとよいかも
@@ -1713,7 +1713,7 @@ public partial class CharaBehavior
                 CallTeamChangeControlCoverMan();
             }
         }
-        else if (MyPad.ButtonB.IsJustPressed)
+        else if (Pad.ButtonB.IsJustPressed)
         {
             SetCatchMuki();
             SetMotionType(CharaMotionType.JCa);
@@ -1821,13 +1821,13 @@ public partial class CharaBehavior
 
     void AirAttack()
     {
-        if (MyPad.ButtonA.IsJustPressed)
+        if (Pad.ButtonA.IsJustPressed)
         {
             Passing();
         }
-        else if (MyPad.ButtonB.IsJustPressed)
+        else if (Pad.ButtonB.IsJustPressed)
         {
-            bool atlook_f = MyPad.IsPressedAnyCross() == false;
+            bool atlook_f = Pad.IsPressedAnyCross() == false;
             LookTg(BallState.ShotTargetOrder, false, atlook_f);
             SetMotionType(CharaMotionType.JSh);
         }
@@ -1839,14 +1839,14 @@ public partial class CharaBehavior
 
     private void MirrorAttack()
     {
-        if (MyPad.ButtonB.IsPressed) //シュート入力おしっぱ
+        if (Pad.ButtonB.IsPressed) //シュート入力おしっぱ
         {
             Pass.MirrorPassCount.Clear();
         }
 
         if (Pass.MirrorPassCount.Value > 0) //ミラーパス状態
         {
-            if (MyPad.ButtonA.IsPressed)
+            if (Pad.ButtonA.IsPressed)
             {
                 if (Pass.MirrorPassCount.AddUntil(Defines.MIRWAIT))
                 {
@@ -1872,7 +1872,7 @@ public partial class CharaBehavior
 
         if (Pass.MirrorShotCount.Value > 0) //ミラーシュート状態
         {
-            if (MyPad.ButtonB.IsPressed && MyPad.ButtonA.IsPressed == false) //シュート入力おしっぱ
+            if (Pad.ButtonB.IsPressed && Pad.ButtonA.IsPressed == false) //シュート入力おしっぱ
             {
                 if (Pass.MirrorPassCount.AddUntil(Defines.MIRWAIT))
                 {
@@ -1889,7 +1889,7 @@ public partial class CharaBehavior
 
     void GroundFree()
     {
-        if (MyPad.IsJustPressedAnyButton() && Catch.CatchWaitCountValue == 0)
+        if (Pad.IsJustPressedAnyButton() && Catch.CatchWaitCountValue == 0)
         {
             //キャッチもボール方向向くようにしてみる
             SetCatchMuki();
@@ -1903,12 +1903,12 @@ public partial class CharaBehavior
 
     void GroundDefence()
     {
-        if (MyPad.ButtonA.IsJustPressed) //避けボタン
+        if (Pad.ButtonA.IsJustPressed) //避けボタン
         {
             SetMotionType(CharaMotionType.Dg);
             PlaySeCatchSe();
         }
-        else if (MyPad.ButtonB.IsJustPressed && Catch.CatchWaitCountValue == 0) //キャッチ入力
+        else if (Pad.ButtonB.IsJustPressed && Catch.CatchWaitCountValue == 0) //キャッチ入力
         {
             //キャッチもボール方向向くようにしてみる
             SetCatchMuki();
@@ -1922,7 +1922,7 @@ public partial class CharaBehavior
 
     void GroundAttack()
     {
-        if (MyPad.ButtonA.IsJustPressed)
+        if (Pad.ButtonA.IsJustPressed)
         {
             //内野の場合後ろ内野内パスなので、相手の方向を向かないと行けない
             Passing();
@@ -1930,9 +1930,9 @@ public partial class CharaBehavior
 
         // DegbugShot();
 
-        if (MyPad.ButtonB.IsJustPressed) //シュート入力
+        if (Pad.ButtonB.IsJustPressed) //シュート入力
         {
-            bool atlook_f = MyPad.IsPressedAnyCross() == false;
+            bool atlook_f = Pad.IsPressedAnyCross() == false;
             //外野２３からＺ軸シュートのとき、一応相手の方向を向く
             LookTg(BallState.ShotTargetOrder, false, atlook_f);
 

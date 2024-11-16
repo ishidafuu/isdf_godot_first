@@ -627,8 +627,8 @@ public partial class CharaBehavior
         switch (Motion.MotionType)
         {
             case CharaMotionType.Ds:
-                Shoot.Step.Add();
-                if (Shoot.Step.Value % 2 == 1)
+                ShootSet.Step.Add();
+                if (ShootSet.Step.Value % 2 == 1)
                 {
                     PlaySe(SeType.Dash);
                 }
@@ -744,11 +744,11 @@ public partial class CharaBehavior
             var zSign = 0;
             if (IsControl && IsCom == false)
             {
-                if (MyPad.KeyUp.IsPressed)
+                if (Pad.KeyUp.IsPressed)
                 {
                     zSign = +1;
                 }
-                else if (MyPad.KeyDown.IsPressed)
+                else if (Pad.KeyDown.IsPressed)
                 {
                     zSign = -1;
                 }
@@ -763,20 +763,20 @@ public partial class CharaBehavior
             var zSign = 0;
             if (IsCom == false && (IsFree(true) || Auto.IsFreeAction))
             {
-                if (orderType != OrderFieldType.Outfield2 && MyPad.KeyUp.IsPressed)
+                if (orderType != OrderFieldType.Outfield2 && Pad.KeyUp.IsPressed)
                 {
                     zSign = +1;
                 }
-                else if (orderType != OrderFieldType.Outfield3 && MyPad.KeyDown.IsPressed)
+                else if (orderType != OrderFieldType.Outfield3 && Pad.KeyDown.IsPressed)
                 {
                     zSign = -1;
                 }
 
-                if ((MySideIndex == 1 || orderType != OrderFieldType.Outfield4) && MyPad.KeyRight.IsPressed)
+                if ((MySideIndex == 1 || orderType != OrderFieldType.Outfield4) && Pad.KeyRight.IsPressed)
                 {
                     xSign = +1;
                 }
-                else if ((MySideIndex == 0 || orderType != OrderFieldType.Outfield4) && MyPad.KeyLeft.IsPressed)
+                else if ((MySideIndex == 0 || orderType != OrderFieldType.Outfield4) && Pad.KeyLeft.IsPressed)
                 {
                     xSign = -1;
                 }

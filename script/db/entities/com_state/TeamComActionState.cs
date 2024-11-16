@@ -3,7 +3,7 @@
 /// <summary>
 /// COMアクション思考に関するステータス
 /// </summary>
-public class TeamComActionState : IComActionStateGetter, IComActionStateSetter
+public class TeamComActionState : ITeamComActionStateGetter, ITeamComActionStateSetter
 {
     //COMシングルオーダーパスする
     public bool SgOdPaF { get; set; }
@@ -49,7 +49,7 @@ public class TeamComActionState : IComActionStateGetter, IComActionStateSetter
     }
 }
 
-public interface IComActionStateGetter
+public interface ITeamComActionStateGetter
 {
     bool SgOdPaF { get; }
     enShChangeType ShCg { get; }
@@ -63,7 +63,7 @@ public interface IComActionStateGetter
     bool DgToCa_f { get; }
 }
 
-public interface IComActionStateSetter
+public interface ITeamComActionStateSetter
 {
     bool SgOdPaF { set; }
     enShChangeType ShCg { set; }

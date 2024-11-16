@@ -62,7 +62,7 @@ public partial class CharaBehavior
     /// </summary>
     private void CallTeamCheckChangePos()
     {
-        MyTeamBehavior.CallCheckChangePos();
+        MyTeam.CallCheckChangePos();
     }
 
     /// <summary>

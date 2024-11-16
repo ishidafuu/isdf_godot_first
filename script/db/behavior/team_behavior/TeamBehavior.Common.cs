@@ -38,5 +38,27 @@ public partial class TeamBehavior
     {
         return (Defines.DBCRT_CL - GenGetAtcLineX(jp_f, dsmn_f));
     }
+    
+    /// <summary>
+    /// 全員アウト
+    /// </summary>
+    public bool IsAllOut
+    {
+        get
+        {
+            foreach (var mySideChara in MySideCharas)
+            {
+                if (mySideChara.IsOut == false)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    public bool IsCom => SemiAuto.SemiF || MainState.ManSideF == false;
+
 
 }

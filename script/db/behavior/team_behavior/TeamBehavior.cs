@@ -14,8 +14,19 @@ public partial class TeamBehavior : BaseBehavior
     private TeamState MyTeam => TeamStateManager.Instance.Get(MySide);
     private TeamComState MyTeamCom => TeamComStateManager.Instance.Get(MySide);
     private TeamState EnemyTeam => TeamStateManager.Instance.Get(EnemySide);
-    
+
     public CharaState CaptainChara => MySideCharas[0];
+
+    public ITeamOrderStateGetter Order => MyTeam.Order;
+    public ITeamPositionStateGetter Position => MyTeam.Position;
+    public ITeamSemiAutoStateGetter SemiAuto => MyTeam.SemiAuto;
+    public ITeamMainStateGetter MainState => MyTeam.MainState;
+    public ITeamComMainStateGetter ComMain => MyTeamCom.Main;
+    public ITeamComMemberStateGetter ComMember => MyTeamCom.Member;
+    public ITeamComPatternStateGetter ComPattern => MyTeamCom.Pattern;
+    public ITeamComAttackStateGetter ComAttack => MyTeamCom.Attack;
+    public ITeamComActionStateGetter ComAction(int memberIndex) => MyTeamCom.Action[memberIndex];
+    public ITeamComInfieldStateGetter ComAction(OrderIndexType orderIndexType) => MyTeamCom.Infield[(int)orderIndexType];
 
     public TeamBehavior()
     {

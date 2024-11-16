@@ -4,7 +4,7 @@
 /// COM思考に関するステータス
 /// 一括で入っているんので、あとで細分化する
 /// </summary>
-public class TeamComMainState : IComMainStateGetter, IComMainStateSetter
+public class TeamComMainState : ITeamComMainStateGetter, ITeamComMainStateSetter
 {
     public bool ResseiF { get; set; } // 劣勢
     public bool ResseiF2 { get; set; } // じつは劣勢
@@ -127,7 +127,7 @@ public class TeamComMainState : IComMainStateGetter, IComMainStateSetter
 
 }
 
-public interface IComMainStateGetter
+public interface ITeamComMainStateGetter
 {
     bool ResseiF { get; }
     bool ResseiF2 { get; }
@@ -180,7 +180,7 @@ public interface IComMainStateGetter
     int NgTagNo { get; }
 }
 
-public interface IComMainStateSetter
+public interface ITeamComMainStateSetter
 {
     bool ResseiF { set; }
     bool ResseiF2 { set; }
