@@ -13,7 +13,7 @@ public class CharaCompositeState : BaseBehavior, ICompositeStateGetter
     private BallBehavior Ball => BallBehaviorManager.Instance.Get();
     private RefereeState RefereeState => RefereeStateManager.Instance.RefereeState;
     private TeamBehavior MyTeam => TeamBehaviorManager.Instance.Get(MySideIndex);
-    private ITeamAiActionStateGetter MyTeamAiAction => MyTeam.AiAction(MyMemberIndex);
+    private ITeamAiActionStateGetter MyTeamAiAction => MyTeam.AiAction(MyOrderIndex);
     private TeamBehavior EnemyTeam => TeamBehaviorManager.Instance.Get(EnemySideIndex);
     private IPad Pad => PadBehaviorManager.Instance.Get(MySideIndex).Pad;
 

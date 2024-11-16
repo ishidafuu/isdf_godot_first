@@ -45,7 +45,7 @@ public class TeamAiMainState : ITeamAiMainStateGetter, ITeamAiMainStateSetter
 
     public int DmcallNum { get; set; } // ダッシュマン発動人数
     public int DmcalledNum { get; set; } // ダッシュマン発動した人数
-    public int SetterNo { get; set; } // セッターNo
+    public OrderIndexType SetterNo { get; set; } // セッターNo
 
     public bool DmwaitOkF { get; set; } // ダッシュマンウエイトＯＫ
     public bool CallOkF { get; set; } // コールＯＫ
@@ -212,7 +212,7 @@ public interface ITeamAiMainStateSetter
     bool DashStCtrlF { set; }
     int DmcallNum { set; }
     int DmcalledNum { set; }
-    int SetterNo { set; }
+    OrderIndexType SetterNo { set; }
     bool DmwaitOkF { set; }
     bool CallOkF { set; }
     bool CallNgF { set; }
