@@ -13,7 +13,7 @@ public partial class CharaBehavior : BaseBehavior
     private BallBehavior Ball => BallBehaviorManager.Instance.Get();
     private RefereeBehavior Referee => RefereeBehaviorManager.Instance.Get();
     private TeamBehavior MyTeam => TeamBehaviorManager.Instance.Get(MySideIndex);
-    private ITeamAiActionStateGetter MyTeamAiAction => MyTeam.ComAction(MyMemberIndex);
+    private ITeamAiActionStateGetter MyTeamAiAction => MyTeam.AiAction(MyMemberIndex);
     private TeamBehavior EnemyTeam => TeamBehaviorManager.Instance.Get(EnemySideIndex);
     private IPad Pad => PadBehaviorManager.Instance.Get(MySideIndex).Pad;
     private readonly CharaCompositeState _rawComposite = new();
@@ -46,7 +46,6 @@ public partial class CharaBehavior : BaseBehavior
     public ICharaCourtStateGetter Court => RawState.Court;
     public ICharaPassStateGetter Pass => RawState.Pass;
     public ICharaDashmanStateGetter Dashman => RawState.Dashman;
-    public ICharaComOnlyStateGetter ComOnly => RawState.ComOnly;
     public ICharaBallEffectStateGetter BallEffect => RawState.BallEffect;
     public ICompositeStateGetter Composite => _rawComposite;
 
@@ -76,6 +75,5 @@ public partial class CharaBehavior : BaseBehavior
     private ICharaCourtStateSetter CourtSet => RawState.Court;
     private ICharaPassStateSetter PassSet => RawState.Pass;
     private ICharaDashmanStateSetter DashmanSet => RawState.Dashman;
-    private ICharaComOnlyStateSetter ComOnlySet => RawState.ComOnly;
     private ICharaBallEffectStateSetter BallEffectSet => RawState.BallEffect;
 }

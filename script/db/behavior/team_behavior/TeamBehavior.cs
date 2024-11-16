@@ -29,6 +29,6 @@ public partial class TeamBehavior : BaseBehavior
     public ITeamAiMemberStateGetter AiMember => MyTeamAiState.Member;
     public ITeamAiPatternStateGetter AiPattern => MyTeamAiState.Pattern;
     public ITeamAiAttackStateGetter AiAttack => MyTeamAiState.Attack;
-    public ITeamAiActionStateGetter ComAction(int memberIndex) => MyTeamAiState.Action[memberIndex];
-    public ITeamAiInfieldStateGetter ComAction(OrderIndexType orderIndexType) => MyTeamAiState.Infield[(int)orderIndexType];
+    public ITeamAiActionStateGetter AiAction(int memberIndex) => MyTeamAiState.Action[memberIndex];
+    public ITeamAiInfieldStateGetter AiInfield(OrderIndexType orderIndexType) => MyTeamAiState.Infield[(int)orderIndexType];
 }

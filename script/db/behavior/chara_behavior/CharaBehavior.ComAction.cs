@@ -53,12 +53,12 @@ public partial class CharaBehavior
 
         bool ngshng_f = false;
 
-        bool shtgnone_f = BallMainState.ShotTargetOrder == OrderIndexType.Disabled;
+        bool shtgnone_f = Ball.Main.ShotTargetOrder == OrderIndexType.Disabled;
 
         if (shtgnone_f == false)
         {
             ngshng_f = MyTeam.AiPattern.GetActionPattern(MyOrderIndex, ComActionType.cmaChanceSh) == ActionGroupType.Type3PosiPassive
-                       && CharaBehaviorManager.Instance.GetOrderChara(EnemySideIndex, BallMainState.ShotTargetOrder).IsNoGuard(true);
+                       && CharaBehaviorManager.Instance.GetOrderChara(EnemySideIndex, Ball.Main.ShotTargetOrder).Composite.IsNoGuard(true);
         }
 
         //セミオートでオーダーでシュート命令が出てないとき
@@ -80,7 +80,7 @@ public partial class CharaBehavior
         {
             //タゲ方向向く
             //居ないときはオートで探す
-            LookTg(BallMainState.ShotTargetOrder, false, true);
+            LookTg(Ball.Main.ShotTargetOrder, false, true);
 
             switch (Motion.MotionType)
             {
@@ -108,7 +108,7 @@ public partial class CharaBehavior
         //パスカットキャラセット
         PaCtTagSet(paTag);
         //タゲの方を向く
-        LookTg(BallMainState.ShotTargetOrder, true, false);
+        LookTg(Ball.Main.ShotTargetOrder, true, false);
 
         switch (Motion.MotionType)
         {
@@ -266,11 +266,11 @@ public partial class CharaBehavior
                         int needstep = MyTeam.AiAttack.OnestepF //一歩ＤＳ
                             ? 1
                             : MyTeamAiAction.DShStep;
-                        
+
                         if (Move.StepCountValue >= needstep //予定歩数超えた
                             || Composite.LeftCourtX > MyTeam.GetAtcLineX(false, false)) //攻撃ライン超えた
                         {
-                            if (st_.pstMyCh_->COMCounter_f == false
+                            if (ComOnly.IsComCounter == false
                                 || MyTeam.AiAttack.getstep < Move.StepCountValue)
                             {
                                 COMShoot();

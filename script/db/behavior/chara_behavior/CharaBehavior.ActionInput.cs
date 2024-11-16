@@ -372,7 +372,7 @@ public partial class CharaBehavior
         DamageSet.KagamiCount.Clear();
         AirSet.IsAirAction = false;
         MoveSet.LastDirectionX = DirectionXType.Neutral;
-        ComOnlySet.IsCatchCounter = false;
+        ComOnlySet.IsComCounter = false;
         ComOnlySet.IsComTossPassGet = false;
         Pass.MirrorShotLimitCount.Set(Defines.MIRLIM);
 

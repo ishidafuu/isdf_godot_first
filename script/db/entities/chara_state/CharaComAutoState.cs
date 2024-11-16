@@ -16,6 +16,18 @@ public class CharaComAutoState : ICharaComAutoStateGetter, ICharaComAutoStateSet
     public DirectionZType MoveDirectionZ { get; set; }
     public int[] CatchRec { get; set; } = new int[Defines.ComAttackCacheLength];
 
+    public int ComCatchProbability { get; set; }
+
+    // 敵ナイスキャッチ確率
+    public int ComNiceCatchProbability { get; set; }
+
+    // キャッチカウンター状態
+    public bool IsComCounter { get; set; }
+
+    // 内野からのトスパスを受けた状態
+    public bool IsComTossPassGet { get; set; }
+
+
     public void Initialize()
     {
         JumpBallStep = 0;
@@ -24,9 +36,14 @@ public class CharaComAutoState : ICharaComAutoStateGetter, ICharaComAutoStateSet
         KeepDirectionCount = 0;
         MoveDirectionX = default;
         MoveDirectionZ = default;
+        ComCatchProbability = 0;
+        ComNiceCatchProbability = 0;
+        IsComCounter = false;
+        IsComTossPassGet = false;
         Array.Clear(CatchRec, 0, CatchRec.Length);
     }
 }
+
 
 public interface ICharaComAutoStateGetter
 {
@@ -36,8 +53,13 @@ public interface ICharaComAutoStateGetter
     int KeepDirectionCount { get; }
     DirectionXType MoveDirectionX { get; }
     DirectionZType MoveDirectionZ { get; }
+    int ComCatchProbability { get; }
+    int ComNiceCatchProbability { get; }
+    bool IsComCounter { get; }
+    bool IsComTossPassGet { get; }
     int[] CatchRec { get; }
 }
+
 
 public interface ICharaComAutoStateSetter
 {
@@ -47,5 +69,9 @@ public interface ICharaComAutoStateSetter
     int KeepDirectionCount { set; }
     DirectionXType MoveDirectionX { set; }
     DirectionZType MoveDirectionZ { set; }
+    int ComCatchProbability { set; }
+    int ComNiceCatchProbability { set; }
+    bool IsComCounter { set; }
+    bool IsComTossPassGet { set; }
     int[] CatchRec { set; }
 }
