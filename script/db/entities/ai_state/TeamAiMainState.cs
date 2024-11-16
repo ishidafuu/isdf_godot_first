@@ -4,7 +4,7 @@
 /// COM思考に関するステータス
 /// 一括で入っているんので、あとで細分化する
 /// </summary>
-public class TeamComMainState : ITeamComMainStateGetter, ITeamComMainStateSetter
+public class TeamAiMainState : ITeamAiMainStateGetter, ITeamAiMainStateSetter
 {
     public bool ResseiF { get; set; } // 劣勢
     public bool ResseiF2 { get; set; } // じつは劣勢
@@ -69,6 +69,10 @@ public class TeamComMainState : ITeamComMainStateGetter, ITeamComMainStateSetter
     public int VnTagNo { get; set; } // 至近距離タゲ番号
     public int NgTagNo { get; set; } // ノーガードタゲ番号
 
+    //ダッシュマン作戦中
+    public bool Isdm => DashmanF || DashmanFmWaitF;
+
+    
     public void Initialize()
     {
         ResseiF = false;
@@ -121,13 +125,9 @@ public class TeamComMainState : ITeamComMainStateGetter, ITeamComMainStateSetter
         VnTagNo = 0;
         NgTagNo = 0;
     }
-
-    //ダッシュマン作戦中
-    public bool Isdm() => DashmanF || DashmanFmWaitF;
-
 }
 
-public interface ITeamComMainStateGetter
+public interface ITeamAiMainStateGetter
 {
     bool ResseiF { get; }
     bool ResseiF2 { get; }
@@ -178,9 +178,10 @@ public interface ITeamComMainStateGetter
     bool NgChanceF { get; }
     int VnTagNo { get; }
     int NgTagNo { get; }
+    bool Isdm { get; }
 }
 
-public interface ITeamComMainStateSetter
+public interface ITeamAiMainStateSetter
 {
     bool ResseiF { set; }
     bool ResseiF2 { set; }

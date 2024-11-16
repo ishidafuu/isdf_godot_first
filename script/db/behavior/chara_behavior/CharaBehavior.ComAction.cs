@@ -22,9 +22,9 @@ public partial class CharaBehavior
             || MyTeam.MainState.ComOverTimeF)
         {
             COMShootAct();
-            MyTeam.SemiAuto.SemiShotF = false;
+            // MyTeam.SemiAuto.SemiShotF = false;
         }
-        else if (MyTeam.MainState.Isdm())
+        else if (MyTeam.AiMain.Isdm)
         {
             COMAction_DM();
         }
@@ -110,19 +110,19 @@ public partial class CharaBehavior
     void COMAction_DM()
     {
         //ダッシュマン作戦に完全に入ってる必要がある（態勢ウエイトはなにもしない）
-        if (MyTeam.ComMain.DashmanF == false)
+        if (MyTeam.AiMain.DashmanF == false)
         {
             return;
         }
 
         //シュート指示が出てる
-        if (MyTeam.ComMain.DashmanShOkF == false)
+        if (MyTeam.AiMain.DashmanShOkF == false)
         {
             //飛ばないダッシュマン
             if (MyTeam.IsNoJpDashman())
             {
                 //歩数過ぎたら投げてイイ
-                if (Shoot.StepValue >= MyTeamComAction.DShStep
+                if (Shoot.StepValue >= MyTeamAiAction.DShStep
                     || LeftCourtX > MyTeam.GetAtcLineX(false, true)) //ジャンプしないダッシュマンはこのラインが最大限界
                 {
                     COMAction_DM_Sh();
@@ -142,12 +142,12 @@ public partial class CharaBehavior
     void COMAction_DM_Sh() //シュート指示が出てる
     {
         //空中攻撃
-        if (MyTeam.ComAttack.JpF
+        if (MyTeam.AiAttack.JpF
             || Motion.HasFlag(CharaMotionFlag.Ar))
         {
           
             if (Motion.HasFlag(CharaMotionFlag.Ar) //ジャンプ状態
-                && (Air.AirCountValue >= MyTeamComAction.JShTime)) //予定時間こえてる
+                && (Air.AirCountValue >= MyTeamAiAction.JShTime)) //予定時間こえてる
             {
                 //シュート
                 COMShootAct();

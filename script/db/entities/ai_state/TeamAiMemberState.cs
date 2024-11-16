@@ -3,7 +3,7 @@
 /// <summary>
 /// COM思考メンバー全員に関するステータス
 /// </summary>
-public class TeamComMemberState : ITeamComMemberStateGetter, ITeamComMemberStateSetter
+public class TeamAiMemberState : ITeamAiMemberStateGetter, ITeamAiMemberStateSetter
 {
     //パスを呼んでる
     public bool CallingPa_f { get; set; }
@@ -22,14 +22,14 @@ public class TeamComMemberState : ITeamComMemberStateGetter, ITeamComMemberState
     }
 }
 
-public interface ITeamComMemberStateGetter
+public interface ITeamAiMemberStateGetter
 {
     bool CallingPa_f { get; }
     bool CallingGd_f { get; }
     bool CallingRd_f { get; }
 }
 
-public interface ITeamComMemberStateSetter
+public interface ITeamAiMemberStateSetter
 {
     bool CallingPa_f { set; }
     bool CallingGd_f { set; }

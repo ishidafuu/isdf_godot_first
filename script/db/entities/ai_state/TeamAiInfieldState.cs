@@ -3,7 +3,7 @@
 /// <summary>
 /// COM思考内野に関するステータス
 /// </summary>
-public class TeamComInfieldState : ITeamComInfieldStateGetter, ITeamComInfieldStateSetter
+public class TeamAiInfieldState : ITeamAiInfieldStateGetter, ITeamAiInfieldStateSetter
 {
     //避けタイプ
     public enDodgeType DgType { get; set; }
@@ -18,13 +18,13 @@ public class TeamComInfieldState : ITeamComInfieldStateGetter, ITeamComInfieldSt
     }
 }
 
-public interface ITeamComInfieldStateGetter
+public interface ITeamAiInfieldStateGetter
 {
     enDodgeType DgType { get; }
     int DgTime { get; }
 }
 
-public interface ITeamComInfieldStateSetter
+public interface ITeamAiInfieldStateSetter
 {
     enDodgeType DgType { set; }
     int DgTime { set; }

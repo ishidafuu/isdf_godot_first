@@ -3,7 +3,7 @@
 /// <summary>
 /// COMアクション思考に関するステータス
 /// </summary>
-public class TeamComAttackState : ITeamComAttackStateGetter, ITeamComAttackStateSetter
+public class TeamAiAttackState : ITeamAiAttackStateGetter, ITeamAiAttackStateSetter
 {
     //キャラの手に渡った時点で初期化する系
     public int DmpawaitC { get; set; } // ダッシュマンパスインターバル用
@@ -29,7 +29,7 @@ public class TeamComAttackState : ITeamComAttackStateGetter, ITeamComAttackState
     }
 }
 
-public interface ITeamComAttackStateGetter
+public interface ITeamAiAttackStateGetter
 {
     int DmpawaitC { get; }
     bool QuickF { get; }
@@ -49,7 +49,7 @@ public interface ITeamComAttackStateGetter
     OrderIndexType PaTag { get; }
 }
 
-public interface ITeamComAttackStateSetter
+public interface ITeamAiAttackStateSetter
 {
     int DmpawaitC { set; }
     bool QuickF { set; }
