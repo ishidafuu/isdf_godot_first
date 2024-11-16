@@ -4,7 +4,7 @@ namespace db;
 
 public class ComActionData
 {
-    public static int ActionTypeLength => Enum.GetValues<ComActionType>().Length;
+    public static int ActionTypeLength => Enum.GetValues<AiActionType>().Length;
     private int[][] NormalSheet { get; set; }
     private int[][] PinchSheet { get; set; }
 
@@ -24,11 +24,11 @@ public class ComActionData
     {
     }
 
-    public int Get(ComActionType comActionType, int comPattern, bool isPinch)
+    public int Get(AiActionType aiActionType, int comPattern, bool isPinch)
     {
         return isPinch
-            ? PinchSheet[(int)comActionType][comPattern]
-            : NormalSheet[(int)comActionType][comPattern];
+            ? PinchSheet[(int)aiActionType][comPattern]
+            : NormalSheet[(int)aiActionType][comPattern];
     }
 
     //     //読み込み

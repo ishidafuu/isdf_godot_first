@@ -45,7 +45,6 @@ public class CharaCompositeState : BaseBehavior, ICompositeStateGetter
     public ICharaCourtStateGetter Court => RawState.Court;
     public ICharaPassStateGetter Pass => RawState.Pass;
     public ICharaDashmanStateGetter Dashman => RawState.Dashman;
-    public ICharaComOnlyStateGetter ComOnly => RawState.ComOnly;
     public ICharaBallEffectStateGetter BallEffect => RawState.BallEffect;
 
     /// <summary>

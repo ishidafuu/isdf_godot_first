@@ -1,6 +1,6 @@
 ﻿namespace db;
 
-public enum enComPlanType //オプション
+public enum AiPlanType //オプション
 {
     comRessei, //劣勢判断 //体力一定以下いれば	残りが敵未満	ボス退場	内野一人
 
@@ -37,7 +37,7 @@ public enum enComPlanType //オプション
     comEND,
 };
 
-public enum ComActionType
+public enum AiActionType
 {
     cmaAction, //アクション//クイックシュート,//パワーシュート,オーダーパス,シングルパス
     cmaShChange, //シュート変更//ウエイト,しない,シュート変更パス,変化球外し

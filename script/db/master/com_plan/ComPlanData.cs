@@ -4,7 +4,7 @@ namespace db;
 
 public class ComPlanData
 {
-    public static int PlanTypeLength => Enum.GetValues<enComPlanType>().Length;
+    public static int PlanTypeLength => Enum.GetValues<AiPlanType>().Length;
     private int[][] Sheet { get; set; }
 
     public ComPlanData()
@@ -21,9 +21,9 @@ public class ComPlanData
     {
     }
 
-    public int Get(enComPlanType comPlanType, int comPattern)
+    public int Get(AiPlanType aiPlanType, int comPattern)
     {
-        return Sheet[(int)comPlanType][comPattern];
+        return Sheet[(int)aiPlanType][comPattern];
     }
 
     //     //読み込み

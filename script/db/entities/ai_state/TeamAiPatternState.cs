@@ -10,10 +10,18 @@ public class TeamAiPatternState : ITeamAiPatternStateGetter, ITeamAiPatternState
     public int[] PlanPattern { get; set; } = new int[ComPlanData.PlanTypeLength];
     public int[][] ActionPattern { get; set; } = new int[Defines.MemberCount][];
 
-    public ActionGroupType GetActionPattern(OrderIndexType orderIndexType, ComActionType comActionType)
+
+    public ActionGroupType GetPlanPattern(AiPlanType aiPlanType)
     {
-        return (ActionGroupType)ActionPattern[(int)orderIndexType][(int)comActionType];
+        return (ActionGroupType)PlanPattern[(int)aiPlanType];
     }
+
+
+    public ActionGroupType GetActionPattern(OrderIndexType orderIndexType, AiActionType aiActionType)
+    {
+        return (ActionGroupType)ActionPattern[(int)orderIndexType][(int)aiActionType];
+    }
+
 
     public TeamAiPatternState()
     {
@@ -22,6 +30,7 @@ public class TeamAiPatternState : ITeamAiPatternStateGetter, ITeamAiPatternState
             ActionPattern[i] = new int[ComActionData.ActionTypeLength];
         }
     }
+
 
     public void Initialize()
     {
@@ -34,12 +43,13 @@ public class TeamAiPatternState : ITeamAiPatternStateGetter, ITeamAiPatternState
     }
 }
 
+
 public interface ITeamAiPatternStateGetter
 {
-    int[] PlanPattern { get; }
-    int[][] ActionPattern { get; }
-    ActionGroupType GetActionPattern(OrderIndexType orderIndexType, ComActionType comActionType);
+    ActionGroupType GetPlanPattern(AiPlanType aiPlanType);
+    ActionGroupType GetActionPattern(OrderIndexType orderIndexType, AiActionType aiActionType);
 }
+
 
 public interface ITeamAiPatternStateSetter
 {

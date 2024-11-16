@@ -57,7 +57,7 @@ public partial class CharaBehavior
 
         if (shtgnone_f == false)
         {
-            ngshng_f = MyTeam.AiPattern.GetActionPattern(MyOrderIndex, ComActionType.cmaChanceSh) == ActionGroupType.Type3PosiPassive
+            ngshng_f = MyTeam.AiPattern.GetActionPattern(MyOrderIndex, AiActionType.cmaChanceSh) == ActionGroupType.Type3PosiPassive
                        && CharaBehaviorManager.Instance.GetOrderChara(EnemySideIndex, Ball.Main.ShotTargetOrder).Composite.IsNoGuard(true);
         }
 
@@ -270,8 +270,8 @@ public partial class CharaBehavior
                         if (Move.StepCountValue >= needstep //予定歩数超えた
                             || Composite.LeftCourtX > MyTeam.GetAtcLineX(false, false)) //攻撃ライン超えた
                         {
-                            if (ComOnly.IsComCounter == false
-                                || MyTeam.AiAttack.getstep < Move.StepCountValue)
+                            if (ComAuto.IsComCounter == false
+                                || MyTeam.AiAttack.Getstep < Move.StepCountValue)
                             {
                                 COMShoot();
                             }
@@ -284,10 +284,10 @@ public partial class CharaBehavior
                 }
             }
         }
-        else if (MyTeam.AiAttack.pa_f) //パス
+        else if (MyTeam.AiAttack.PaF) //パス
         {
             //空中攻撃
-            if (MyTeam.AiAttack.jp_f
+            if (MyTeam.AiAttack.JpF
                 || Motion.HasFlag(CharaMotionFlag.Ar))
             {
                 if (Motion.HasFlag(CharaMotionFlag.Ar) //ジャンプ状態
@@ -296,7 +296,7 @@ public partial class CharaBehavior
                     COMPass(false); //パス
                 }
             }
-            else if (st_.pmgMyTm_->IsWaitOver()) //地上攻撃
+            else if (MyTeam.IsWaitOver()) //地上攻撃
             {
                 COMPass(false); //パス
             }
@@ -308,9 +308,9 @@ public partial class CharaBehavior
     private void COMDMPassAct()
     {
         //ジャンプしないダッシュマン
-        if (st_.pmgMyTm_->IsNoJpDashman())
+        if (MyTeam.IsNoJpDashman())
         {
-            switch (MyTeam.AiMain.comPtn[comDMPaNum])
+            switch ( MyTeam.AiPattern.GetPlanPattern(AiPlanType.comDMPaNum))
             {
                 case 0: //一人一回パスの場合
                     //全員呼んだ＆触ってない人がいない
