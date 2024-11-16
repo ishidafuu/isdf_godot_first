@@ -41,7 +41,7 @@ public partial class CharaBehavior
         MotionSet.MotionCount.Clear();
         CatchSet.CatchCount.Clear();
         CourtSet.EnemyCortDodgeCount.Clear();
-        Move.DashAccelCount.Clear();
+        MoveSet.DashAccelCount.Clear();
         CoordinateSet.FrictionCount.Clear();
         AirSet.IsLandSet = false;
         ShootSet.IsUTurn = false;
@@ -56,7 +56,7 @@ public partial class CharaBehavior
         }
 
         // 立ちパス待ちカウンタ
-        if (IsPassWait == false)
+        if (Composite.IsPassWait == false)
         {
             Pass.PassStandWaitCount.Clear();
         }
@@ -79,8 +79,8 @@ public partial class CharaBehavior
             || motionType == CharaMotionType.Wk
             || (motionType == CharaMotionType.Ds && Motion.HasFlag(CharaMotionFlag.Ds) == false))
         {
-            Move.MadStepCount.Clear();
-            Shoot.Step.Clear();
+            MoveSet.MadStepCount.Clear();
+            MoveSet.StepCount.Clear();
         }
 
         if (motionType == CharaMotionType.ARv)
@@ -221,7 +221,7 @@ public partial class CharaBehavior
         }
 
         // 試合終了してるときは天使にならないでダウンに変化
-        if (motionType == CharaMotionType.ANG && RefereeState.IsGameSet)
+        if (motionType == CharaMotionType.ANG && Referee.Main.IsGameSet)
         {
             motionType = Motion.MotionType == CharaMotionType.FlF
                 ? CharaMotionType.DnF
@@ -618,7 +618,7 @@ public partial class CharaBehavior
 
     private void PlayBaseMotionKomaSe()
     {
-        var se = CurrentBaseMotionKoma.Se;
+        var se = Composite.CurrentBaseMotionKoma.Se;
         PlaySe(se);
     }
 
@@ -627,8 +627,8 @@ public partial class CharaBehavior
         switch (Motion.MotionType)
         {
             case CharaMotionType.Ds:
-                ShootSet.Step.Add();
-                if (ShootSet.Step.Value % 2 == 1)
+                MoveSet.StepCount.Add();
+                if (MoveSet.StepCount.Value % 2 == 1)
                 {
                     PlaySe(SeType.Dash);
                 }
@@ -651,7 +651,7 @@ public partial class CharaBehavior
                 CatchSet.CatchCount.Clear();
                 break;
             case CharaMotionType.OvL:
-                if (IsBallHolder)
+                if (Composite.IsBallHolder)
                 {
                     CallRefereeResetOverLine();
                 }
@@ -664,9 +664,9 @@ public partial class CharaBehavior
     /// </summary>
     private void StartKoma(bool isInLoop)
     {
-        var komaData = CurrentBaseMotionKoma;
+        var komaData = Composite.CurrentBaseMotionKoma;
         MotionSet.StartKoma(komaData);
-        if (CurrentBaseMotionKoma.IsActionPoint)
+        if (Composite.CurrentBaseMotionKoma.IsActionPoint)
         {
             InvokeActionPoint();
         }
@@ -715,8 +715,8 @@ public partial class CharaBehavior
         var topTiming = velocityY / gravity;
         AirSet.TopTiming = topTiming;
 
-        if (IsControl == false
-            && IsDashman == false
+        if (Composite.IsControl == false
+            && Composite.IsDashman == false
             && Air.IsVerticalJump)
         {
             CoordinateSet.VelocityX = 0;
@@ -726,13 +726,13 @@ public partial class CharaBehavior
         {
             var xSign = (int)Coordinate.DashDirection;
             var isLongJump = false;
-            if (IsCom)
+            if (Composite.IsCom)
             {
                 // 何らかの形でロングジャンプ判定
             }
             else
             {
-                isLongJump = IsPressedDashAccelKey || Air.IsLongJump;
+                isLongJump = Composite.IsPressedDashAccelKey || Air.IsLongJump;
             }
 
             var dX = isLongJump
@@ -742,7 +742,7 @@ public partial class CharaBehavior
             CoordinateSet.VelocityX = xSign * dX;
 
             var zSign = 0;
-            if (IsControl && IsCom == false)
+            if (Composite.IsControl && Composite.IsCom == false)
             {
                 if (Pad.KeyUp.IsPressed)
                 {
@@ -761,7 +761,7 @@ public partial class CharaBehavior
             var orderType = Order.GetOrderFieldType();
             var xSign = 0;
             var zSign = 0;
-            if (IsCom == false && (IsFree(true) || Auto.IsFreeAction))
+            if (Composite.IsCom == false && (Composite.IsFree(true) || Auto.IsFreeAction))
             {
                 if (orderType != OrderFieldType.Outfield2 && Pad.KeyUp.IsPressed)
                 {

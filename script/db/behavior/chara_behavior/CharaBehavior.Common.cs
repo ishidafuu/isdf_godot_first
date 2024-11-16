@@ -15,20 +15,20 @@ public partial class CharaBehavior
         var ballLandLineDist = 0;
 
         // 操作可能キャラのみ
-        if (CanControl)
+        if (Composite.CanControl)
         {
-            ballDist = Coordinate.DistanceXZ(BallMainState.Coordinate);
+            ballDist = Coordinate.DistanceXZ(Ball.Main.Coordinate);
             ballLandDist = ballDist;
             ballLandLineDist = ballDist;
 
             // 着地予定のみ
-            if (BallMainState.MotionType is BallMotionType.Bound or BallMotionType.Pass)
+            if (Ball.Main.MotionType is BallMotionType.Bound or BallMotionType.Pass)
             {
-                ballLandDist = Coordinate.DistanceXZ(BallMainState.LandX, BallMainState.LandZ);
+                ballLandDist = Coordinate.DistanceXZ(Ball.Main.LandX, Ball.Main.LandZ);
 
                 // ライン超える場合のみ
-                ballLandLineDist = BallMainState.LandLine
-                    ? Coordinate.DistanceXZ(BallMainState.LandXLine, BallMainState.LandZLine)
+                ballLandLineDist = Ball.Main.LandLine
+                    ? Coordinate.DistanceXZ(Ball.Main.LandXLine, Ball.Main.LandZLine)
                     : ballLandDist;
             }
         }

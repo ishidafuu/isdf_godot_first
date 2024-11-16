@@ -2,11 +2,10 @@
 
 public partial class RefereeBehavior : BaseBehavior
 {
-    private RefereeState MyState => RefereeStateManager.Instance.RefereeState;
-    private BallMainState BallMainState => BallStateManager.Instance.BallState;
-    private TeamState[] Teams => TeamStateManager.Instance.GetAllTeams();
+    private RefereeState RawState => RefereeStateManager.Instance.RefereeState;
+    private BallBehavior Ball => BallBehaviorManager.Instance.Get();
+    private TeamBehavior[] Teams => TeamBehaviorManager.Instance.GetAllTeams();
 
-    public RefereeBehavior()
-    {
-    }
+    public IRefereeStateGetter Main => RawState;
+    private IRefereeStateSetter MainSet => RawState;
 }

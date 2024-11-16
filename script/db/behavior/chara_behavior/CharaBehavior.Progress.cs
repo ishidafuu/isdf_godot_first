@@ -17,7 +17,7 @@ public partial class CharaBehavior
         LiveSet.IncrementBiorhythmCount();
         DashmanSet.DecrementEnabledPassCount();
 
-        if (BallMainState.MotionType == BallMotionType.Shoot)
+        if (Ball.Main.MotionType == BallMotionType.Shoot)
         {
             BallEffectSet.hitMTime_cd.Sub();
             // ボールと重なっていた過去を消す処理は、モーションがダウンから復帰したタイミングと、シュート開始のタイミングで行う
@@ -41,11 +41,12 @@ public partial class CharaBehavior
             MoveSet.IncrementMadStepCount();
         }
 
-        if (IsShotTarget && Motion.MotionType != CharaMotionType.ANG)
+        
+        if (Composite.IsShotTarget && Motion.MotionType != CharaMotionType.ANG)
         {
             ViewSet.IncrementTargetCount();
         }
-        else if (IsPassTarget && Motion.MotionType != CharaMotionType.ANG)
+        else if (Composite.IsPassTarget && Motion.MotionType != CharaMotionType.ANG)
         {
             // パスターゲットのときは初期値２０から？
             ViewSet.IncrementTargetCount();
@@ -57,7 +58,7 @@ public partial class CharaBehavior
 
         var isProgressAnimation = true;
         
-        var isSetKagami = IsKagami && Auto.AutoType == AutoType.Free;
+        var isSetKagami = Composite.IsKagami && Auto.AutoType == AutoType.Free;
         
         switch (Motion.MotionType)
         {
@@ -66,11 +67,11 @@ public partial class CharaBehavior
                 {
                     SetMotionType(CharaMotionType.KG);
                 }
-                else if (IsPassWait)
+                else if (Composite.IsPassWait)
                 {
                     SetMotionType(CharaMotionType.PW);
                 }
-                else if (IsBallHolder == false)
+                else if (Composite.IsBallHolder == false)
                 {
                     if (View.BreathCount.AddUntil(GetSpeedRank(RankSpeedType.IkiItv)))
                     {
@@ -87,7 +88,7 @@ public partial class CharaBehavior
                 {
                     SetMotionType(CharaMotionType.KG);
                 }
-                else if (IsPassWait)
+                else if (Composite.IsPassWait)
                 {
                     SetMotionType(CharaMotionType.PWWk);
                 }
@@ -97,7 +98,7 @@ public partial class CharaBehavior
                 {
                     SetMotionType(CharaMotionType.KG);
                 }
-                else if (IsPassWait)
+                else if (Composite.IsPassWait)
                 {
                     SetMotionType(CharaMotionType.PWDs);
                 }
@@ -117,7 +118,7 @@ public partial class CharaBehavior
             case CharaMotionType.ARv:
                 break;
             case CharaMotionType.Cr:
-                if (Move.JumpCrouchCount.Value > 0)
+                if (Move.JumpCrouchCountValue > 0)
                 {
                     isProgressAnimation = false;
                 }
@@ -159,19 +160,19 @@ public partial class CharaBehavior
             case CharaMotionType.JFB:
                 break;
             case CharaMotionType.PW:
-                if (IsPassWait == false)
+                if (Composite.IsPassWait == false)
                 {
                     SetMotionType(CharaMotionType.St);
                 }
                 break;
             case CharaMotionType.PWWk:
-                if (IsPassWait == false)
+                if (Composite.IsPassWait == false)
                 {
                     SetMotionType(CharaMotionType.Wk);
                 }
                 break;
             case CharaMotionType.PWDs:
-                if (IsPassWait == false)
+                if (Composite.IsPassWait == false)
                 {
                     SetMotionType(CharaMotionType.Ds);
                 }
@@ -195,7 +196,7 @@ public partial class CharaBehavior
             case CharaMotionType.Pa:
             case CharaMotionType.JPa:
                 // 指が離れたらクイックパス
-                if (IsSelfControl && Pad.ButtonA.IsPressed == false)
+                if (Composite.IsSelfControl && Pad.ButtonA.IsPressed == false)
                 {
                     PassSet.IsTossPass = false;
                 }
@@ -300,8 +301,8 @@ public partial class CharaBehavior
     private bool IsOverCatchFrame(int nowCatchCount)
     {
         // 敵のシュートボール
-        var enemyShootBall = BallMainState.MotionType == BallMotionType.Shoot
-                             && BallMainState.ThrowerSideNo != Index.SideIndex;
+        var enemyShootBall = Ball.Main.MotionType == BallMotionType.Shoot
+                             && Ball.Main.ThrowerSideNo != Index.SideIndex;
 
         var catchFrame = enemyShootBall
             ? GetSettingCatch(SettingCatchType.CaMotionFrm)
@@ -320,10 +321,10 @@ public partial class CharaBehavior
         MotionSet.KomaFrameCount.Add();
 
         //フレーム終了の時間がきた、もしくは強制次フレーム
-        if (isForce || MotionSet.KomaFrameCount.Value >= CurrentBaseMotionKoma.DefFrm)
+        if (isForce || MotionSet.KomaFrameCount.Value >= Composite.CurrentBaseMotionKoma.DefFrm)
         {
             bool isLoop = false;
-            switch (CurrentBaseMotionKoma.LoopSt)
+            switch (Composite.CurrentBaseMotionKoma.LoopSt)
             {
                 // ループ終了
                 case enBMLoopSt.Ed:
@@ -341,7 +342,7 @@ public partial class CharaBehavior
             }
             else
             {
-                if (IsLastKoma)
+                if (Composite.IsLastKoma)
                 {
                     // ラスコマ
                     MotionEnd();
@@ -382,7 +383,7 @@ public partial class CharaBehavior
 
             // 屈み
             case CharaMotionType.KG:
-                if (IsKagami)
+                if (Composite.IsKagami)
                 {
                     DamageSet.KagamiCount.Sub();
                     SetMotionType(CharaMotionType.KG);
@@ -408,8 +409,8 @@ public partial class CharaBehavior
             // パス
             case CharaMotionType.Pa:
                 // ボールダッシュマン
-                if (CanContinuationDash
-                    && MyTeamState.MainState.DashmanNoBm == MyOrderIndex) //予約状態でもある
+                if (Composite.CanContinuationDash
+                    && MyTeam.Main.DashmanNoBm == MyOrderIndex) //予約状態でもある
                 {
                     SetMotionType(CharaMotionType.Ds);
                 }
