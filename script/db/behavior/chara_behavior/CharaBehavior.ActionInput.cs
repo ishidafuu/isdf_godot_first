@@ -30,7 +30,7 @@ public partial class CharaBehavior
         {
             // 自由
             case AutoType.Free:
-                if (IsSelfControl)
+                if (Composite.IsSelfControl)
                 {
                     ControlSelf();
                 }
@@ -72,7 +72,7 @@ public partial class CharaBehavior
 
     private void AutoReturnAction()
     {
-        if (IsSelfControl == false && IsCom)
+        if (Composite.IsSelfControl == false && Composite.IsCom)
         {
             return;
         }
@@ -169,7 +169,7 @@ public partial class CharaBehavior
 
         if (Motion.HasFlag(CharaMotionFlag.Ar)
             || Motion.MotionCountValue >= GetSettingJump(SettingJumpType.JumpCanselTime)
-            || !IsSelfControl
+            || Composite.IsSelfControl==false
             || Pad.IsJustPressedAbButton() == false)
         {
             return false;
@@ -214,7 +214,7 @@ public partial class CharaBehavior
         var canEnemyCourtDodge = GetCanDodgeEnemyCourt();
 
         //COMの敵コートオートよけ
-        if (IsSelfControl == false
+        if (Composite.IsSelfControl == false
             && BallState.MotionType == BallMotionType.Shoot
             && canEnemyCourtDodge)
         {
@@ -289,12 +289,12 @@ public partial class CharaBehavior
     private bool GetCanDodgeEnemyCourt()
     {
         bool result;
-        if (IsBallHolder || Order.IsOutfield)
+        if (Composite.IsBallHolder || Order.IsOutfield)
         {
             // ボール持ち、外野はよけNG
             result = false;
         }
-        else if (IsSelfControl || Auto.IsFreeAction)
+        else if (Composite.IsSelfControl || Auto.IsFreeAction)
         {
             // 自由状態
             result = true;
@@ -321,7 +321,7 @@ public partial class CharaBehavior
     private void AutoPickUp()
     {
         if (Motion.HasFlag(CharaMotionFlag.Act) == false
-            && IsFree(false)
+            && Composite.IsFree(false)
             && IsPickUpPos())
         {
             HoldBall(false, false);
@@ -436,7 +436,7 @@ public partial class CharaBehavior
             var orderIndex = GetShootTarget(Shoot.Angle12, false);
             if (orderIndex == OrderIndexType.Disabled)
             {
-                if (IsSelfControl == false)
+                if (Composite.IsSelfControl == false)
                 {
                     //CPUだけ無理矢理。後で外すかも
                     CallBallChangeShootTarget(EnemyTeam.MainState.ControlOrderIndex);
@@ -527,7 +527,7 @@ public partial class CharaBehavior
         {
             var enemyChara = CharaBehaviorManager.Instance.GetChara(EnemySideIndex, order);
 
-            if (enemyChara.IsEnableShootTarget == false)
+            if (enemyChara.Composite.IsEnableShootTarget == false)
             {
                 continue;
             }
@@ -729,7 +729,7 @@ public partial class CharaBehavior
         var isUpKey = false;
         var isDownKey = false;
 
-        if (IsSelfControl)
+        if (Composite.IsSelfControl)
         {
             isLeftKey = Pad.KeyLeft.IsPressed; //パス方向入力
             isRightKey = Pad.KeyRight.IsPressed;
@@ -789,7 +789,7 @@ public partial class CharaBehavior
 
                 var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
 
-                if (chara.IsDashman == false)
+                if (chara.Composite.IsDashman == false)
                 {
                     continue;
                 }
@@ -800,7 +800,7 @@ public partial class CharaBehavior
                 isNoneAngleTarget = false; //一人でも向き方向にタゲが見つかった
 
                 //右にダッシュマンがいる
-                if (chara.LeftCourtX > LeftCourtX)
+                if (chara.Composite.LeftCourtX > Composite.LeftCourtX)
                 {
                     isTopPosition = false;
                 }
@@ -853,7 +853,7 @@ public partial class CharaBehavior
                 }
 
                 //誰か右にいる
-                if (chara.LeftCourtX > LeftCourtX)
+                if (chara.Composite.LeftCourtX > Composite.LeftCourtX)
                 {
                     isTopPosition = false;
                 }
@@ -913,7 +913,7 @@ public partial class CharaBehavior
         {
             if (Motion.MotionType == CharaMotionType.Ds) //ダッシュ中
             {
-                if (IsSelfControl)
+                if (Composite.IsSelfControl)
                 {
                     if (isUpKey) return OrderIndexType.Outfield2; //上
                     if (isDownKey) return OrderIndexType.Outfield3; //下
@@ -1049,7 +1049,7 @@ public partial class CharaBehavior
         var isUpKey = false;
         var isDownKey = false;
 
-        if (IsSelfControl)
+        if (Composite.IsSelfControl)
         {
             isLeftKey = Pad.KeyLeft.IsPressed; //パス方向入力
             isRightKey = Pad.KeyRight.IsPressed;
@@ -1164,7 +1164,7 @@ public partial class CharaBehavior
         for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
             var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
-            if (chara.IsDashman
+            if (chara.Composite.IsDashman
                 && (OrderIndexType)order != MyOrderIndex //自分
                 && IsCheckLandEnPos(order) == false) //外野からのときは敵コート着地キャラはなしに
             {
@@ -1177,7 +1177,7 @@ public partial class CharaBehavior
             }
 
             //X距離外野はGetLeftCrtX()が左コートなので絶対値を使う
-            targetX[order] = chara.LeftCourtX; //自分より右に居れば＋
+            targetX[order] = chara.Composite.LeftCourtX; //自分より右に居れば＋
             //Z距離
             var targetZ = Math.Abs(chara.Coordinate.Z - Coordinate.Z); //自分より上にいれば＋
             //距離
@@ -1523,7 +1523,7 @@ public partial class CharaBehavior
         var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, order);
 
         //★ダッシュマンはだいじょぶ
-        if (chara.IsDashman)
+        if (chara.Composite.IsDashman)
             //&& ((st_.pmgMyTm_.st_.pmgMyCh_[pos].MyCoordinate.dY >= (-XYMAG))
             //  || (MyMirPass_c > 0)))//下降ではない
         {
@@ -1531,7 +1531,7 @@ public partial class CharaBehavior
         }
 
         //空中の人はパスタゲにならないように
-        return chara.IsFree(true) == false
+        return chara.Composite.IsFree(true) == false
                || chara.Motion.HasFlag(CharaMotionFlag.Ar);
     }
 
@@ -1616,7 +1616,7 @@ public partial class CharaBehavior
 
                 break;
             case CharaMotionType.Sh:
-                if (IsBallHolder
+                if (Composite.IsBallHolder
                     && Shoot.IsUTurn == false
                     && Order.IsInfield)
                 {
@@ -1679,7 +1679,7 @@ public partial class CharaBehavior
             case CharaMotionType.Dg:
             case CharaMotionType.JDg:
                 //押しっぱなしで避け続けるようにする
-                if (dgbtn2_f && IsBallHolder == false)
+                if (dgbtn2_f && Composite.IsBallHolder == false)
                 {
                     // ほかとアニメーション継続の形を合わせる
                     // MyAnime.Ani_c = 0; //こんなんでいいのだろうか
@@ -1735,7 +1735,7 @@ public partial class CharaBehavior
 
     void SetBallMukiX()
     {
-        if (IsBallHolder)
+        if (Composite.IsBallHolder)
         {
             return;
         }
@@ -1761,7 +1761,7 @@ public partial class CharaBehavior
 
     void SetBallMukiZ()
     {
-        if (IsBallHolder)
+        if (Composite.IsBallHolder)
         {
             return;
         }
@@ -1853,7 +1853,7 @@ public partial class CharaBehavior
                     if (BallState.PassTargetOrder != OrderIndexType.Disabled)
                     {
                         var chara = CharaBehaviorManager.Instance.GetChara(MySideIndex, BallState.PassTargetOrder);
-                        if (chara.IsDashman)
+                        if (chara.Composite.IsDashman)
                         {
                             Passing();
                         }
@@ -2022,7 +2022,7 @@ public partial class CharaBehavior
             else
             {
                 TgSt = CharaBehaviorManager.Instance.GetChara(MySideIndex, BallState.PassTargetOrder);
-                dmPass_f = TgSt.IsDashman;
+                dmPass_f = TgSt.Composite.IsDashman;
                 alleyoop_f = BallState.PaAlPa;
             }
         }
@@ -2094,7 +2094,7 @@ public partial class CharaBehavior
         else //タゲ無し
         {
             if (Order.IsInfield == false
-                || IsSelfControl == false
+                || Composite.IsSelfControl == false
                 || (AtLook_f && Notag_f))
             {
                 //２，３番外野が真横に投げてしまうのを阻止

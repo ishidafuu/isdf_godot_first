@@ -2,7 +2,7 @@
 
 namespace db;
 
-public partial class BallState
+public partial class BallState : IBallStateGetter, IBallStateSetter
 {
     public bool Invs { get; set; }
     public bool LandLine { get; set; }
@@ -84,6 +84,7 @@ public partial class BallState
     public int[] BufY { get; set; } = new int[Defines.BufferPositionMax];
     public int[] BufZ { get; set; } = new int[Defines.BufferPositionMax];
 
+
     public void Initialize()
     {
         Invs = false;
@@ -163,8 +164,8 @@ public partial class BallState
         Array.Clear(BufY, 0, BufY.Length);
         Array.Clear(BufZ, 0, BufZ.Length);
     }
-
 }
+
 
 public interface IBallStateGetter
 {
@@ -245,6 +246,7 @@ public interface IBallStateGetter
     int[] BufY { get; }
     int[] BufZ { get; }
 }
+
 
 public interface IBallStateSetter
 {

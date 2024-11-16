@@ -60,5 +60,44 @@ public partial class TeamBehavior
 
     public bool IsCom => SemiAuto.SemiF || MainState.ManSideF == false;
 
+    
+    //待ち時間超えてる
+    public bool IsWaitOver()
+    {
+        bool res = false;
+        if (st_.pmgEnTm_->IsAllNoShTg())//誰もねらえない
+        {
+            res = false;
+        }
+        else if (st_.pstMyTm_->stCOM.quick_f)//クイック
+        {
+            res = true;
+        }
+        else if (st_.pstMyTm_->stCOM.sh_f)//シュート
+        {
+            if (st_.pstMyTm_->CtrlNo != NGNUM)
+            {
+                res = (st_.pstMyTm_->COMDt.tmwait_c > st_.pstMyTm_->COMDt.actdt[st_.pstMyTm_->CtrlNo].ShWait);
+            }
+            else
+            {
+                res = (st_.pstMyTm_->COMDt.tmwait_c > st_.pstMyTm_->COMDt.actdt[st_.pstMyTm_->GetRdPos()].ShWait);
+            }
+
+        }
+        else//パス
+        {
+            if (st_.pstMyTm_->CtrlNo != NGNUM)
+            {
+                res = (st_.pstMyTm_->COMDt.tmwait_c > st_.pstMyTm_->COMDt.actdt[st_.pstMyTm_->CtrlNo].PaWait);
+            }
+            else
+            {
+                res = (st_.pstMyTm_->COMDt.tmwait_c > st_.pstMyTm_->COMDt.actdt[st_.pstMyTm_->GetRdPos()].PaWait);
+            }
+        }
+
+        return res;
+    }
 
 }
