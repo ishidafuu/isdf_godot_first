@@ -310,7 +310,7 @@ public partial class CharaBehavior
         //ジャンプしないダッシュマン
         if (MyTeam.IsNoJpDashman())
         {
-            switch ( MyTeam.AiPattern.GetPlanPattern(AiPlanType.comDMPaNum))
+            switch (MyTeam.AiPattern.GetPlanPattern(AiPlanType.comDMPaNum))
             {
                 case ActionGroupType.Type0NegaActive: //一人一回パスの場合
                     //全員呼んだ＆触ってない人がいない
@@ -344,40 +344,40 @@ public partial class CharaBehavior
 
         if (Order.IsInfield
             && Motion.HasFlag(CharaMotionFlag.Ds) //ダッシュしてる
-            && (setter_f == false || MyTeam.AiMain.setterBMRsvGo_f))
+            && (setter_f == false || MyTeam.AiMain.SetterBmRsvGoF))
         {
             //現状パスのjpが入っているので
-            int pwsh = MyTeam.AiMain.actdt[MyOrderIndex].comactPtn[cmaPwShType];
+            var pwsh = MyTeam.AiPattern.GetActionPattern(MyOrderIndex, AiActionType.cmaPwShType);
 
             switch (pwsh)
             {
-                case 0: //ＤＪＳ
-                    if (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(true, true) //攻撃ライン超えた
+                case ActionGroupType.Type0NegaActive: //ＤＪＳ
+                    if (Composite.LeftCourtX > MyTeam.GetAtcLineX(true, true) //攻撃ライン超えた
                         && Motion.HasFlag(CharaMotionFlag.Ar) //ジャンプ状態
-                        && Air.Air_c >= MyTeam.AiMain.actdt[MyOrderIndex].JShTime) //予定時間こえてる
+                        && Air.AirCountValue >= MyTeam.AiAction(MyOrderIndex).JShTime) //予定時間こえてる
                     {
                         shtiming_f = true;
                     }
                     break;
-                case 1: //ＤＳ
+                case ActionGroupType.Type1PosiActive: //ＤＳ
                     if (Motion.HasFlag(CharaMotionFlag.Ar) == false
-                        && (Air.Step_c >= MyTeam.AiMain.actdt[MyOrderIndex].DShStep //予定歩数超えた
-                            || GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(false, true))) //攻撃ライン超えた
+                        && (Move.StepCountValue >= MyTeam.AiAction(MyOrderIndex).DShStep //予定歩数超えた
+                            || Composite.LeftCourtX > MyTeam.GetAtcLineX(false, true))) //攻撃ライン超えた
                     {
                         shtiming_f = true;
                     }
                     break;
-                case 3: //ＪＳ
+                case ActionGroupType.Type3PosiPassive: //ＪＳ
                     if (Motion.HasFlag(CharaMotionFlag.Ar) //ジャンプ状態
-                        && Air.Air_c >= MyTeam.AiMain.actdt[MyOrderIndex].JShTime) //予定時間こえてる
+                        && Air.AirCountValue >= MyTeam.AiAction(MyOrderIndex).JShTime) //予定時間こえてる
                     {
                         shtiming_f = true;
                     }
                     break;
                 default: //一歩ダッシュＳ
                     if (Motion.HasFlag(CharaMotionFlag.Ar) == false
-                        && (Air.Step_c >= 1 //予定歩数超えた
-                            || GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(false, true))) //攻撃ライン超えた
+                        && (Move.StepCountValue >= 1 //予定歩数超えた
+                            || Composite.LeftCourtX > MyTeam.GetAtcLineX(false, true))) //攻撃ライン超えた
                     {
                         shtiming_f = true;
                     }
@@ -401,7 +401,7 @@ public partial class CharaBehavior
 
             bool setterBMPaOK_f = MyTeam.AiMain.setterBMRsvGo_f
                                   && Motion.HasFlag(CharaMotionFlag.Ds)
-                                  && Air.Step_c > WAITSTEP;
+                                  && Move.StepCountValue > WAITSTEP;
 
             //セッターでなくて、ダッシュしていないキャラ
             bool scndSetter_f = MyTeam.AiMain.setterNo != MyOrderIndex
@@ -409,7 +409,7 @@ public partial class CharaBehavior
 
             //セッターダッシュしない、もしくは、セッターダッシュ開始後
             bool setterOK_f = Order.IsInfield == false
-                              || (MyTeam.AiMain.setterBMRsv_f == false || setterBMPaOK_f);
+                              || MyTeam.AiMain.setterBMRsv_f == false || setterBMPaOK_f;
 
             //セカンドセッター
             if (scndSetter_f)
@@ -428,7 +428,7 @@ public partial class CharaBehavior
                     switch (MyTeam.AiMain.comPtn[comDMPaTime])
                     {
                         case 0: //パス先が前衛ライン超えたら
-                            if (st_.pmgMyTm_->st_.pmgMyCh_[oktag]->GetLeftCrtX() > DBCRT_CLXL)
+                            if (st_.pmgMyTm_->st_.pmgMyCh_[oktag]->Composite.LeftCourtX > DBCRT_CLXL)
                             {
                                 act_f = true;
                             }
@@ -461,8 +461,8 @@ public partial class CharaBehavior
                 //パスタイプ
 
                 int patype = Order.IsInfield
-                    ? MyTeam.AiMain.actdt[MyOrderIndex].comactPtn[cmaPaTypeInf]
-                    : MyTeam.AiMain.actdt[MyOrderIndex].comactPtn[cmaPaType];
+                    ? MyTeam.AiAction(MyOrderIndex).comactPtn[cmaPaTypeInf]
+                    : MyTeam.AiAction(MyOrderIndex).comactPtn[cmaPaType];
 
                 st_.pmgMyTm_->SetPassType(patype);
 
@@ -485,11 +485,11 @@ public partial class CharaBehavior
             {
                 //const int LIMTIME = pmgEO_->mgDt_.dtFomation_.GetComDt(cmvJShTime, 0);
                 //位置も最低限指定しないとポストマンジャンプの次点で判定されてしまう//パスカットもあるのでダッシュフラグに
-                //if ((Air.Air_c >= LIMTIME)
-                //  && GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(true, true)
+                //if ((Air.AirCountValue >= LIMTIME)
+                //  && Composite.LeftCourtX > MyTeam.GetAtcLineX(true, true)
                 //  && Motion.HasFlag(CharaMotionFlag.Ds))
-                if (GetLeftCrtX() > st_.pmgMyTm_->GetAtcLineX(true, true) //攻撃ライン超えた
-                    && Air.Air_c >= MyTeam.AiMain.actdt[MyOrderIndex].JShTime) //予定時間こえてる
+                if (Composite.LeftCourtX > MyTeam.GetAtcLineX(true, true) //攻撃ライン超えた
+                    && Air.AirCountValue >= MyTeam.AiAction(MyOrderIndex).JShTime) //予定時間こえてる
                 {
                     //シュートOK
                     MyTeam.AiMain.dashmanShOK_f = true;
@@ -498,9 +498,9 @@ public partial class CharaBehavior
             else
             {
                 //ジャンプするダッシュマン用
-                const int LIMLINE = st_.pmgMyTm_->GetAtcLineX(false, true);
+                const int LIMLINE = MyTeam.GetAtcLineX(false, true);
 
-                if (GetLeftCrtX() > LIMLINE)
+                if (Composite.LeftCourtX > LIMLINE)
                 {
                     //シュートOK
                     MyTeam.AiMain.dashmanShOK_f = true;
