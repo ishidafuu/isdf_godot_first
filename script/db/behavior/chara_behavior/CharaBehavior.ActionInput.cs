@@ -1321,7 +1321,7 @@ public partial class CharaBehavior
 
 
     //COMダッシュマンパスタゲセット★★
-    private int GetCOMDMPassTag(bool nowOKonly_f)
+    private OrderIndexType GetCOMDMPassTag(bool nowOKonly_f)
     {
         TmpStateManager.Instance.TmpState.Clear();
         var targetX = TmpStateManager.Instance.TmpState.targetX;

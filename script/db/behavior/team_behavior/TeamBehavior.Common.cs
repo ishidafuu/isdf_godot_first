@@ -66,7 +66,8 @@ public partial class TeamBehavior
     public bool IsWaitOver()
     {
         bool res = false;
-        if ( EnemyTeam.IsAllNoShTg()) //誰もねらえない
+
+        if (EnemyTeam.IsAllNoShTg()) //誰もねらえない
         {
             res = false;
         }
@@ -90,8 +91,8 @@ public partial class TeamBehavior
             var action = MyTeamState.MainState.ControlOrderIndex != OrderIndexType.Disabled
                 ? MyTeamAiState.Action[(int)MyTeamState.MainState.ControlOrderIndex]
                 : MyTeamAiState.Action[0];
-            
-            if (MyTeamAiState.Attack.ShF) 
+
+            if (MyTeamAiState.Attack.ShF)
             {
                 res = MyTeamAiState.Main.TmwaitC > action.ShWait;
             }
@@ -117,6 +118,19 @@ public partial class TeamBehavior
             }
         }
         return tagok == 0;
+    }
+
+
+    //ダッシュマンパスタイミング
+    private bool IsDMPaItvTime(bool infsetter_f)
+    {
+        //全員呼ぶのが同時でないため、セッターで呼び切れてないときは若干補正
+        var offset = infsetter_f && MyTeamAiState.Main.DmcalledNum < MyTeamAiState.Main.DmcallNum
+            ? 15
+            : 0;
+
+        //パスインターバル後
+        return MyTeamAiState.Attack.DmpawaitC > MyTeamAiState.Main.DmPaItv + offset;
     }
 //
 //     
@@ -166,7 +180,7 @@ public partial class TeamBehavior
 //     }
 //
 //     //ステータス初期化
-//     void TMgTeam::Ready(BOOL tDemo_f)//チーム設定をシーンから貰うか
+//     void TMgTeam::Ready(bool tDemo_f)//チーム設定をシーンから貰うか
 //     {
 //         const int FIRSTCTRL = (int)dbpoI3;
 //
@@ -255,7 +269,7 @@ public partial class TeamBehavior
 //         }
 //         return livenum;
 //     }
-//     BOOL TMgTeam::IsLastOne()//一人だけ残ってる
+//     bool TMgTeam::IsLastOne()//一人だけ残ってる
 //     {
 //         int livenum = 0;
 //         for (int i = 0; i < DBMEMBER_ALL; ++i)
@@ -268,7 +282,7 @@ public partial class TeamBehavior
 //         }
 //         return (livenum == 1); //一人だけ残ってる
 //     }
-//     BOOL TMgTeam::IsAllDead()//全員HPゼロ、既に天使か
+//     bool TMgTeam::IsAllDead()//全員HPゼロ、既に天使か
 //     {
 //         int deadnum = 0;
 //         for (int i = 0; i < DBMEMBER_ALL; ++i)
@@ -283,7 +297,7 @@ public partial class TeamBehavior
 //
 //         //return (st_.pstMyTm_->Dead_c >= DBMEMBER_ALL);
 //     }
-//     BOOL TMgTeam::IsAllNoLive()//全員天使
+//     bool TMgTeam::IsAllNoLive()//全員天使
 //     {
 //         int livenum = 0;
 //         for (int i = 0; i < DBMEMBER_ALL; ++i)
@@ -297,7 +311,8 @@ public partial class TeamBehavior
 //         return (livenum == 0);
 //     }
 
-//     BOOL TMgTeam::IsAllStop()//全員停止
+
+//     bool TMgTeam::IsAllStop()//全員停止
 //     {
 //         int movenum = 0;
 //         for (int i = 0; i < DBMEMBER_ALL; ++i)
@@ -311,7 +326,7 @@ public partial class TeamBehavior
 //         return (movenum == 0);
 //     }
 //
-//     BOOL TMgTeam::IsNoFly()//全員停止
+//     bool TMgTeam::IsNoFly()//全員停止
 //     {
 //         for (int i = 0; i < DBMEMBER_ALL; ++i)
 //         {
@@ -369,7 +384,7 @@ public partial class TeamBehavior
 //     }
 //
 //     //帰宅済みかどうか
-//     BOOL TMgTeam::IsGohome()
+//     bool TMgTeam::IsGohome()
 //     {
 //         for (int i = 0; i < DBMEMBER_ALL; ++i)
 //         {
@@ -385,7 +400,7 @@ public partial class TeamBehavior
 //         return TRUE;
 //     }
 //     //ＣＯＭ操作
-//     BOOL TMgTeam::IsCOM()
+//     bool TMgTeam::IsCOM()
 //     {
 //         return (st_.pstMyTm_->semi_f_ //セミオート時のみオート扱い
 //             || (st_.pstMyTm_->MANSide_f == FALSE)//COMサイド
@@ -397,7 +412,7 @@ public partial class TeamBehavior
 //     }
 //
 //     //マニュアルサイド操作
-//     BOOL TMgTeam::IsMAN()
+//     bool TMgTeam::IsMAN()
 //     {
 //         return ((IsCOM() == FALSE));//セミオート時以外
 //         //return (st_.pstMyTm_->MANSide_f//サイド操作
@@ -501,8 +516,8 @@ public partial class TeamBehavior
 //         {
 //             int posx = 0;
 //             //const int GAIYANUM = (DBMEMBER_ALL - Defines.DBMEMBER_INF);
-//             BOOL o2ok_f = (st_.pmgMyCh_[dbpoO2]->chCommon_.IsFreeMotion(TRUE));
-//             BOOL o3ok_f = (st_.pmgMyCh_[dbpoO3]->chCommon_.IsFreeMotion(TRUE));
+//             bool o2ok_f = (st_.pmgMyCh_[dbpoO2]->chCommon_.IsFreeMotion(TRUE));
+//             bool o3ok_f = (st_.pmgMyCh_[dbpoO3]->chCommon_.IsFreeMotion(TRUE));
 //
 //             if (o2ok_f && o3ok_f)
 //             {
@@ -658,7 +673,7 @@ public partial class TeamBehavior
 //     }
 //
 //     //自チームの攻撃位置目標Ｘ★
-//     int TMgTeam::GenGetAtcLineX(BOOL jp_f, BOOL dsmn_f)
+//     int TMgTeam::GenGetAtcLineX(bool jp_f, bool dsmn_f)
 //     {
 //         if (IsNoJpDashman() && dsmn_f)
 //         {
@@ -682,20 +697,20 @@ public partial class TeamBehavior
 //     }
 //
 //     //自チームの攻撃位置目標Ｘ★
-//     int TMgTeam::GetAtcLineX(BOOL jp_f, BOOL dsmn_f)
+//     int TMgTeam::GetAtcLineX(bool jp_f, bool dsmn_f)
 //     {
 //         return (DBCRT_CL - GenGetAtcLineX(jp_f, dsmn_f));
 //     }
 //
 //     //自チームのダッシュマンジャンプ不可
-//     BOOL TMgTeam::IsNoJpDashman()
+//     bool TMgTeam::IsNoJpDashman()
 //     {
 //         return (pmgGO_->pmgCh_[st_.mysideNo_][st_.pstMyTm_->RdNo]->MyPDt(clv_DsmnNoJp) != 0);
 //     }
 //
 //
 //
-//     BOOL TMgTeam::IsBallCrtMyPos(int pos, BOOL wide_f)
+//     bool TMgTeam::IsBallCrtMyPos(int pos, bool wide_f)
 //     {
 //         if (wide_f)// && MyTeamAiState.Main.WideBallPos_f)
 //         {
@@ -771,14 +786,14 @@ public partial class TeamBehavior
 //         //}
 //     }
 //
-//     int TMgTeam::GetComAct(int comactNo, enDtComAct cma, BOOL ressei_f, int id)
+//     int TMgTeam::GetComAct(int comactNo, enDtComAct cma, bool ressei_f, int id)
 //     {
 //         return pmgGO_->pmgCommon_->GetComActPtn(comactNo, cma, ressei_f, st_.mysideNo_, id);//とりあえず
 //     }
 //
 //     //int TMgTeam::GetComActNo(int posno)
 //     //{
-//     //  BOOL useselfact_f = FALSE;
+//     //  bool useselfact_f = FALSE;
 //     //  switch (pmgEO_->mgDt_.dtTeam_.GetDt2(dbtm_OpeSelfPlay, st_.teamNo_))
 //     //  {
 //     //    case 4: useselfact_f = pmgGO_->pmgCommon_->IsPer100(100); break;//個人ぷれー→
@@ -828,11 +843,11 @@ public partial class TeamBehavior
 //         }
 //     }
 //     //現状から操作権最適キャラを決める
-//     int TMgTeam::SeekCtrl(BOOL set_f)
+//     int TMgTeam::SeekCtrl(bool set_f)
 //     {
 //         return SeekCtrl(set_f, FALSE);
 //     }
-//     int TMgTeam::SeekCtrl(BOOL set_f, BOOL landpos_f)
+//     int TMgTeam::SeekCtrl(bool set_f, bool landpos_f)
 //     {
 //         //各キャラのボールとの距離を測る
 //         for (int i = 0; i < DBMEMBER_ALL; ++i)
@@ -890,7 +905,7 @@ public partial class TeamBehavior
 //
 //     }
 //     //次期カバーマンを設定する
-//     void TMgTeam::SeekCover(int tHoldPNo, int tPichPNo, int tPaTgPNo, BOOL Cvr2_f)
+//     void TMgTeam::SeekCover(int tHoldPNo, int tPichPNo, int tPaTgPNo, bool Cvr2_f)
 //     {
 //
 //         st_.pstMyTm_->CvrNo = Defines.NGNUM;
@@ -1490,8 +1505,8 @@ public partial class TeamBehavior
 //     void TMgTeam::TeamBallPos()
 //     {
 //
-//         BOOL infleftcrt_f = FALSE;
-//         BOOL outleftcrt_f = FALSE;
+//         bool infleftcrt_f = FALSE;
+//         bool outleftcrt_f = FALSE;
 //
 //         const int STLW = 2 * XYMAG;
 //         if (st_.mysideNo_ == 0)
@@ -1505,7 +1520,7 @@ public partial class TeamBehavior
 //             outleftcrt_f = (pmgSG_->stBa_.LandX < (DBCRT_CL + STLW));
 //         }
 //
-//         BOOL infside = (infleftcrt_f)
+//         bool infside = (infleftcrt_f)
 //             ? 0
 //             : 1;
 //
@@ -1518,10 +1533,10 @@ public partial class TeamBehavior
 //             : DBCRT_CL - (pmgSG_->stBa_.LandX - DBCRT_CL);
 //
 //
-//         BOOL st1_f = ((st_.mysideNo_ != infside) && (pmgSG_->stBa_.Motion == bmFree));
-//         BOOL st2_f = FALSE;
-//         BOOL st3_f = FALSE;
-//         BOOL st4_f = FALSE;
+//         bool st1_f = ((st_.mysideNo_ != infside) && (pmgSG_->stBa_.Motion == bmFree));
+//         bool st2_f = FALSE;
+//         bool st3_f = FALSE;
+//         bool st4_f = FALSE;
 //
 //
 //         if (st_.mysideNo_ == gaiyaside)
@@ -1553,7 +1568,7 @@ public partial class TeamBehavior
 //         //? (st_.pmgMyCh_[(int)dbpoO4]->Rank(rkomSTEAL_W) * XYMAG)
 //         //: 0;
 //
-//         BOOL gaiya_f = FALSE;
+//         bool gaiya_f = FALSE;
 //
 //
 //         //自チームボールだと判断するか
@@ -1588,8 +1603,8 @@ public partial class TeamBehavior
 //     void TMgTeam::TeamBallPos2()
 //     {
 //
-//         BOOL infleftcrt_f = FALSE;
-//         BOOL outleftcrt_f = FALSE;
+//         bool infleftcrt_f = FALSE;
+//         bool outleftcrt_f = FALSE;
 //
 //         const int STLW = -4 * XYMAG;
 //         if (st_.mysideNo_ == 0)
@@ -1603,7 +1618,7 @@ public partial class TeamBehavior
 //             outleftcrt_f = (pmgSG_->stBa_.Zahyou.X < (DBCRT_CL + STLW));
 //         }
 //
-//         BOOL infside = (infleftcrt_f)
+//         bool infside = (infleftcrt_f)
 //             ? 0
 //             : 1;
 //
@@ -1617,7 +1632,7 @@ public partial class TeamBehavior
 //
 //
 //
-//         BOOL gaiya_f = FALSE;
+//         bool gaiya_f = FALSE;
 //
 //
 //         //自チームボールだと判断するか
@@ -2000,10 +2015,10 @@ public partial class TeamBehavior
 //         st_.pstMyTm_->DashmanAll_f = FALSE;
 //
 //
-//         BOOL Call_f = FALSE;
-//         BOOL iosi_f = mid::midIsTBL();
-//         BOOL All_f = FALSE;
-//         BOOL test_f = FALSE;
+//         bool Call_f = FALSE;
+//         bool iosi_f = mid::midIsTBL();
+//         bool All_f = FALSE;
+//         bool test_f = FALSE;
 //
 //         int callRsv = Defines.NGNUM;//呼ぶ予定の人
 //         for (int i = 0; i < Defines.DBMEMBER_INF; ++i)
@@ -2024,7 +2039,7 @@ public partial class TeamBehavior
 //         }
 //         else//ＣＯＭのダッシュマン発動★★
 //         {
-//             BOOL delayOK_f = IsDMDelayTime();
+//             bool delayOK_f = IsDMDelayTime();
 //
 //             //呼ぶタイミング＆シュートフラグがまだ
 //             if (IsDMDelayTime()
@@ -2073,15 +2088,15 @@ public partial class TeamBehavior
 //         //実際に呼ぶ
 //         if (Call_f)
 //         {
-//             BOOL CrsL_f = FALSE;
-//             BOOL CrsR_f = FALSE;
-//             BOOL CrsU_f = FALSE;
-//             BOOL CrsD_f = FALSE;
+//             bool CrsL_f = FALSE;
+//             bool CrsR_f = FALSE;
+//             bool CrsU_f = FALSE;
+//             bool CrsD_f = FALSE;
 //
-//             BOOL infCrs_f = FALSE;
-//             BOOL enmCrs_f = FALSE;
+//             bool infCrs_f = FALSE;
+//             bool enmCrs_f = FALSE;
 //
-//             BOOL DMGo_f = FALSE;
+//             bool DMGo_f = FALSE;
 //
 //             if (st_.pSidePad_ != NULL)
 //             {
@@ -2267,7 +2282,7 @@ public partial class TeamBehavior
 //     }
 //
 //     //内外野入れ替えが発生する人数
-//     BOOL TMgTeam::IsIOChange()
+//     bool TMgTeam::IsIOChange()
 //     {
 //         //元外野が012
 //         const int OUTNUM = (DBMEMBER_ALL - Defines.DBMEMBER_INF);
@@ -2277,7 +2292,7 @@ public partial class TeamBehavior
 //     void TMgTeam::CheckChangePos()
 //     {
 //
-//         BOOL change_f = FALSE;
+//         bool change_f = FALSE;
 //
 //         for (int i = 0; i < Defines.DBMEMBER_INF; ++i)
 //         {
@@ -2296,7 +2311,7 @@ public partial class TeamBehavior
 //                 //倒された数カウンタ増やす
 //                 ++st_.pstMyTm_->Dead_c;
 //
-//                 BOOL IOChange_f = IsIOChange();//★FALSE;//
+//                 bool IOChange_f = IsIOChange();//★FALSE;//
 //
 //                 //サドンデス決着後は入れ替えしない
 //                 if (st_.pmgRf_->IsSuddunDeath()
@@ -2567,9 +2582,9 @@ public partial class TeamBehavior
 //         //１人の時も無理
 //         if (IsLastOne()) return;
 //
-//         BOOL dmcall_f = FALSE;//そもそも呼ぶか
-//         BOOL nowcallOK_f = TRUE;//この瞬間に呼べるか
-//         BOOL waitcallOK_f = TRUE;//待てば呼べるか
+//         bool dmcall_f = FALSE;//そもそも呼ぶか
+//         bool nowcallOK_f = TRUE;//この瞬間に呼べるか
+//         bool waitcallOK_f = TRUE;//待てば呼べるか
 //
 //
 //         //コールによるリセットの場合はダッシュマン判断
@@ -2634,7 +2649,7 @@ public partial class TeamBehavior
 //
 //
 //         //セッターチェック
-//         BOOL setterCk_f = (st_.pstMyTm_->CallingDMReset_f == FALSE)
+//         bool setterCk_f = (st_.pstMyTm_->CallingDMReset_f == FALSE)
 //             && ((MyTeamAiState.Main.comPtn[comDMSetBM] == 0) || (MyTeamAiState.Main.comPtn[comDMSetBM] == 3));
 //
 //         //セッターチェックする
@@ -2686,11 +2701,11 @@ public partial class TeamBehavior
 //
 //
 //         //セッターボールマンダッシュＯＫ
-//         BOOL setterBMOK_f = FALSE;
+//         bool setterBMOK_f = FALSE;
 //
 //         if (setterNo != Defines.NGNUM)
 //         {
-//             BOOL dsok_f = (st_.pmgMyCh_[setterNo]->IsMAN()//マニュアル
+//             bool dsok_f = (st_.pmgMyCh_[setterNo]->IsMAN()//マニュアル
 //                 || (st_.pmgMyCh_[setterNo]->IsDMOKPos() && (st_.pstMyTm_->PosMove.Postman != setterNo)));//セッターが走れる位置でポストマンではない
 //
 //             setterBMOK_f = (IsLastOne() == FALSE) //残り１人の時は無理
@@ -2879,10 +2894,10 @@ public partial class TeamBehavior
 //
 //
 //     //COMダッシュマン作戦人数再確認
-//     BOOL TMgTeam::COMDashmanNumRecheck()
+//     bool TMgTeam::COMDashmanNumRecheck()
 //     {
 //
-//         BOOL res = FALSE;
+//         bool res = FALSE;
 //         int higher_c = 0;//セッターより上位の人数
 //
 //         if (MyTeamAiState.Main.setterNo != Defines.NGNUM)//セッターの人がいる場合
@@ -2997,7 +3012,7 @@ public partial class TeamBehavior
 //         //スマート操作
 //         st_.pstMyTm_->smart_f_ = st_.pSidePad_->IsSmart();
 //
-//         BOOL semi_f = st_.pSidePad_->IsSemiAuto();
+//         bool semi_f = st_.pSidePad_->IsSemiAuto();
 //         if (mid::midIsSemiAuto() && st_.pSidePad_->IsSemiAuto())
 //         {
 //            
@@ -3215,8 +3230,8 @@ public partial class TeamBehavior
 //         if (st_.pstRf_->DBSSt != dbssShiai) return;
 //
 //         //行動切り替え
-//         BOOL switch_f = st_.pstMyTm_->MaruhiCall_f;
-//         BOOL nodsmn_f = FALSE;
+//         bool switch_f = st_.pstMyTm_->MaruhiCall_f;
+//         bool nodsmn_f = FALSE;
 //
 //         st_.pstMyTm_->CallingDMReset_f = FALSE;
 //
@@ -3402,7 +3417,7 @@ public partial class TeamBehavior
 //             }
 //
 //             MyTeamAiState.Main.Ressei_f2 = IsRessei();//実は劣勢
-//             BOOL ec_f = (st_.pstMyTm_->Encr_c > 0);
+//             bool ec_f = (st_.pstMyTm_->Encr_c > 0);
 //
 //             if (MyTeamAiState.Main.Ressei_f2)// && (ec_f == FALSE))
 //             {
@@ -3754,9 +3769,9 @@ public partial class TeamBehavior
 //     }
 //
 //     //劣勢判断
-//     BOOL TMgTeam::IsRessei()
+//     bool TMgTeam::IsRessei()
 //     {
-//         BOOL res = FALSE;
+//         bool res = FALSE;
 //         switch (MyTeamAiState.Main.comPtn[comRessei])
 //         {
 //         case 0://倒され人数で負けてる
@@ -3779,9 +3794,9 @@ public partial class TeamBehavior
 //     }
 //
 //     //チャンスパス判断
-//     BOOL TMgTeam::IsChancePass()
+//     bool TMgTeam::IsChancePass()
 //     {
-//         BOOL res = FALSE;
+//         bool res = FALSE;
 //         //チャンスパス判断
 //         switch (MyTeamAiState.Main.comPtn[comChancePa])
 //         {
@@ -3836,7 +3851,7 @@ public partial class TeamBehavior
 //         TMgChar* pobj = st_.pmgMyCh_[posno];
 //         TStChar* pst = pobj->st_.pstMyCh_;
 //
-//         BOOL nca_f = FALSE;// (pst->NiceCounter_c > 0);
+//         bool nca_f = FALSE;// (pst->NiceCounter_c > 0);
 //
 //         //ガード不能検索
 //         for (int i = 0; i < Defines.DBMEMBER_INF; ++i)//上から検索かけていく
@@ -3903,9 +3918,9 @@ public partial class TeamBehavior
 //     }
 //
 //     //待ち時間超えてる
-//     BOOL TMgTeam::IsWaitOver()
+//     bool TMgTeam::IsWaitOver()
 //     {
-//         BOOL res = FALSE;
+//         bool res = FALSE;
 //         if (st_.pmgEnTm_->IsAllNoShTg())//誰もねらえない
 //         {
 //             res = FALSE;
@@ -3941,26 +3956,10 @@ public partial class TeamBehavior
 //         return res;
 //     }
 //
-//     //ダッシュマンパスタイミング
-//     BOOL TMgTeam::IsDMPaItvTime(BOOL infsetter_f)
-//     {
-//         //全員呼ぶのが同時でないため、セッターで呼び切れてないときは若干補正
-//         if (infsetter_f && (MyTeamAiState.Main.dmcalledNum < MyTeamAiState.Main.dmcallNum))
-//         {
-//             //パスインターバル後
-//             return (MyTeamAiState.Main.dmpawait_c > MyTeamAiState.Main.DMPaItv + (15));
-//         }
-//         else
-//         {
-//             //パスインターバル後
-//             return (MyTeamAiState.Main.dmpawait_c > MyTeamAiState.Main.DMPaItv);
-//         }
-//
-//
-//     }
+
 //
 //     //ダッシュマン発動タイミング
-//     BOOL TMgTeam::IsDMDelayTime()
+//     bool TMgTeam::IsDMDelayTime()
 //     {
 //         //０だと初期化時点でそうなので１にする
 //         if (MyTeamAiState.Main.DMDelay == 0)
@@ -4100,8 +4099,8 @@ public partial class TeamBehavior
 //         //選手情報
 //         //int i = st_.pmgMyTm_->MyTeamState.MainState.ControlOrderIndex;
 //         //int charNo = st_.pstMyTm_->PosSt.CharofP[i];
-//         BOOL mono_f = FALSE;
-//         BOOL mir_f = (st_.mysideNo_ != 0);
+//         bool mono_f = FALSE;
+//         bool mir_f = (st_.mysideNo_ != 0);
 //         int iconposx = FACEX + (SIDEDIST * st_.mysideNo_);
 //         int posy = GRIDSIZE;
 //
@@ -4173,7 +4172,7 @@ public partial class TeamBehavior
 //         for (int i = 0; i < DBMEMBER_ALL; ++i)
 //         {
 //             int wsNo = (DBMEMBER_ALL * st_.mysideNo_) + i;
-//             BOOL draw_f = (drawcno == i);
+//             bool draw_f = (drawcno == i);
 //             pmgEO_->mgFont_.FixWordSprite_Draw(wsNo, draw_f);
 //         }
 //     }

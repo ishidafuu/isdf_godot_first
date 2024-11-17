@@ -390,26 +390,27 @@ public partial class CharaBehavior
         }
 
         //パスタゲ(完全ＯＫのみ)
-        int oktag = GetCOMDMPassTag(true);
+        var oktag = GetCOMDMPassTag(true);
 
         bool act_f = false;
 
         //行動するかどうか//最低数フレ待つ（全員が走り出す前に投げてしまう）
-        if (oktag != NGNUM && MyTeam.AiAttack.dmpawait_c > 1)
+        if (oktag != OrderIndexType.Disabled && MyTeam.AiAttack.DmpawaitC > 1)
         {
+            var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, oktag);
             const int WAITSTEP = 2;
 
-            bool setterBMPaOK_f = MyTeam.AiMain.setterBMRsvGo_f
+            bool setterBMPaOK_f = MyTeam.AiMain.SetterBmRsvGoF
                                   && Motion.HasFlag(CharaMotionFlag.Ds)
                                   && Move.StepCountValue > WAITSTEP;
 
             //セッターでなくて、ダッシュしていないキャラ
-            bool scndSetter_f = MyTeam.AiMain.setterNo != MyOrderIndex
+            bool scndSetter_f = MyTeam.AiMain.SetterNo != MyOrderIndex
                                 && Motion.HasFlag(CharaMotionFlag.Ds) == false;
 
             //セッターダッシュしない、もしくは、セッターダッシュ開始後
             bool setterOK_f = Order.IsInfield == false
-                              || MyTeam.AiMain.setterBMRsv_f == false || setterBMPaOK_f;
+                              || MyTeam.AiMain.SetterBmRsvGoF == false || setterBMPaOK_f;
 
             //セカンドセッター
             if (scndSetter_f)
@@ -422,24 +423,25 @@ public partial class CharaBehavior
                 if (Order.IsInfield)
                 {
                     //内野セッター（もしくはセッターでないのにボールを渡された人）
-                    bool infsetter_f = MyTeam.AiMain.setterNo == MyOrderIndex
+                    bool infsetter_f = MyTeam.AiMain.SetterNo == MyOrderIndex
                                        || Motion.HasFlag(CharaMotionFlag.Ds) == false;
 
-                    switch (MyTeam.AiMain.comPtn[comDMPaTime])
+                    switch (MyTeam.AiPattern.GetPlanPattern(AiPlanType.comDMPaTime))
                     {
-                        case 0: //パス先が前衛ライン超えたら
-                            if (st_.pmgMyTm_->st_.pmgMyCh_[oktag]->Composite.LeftCourtX > DBCRT_CLXL)
+                        case ActionGroupType.Type0NegaActive: //パス先が前衛ライン超えたら
+                            if (chara.Composite.LeftCourtX > Defines.DBCRT_CLXL)
                             {
                                 act_f = true;
                             }
                             break;
-                        case 1: //パスインターバル後
+                        case ActionGroupType.Type1PosiActive: //パスインターバル後
+                            MyTeam.
                             if (st_.pmgMyTm_->IsDMPaItvTime(infsetter_f))
                             {
                                 act_f = true;
                             }
                             break;
-                        case 2: //自分のシュートタイミング★
+                        case ActionGroupType.Type2NegaPassive: //自分のシュートタイミング★
                             act_f = shtiming_f;
                             break;
                         default: //パス先がダッシュ開始したら
