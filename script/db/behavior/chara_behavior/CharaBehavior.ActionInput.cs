@@ -379,7 +379,7 @@ public partial class CharaBehavior
     private void HoldBall(bool isNoSe, bool isLookBall)
     {
         // 保持状況をチームに渡す
-        CallTeamHoldBall();
+        MyTeam.CallHoldBall(MyOrderIndex);
 
         DamageSet.KagamiCount.Clear();
         AirSet.IsAirAction = false;
@@ -426,7 +426,7 @@ public partial class CharaBehavior
         }
 
         //ボール側の処理
-        CallBallHold();
+        Ball.CallHold(MySideIndex, MyOrderIndex);
 
         //拾った瞬間dbaFreeのときはその瞬間のタゲをカーソルキャラに
         //それ以外はfreeに戻ったタイミング
@@ -453,12 +453,12 @@ public partial class CharaBehavior
                 if (Composite.IsSelfControl == false)
                 {
                     //CPUだけ無理矢理。後で外すかも
-                    CallBallChangeShootTarget(EnemyTeam.Main.ControlOrderIndex);
+                    Ball.CallChangeShootTarget(EnemySideIndex, EnemyTeam.Main.ControlOrderIndex);
                 }
             }
             else
             {
-                CallBallChangeShootTarget(orderIndex);
+                Ball.CallChangeShootTarget(EnemySideIndex, orderIndex);
             }
 
             //カーソルは強制的に内野
@@ -466,7 +466,7 @@ public partial class CharaBehavior
 
             if (enemyControlOrderIndex != OrderIndexType.Disabled) //ないとはおもうが
             {
-                CallEnemyTeamChangeControl(enemyControlOrderIndex);
+                EnemyTeam.CallChangeControl(enemyControlOrderIndex);
             }
         }
 // #ifdef __K_DEBUG_SHIAI__
@@ -525,7 +525,7 @@ public partial class CharaBehavior
             }
         }
 
-        CallBallChangePassTarget(orderIndex);
+        Ball.CallChangePassTarget(MySideIndex, orderIndex);
     }
 
 
@@ -700,7 +700,7 @@ public partial class CharaBehavior
             }
         }
 
-        CallBallChangePassTarget(orderIndex);
+        Ball.CallChangePassTarget(MySideIndex, orderIndex);
     }
 
 
@@ -733,7 +733,7 @@ public partial class CharaBehavior
             passCutOrderIndex = (OrderIndexType)order;
         }
 
-        CallBallChangePassTarget(passCutOrderIndex);
+        Ball.CallChangePassTarget(MySideIndex, passCutOrderIndex);
     }
 
 
@@ -1947,7 +1947,7 @@ public partial class CharaBehavior
                 && Ball.Main.PassTargetOrder >= OrderIndexType.Infield0
                 && Ball.Main.PassTargetOrder <= OrderIndexType.Infield3)
             {
-                CallTeamChangeControlCoverMan();
+                MyTeam.CallChangeControlCoverMan();
             }
         }
         else if (Pad.ButtonB.IsJustPressed)
@@ -2459,7 +2459,7 @@ public partial class CharaBehavior
     //シュートタゲセット
     private void SetShTagFromMyShootAngle12(bool isIgnoreDirection)
     {
-        CallBallChangeShootTarget(GetShootTarget(Shoot.Angle12, isIgnoreDirection));
+        Ball.CallChangeShootTarget(EnemySideIndex, GetShootTarget(Shoot.Angle12, isIgnoreDirection));
     }
 
 

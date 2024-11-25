@@ -2,13 +2,18 @@
 
 public partial class RefereeBehavior
 {
-
+    /// <summary>
+    /// オーバーライン
+    /// </summary>
     public void CallWhistleOverLine(int sideNo)
     {
         // st_.pmgRf_->RefereeMsg("オーバーライン");
         // st_.pmgRf_->SetMotion(dbrfShortWhistle);
     }
 
+    /// <summary>
+    /// オーバーラインリセット
+    /// </summary>
     public void CallResetOverLine(int sideNo)
     {
         // st_.pmgRf_->RefereeMsg("オーバーライン");

@@ -3,15 +3,24 @@
 public partial class TeamBehavior
 {
 
+    /// <summary>
+    /// 天使生成
+    /// </summary>
     public void CallGenerateAngel(OrderIndexType orderIndex)
     {
         // st_.pmgMyTm_->SetAngel(st_.posNo_);
     }
 
+    /// <summary>
+    /// ポジションチェンジ
+    /// </summary>
     public void CallCheckChangePos()
     {
     }
 
+    /// <summary>
+    /// ボール保持
+    /// </summary>
     public void CallHoldBall(OrderIndexType orderIndex)
     {
         // //チーム
@@ -22,6 +31,9 @@ public partial class TeamBehavior
         // st_.pmgMyTm_->SetCtrlBallGet(st_.posNo_); //強制
     }
 
+    /// <summary>
+    /// 現在のカバーマンに操作権を渡す
+    /// </summary>
     public void CallChangeControlCoverMan()
     {
         // st_.pmgMyTm_.SetCtrl(st_.pmgMyTm_.st_.pstMyTm_.CvrNo);
@@ -30,9 +42,21 @@ public partial class TeamBehavior
     }
     
 
+    /// <summary>
+    /// 操作権変更（敵チーム）
+    /// </summary>
     public void CallChangeControl(OrderIndexType orderIndex)
     {
     }
+    
+    /// <summary>
+    /// ダッシュマンシュート可能フラグ
+    /// </summary>
+    public void CallSetDashmanShootOK()
+    {
+        // MyTeam.AiMain.DashmanShOkF = true;
+    }
+
     
     //
     //     //内外野入れ替えが発生する人数

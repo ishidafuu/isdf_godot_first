@@ -2,6 +2,9 @@
 
 public partial class BallBehavior
 {
+    /// <summary>
+    /// ボール保持
+    /// </summary>
     public void CallHold(int sideIndex, OrderIndexType orderIndex)
     {
         // //とりあえずAniNoをクリア
@@ -20,6 +23,10 @@ public partial class BallBehavior
         // pmgSG_->stBa_.PaTgPNo = 0;
     }
 
+    /// <summary>
+    /// パスターゲット変更
+    /// SetPassTargetから呼び出す
+    /// </summary>
     public void CallChangePassTarget(int sideIndex, OrderIndexType orderIndex)
     {
         
@@ -27,6 +34,9 @@ public partial class BallBehavior
         // PaCtTagSet();
     }
     
+    /// <summary>
+    /// シュートターゲット変更
+    /// </summary>
     public void CallChangeShootTarget(int sideIndex, OrderIndexType orderIndex)
     {
         

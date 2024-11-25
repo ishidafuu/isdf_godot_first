@@ -122,13 +122,14 @@ public partial class TeamBehavior
 
 
     //ダッシュマンパスタイミング
-    private bool IsDMPaItvTime(bool infsetter_f)
+    public bool IsDMPaItvTime(bool infsetter_f)
     {
         //全員呼ぶのが同時でないため、セッターで呼び切れてないときは若干補正
         var offset = infsetter_f && MyTeamAiState.Main.DmcalledNum < MyTeamAiState.Main.DmcallNum
-            ? 15
+            ? Defines.DMPaItvOffsetTime
             : 0;
 
+        
         //パスインターバル後
         return MyTeamAiState.Attack.DmpawaitC > MyTeamAiState.Main.DmPaItv + offset;
     }

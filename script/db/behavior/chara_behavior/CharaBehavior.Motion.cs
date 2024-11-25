@@ -141,7 +141,7 @@ public partial class CharaBehavior
         // オーバーライン
         if (motionType is CharaMotionType.OvL)
         {
-            CallRefereeWhistleOverLine();
+            Referee.CallWhistleOverLine(MySideIndex);
         }
 
         // 天使
@@ -150,7 +150,7 @@ public partial class CharaBehavior
             LiveSet.IsDead = true;
             CoordinateSet.ZeroVelocity();
             //天使生成
-            CallTeamGenerateAngel();
+            MyTeam.CallGenerateAngel(MyOrderIndex);
         }
 
         // ドロー、勝ち、負け
@@ -653,7 +653,7 @@ public partial class CharaBehavior
             case CharaMotionType.OvL:
                 if (Composite.IsBallHolder)
                 {
-                    CallRefereeResetOverLine();
+                    Referee.CallResetOverLine(MySideIndex);
                 }
                 break;
         }

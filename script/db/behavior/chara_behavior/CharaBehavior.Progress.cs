@@ -236,7 +236,7 @@ public partial class CharaBehavior
                     if (isDead)
                     {
                         LiveSet.IsAngel = true;
-                        CallTeamCheckChangePos();
+                        MyTeam.CallCheckChangePos();
                         // TeamBehaviorがAngelにするかどうか決める
                     }
                     else

@@ -318,14 +318,14 @@ public partial class CharaBehavior
                         && MyTeam.Position.DashmanNum_Run_NT == 0)
                     {
                         //歩数きたら投げる
-                        // MyTeam.AiMain.DashmanShOkF = true;
+                        MyTeam.CallSetDashmanShootOK();
                     }
                     break;
                 //case 1://無限パス
                 //  break;
                 case ActionGroupType.Type2NegaPassive: //パスしない場合
                     //歩数きたら投げる
-                    // MyTeam.AiMain.DashmanShOkF = true;
+                    MyTeam.CallSetDashmanShootOK();
                     break;
             }
         }
@@ -435,8 +435,7 @@ public partial class CharaBehavior
                             }
                             break;
                         case ActionGroupType.Type1PosiActive: //パスインターバル後
-                            MyTeam.
-                            if (st_.pmgMyTm_->IsDMPaItvTime(infsetter_f))
+                            if (MyTeam.IsDMPaItvTime(infsetter_f))
                             {
                                 act_f = true;
                             }
@@ -459,22 +458,22 @@ public partial class CharaBehavior
             if (act_f)
             {
                 //タゲセット
-                MyTeam.AiAttack.paTag = oktag;
+                MyTeam.AiAttack.PaTag = oktag;
                 //パスタイプ
 
-                int patype = Order.IsInfield
-                    ? MyTeam.AiAction(MyOrderIndex).comactPtn[cmaPaTypeInf]
-                    : MyTeam.AiAction(MyOrderIndex).comactPtn[cmaPaType];
+                var patype = Order.IsInfield
+                    ? MyTeam.AiPattern.GetActionPattern(MyOrderIndex, AiActionType.cmaPaTypeInf)
+                    : MyTeam.AiPattern.GetActionPattern(MyOrderIndex, AiActionType.cmaPaType);
 
                 st_.pmgMyTm_->SetPassType(patype);
 
                 COMPass(true); //パス
 
                 //１回だけパスの場合
-                if (MyTeam.AiMain.comPtn[comDMPaNum] == 3)
+                if (MyTeam.AiPattern.GetPlanPattern(AiPlanType.comDMPaNum) == ActionGroupType.Type3PosiPassive)
                 {
                     //シュートOK
-                    MyTeam.AiMain.dashmanShOK_f = true;
+                    MyTeam.CallSetDashmanShootOK();
                 }
             }
         }

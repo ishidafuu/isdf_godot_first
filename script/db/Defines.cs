@@ -132,7 +132,9 @@ public static class Defines
     public const int MIRLIM = 10; //ミラーシュート受付時間
     public const int SHTAG_NEARDIST = 9 * Percent; //シュートターゲット近すぎ
     public const int SHTAG_FARDIST_Y = 150; //シュートターゲットY遠すぎ
-
+    public const int DMPaItvOffsetTime = 15; //シュートターゲットY遠すぎ
+    
+    
     //座標
     public const int GAME_W = 448;
     public const int GAME_H = 288;
