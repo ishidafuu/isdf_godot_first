@@ -70,4 +70,15 @@ public class CharaBehaviorManager
             }
         }
     }
+
+    public void UpdateMoving()
+    {
+        for (var side = 0; side < Defines.SideCount; side++)
+        {
+            for (var member = 0; member < Defines.MemberCount; member++)
+            {
+                _allCharas[side][member].UpdateMoving();
+            }
+        }
+    }
 }

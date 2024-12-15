@@ -19,3 +19,16 @@ public enum DirectionZType
     Neutral = 0,
     Backward = +1
 }
+
+
+/// <summary>
+/// 十字方向
+/// </summary>
+public enum DirectionCrossType
+{
+    Neutral = 0,
+    Up = 1,
+    Down = 2,
+    Left = 3,
+    Right = 4
+}
