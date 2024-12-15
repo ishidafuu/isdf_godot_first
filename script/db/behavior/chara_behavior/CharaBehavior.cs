@@ -13,7 +13,7 @@ public partial class CharaBehavior : BaseBehavior
     private BallBehavior Ball => BallBehaviorManager.Instance.Get();
     private RefereeBehavior Referee => RefereeBehaviorManager.Instance.Get();
     private TeamBehavior MyTeam => TeamBehaviorManager.Instance.Get(MySideIndex);
-    private ITeamAiActionStateGetter MyTeamAiAction => MyTeam.AiAction(MyMemberIndex);
+    private ITeamAiActionStateGetter MyTeamAiAction => MyTeam.AiAction(MyOrderIndex);
     private TeamBehavior EnemyTeam => TeamBehaviorManager.Instance.Get(EnemySideIndex);
     private IPad Pad => PadBehaviorManager.Instance.Get(MySideIndex).Pad;
     private readonly CharaCompositeState _rawComposite = new();
