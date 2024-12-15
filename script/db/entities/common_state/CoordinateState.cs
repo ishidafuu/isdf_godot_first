@@ -127,7 +127,7 @@ public interface ICoordinateStateGetter
     Rect HitBox { get; }
     int SignVelocityX();
     int SignVelocityZ();
-    int DistanceXZ(CoordinateState target);
+    int DistanceXZ(ICoordinateStateGetter target);
     int DistanceXZ(int targetX, int targetZ);
 }
 

@@ -482,7 +482,7 @@ public partial class CharaBehavior
 //                 //st_.pmgTm_[SIDE0].st_.pmgMyTm_.SetCtrlBallGet(0);
 //             }
 //
-//             // 自動シュート状態を取得
+//             // 自動シュー��状態を取得
 //             int step = pDs.GetAutoShootStep();
 //             if (step == kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_WAIT)
 //             {
@@ -1324,27 +1324,24 @@ public partial class CharaBehavior
     private OrderIndexType GetCOMDMPassTag(bool nowOKonly_f)
     {
         TmpStateManager.Instance.TmpState.Clear();
-        var targetX = TmpStateManager.Instance.TmpState.targetX;
         var targetDist = TmpStateManager.Instance.TmpState.targetDist;
         var isSelectTarget = TmpStateManager.Instance.TmpState.isSelectTarget;
         var targetOrder = TmpStateManager.Instance.TmpState.targetOrder;
         var sortValue = TmpStateManager.Instance.TmpState.sortValue;
 
-        bool topord_f = true; //最上位オーダーフラグ
-        bool bottom_f = true; //最後尾フラグ
+        bool topord_f = true; // 最上位オーダーフラグ
+        bool bottom_f = true; // 最後尾フラグ
 
-        // int sortDt[DBMEMBER_INF];
+        bool Notag_f = true; // 完全にパスタゲが居ない
 
-        bool Notag_f = true; //完全にパスタゲが居ない
-        bool NoOKtag_f = true; //今パスを出せるタゲが居ない
-
-        //パスのタイプ
-        enCOMDMPassType patype = (enCOMDMPassType)MyTeam.AiPattern.GetPlanPattern(AiPlanType.comDMPaTag);
-        //触ってない人だけ
+        // パスのタイプ
+        var patype = (enCOMDMPassType)MyTeam.AiPattern.GetPlanPattern(AiPlanType.comDMPaTag);
+        
+        // 触ってない人だけ
         bool NTOnly_f = MyTeam.AiPattern.GetPlanPattern(AiPlanType.comDMPaNum) == 0;
 
-        //内野全員との距離を取る
-        for (int order = 0; order < Defines.DBMEMBER_INF; ++order)
+        // 内野全員との距離を取る
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
             if ((OrderIndexType)order == MyOrderIndex)
             {
@@ -1352,162 +1349,159 @@ public partial class CharaBehavior
             }
             
             var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
-            //X距離外野はGetLeftCrtX()が左コートなので絶対値を使う
-            targetX[order] = chara.Composite.LeftCourtX; //自分より右に居れば＋
-            //Z距離
-            var targetZ = Math.Abs(chara.Coordinate.Z - Coordinate.Z); //自分より上にいれば＋
-            //距離
-            targetDist[order] = Defines.Hypot(targetX[order], targetZ);
+            targetDist[order] = Coordinate.DistanceXZ(chara.Coordinate);
         }
 
-        
-        //ダッシュマンパススピード
+        // ダッシュマンパススピード
         int paspd = GetSettingPass(SettingPassType.DMPaSpd);
 
-        //内野全員との角度を取る
-        for (int i = 0; i < DBMEMBER_INF; ++i)
+        // 内野全員との角度を取る
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
-            if (i == st_.posNo_) //自分
+            if (order == (int)MyOrderIndex) // 自分
             {
-                sltg_f[i] = DMTG_NG;
+                isSelectTarget[order] = enNaiyaTag.TGNG;
+                continue;
             }
-            else if (st_.pmgMyTm_->st_.pmgMyCh_[i]->IsDashman()) //現在ダッシュマン
-            {
-                const int YOYUU = 10; //投げモーションと相手が離れていく分
-                int reachtime = sltgXZ[i] / paspd + YOYUU;
 
-                if (st_.pmgMyTm_->st_.pmgMyCh_[i]->IsMAN() == FALSE //マニュアル以外
-                    && st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->DashmanPaOK_c < reachtime) //おそらくとどかない
-                {
-                    sltg_f[i] = DMTG_NG;
-                }
-                else if (st_.pmgMyTm_->st_.pmgMyCh_[i]->st_.pstMyCh_->Zahyou.dY < 0) //下降に入ってる
-                {
-                    sltg_f[i] = DMTG_NG;
-                }
-                else if (NTOnly_f == FALSE //一人一回ではない
-                         || st_.pmgMyTm_->st_.pstMyTm_->COMDt.actdt[i].BallTouched_f == FALSE) //まだ触ってない
-                {
-                    sltg_f[i] = DMTG_OK;
-                    NoOKtag_f = FALSE;
-                }
-                else
-                {
-                    sltg_f[i] = DMTG_NG;
-                }
-            }
-            else if (st_.pmgMyTm_->st_.pstMyTm_->IsDashmanStock(i)) //待ちには入っている
+            var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
+
+            if (!chara.Composite.IsDashman) // 現在ダッシュマンでない
             {
-                sltg_f[i] = DMTG_WAIT; //ノーアングル扱い
+                isSelectTarget[order] = enNaiyaTag.TGNG;
+                continue;
+            }
+
+            const int YOYUU = 10; // 投げモーションと相手が離れていく分
+            int reachtime = (int)(targetDist[order] / paspd + YOYUU);
+
+
+            if (!chara.Composite.IsCom // マニュアル以外
+                && chara.Dashman.EnabledPassCount.Value < reachtime) // おそらくとどかない
+            {
+                isSelectTarget[order] = enNaiyaTag.TGNG;
+                continue;
+            }
+
+            if (chara.Coordinate.VelocityY < 0) // 下降に入ってる
+            {
+                isSelectTarget[order] = enNaiyaTag.TGNG;
+                continue;
+            }
+
+            if (!NTOnly_f // 一人一回ではない
+                || !MyTeam.AiAction((OrderIndexType)order).BallTouchedF) // まだ触ってない
+            {
+                isSelectTarget[order] = enNaiyaTag.TGOK;
             }
             else
             {
-                sltg_f[i] = DMTG_NG;
+                isSelectTarget[order] = enNaiyaTag.TGNG;
             }
 
-            if (sltg_f[i] != DMTG_NG)
+            if (isSelectTarget[order] != enNaiyaTag.TGNG)
             {
-                if (st_.pmgMyTm_->st_.pmgMyCh_[i]->GetLeftCrtX() < GetLeftCrtX()) //後ろに人がいる
+                if (chara.Composite.LeftCourtX < Composite.LeftCourtX) // 後ろに人がいる
                 {
-                    bottom_f = FALSE; //最後尾ではない
+                    bottom_f = false; // 最後尾ではない
                 }
 
-                if (st_.posNo_ > i) //上位に人がいる
+                if (MyOrderIndex > (OrderIndexType)order) // 上位に人がいる
                 {
-                    topord_f = FALSE; //先頭ではない
+                    topord_f = false; // 先頭ではない
                 }
 
-                Notag_f = FALSE;
-            }
-        }
-
-        if (Notag_f) //タゲが居ない
-        {
-            return NGNUM;
-        }
-        int f = 0;
-
-        for (int i = 0; i < DBMEMBER_INF; ++i)
-        {
-            //向き方向に人なしのとき
-
-            sortDt[i] = 0; //初期化
-
-            if (sltg_f[i] != DMTG_NG)
-            {
-                //値が少ないほど優先
-                switch (patype)
-                {
-                    case cpmUpOrder: //一つオーダー上位（上位なら最下位）
-                        if (topord_f) //上位に人がいない
-                        {
-                            sortDt[i] = -i; //最下位オーダー
-                        }
-                        else
-                        {
-                            sortDt[i] = i > st_.posNo_ //タゲの方が前にいる
-                                ? DBMEMBER_INF
-                                : st_.posNo_ - i; //自分より上位で一番近い人
-                        }
-                        break;
-                    case cpmNear: //一番近い人
-                        sortDt[i] = sltgXZ[i];
-                        break;
-                    case cpmFar: //一番Ｚ軸が遠い人
-                        sortDt[i] = -sltgZ[i];
-                        break;
-                    case cpmRear: //一つ後ろの人(居なければ一番前の人)
-                        if (bottom_f) //一番後ろ
-                        {
-                            sortDt[i] = -st_.pmgMyTm_->st_.pmgMyCh_[i]->GetLeftCrtX(); //一番前にいる人
-                        }
-                        else
-                        {
-                            sortDt[i] = st_.pmgMyTm_->st_.pmgMyCh_[i]->GetLeftCrtX() > GetLeftCrtX() //タゲの方が前にいる
-                                ? DBCRT_W
-                                : GetLeftCrtX() - st_.pmgMyTm_->st_.pmgMyCh_[i]->GetLeftCrtX(); //自分より後ろで一番近い人
-                        }
-                        break;
-                }
-
-                tgOrd[f++] = i;
+                Notag_f = false;
             }
         }
 
-        //ソート
-        for (int i = 0; i < DBMEMBER_INF - 1; ++i)
+        if (Notag_f) // タゲが居ない
         {
-            for (int i2 = 0; i2 < DBMEMBER_INF - 1; i2++)
-            {
-                if (i == i2) continue; //同じ
+            return OrderIndexType.Disabled;
+        }
 
-                if (tgOrd[i] != NGNUM && tgOrd[i2] != NGNUM)
-                {
-                    if (sortDt[tgOrd[i]] < sortDt[tgOrd[i2]]) //小さい方優先
+        var f = 0;
+
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+        {
+            sortValue[order] = 0; // 初期化
+
+            if (isSelectTarget[order] != enNaiyaTag.TGOK)
+            {
+                targetOrder[f] = OrderIndexType.Disabled;
+                continue;
+            }
+
+            // 値が少ないほど優先
+            switch (patype)
+            {
+                case enCOMDMPassType.cpmUpOrder: // 一つオーダー上位（上位なら最下位）
+                    if (topord_f) // 上位に人がいない
                     {
-                        int tmp;
-                        tmp = tgOrd[i2];
-                        tgOrd[i2] = tgOrd[i];
-                        tgOrd[i] = tmp;
+                        sortValue[order] = -order; // 最下位オーダー
+                    }
+                    else
+                    {
+                        sortValue[order] = order > (int)MyOrderIndex // タゲの方が前にいる
+                            ? Defines.DBMEMBER_INF
+                            : (int)MyOrderIndex - order; // 自分より上位で一番近い人
+                    }
+                    break;
+                case enCOMDMPassType.cpmNear: // 一番近い人
+                    sortValue[order] = targetDist[order];
+                    break;
+                case enCOMDMPassType.cpmFar: // 一番Ｚ軸が遠い人
+                    sortValue[order] = -Math.Abs(CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order).Coordinate.Z);
+                    break;
+                case enCOMDMPassType.cpmRear: // 一つ後ろの人(居なければ一番前の人)
+                    if (bottom_f) // 一番後ろ
+                    {
+                        sortValue[order] = -(int)CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order).Composite.LeftCourtX; // 一番前にいる人
+                    }
+                    else
+                    {
+                        var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
+                        sortValue[order] = chara.Composite.LeftCourtX > Composite.LeftCourtX // タゲの方が前にいる
+                            ? Defines.DBCRT_W
+                            : (int)Composite.LeftCourtX - (int)chara.Composite.LeftCourtX; // 自分より後ろで一番近い人
+                    }
+                    break;
+            }
+
+            targetOrder[f++] = (OrderIndexType)order;
+        }
+
+        // ソート
+        for (var i = 0; i < Defines.DBMEMBER_INF - 1; ++i)
+        {
+            for (var i2 = 0; i2 < Defines.DBMEMBER_INF - 1; i2++)
+            {
+                if (i == i2) continue; // 同じ
+
+                if (targetOrder[i] != OrderIndexType.Disabled && targetOrder[i2] != OrderIndexType.Disabled)
+                {
+                    if (sortValue[(int)targetOrder[i]] < sortValue[(int)targetOrder[i2]]) // 小さい方優先
+                    {
+                        (targetOrder[i2], targetOrder[i]) = (targetOrder[i], targetOrder[i2]);
                     }
                 }
             }
         }
 
-        //ソート１位
-        int res = tgOrd[0];
+        // ソート１位
+        var res = targetOrder[0];
 
-        //現状ＯＫなやつしか駄目な場合
+        // 現状ＯＫなやつしか駄目な場合
         if (nowOKonly_f)
         {
-            if (sltg_f[res] != DMTG_OK)
+            if (isSelectTarget[(int)res] != enNaiyaTag.TGOK)
             {
-                res = NGNUM;
+                res = OrderIndexType.Disabled;
             }
         }
+
         return res;
     }
-
 
     private bool IsCheckLandEnPos(int order)
     {
@@ -2492,13 +2486,13 @@ public partial class CharaBehavior
 //         #ifdef __K_DEBUG_SHIAI__
 //         kdebug::DebugSystem* pDs = kdebug::DebugSystem::GetInstance();
 //         bool isAutoShot = false;
-//         // 自動シュート状態を取得
+//         // ���動シュート状態を取得
 //         int step = pDs.GetAutoShootStep();
 //         if (step == kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_STANDBY)
 //         {
 //             // この状態で手元にボールがないのがおかしいので
 //             // 強制的に手元に戻す
-//             // なのでこのif文内は例外処理
+//             // なのでこのif文���は例外処理
 //             if ((pmgSG_.stBa_.Motion != bmHold)
 //                 || (pmgSG_.stBa_.HoldTNo != 0)
 //                 || (pmgSG_.stBa_.HoldPNo != 0))
