@@ -1834,16 +1834,6 @@ public partial class CharaBehavior
         bool uppos_f = pabtn_f || dgbtn_f;
         bool dnpos_f = cabtn_f || shbtn_f;
 
-
-        // DegbugKill();
-
-        // 処理検討
-        // if (MyNomove_f)
-        // {
-        //     MyNomove_f = false;
-        //     return;
-        // }
-
         //シュートとパスは投げる瞬間にターゲットの方向を自動で向くようにする
         LastMukiKeep_f = true;
 
@@ -1884,7 +1874,6 @@ public partial class CharaBehavior
                         AirDefenceOrFree();
                     }
                 }
-
                 break;
             case CharaMotionType.Sh:
                 if (Composite.IsBallHolder
@@ -1965,41 +1954,6 @@ public partial class CharaBehavior
         {
             MoveSet.LastDirectionX = lastMuki;
             MoveSet.LastDirectionZ = lastMukiZ;
-        }
-    }
-
-
-    /// <summary>
-    /// 空中での防御/フリー状態の処理を行います
-    /// 空中でのキャッチや回避などの防御行動を制御します
-    /// </summary>
-    private void AirDefenceOrFree()
-    {
-        if (Pad.ButtonA.IsJustPressed)
-        {
-            SetMotionType(CharaMotionType.Dg);
-            // キャッチ時間で変えるとよいかも
-            PlaySeCatchSe();
-
-            // パスをスルーしてカバーマンに操作権を渡す
-            if (Ball.Main.MotionType == BallMotionType.Pass
-                && Ball.Main.PassTargetSide == MySideIndex
-                && MyTeam.Main.ControlOrderIndex == Ball.Main.PassTargetOrder
-                && Ball.Main.PassTargetOrder >= OrderIndexType.Infield0
-                && Ball.Main.PassTargetOrder <= OrderIndexType.Infield3)
-            {
-                MyTeam.CallChangeControlCoverMan();
-            }
-        }
-        else if (Pad.ButtonB.IsJustPressed)
-        {
-            SetCatchMuki();
-            SetMotionType(CharaMotionType.JCa);
-            PlaySeCatchSe();
-        }
-        else if (IsPickUpPos()) //自動拾い★
-        {
-            HoldBall(false, false);
         }
     }
 
@@ -2115,29 +2069,6 @@ public partial class CharaBehavior
     {
         AutoSet.DirectionX = Coordinate.DirectionX;
         AutoSet.DirectionZ = Coordinate.DirectionZ;
-    }
-
-
-    /// <summary>
-    /// 空中での攻撃処理を行います
-    /// 空中でのパスやシュートなどの攻撃行動を制御します
-    /// </summary>
-    private void AirAttack()
-    {
-        if (Pad.ButtonA.IsJustPressed)
-        {
-            Passing();
-        }
-        else if (Pad.ButtonB.IsJustPressed)
-        {
-            bool atlook_f = Pad.IsPressedAnyCross() == false;
-            LookTg(Ball.Main.ShotTargetOrder, false, atlook_f);
-            SetMotionType(CharaMotionType.JSh);
-        }
-        else
-        {
-            MirrorAttack();
-        }
     }
 
 
