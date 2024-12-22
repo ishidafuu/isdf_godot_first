@@ -113,53 +113,37 @@ public partial class CharaBehavior
         if (Order.IsInfield
             || Auto.AutoType != AutoType.Free
             || Order.OrderIndex == OrderIndexType.Outfield2
-            || Order.OrderIndex == OrderIndexType.O3)
+            || Order.OrderIndex == OrderIndexType.Outfield3)
         {
-#if DEBUG_SHIAI
-            if (state.MySideNo == 0 && DebugSystem.Instance.IsNotWalk())
+            var walkX = GetSpeedRank(RankSpeedType.WkX);
+            var direction = GetMoveMuki(false);
+            if (direction != DirectionXType.Neutral)
             {
-                return;
-            }
-#endif
-            if (common.GetMoveMuki(false) == Direction.Left)
-            {
-                state.MyChar.Zahyou.dX = -common.GetWkX();
-            }
-            else if (common.GetMoveMuki(false) == Direction.Right)
-            {
-                state.MyChar.Zahyou.dX = common.GetWkX();
+                CoordinateSet.VelocityX = walkX * (direction == DirectionXType.Right ? 1 : -1);
             }
         }
 
         //Z
-        if (IsInfield()
-            || state.MyChar.Auto.AutoType != AutoType.Free
-            || state.PosNo == (int)Position.O4)
+        if (Order.IsInfield
+            || Auto.AutoType != AutoType.Free
+            || Order.OrderIndex == OrderIndexType.Outfield4)
         {
-#if DEBUG_SHIAI
-            if (state.MySideNo == 0 && DebugSystem.Instance.IsNotWalk())
+
+            var walkZ = GetSpeedRank(RankSpeedType.WkX) * Defines.Percent / GetSettingCourt(SetingCourtType.WkZPer);
+
+            var direction = GetMoveMukiZ(false);
+            if (direction != DirectionZType.Neutral)
             {
-                return;
-            }
-#endif
-            if (common.GetMoveMukiZ(false) == DirectionZ.Back)
-            {
-                state.MyChar.Zahyou.dZ = common.GetWkZ();
-            }
-            else if (common.GetMoveMukiZ(false) == DirectionZ.Front)
-            {
-                state.MyChar.Zahyou.dZ = -common.GetWkZ();
+                CoordinateSet.VelocityZ = walkZ * (direction == DirectionZType.Forward ? 1 : -1);
             }
         }
 
         //斜め
-        if (state.MyChar.Zahyou.dX != 0 && state.MyChar.Zahyou.dZ != 0)
+        if (Coordinate.VelocityX != 0 && Coordinate.VelocityZ != 0)
         {
-            state.MyChar.Zahyou.dX = LibNum.Sign(state.MyChar.Zahyou.dX) * common.GetNWkX();
-            state.MyChar.Zahyou.dZ = LibNum.Sign(state.MyChar.Zahyou.dZ) * common.GetNWkZ();
+            CoordinateSet.VelocityX = Coordinate.VelocityX * (Coordinate.VelocityX > 0 ? 1 : -1);
+            CoordinateSet.VelocityZ = Coordinate.VelocityZ * (Coordinate.VelocityZ > 0 ? 1 : -1);
         }
-
-
     }
 
     private DirectionXType GetMoveMuki(bool Input_f)
@@ -170,76 +154,110 @@ public partial class CharaBehavior
         }
         else if (Input_f || (Auto.AutoType == AutoType.Free))
         {
-            if (Pad.IsWalk2(dxL))//歩き入力
+            if (Pad.IsWalk2(DirectionCrossType.Left))//歩き入力
             {
-                return maL;
+                return DirectionXType.Left;
             }
-            else if (MyPad()->IsWalk2(dxR))//歩き入力
+            else if (Pad.IsWalk2(DirectionCrossType.Right))//歩き入力
             {
-                return maR;
+                return DirectionXType.Right;
             }
             else
             {
-                return maN;
+                return DirectionXType.Neutral;
             }
         }
         else
         {
-            return st_.pstMyCh_->Auto.AMuki;
+            return Auto.DirectionX;
         }
     }
 
-    enMukiZTypeA TChCommon::GetMoveMukiZ(BOOL Input_f)
+    private DirectionZType GetMoveMukiZ(bool Input_f)
     {
-        if (IsSelfCtrl() == FALSE)
+        if (Composite.IsSelfControl == false)
         {
-            return st_.pstMyCh_->Auto.AMukiZ;
+            return Auto.DirectionZ;
         }
-        else if (Input_f || (st_.pstMyCh_->Auto.AutoType == dbatFree))
+        else if (Input_f || (Auto.AutoType == AutoType.Free))
         {
-            if (MyPad()->IsWalk2(dxU))//歩き入力
+            if (Pad.IsWalk2(DirectionCrossType.Up))//歩き入力
             {
-                return mzaB;
+                return DirectionZType.Backward;
             }
-            else if (MyPad()->IsWalk2(dxD))//歩き入力
+            else if (Pad.IsWalk2(DirectionCrossType.Down))//歩き入力
             {
-                return mzaF;
+                return DirectionZType.Forward;
             }
             else
             {
-                return mzaN;
+                return DirectionZType.Neutral;
             }
         }
         else
         {
-            return st_.pstMyCh_->Auto.AMukiZ;
+            return Auto.DirectionZ;
         }
     }
 
-    enMukiZTypeA TChCommon::GetMoveMukiZMukiLock(BOOL Input_f)
+    private DirectionZType GetMoveMukiZMukiLock(bool Input_f)
     {
-        if (IsSelfCtrl() == FALSE)
+        if (Composite.IsSelfControl == false)
         {
-            return st_.pstMyCh_->Auto.AMukiZ;
+            return Auto.DirectionZ;
         }
-        else if (Input_f || (st_.pstMyCh_->Auto.AutoType == dbatFree))
+        else if (Input_f || (Auto.AutoType == AutoType.Free))
         {
-            if (MyPad()->IsWalk2(dxD))
+            if (Pad.IsWalk2(DirectionCrossType.Down))
             {
-                return mzaB;
+                return DirectionZType.Backward;
             }
-            else if (MyPad()->IsWalk2(dxU))
+            else if (Pad.IsWalk2(DirectionCrossType.Up))
             {
-                return mzaF;
+                return DirectionZType.Forward;
             }
             else
             {
-                return mzaN;
+                return DirectionZType.Neutral;
             }
         }
         else
         {
-            return st_.pstMyCh_->Auto.AMukiZ;
+            return Auto.DirectionZ;
         }
     }
+
+//       s32 TChCommon::GetWkX()
+//   {
+//     return RankSpeed(rkWkX);
+//   }
+//   s32 TChCommon::GetWkZ()
+//   {
+//     return lib_num::Percent(RankSpeed(rkWkX), pmgEO_->mgDt_.dtSet_.GetDtCourt(setWkZPer));
+//   }
+//   s32 TChCommon::GetNWkX()
+//   {
+//     return lib_num::Percent(RankSpeed(rkWkX), pmgEO_->mgDt_.dtSet_.GetDtCourt(setNWkXPer));
+//   }
+//   s32 TChCommon::GetNWkZ()
+//   {
+//     return lib_num::Percent(RankSpeed(rkWkX), pmgEO_->mgDt_.dtSet_.GetDtCourt(setNWkZPer));
+//   }
+//   s32 TChCommon::GetWkJpX()
+//   {
+//     return RankSpeed(rkWkJPX);
+//   }
+//   s32 TChCommon::GetWkJpZ()
+//   {
+//     return lib_num::Percent(RankSpeed(rkWkJPX), pmgEO_->mgDt_.dtSet_.GetDtCourt(setWkZPer));
+//   }
+//   s32 TChCommon::GetNWkJpX()
+//   {
+//     return lib_num::Percent(RankSpeed(rkWkJPX), pmgEO_->mgDt_.dtSet_.GetDtCourt(setNWkXPer));
+
+//   }
+//   s32 TChCommon::GetNWkJpZ()
+//   {
+//     return lib_num::Percent(RankSpeed(rkWkJPX), pmgEO_->mgDt_.dtSet_.GetDtCourt(setNWkZPer));
+//   }
 }

@@ -73,6 +73,14 @@ public class CoordinateState : ICoordinateStateGetter, ICoordinateStateSetter
     /// <summary>
     /// XZ距離
     /// </summary>
+    public int DistanceXZ(ICoordinateStateGetter target)
+    {
+        return DistanceXZ(target.X, target.Z);
+    }
+
+    /// <summary>
+    /// XZ距離
+    /// </summary>
     public int DistanceXZ(CoordinateState target)
     {
         return DistanceXZ(target.X, target.Z);
@@ -141,7 +149,7 @@ public interface ICoordinateStateSetter
     int Z { set; }
     int VelocityX { set; }
     int VelocityY { set; }
-    int VelocityZ { set; } 
+    int VelocityZ { set; }
     DownCounter FrictionCount { get; }
     int Priority { set; }
     Rect HitBox { set; }
