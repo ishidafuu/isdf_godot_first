@@ -3,7 +3,8 @@
 public partial class CharaBehavior
 {
     /// <summary>
-    /// //ＣＯＭ思考行動（パス、シュート）★★
+    /// COMキャラクターの思考行動を制御します
+    /// パスやシュートなどの行動を状況に応じて判断し実行します
     /// </summary>
     private void ComAction()
     {
@@ -32,7 +33,10 @@ public partial class CharaBehavior
     }
 
 
-    //ＣＯＭのシュートやパス
+    /// <summary>
+    /// COMキャラクターのシュート処理を実行します
+    /// シュートかパスかを判断して適切な行動を選択します
+    /// </summary>
     private void COMShoot()
     {
         if (MyTeam.AiAttack.PaF)
@@ -46,6 +50,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// COMキャラクターのシュート実行処理
+    /// シュートの実行条件を判断し、適切な場合にシュートを実行します
+    /// </summary>
     private void COMShootAct()
     {
         //ノーガードは狙わない場合
@@ -95,7 +103,11 @@ public partial class CharaBehavior
     }
 
 
-    //ＣＯＭパス
+    /// <summary>
+    /// COMキャラクターのパス処理
+    /// パスターゲットの設定とパスモーションの実行を行います
+    /// </summary>
+    /// <param name="dmpass_f">ダッシュマンパスかどうか</param>
     private void COMPass(bool dmpass_f)
     {
         var paTag = Order.IsInfield
@@ -122,6 +134,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// ダッシュマン作戦時のCOM行動を制御します
+    /// ダッシュマンの状態に応じてシュートやパスの判断を行います
+    /// </summary>
     private void COMAction_DM()
     {
         //ダッシュマン作戦に完全に入ってる必要がある（態勢ウエイトはなにもしない）
@@ -155,6 +171,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// ダッシュマン作戦時のシュート処理
+    /// ダッシュマンのシュートタイミングを判断し実行します
+    /// </summary>
     private void COMAction_DM_Sh() //シュート指示が出てる
     {
         //空中攻撃
@@ -181,6 +201,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// ダッシュマン作戦時のパス処理
+    /// ダッシュマンのパス回しを制御します
+    /// </summary>
     private void COMAction_DM_Pa() //パス回し
     {
         //既にメンバー走り出しに入ってる
@@ -210,7 +234,8 @@ public partial class CharaBehavior
 
 
     /// <summary>
-    /// ＣＯＭ思考行動通常
+    /// 通常時のCOM思考行動を制御します
+    /// 状況に応じてシュートやパスの判断を行います
     /// </summary>
     private void COMAction_Std()
     {
@@ -304,7 +329,10 @@ public partial class CharaBehavior
     }
 
 
-    //ダッシュマンパス
+    /// <summary>
+    /// ダッシュマンのパス実行処理
+    /// ダッシュマンのパスタイミングとターゲットを判断し実行します
+    /// </summary>
     private void COMDMPassAct()
     {
         //ジャンプしないダッシュマン
@@ -458,14 +486,14 @@ public partial class CharaBehavior
             if (act_f)
             {
                 //タゲセット
-                MyTeam.AiAttack.PaTag = oktag;
+                MyTeam.CallSetPassTag(oktag);
                 //パスタイプ
 
-                var patype = Order.IsInfield
+                ActionGroupType patype = Order.IsInfield
                     ? MyTeam.AiPattern.GetActionPattern(MyOrderIndex, AiActionType.cmaPaTypeInf)
                     : MyTeam.AiPattern.GetActionPattern(MyOrderIndex, AiActionType.cmaPaType);
 
-                st_.pmgMyTm_->SetPassType(patype);
+                MyTeam.CallSetPassType(patype);
 
                 COMPass(true); //パス
 
@@ -493,18 +521,16 @@ public partial class CharaBehavior
                     && Air.AirCountValue >= MyTeam.AiAction(MyOrderIndex).JShTime) //予定時間こえてる
                 {
                     //シュートOK
-                    MyTeam.AiMain.dashmanShOK_f = true;
+                    MyTeam.CallSetDashmanShootOK();
                 }
             }
             else
             {
                 //ジャンプするダッシュマン用
-                const int LIMLINE = MyTeam.GetAtcLineX(false, true);
-
-                if (Composite.LeftCourtX > LIMLINE)
+                if (Composite.LeftCourtX > MyTeam.GetAtcLineX(false, true))
                 {
                     //シュートOK
-                    MyTeam.AiMain.dashmanShOK_f = true;
+                    MyTeam.CallSetDashmanShootOK();
                 }
             }
         }

@@ -57,7 +57,23 @@ public partial class TeamBehavior
         // MyTeam.AiMain.DashmanShOkF = true;
     }
 
-    
+
+    /// <summary>
+    /// パスターゲット設定
+    /// </summary>
+    public void CallSetPassTag(OrderIndexType orderIndex)
+    {
+        // MyTeam.AiMain.PaTag = orderIndex;
+    }
+
+    /// <summary>
+    /// パスタイプ設定
+    /// </summary>
+    public void CallSetPassType(ActionGroupType patype)
+    {
+     
+    }
+
     //
     //     //内外野入れ替えが発生する人数
     // BOOL TMgTeam::IsIOChange()

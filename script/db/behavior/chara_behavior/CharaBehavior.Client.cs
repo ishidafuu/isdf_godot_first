@@ -3,9 +3,9 @@
 public partial class CharaBehavior
 {
     /// <summary>
-    /// SE再生
+    /// 効果音を再生します
     /// </summary>
-    /// <param name="seType"></param>
+    /// <param name="seType">再生する効果音の種類</param>
     private void PlaySe(SeType seType)
     {
         if (seType == SeType.None)
@@ -15,8 +15,12 @@ public partial class CharaBehavior
         SoundManager.Instance.PlaySe(seType);
     }
     
-    //効果音
-    void PlaySeCatchSe()
+    /// <summary>
+    /// キャッチ時の効果音を再生します
+    /// キャラクターの技術ランクに応じて異なる効果音を再生する予定でしたが、
+    /// 現在は固定のキャッチ音を再生します
+    /// </summary>
+    private void PlaySeCatchSe()
     {
         // (int)SeType.CatchLv0 +  GetTechRank(RankTechType.CatchTime)% 7
        
@@ -26,7 +30,8 @@ public partial class CharaBehavior
 
 
     /// <summary>
-    /// シュートSE停止
+    /// シュート追尾音を停止します
+    /// シュートのホーミング効果音の再生を停止します
     /// </summary>
     private void StopHomingSe()
     {
@@ -35,7 +40,8 @@ public partial class CharaBehavior
     
     
     /// <summary>
-    /// シュート状態
+    /// ボールのシュートモーション状態を設定します
+    /// 現在は未実装ですが、将来的にボールの状態を変更する予定です
     /// </summary>
     private void CallBallShootMotion()
     {
