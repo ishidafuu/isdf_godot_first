@@ -220,6 +220,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// 自動回避行動を実行します
+    /// 状況に応じて適切な回避行動を選択し実行します
+    /// </summary>
     private void AutoDodgeAction()
     {
         // 敵コート避け可能フラグ
@@ -278,6 +282,11 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// アクションタイプを取得します
+    /// 現在の状態に基づいて適切なアクションタイプを決定します
+    /// </summary>
+    /// <returns>決定されたアクションタイプ</returns>
     private ActionType GetActionType()
     {
         ActionType actionType;
@@ -302,6 +311,11 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// 敵コートを回避できるかどうかを判定します
+    /// キャラクターの状態と位置に基づいて敵コートへの侵入を回避できるか判定します
+    /// </summary>
+    /// <returns>敵コートを回避できる場合はtrue</returns>
     private bool GetCanDodgeEnemyCourt()
     {
         bool result;
@@ -335,7 +349,10 @@ public partial class CharaBehavior
     }
 
 
-    //勝手に拾う処理
+    /// <summary>
+    /// 自動ボール拾い処理を実行します
+    /// キャラクターの状態とボールの位置に基づいて自動的にボールを拾う処理を行います
+    /// </summary>
     private void AutoPickUp()
     {
         if (Motion.HasFlag(CharaMotionFlag.Act) == false
@@ -347,7 +364,11 @@ public partial class CharaBehavior
     }
 
 
-    //拾える位置関係か
+    /// <summary>
+    /// ボールを拾える位置にいるかどうかを判定します
+    /// キャラクターとボールの位置関係から拾える状態かを判定します
+    /// </summary>
+    /// <returns>ボールを拾える位置にいる場合はtrue</returns>
     private bool IsPickUpPos()
     {
         //ジャンプボール上昇中は捕れない
@@ -745,7 +766,18 @@ public partial class CharaBehavior
     }
 
 
-    //内野パスタゲセット★
+    /// <summary>
+    /// 無効なパスターゲットを変更します
+    /// パスターゲットが無効な場合、適切な代替ターゲットに変更します
+    /// </summary>
+    private void NGPaTagShift() { }
+
+
+    /// <summary>
+    /// 内野のパスターゲットを取得します
+    /// 内野プレイヤーの中から適切なパスターゲットを選択します
+    /// </summary>
+    /// <returns>選択されたパスターゲットのオーダーインデックス</returns>
     private OrderIndexType GetNaiyaPassTag()
     {
         var isNoneTarget = true; //完全にタゲが居ない
@@ -1059,7 +1091,11 @@ public partial class CharaBehavior
     }
 
 
-    //外野間パスタゲセット★
+    /// <summary>
+    /// 外野のパスターゲットを取得します
+    /// 外野プレイヤーの中から適切なパスターゲットを選択します
+    /// </summary>
+    /// <returns>選択されたパスターゲットのオーダーインデックス</returns>
     private OrderIndexType GetGaiyaPassTag()
     {
         var passTarget = OrderIndexType.Disabled; //パスタゲ
