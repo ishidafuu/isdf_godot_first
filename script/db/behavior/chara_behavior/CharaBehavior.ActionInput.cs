@@ -5,6 +5,10 @@ namespace db;
 
 public partial class CharaBehavior
 {
+    /// <summary>
+    /// アクション入力の更新処理
+    /// 試合中のキャラクターの入力処理を管理します
+    /// </summary>
     public void UpdateActionInput()
     {
         if (Referee.Main.ShiaiPahse != ShiaiPhase.Shiai
@@ -1320,7 +1324,12 @@ public partial class CharaBehavior
     }
 
 
-    //COMダッシュマンパスタゲセット★★
+    /// <summary>
+    /// COMダッシュマンのパスターゲットを設定
+    /// 現在のダッシュマンの状態に基づいて最適なパスターゲットを決定します
+    /// </summary>
+    /// <param name="nowOKonly_f">現在パス可能な対象のみを選択するかどうか</param>
+    /// <returns>選択されたパスターゲットの順序インデックス</returns>
     private OrderIndexType GetCOMDMPassTag(bool nowOKonly_f)
     {
         TmpStateManager.Instance.TmpState.Clear();
@@ -1503,6 +1512,12 @@ public partial class CharaBehavior
         return res;
     }
 
+    /// <summary>
+    /// 敵コートに着地するかどうかをチェック
+    /// キャラクターの着地位置が敵コートになるかを判定します
+    /// </summary>
+    /// <param name="order">チェック対象のオーダーインデックス</param>
+    /// <returns>敵コートに着地する場合はtrue</returns>
     private bool IsCheckLandEnPos(int order)
     {
         var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
@@ -1515,7 +1530,13 @@ public partial class CharaBehavior
     }
 
 
-    //角度に入っていない
+    /// <summary>
+    /// 指定された角度が現在の向きに対して有効かチェック
+    /// キャラクターの向きと目標位置の角度関係を判定します
+    /// </summary>
+    /// <param name="targetX">目標X座標</param>
+    /// <param name="targetZ">目標Z座標</param>
+    /// <returns>角度が有効でない場合はtrue</returns>
     private bool IsCheckNoAgl(int targetX, int targetZ)
     {
         var isInAngle = Coordinate.DirectionZ switch
@@ -1541,6 +1562,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// ボール保持時のミラー状態を設定
+    /// ミラーショットとミラーパスの状態を管理します
+    /// </summary>
     private void HoldBallSetMirrorState()
     {
         const int activeCount = 1;
@@ -1572,7 +1597,11 @@ public partial class CharaBehavior
     }
 
 
-    //向き変え(強制的にAUTOMUKIに向かせる)
+    /// <summary>
+    /// 自動向きの設定
+    /// キャラクターの向きを自動的に設定し、変更があったかを返します
+    /// </summary>
+    /// <returns>向きが変更された場合はtrue</returns>
     private bool MukiSetAuto()
     {
         var lastDirectionX = Coordinate.DirectionX;
@@ -1610,7 +1639,10 @@ public partial class CharaBehavior
     }
 
 
-    // AUTO向き変え初期化
+    /// <summary>
+    /// 自動向きの初期化
+    /// キャラクターの現在の向きを基に自動向きを初期化します
+    /// </summary>
     private void ResetAutoDirection()
     {
         AutoSet.DirectionX = Coordinate.DirectionX switch
@@ -1631,12 +1663,21 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// 現在の向きから角度を取得
+    /// キャラクターの向きから12時方向の角度を計算します
+    /// </summary>
+    /// <returns>12時方向の角度</returns>
     private int GetMukiAglFromDirection()
     {
         return GetMukiAgl(Coordinate.DirectionX, Coordinate.DirectionZ);
     }
 
 
+    /// <summary>
+    /// 指定された向きから角度を取得
+    /// 指定されたX方向とZ方向から12時方向の角度を計算します
+    /// </summary>
     private int GetMukiAgl(DirectionXType directionX, DirectionZType directionZ)
     {
         return GetMukiAgl(directionX == DirectionXType.Left,
@@ -1646,7 +1687,10 @@ public partial class CharaBehavior
     }
 
 
-    //ターゲッティング用向き
+    /// <summary>
+    /// 向きから角度を取得
+    /// 各方向の入力状態から12時方向の角度を計算します
+    /// </summary>
     private int GetMukiAgl(bool isLeft, bool isRight, bool isUp, bool isDown)
     {
         switch (Order.GetOrderFieldType())
@@ -1736,7 +1780,8 @@ public partial class CharaBehavior
 
 
     /// <summary>
-    /// パスタゲにならない
+    /// パスターゲットとして無効かどうかをチェック
+    /// 指定されたオーダーがパスターゲットとして有効かを判定します
     /// </summary>
     private bool IsNGPassTag(OrderIndexType order)
     {
@@ -1762,13 +1807,19 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// パスターゲットとして無効かどうかをチェック（int版）
+    /// </summary>
     private bool IsNGPassTag(int order)
     {
         return IsNGPassTag((OrderIndexType)order);
     }
 
 
-    //自分で操作
+    /// <summary>
+    /// 自己操作の処理
+    /// プレイヤーの入力に基づいてキャラクターの動作を制御します
+    /// </summary>
     private void ControlSelf()
     {
         var actionType = GetActionType();
@@ -1926,6 +1977,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// 空中での防御/フリー状態の処理
+    /// 空中でのキャッチや回避などの防御行動を制御します
+    /// </summary>
     private void AirDefenceOrFree()
     {
         if (Pad.ButtonA.IsJustPressed)
@@ -1957,6 +2012,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// キャッチ時の向き設定
+    /// ボールをキャッチする際の適切な向きを設定します
+    /// </summary>
     private void SetCatchMuki()
     {
         AutoMukiInit();
@@ -1966,6 +2025,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// ボールに対するX方向の向きを設定
+    /// ボールの位置に基づいて左右の向きを決定します
+    /// </summary>
     private void SetBallMukiX()
     {
         if (Composite.IsBallHolder)
@@ -1993,6 +2056,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// ボールに対するZ方向の向きを設定
+    /// ボールの位置に基づいて前後の向きを決定します
+    /// </summary>
     private void SetBallMukiZ()
     {
         if (Composite.IsBallHolder)
@@ -2048,7 +2115,10 @@ public partial class CharaBehavior
     }
 
 
-    //AUTO向き変え初期化
+    /// <summary>
+    /// 自動向きの初期化
+    /// 現在の向きを自動向きの初期値として設定します
+    /// </summary>
     private void AutoMukiInit()
     {
         AutoSet.DirectionX = Coordinate.DirectionX;
@@ -2056,6 +2126,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// 空中での攻撃処理
+    /// 空中でのパスやシュートなどの攻撃行動を制御します
+    /// </summary>
     private void AirAttack()
     {
         if (Pad.ButtonA.IsJustPressed)
@@ -2075,6 +2149,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// ミラー攻撃の処理
+    /// ミラーパスとミラーシュートの制御を行います
+    /// </summary>
     private void MirrorAttack()
     {
         if (Pad.ButtonB.IsPressed) //シュート入力おしっぱ
@@ -2127,6 +2205,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// 地上でのフリー状態の処理
+    /// 地上でのボール拾いやキャッチなどの行動を制御します
+    /// </summary>
     private void GroundFree()
     {
         if (Pad.IsJustPressedAnyButton() && Catch.CatchWaitCountValue == 0)
@@ -2142,6 +2224,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// 地上での防御処理
+    /// 地上での回避やキャッチなどの防御行動を制御します
+    /// </summary>
     private void GroundDefence()
     {
         if (Pad.ButtonA.IsJustPressed) //避けボタン
@@ -2162,6 +2248,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// 地上での攻撃処理
+    /// 地上でのパスやシュートなどの攻撃行動を制御します
+    /// </summary>
     private void GroundAttack()
     {
         if (Pad.ButtonA.IsJustPressed)
@@ -2197,6 +2287,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// シュート処理
+    /// シュートモーションの設定と実行を行います
+    /// </summary>
     private void Shooting()
     {
         //ダッシュ方向とシュート方向があっているときは振り返り扱いにしない
@@ -2223,7 +2317,10 @@ public partial class CharaBehavior
     }
 
 
-    //★パス開始処理
+    /// <summary>
+    /// パス処理
+    /// パスの方向設定とモーション実行を行います
+    /// </summary>
     private void Passing()
     {
         //パスタゲがパス出せないとき
@@ -2244,9 +2341,11 @@ public partial class CharaBehavior
     }
 
 
-    //タゲ方向を向く
-    private void
-        LookTg(OrderIndexType TgPNo, bool Pa_f, bool AtLook_f)
+    /// <summary>
+    /// ターゲットの方向を向く処理
+    /// パスやシュート時のターゲットに対する向きを設定します
+    /// </summary>
+    private void LookTg(OrderIndexType TgPNo, bool Pa_f, bool AtLook_f)
     {
         TgPNo = 0;
 
@@ -2427,6 +2526,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// シュートターゲットの探索
+    /// 指定された方向でシュート可能なターゲットを探します
+    /// </summary>
     private bool SearchShootTarget(DirectionXType directionX, DirectionZType directionZ)
     {
         var angle12 = GetMukiAgl(directionX, directionZ);
@@ -2434,6 +2537,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// 自動ターゲットの設定
+    /// 指定された方向に基づいて自動的にターゲットを設定します
+    /// </summary>
     private void SetAutoTarget(DirectionXType directionX, DirectionZType directionZ)
     {
         AutoSet.DirectionX = directionX;
@@ -2443,6 +2550,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// シュートターゲットの存在チェック
+    /// 有効なシュートターゲットが存在するかを確認します
+    /// </summary>
     private bool IsShTag()
     {
         return Ball.Main.ShotTargetSide != MySideIndex
@@ -2450,13 +2561,20 @@ public partial class CharaBehavior
     }
 
 
-    //シュートタゲセット
+    /// <summary>
+    /// シュートターゲットの設定
+    /// 現在の角度に基づいてシュートターゲットを設定します
+    /// </summary>
     private void SetShTagFromMyShootAngle12(bool isIgnoreDirection)
     {
         Ball.CallChangeShootTarget(EnemySideIndex, GetShootTarget(Shoot.Angle12, isIgnoreDirection));
     }
 
 
+    /// <summary>
+    /// デバッグ用の強制終了処理
+    /// デバッグモード時の特殊な終了処理を実行します
+    /// </summary>
     private void DegbugKill()
     {
         // #ifdef __K_DEBUG_SHIAI__
@@ -2481,6 +2599,10 @@ public partial class CharaBehavior
     }
 
 
+    /// <summary>
+    /// デバッグ用のシュート処理
+    /// デバッグモード時の特殊なシュート処理を実行します
+    /// </summary>
     private void DebugShot()
     {
 //         #ifdef __K_DEBUG_SHIAI__
