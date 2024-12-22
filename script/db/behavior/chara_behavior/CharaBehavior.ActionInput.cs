@@ -171,55 +171,6 @@ public partial class CharaBehavior
     }
 
 
-    //キャンセルジャンプ
-    private bool CanselJump(bool canselDs_f)
-    {
-        //判定出るまでもしくは6f以内はジャンプキャンセル可能
-        //ココでも可能にして大丈夫か
-
-        if (Motion.HasFlag(CharaMotionFlag.Ar)
-            || Motion.MotionCountValue >= GetSettingJump(SettingJumpType.JumpCanselTime)
-            || Composite.IsSelfControl == false
-            || Pad.IsJustPressedAbButton() == false)
-        {
-            return false;
-        }
-
-        //キャンセルが掛かる前のモーションの向きに戻す
-        CoordinateSet.DirectionX = Move.LastDirectionX;
-        CoordinateSet.DirectionZ = Move.LastDirectionZ;
-        JumpSet(false, canselDs_f, false); //ジャンプ
-
-        return true;
-    }
-
-
-    //ジャンプ
-    private void JumpSet(bool mfCheck_f, bool canselDs_f, bool vjp_f)
-    {
-        if (Motion.HasFlag(CharaMotionFlag.PHit))
-        {
-            return;
-        }
-
-        if (mfCheck_f && Motion.HasFlag(CharaMotionFlag.JpOK) == false)
-        {
-            return;
-        }
-
-        if (canselDs_f || Order.IsInfield == false) //外野はダッシュフラグ消す
-        {
-            MotionSet.SubMotionFlag(CharaMotionFlag.Ds);
-        }
-
-        SetMotionType(CharaMotionType.JCr);
-        AirSet.IsVerticalJump = vjp_f; //垂直ジャンプ
-        AirSet.IsLongJump = vjp_f; //垂直ジャンプ
-        AirSet.IsLongJump = Move.IsDashAccelIOS; //ロングジャンプ
-        CoordinateSet.ZeroVelocity();
-    }
-
-
     /// <summary>
     /// 自動回避行動を実行します
     /// 状況に応じて適切な回避行動を選択し実行します
@@ -764,13 +715,6 @@ public partial class CharaBehavior
 
         Ball.CallChangePassTarget(MySideIndex, passCutOrderIndex);
     }
-
-
-    /// <summary>
-    /// 無効なパスターゲットを変更します
-    /// パスターゲットが無効な場合、適切な代替ターゲットに変更します
-    /// </summary>
-    private void NGPaTagShift() { }
 
 
     /// <summary>
@@ -2253,88 +2197,6 @@ public partial class CharaBehavior
             {
                 Pass.MirrorShotCount.Set(1);
             }
-        }
-    }
-
-
-    /// <summary>
-    /// 地上でのフリー状態の処理を行います
-    /// 地上でのボール拾いやキャッチなどの行動を制御します
-    /// </summary>
-    private void GroundFree()
-    {
-        if (Pad.IsJustPressedAnyButton() && Catch.CatchWaitCountValue == 0)
-        {
-            //キャッチもボール方向向くようにしてみる
-            SetCatchMuki();
-            SetMotionType(CharaMotionType.Ca);
-        }
-        else if (IsPickUpPos()) //自動拾い★
-        {
-            HoldBall(false, false);
-        }
-    }
-
-
-    /// <summary>
-    /// 地上での防御処理を行います
-    /// 地上での回避やキャッチなどの防御行動を制御します
-    /// </summary>
-    private void GroundDefence()
-    {
-        if (Pad.ButtonA.IsJustPressed) //避けボタン
-        {
-            SetMotionType(CharaMotionType.Dg);
-            PlaySeCatchSe();
-        }
-        else if (Pad.ButtonB.IsJustPressed && Catch.CatchWaitCountValue == 0) //キャッチ入力
-        {
-            //キャッチもボール方向向くようにしてみる
-            SetCatchMuki();
-            SetMotionType(CharaMotionType.Ca);
-        }
-        else if (IsPickUpPos()) //自動拾い★
-        {
-            HoldBall(false, false);
-        }
-    }
-
-
-    /// <summary>
-    /// 地上での攻撃処理を行います
-    /// 地上でのパスやシュートなどの攻撃行動を制御します
-    /// </summary>
-    private void GroundAttack()
-    {
-        if (Pad.ButtonA.IsJustPressed)
-        {
-            //内野の場合後ろ内野内パスなので、相手の方向を向かないと行けない
-            Passing();
-        }
-
-        // DegbugShot();
-
-        if (Pad.ButtonB.IsJustPressed) //シュート入力
-        {
-            bool atlook_f = Pad.IsPressedAnyCross() == false;
-            //外野２３からＺ軸シュートのとき、一応相手の方向を向く
-            LookTg(Ball.Main.ShotTargetOrder, false, atlook_f);
-
-            Shooting();
-
-            // #ifdef __K_DEBUG_SHIAI__
-//             // シュート情報のログを書き出す
-//             kdebug::DebugSystem::GetInstance().CreateShootDebugLog();
-//             // 自動シュートフラグを落とす
-//             if (isAutoShot)
-//             {
-//                 pDs.SetAutoShootStep(kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_SHOOT);
-//             }
-// #endif // #ifdef __K_DEBUG_SHIAI__
-        }
-        else
-        {
-            MirrorAttack();
         }
     }
 
