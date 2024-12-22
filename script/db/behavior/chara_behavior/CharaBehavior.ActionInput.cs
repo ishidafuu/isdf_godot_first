@@ -954,9 +954,6 @@ public partial class CharaBehavior
                         ? OrderIndexType.Outfield2
                         : OrderIndexType.Outfield3;
             }
-
-            //しかも先頭もしくは孤立は4番でFA
-            return OrderIndexType.Outfield4;
         }
 
         var f = 0;
@@ -1837,7 +1834,6 @@ public partial class CharaBehavior
         bool uppos_f = pabtn_f || dgbtn_f;
         bool dnpos_f = cabtn_f || shbtn_f;
 
-        bool ng_f = false;
 
         // DegbugKill();
 
