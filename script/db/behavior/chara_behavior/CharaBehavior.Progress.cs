@@ -4,6 +4,10 @@ namespace db;
 
 public partial class CharaBehavior
 {
+    /// <summary>
+    /// キャラクターの状態を更新します
+    /// ボールとの距離、モーション、ダメージ、キャッチなどの各種状態を進行させます
+    /// </summary>
     public void UpdateProgress()
     {
         // ボールとの距離も必要な場所に移動する
@@ -296,8 +300,11 @@ public partial class CharaBehavior
     }
 
     /// <summary>
-    /// キャッチフレームが指定値を超えるか
+    /// キャッチフレームが指定値を超えるかどうかを判定します
+    /// 敵のシュートボールかパスかによって、適切なキャッチフレーム値を使用して判定を行います
     /// </summary>
+    /// <param name="nowCatchCount">現在のキャッチカウント</param>
+    /// <returns>キャッチフレームが指定値を超える場合はtrue</returns>
     private bool IsOverCatchFrame(int nowCatchCount)
     {
         // 敵のシュートボール
@@ -314,8 +321,10 @@ public partial class CharaBehavior
     }
 
     /// <summary>
-    /// コマを進める
+    /// コマを進める処理を実行します
+    /// フレームカウントを更新し、必要に応じてループ処理やモーション終了処理を行います
     /// </summary>
+    /// <param name="isForce">強制的に次のフレームに進むかどうか</param>
     private void ProgressFrame(bool isForce)
     {
         MotionSet.KomaFrameCount.Add();
@@ -356,7 +365,8 @@ public partial class CharaBehavior
     }
 
     /// <summary>
-    /// モーション終了
+    /// モーション終了時の処理を実行します
+    /// モーションタイプに応じて、適切な次のモーションへの遷移を行います
     /// </summary>
     private void MotionEnd()
     {

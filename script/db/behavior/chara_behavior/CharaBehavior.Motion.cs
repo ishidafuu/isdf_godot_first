@@ -5,7 +5,12 @@ namespace db;
 
 public partial class CharaBehavior
 {
-
+    /// <summary>
+    /// キャラクターのモーションタイプを設定します
+    /// モーションの変更可否を確認し、適切な初期化処理を行います
+    /// </summary>
+    /// <param name="motionType">設定するモーションタイプ</param>
+    /// <param name="isForce">強制的に変更するかどうか</param>
     private void SetMotionType(CharaMotionType motionType, bool isForce = false)
     {
         // モーション変更可能チェック
@@ -192,6 +197,12 @@ public partial class CharaBehavior
         StartKoma(false);
     }
 
+    /// <summary>
+    /// モーションタイプを状況に応じて適切なものに変更します
+    /// 空中/地上状態やゲームの状態に応じてモーションを調整します
+    /// </summary>
+    /// <param name="motionType">変更前のモーションタイプ</param>
+    /// <returns>変更後のモーションタイプ</returns>
     private CharaMotionType ShiftMotionType(CharaMotionType motionType)
     {
         // 空中の場合、地上モーションを空中用に変更
@@ -239,6 +250,13 @@ public partial class CharaBehavior
         return motionType;
     }
 
+    /// <summary>
+    /// モーション変更が可能かどうかを判定します
+    /// 現在の状態や指定されたモーションタイプに基づいて変更可否を決定します
+    /// </summary>
+    /// <param name="motionType">変更先のモーションタイプ</param>
+    /// <param name="isForce">強制的に変更するかどうか</param>
+    /// <returns>モーション変更が可能な場合はtrue</returns>
     private bool CanSetMotion(CharaMotionType motionType, bool isForce)
     {
         // 同じモーション間は変更不可
@@ -276,6 +294,11 @@ public partial class CharaBehavior
         return true;
     }
 
+    /// <summary>
+    /// モーション番号を設定します
+    /// モーションタイプに応じて適切なモーション番号とフラグを設定します
+    /// </summary>
+    /// <param name="motionType">設定するモーションタイプ</param>
     private void SetMotionNo(CharaMotionType motionType)
     {
         switch (motionType)
@@ -616,12 +639,19 @@ public partial class CharaBehavior
         }
     }
 
+    /// <summary>
+    /// 基本モーションのコマに対応する効果音を再生します
+    /// </summary>
     private void PlayBaseMotionKomaSe()
     {
         var se = Composite.CurrentBaseMotionKoma.Se;
         PlaySe(se);
     }
 
+    /// <summary>
+    /// アクションポイントでの処理を実行します
+    /// モーションタイプに応じて、必要な処理（効果音再生、状態変更など）を行います
+    /// </summary>
     private void InvokeActionPoint()
     {
         switch (Motion.MotionType)
@@ -660,8 +690,10 @@ public partial class CharaBehavior
     }
 
     /// <summary>
-    /// コマスタート
+    /// コマをスタートさせます
+    /// コマデータに基づいて、モーションの開始処理と効果音の再生を行います
     /// </summary>
+    /// <param name="isInLoop">ループ中かどうか</param>
     private void StartKoma(bool isInLoop)
     {
         var komaData = Composite.CurrentBaseMotionKoma;
@@ -678,7 +710,8 @@ public partial class CharaBehavior
     }
 
     /// <summary>
-    /// 次のコマに進む
+    /// 次のコマに進みます
+    /// コマ番号をインクリメントし、新しいコマの開始処理を行います
     /// </summary>
     private void GotoNextKoma()
     {
@@ -687,7 +720,8 @@ public partial class CharaBehavior
     }
 
     /// <summary>
-    /// ループスタートのコマに戻る
+    /// ループスタートのコマに戻ります
+    /// ループ開始位置のコマに戻り、コマの開始処理を行います
     /// </summary>
     private void GotoLoopStartKoma()
     {
@@ -696,7 +730,8 @@ public partial class CharaBehavior
     }
 
     /// <summary>
-    /// ジャンプ
+    /// ジャンプ処理を実行します
+    /// ジャンプの初速度設定や方向制御、効果音再生などを行います
     /// </summary>
     private void Jumping()
     {
