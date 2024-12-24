@@ -1,231 +1,395 @@
-# Remove the line below if you want to inherit .editorconfig settings from higher directories
+# 上位ディレクトリの.editorconfigの設定を継承したくない場合は、以下の行を削除してください
 root = true
 
-# C# files
+# C#ファイルの設定
 [*.cs]
 
-#### Core EditorConfig Options ####
+#### EditorConfigのコアオプション ####
 
-# Indentation and spacing
-indent_size = 4
-indent_style = space
-tab_width = 4
+# インデントとスペースの設定
+indent_size = 4                # インデントのサイズを4に設定
+indent_style = space          # インデントにスペースを使用
+tab_width = 4                 # タブ幅を4に設定
 
-# New line preferences
-end_of_line = crlf
-insert_final_newline = false
+# 改行の設定
+end_of_line = crlf           # 改行コードをCRLFに設定
+insert_final_newline = false # ファイル末尾に改行を追加しない
 
-#### .NET Coding Conventions ####
+#### .NETコーディング規則 ####
 
-# Organize usings
-dotnet_separate_import_directive_groups = false
-dotnet_sort_system_directives_first = false
-file_header_template = unset
+# usingディレクティブの整理
+dotnet_separate_import_directive_groups = false  # usingディレクティブをグループ分けしない
+dotnet_sort_system_directives_first = false     # Systemディレクティブを最初に並べ替えない
+file_header_template = unset                    # ファイルヘッダーテンプレートを未設定に
 
-# this. and Me. preferences
-dotnet_style_qualification_for_event = false
-dotnet_style_qualification_for_field = false
-dotnet_style_qualification_for_method = false
-dotnet_style_qualification_for_property = false
+# this. とMe. の設定
+dotnet_style_qualification_for_event = false    # イベントに対してthis.を使用しない
+dotnet_style_qualification_for_field = false    # フィールドに対してthis.を使用しない
+dotnet_style_qualification_for_method = false   # メソッドに対してthis.を使用しない
+dotnet_style_qualification_for_property = false # プロパティに対してthis.を使用しない
 
-# Language keywords vs BCL types preferences
-dotnet_style_predefined_type_for_locals_parameters_members = true
-dotnet_style_predefined_type_for_member_access = true
+# 言語キーワードとBCLタイプの設定
+dotnet_style_predefined_type_for_locals_parameters_members = true  # ローカル変数、パラメータ、メンバーに定義済み型を使用
+dotnet_style_predefined_type_for_member_access = true            # メンバーアクセスに定義済み型を使用
 
-# Parentheses preferences
-dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity
-dotnet_style_parentheses_in_other_binary_operators = always_for_clarity
-dotnet_style_parentheses_in_other_operators = never_if_unnecessary
-dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity
+# 括弧の設定
+dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity     # 算術二項演算子で常に括弧を使用
+dotnet_style_parentheses_in_other_binary_operators = always_for_clarity         # その他の二項演算子で常に括弧を使用
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary              # 不要な場合は括弧を使用しない
+dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity    # 関係二項演算子で常に括弧を使用
 
-# Modifier preferences
-dotnet_style_require_accessibility_modifiers = for_non_interface_members
+# 修飾子の設定
+dotnet_style_require_accessibility_modifiers = for_non_interface_members  # インターフェース以外のメンバーにアクセシビリティ修飾子を必要とする
 
-# Expression-level preferences
-dotnet_style_coalesce_expression = true
-dotnet_style_collection_initializer = true
-dotnet_style_explicit_tuple_names = true
-dotnet_style_namespace_match_folder = true
-dotnet_style_null_propagation = true
-dotnet_style_object_initializer = true
-dotnet_style_operator_placement_when_wrapping = beginning_of_line
-dotnet_style_prefer_auto_properties = true
-dotnet_style_prefer_collection_expression = when_types_loosely_match
-dotnet_style_prefer_compound_assignment = true
-dotnet_style_prefer_conditional_expression_over_assignment = true
-dotnet_style_prefer_conditional_expression_over_return = true
-dotnet_style_prefer_foreach_explicit_cast_in_source = when_strongly_typed
-dotnet_style_prefer_inferred_anonymous_type_member_names = true
-dotnet_style_prefer_inferred_tuple_names = true
-dotnet_style_prefer_is_null_check_over_reference_equality_method = true
-dotnet_style_prefer_simplified_boolean_expressions = true
-dotnet_style_prefer_simplified_interpolation = true
+# 式レベルの設定
+dotnet_style_coalesce_expression = true                     # null合体演算子を使用
+dotnet_style_collection_initializer = true                  # コレクション初期化子を使用
+dotnet_style_explicit_tuple_names = true                   # タプル名を明示的に指定
+dotnet_style_namespace_match_folder = true                 # 名前空間をフォルダ構造に一致させる
+dotnet_style_null_propagation = true                      # null条件演算子を使用
+dotnet_style_object_initializer = true                    # オブジェクト初期化子を使用
+dotnet_style_operator_placement_when_wrapping = beginning_of_line  # 演算子を行の先頭に配置
+dotnet_style_prefer_auto_properties = true                # 自動実装プロパティを優先
+dotnet_style_prefer_collection_expression = when_types_loosely_match  # 型が緩やかに一致する場合はコレクション式を優先
+dotnet_style_prefer_compound_assignment = true            # 複合代入を優先
+dotnet_style_prefer_conditional_expression_over_assignment = true  # 代入より条件式を優先
+dotnet_style_prefer_conditional_expression_over_return = true      # returnより条件式を優先
+# 明示的キャストの設定
+dotnet_style_prefer_foreach_explicit_cast_in_source = when_strongly_typed  # 強い型付けの場合、foreachでソースの明示的キャストを優先
 
-# Field preferences
-dotnet_style_readonly_field = true
+# 推論された名前の設定
+dotnet_style_prefer_inferred_anonymous_type_member_names = true  # 匿名型メンバー名の推論を優先
+dotnet_style_prefer_inferred_tuple_names = true                 # タプル名の推論を優先
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true  # 参照等価メソッドよりnullチェックを優先
 
-# Parameter preferences
-dotnet_code_quality_unused_parameters = all:silent
+# ブール式の設定
+dotnet_style_prefer_simplified_boolean_expressions = true  # 簡略化されたブール式を優先
+dotnet_style_prefer_simplified_interpolation = true       # 簡略化された補間を優先
 
-# Suppression preferences
-dotnet_remove_unnecessary_suppression_exclusions = none
+# フィールドの設定
+dotnet_style_readonly_field = true  # 読み取り専用フィールドを優先
 
-# New line preferences
-dotnet_style_allow_multiple_blank_lines_experimental = true
-dotnet_style_allow_statement_immediately_after_block_experimental = true
+# パラメータの設定
+dotnet_code_quality_unused_parameters = all:silent  # 未使用パラメータの警告を抑制
 
-#### C# Coding Conventions ####
+# 抑制の設定
+dotnet_remove_unnecessary_suppression_exclusions = none  # 不要な抑制除外を削除しない
 
-# var preferences
-csharp_style_var_elsewhere = false
-csharp_style_var_for_built_in_types = false
-csharp_style_var_when_type_is_apparent = false
+# 改行の設定
+dotnet_style_allow_multiple_blank_lines_experimental = true  # 複数の空行を許可（実験的）
+dotnet_style_allow_statement_immediately_after_block_experimental = true  # ブロック直後のステートメントを許可（実験的）
 
-# Expression-bodied members
-csharp_style_expression_bodied_accessors = true
-csharp_style_expression_bodied_constructors = false
-csharp_style_expression_bodied_indexers = true
-csharp_style_expression_bodied_lambdas = true
-csharp_style_expression_bodied_local_functions = false
-csharp_style_expression_bodied_methods = false
-csharp_style_expression_bodied_operators = false
-csharp_style_expression_bodied_properties = true
+#### C#コーディング規則 ####
 
-# Pattern matching preferences
-csharp_style_pattern_matching_over_as_with_null_check = true
-csharp_style_pattern_matching_over_is_with_cast_check = true
-csharp_style_prefer_extended_property_pattern = true
-csharp_style_prefer_not_pattern = true
-csharp_style_prefer_pattern_matching = true
-csharp_style_prefer_switch_expression = true
+# var の設定
+csharp_style_var_elsewhere = false                    # その他の場所でvarを使用しない
+csharp_style_var_for_built_in_types = false          # 組み込み型でvarを使用しない
+csharp_style_var_when_type_is_apparent = false       # 型が明らかな場合でもvarを使用しない
 
-# Null-checking preferences
-csharp_style_conditional_delegate_call = true
+# 式形式のメンバー設定
+csharp_style_expression_bodied_accessors = true       # アクセサーで式本体を使用
+csharp_style_expression_bodied_constructors = false   # コンストラクターで式本体を使用しない
+csharp_style_expression_bodied_indexers = true       # インデクサーで式本体を使用
+csharp_style_expression_bodied_lambdas = true        # ラムダで式本体を使用
+csharp_style_expression_bodied_local_functions = false  # ローカル関数で式本体を使用しない
+csharp_style_expression_bodied_methods = false        # メソッドで式本体を使用しない
+csharp_style_expression_bodied_operators = false      # 演算子で式本体を使用しない
+csharp_style_expression_bodied_properties = true      # プロパティで式本体を使用
 
-# Modifier preferences
-csharp_prefer_static_local_function = true
-csharp_preferred_modifier_order = public,private,protected,internal,file,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,required,volatile,async
-csharp_style_prefer_readonly_struct = true
-csharp_style_prefer_readonly_struct_member = true
+# パターンマッチングの設定
+csharp_style_pattern_matching_over_as_with_null_check = true  # nullチェック付きasよりパターンマッチングを優先
+csharp_style_pattern_matching_over_is_with_cast_check = true  # キャストチェック付きisよりパターンマッチングを優先
+csharp_style_prefer_extended_property_pattern = true          # 拡張プロパティパターンを優先
+csharp_style_prefer_not_pattern = true                       # notパターンを優先
+csharp_style_prefer_pattern_matching = true                  # パターンマッチングを優先
+csharp_style_prefer_switch_expression = true                 # switch式を優先
 
-# Code-block preferences
-csharp_prefer_braces = true
-csharp_prefer_simple_using_statement = true
-csharp_style_namespace_declarations = block_scoped
-csharp_style_prefer_method_group_conversion = true
-csharp_style_prefer_primary_constructors = true
-csharp_style_prefer_top_level_statements = true
+# nullチェックの設定
+csharp_style_conditional_delegate_call = true  # 条件付きデリゲート呼び出しを使用
 
-# Expression-level preferences
-csharp_prefer_simple_default_expression = true
-csharp_style_deconstructed_variable_declaration = true
-csharp_style_implicit_object_creation_when_type_is_apparent = true
-csharp_style_inlined_variable_declaration = true
-csharp_style_prefer_index_operator = true
-csharp_style_prefer_local_over_anonymous_function = true
-csharp_style_prefer_null_check_over_type_check = true
-csharp_style_prefer_range_operator = true
-csharp_style_prefer_tuple_swap = true
-csharp_style_prefer_utf8_string_literals = true
-csharp_style_throw_expression = true
-csharp_style_unused_value_assignment_preference = discard_variable
-csharp_style_unused_value_expression_statement_preference = discard_variable
+# 修飾子の順序と設定
+csharp_preferred_modifier_order = public,private,protected,internal,file,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,required,volatile,async  # 修飾子の優先順序
+csharp_prefer_static_local_function = true  # 静的ローカル関数を優先
+csharp_style_prefer_readonly_struct = true  # 読み取り専用構造体を優先
+csharp_style_prefer_readonly_struct_member = true  # 読み取り専用構造体メンバーを優先
 
-# 'using' directive preferences
-csharp_using_directive_placement = outside_namespace
+# コードブロックの設定
+csharp_prefer_braces = true  # 中括弧を優先
+csharp_prefer_simple_using_statement = true  # 簡略化されたusing文を優先
+csharp_style_namespace_declarations = block_scoped  # 名前空間宣言をブロックスコープで行う
+csharp_style_prefer_method_group_conversion = true  # メソッドグループ変換を優先
+csharp_style_prefer_primary_constructors = true    # プライマリコンストラクターを優先
+csharp_style_prefer_top_level_statements = true    # トップレベルステートメントを優先
 
-# New line preferences
-csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = true
-csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = true
-csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = true
-csharp_style_allow_blank_lines_between_consecutive_braces_experimental = true
-csharp_style_allow_embedded_statements_on_same_line_experimental = true
+# 式レベルの設定
+csharp_prefer_simple_default_expression = true  # 単純なデフォルト式を優先
+csharp_style_deconstructed_variable_declaration = true  # 分解変数宣言を使用
+csharp_style_implicit_object_creation_when_type_is_apparent = true  # 型が明らかな場合は暗黙的オブジェクト生成を使用
+csharp_style_inlined_variable_declaration = true  # インライン変数宣言を使用
+csharp_style_prefer_index_operator = true  # インデックス演算子を優先
+csharp_style_prefer_local_over_anonymous_function = true  # 匿名関数よりローカル関数を優先
+csharp_style_prefer_null_check_over_type_check = true  # 型チェックよりnullチェックを優先
+csharp_style_prefer_range_operator = true  # 範囲演算子を優先
+csharp_style_prefer_tuple_swap = true  # タプルスワップを優先
+csharp_style_prefer_utf8_string_literals = true  # UTF8文字列リテラルを優先
+csharp_style_throw_expression = true  # throw式を使用
+csharp_style_unused_value_assignment_preference = discard_variable  # 未使用値の代入は破棄変数を使用
+csharp_style_unused_value_expression_statement_preference = discard_variable  # 未使用値の式文は破棄変数を使用
 
-#### C# Formatting Rules ####
+# usingディレクティブの配置設定
+csharp_using_directive_placement = outside_namespace  # using宣言を名前空間の外に配置
 
-# New line preferences
-csharp_new_line_before_catch = true
-csharp_new_line_before_else = true
-csharp_new_line_before_finally = true
-csharp_new_line_before_members_in_anonymous_types = true
-csharp_new_line_before_members_in_object_initializers = true
-csharp_new_line_before_open_brace = all
-csharp_new_line_between_query_expression_clauses = true
+# 実験的な改行設定
+csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = true  # コンストラクター初期化子のコロン後の空行を許可
+csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = true  # アロー式句のトークン後の空行を許可
+csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = true   # 条件式のトークン後の空行を許可
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = true            # 連続する中括弧間の空行を許可
+csharp_style_allow_embedded_statements_on_same_line_experimental = true                  # 埋め込みステートメントの同一行配置を許可
 
-# Indentation preferences
-csharp_indent_block_contents = true
-csharp_indent_braces = false
-csharp_indent_case_contents = true
-csharp_indent_case_contents_when_block = true
-csharp_indent_labels = one_less_than_current
-csharp_indent_switch_labels = true
+#### C#フォーマット規則 ####
 
-# Space preferences
-csharp_space_after_cast = false
-csharp_space_after_colon_in_inheritance_clause = true
-csharp_space_after_comma = true
-csharp_space_after_dot = false
-csharp_space_after_keywords_in_control_flow_statements = true
-csharp_space_after_semicolon_in_for_statement = true
-csharp_space_around_binary_operators = before_and_after
-csharp_space_around_declaration_statements = false
-csharp_space_before_colon_in_inheritance_clause = true
-csharp_space_before_comma = false
-csharp_space_before_dot = false
-csharp_space_before_open_square_brackets = false
-csharp_space_before_semicolon_in_for_statement = false
-csharp_space_between_empty_square_brackets = false
-csharp_space_between_method_call_empty_parameter_list_parentheses = false
-csharp_space_between_method_call_name_and_opening_parenthesis = false
-csharp_space_between_method_call_parameter_list_parentheses = false
-csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
-csharp_space_between_method_declaration_name_and_open_parenthesis = false
-csharp_space_between_method_declaration_parameter_list_parentheses = false
-csharp_space_between_parentheses = false
-csharp_space_between_square_brackets = false
+# 改行の設定
+csharp_new_line_before_catch = true  # catch前で改行
+csharp_new_line_before_else = true   # else前で改行
+csharp_new_line_before_finally = true  # finally前で改行
+csharp_new_line_before_members_in_anonymous_types = true  # 匿名型メンバー前で改行
+csharp_new_line_before_members_in_object_initializers = true  # オブジェクト初期化子メンバー前で改行
+csharp_new_line_before_open_brace = all  # 開き中括弧前で常に改行
+csharp_new_line_between_query_expression_clauses = true  # クエリ式句間で改行
 
-# Wrapping preferences
-csharp_preserve_single_line_blocks = true
-csharp_preserve_single_line_statements = true
+# インデントの設定
+csharp_indent_block_contents = true  # ブロックコンテンツをインデント
+csharp_indent_braces = false        # 中括弧はインデントしない
+csharp_indent_case_contents = true  # case内容をインデント
+csharp_indent_case_contents_when_block = true  # caseブロック内容をインデント
+csharp_indent_labels = one_less_than_current  # ラベルを現在より1つ少なくインデント
+csharp_indent_switch_labels = true  # switchラベルをインデント
 
-#### Naming styles ####
+# スペースの設定
+csharp_space_after_cast = false  # キャスト後にスペースを入れない
+csharp_space_after_colon_in_inheritance_clause = true  # 継承句のコロン後にスペースを入れる
+csharp_space_after_comma = true  # カンマ後にスペースを入れる
+csharp_space_after_dot = false  # ドット後にスペースを入れない
+csharp_space_after_keywords_in_control_flow_statements = true  # 制御フロー文のキーワード後にスペースを入れる
+csharp_space_after_semicolon_in_for_statement = true  # for文のセミコロン後にスペースを入れる
+csharp_space_around_binary_operators = before_and_after  # 二項演算子の前後にスペースを入れる
+csharp_space_around_declaration_statements = false  # 宣言文の周りにスペースを入れない
+csharp_space_before_colon_in_inheritance_clause = true  # 継承句のコロン前にスペースを入れる
+csharp_space_before_comma = false  # カンマ前にスペースを入れない
+csharp_space_before_dot = false  # ドット前にスペースを入れない
+csharp_space_before_open_square_brackets = false  # 開き角括弧前にスペースを入れない
+csharp_space_before_semicolon_in_for_statement = false  # for文のセミコロン前にスペースを入れない
+csharp_space_between_empty_square_brackets = false  # 空の角括弧間にスペースを入れない
+csharp_space_between_method_call_empty_parameter_list_parentheses = false  # メソッド呼び出しの空パラメータリストの括弧間にスペースを入れない
+csharp_space_between_method_call_name_and_opening_parenthesis = false  # メソッド呼び出し名と開き括弧の間にスペースを入れない
+csharp_space_between_method_call_parameter_list_parentheses = false  # メソッド呼び出しのパラメータリストの括弧間にスペースを入れない
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false  # メソッド宣言の空パラメータリストの括弧間にスペースを入れない
+csharp_space_between_method_declaration_name_and_open_parenthesis = false  # メソッド宣言名と開き括弧の間にスペースを入れない
+csharp_space_between_method_declaration_parameter_list_parentheses = false  # メソッド宣言のパラメータリストの括弧間にスペースを入れない
+csharp_space_between_parentheses = false  # 括弧間にスペースを入れない
+csharp_space_between_square_brackets = false  # 角括弧間にスペースを入れない
 
-# Naming rules
+# 折り返しの設定
+csharp_preserve_single_line_blocks = true  # 単一行ブロックを保持
+csharp_preserve_single_line_statements = true  # 単一行ステートメントを保持
 
-dotnet_naming_rule.interface_should_be_begins_with_i.severity = suggestion
-dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface
-dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i
+#### 命名スタイル ####
 
-dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
-dotnet_naming_rule.types_should_be_pascal_case.symbols = types
-dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
+# 命名規則
 
-dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = suggestion
-dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
-dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
+# インターフェースはIで始める
+dotnet_naming_rule.interface_should_be_begins_with_i.severity = suggestion  # 重要度は提案
+dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface  # インターフェースに適用
+dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i  # Iで始まるスタイルを使用
 
-# Symbol specifications
+# 型はパスカルケースを使用
+dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion  # 重要度は提案
+dotnet_naming_rule.types_should_be_pascal_case.symbols = types  # 型に適用
+dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case  # パスカルケースを使用
 
-dotnet_naming_symbols.interface.applicable_kinds = interface
-dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
-dotnet_naming_symbols.interface.required_modifiers = 
+# フィールド以外のメンバーはパスカルケースを使用
+dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = suggestion  # 重要度は提案
+dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members  # フィールド以外のメンバーに適用
+dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case  # パスカルケースを使用
 
-dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
-dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
-dotnet_naming_symbols.types.required_modifiers = 
+# シンボル指定
 
-dotnet_naming_symbols.non_field_members.applicable_kinds = property, event, method
-dotnet_naming_symbols.non_field_members.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
-dotnet_naming_symbols.non_field_members.required_modifiers = 
+# インターフェースの適用範囲
+dotnet_naming_symbols.interface.applicable_kinds = interface  # インターフェースに適用
+dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected  # すべてのアクセシビリティに適用
+dotnet_naming_symbols.interface.required_modifiers =  # 修飾子要件なし
 
-# Naming styles
+# 型の適用範囲
+dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum  # クラス、構造体、インターフェース、列挙型に適用
+dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected  # すべてのアクセシビリティに適用
+dotnet_naming_symbols.types.required_modifiers =  # 修飾子要件なし
 
-dotnet_naming_style.pascal_case.required_prefix = 
-dotnet_naming_style.pascal_case.required_suffix = 
-dotnet_naming_style.pascal_case.word_separator = 
-dotnet_naming_style.pascal_case.capitalization = pascal_case
+# 明示的キャストの設定
+dotnet_style_prefer_foreach_explicit_cast_in_source = when_strongly_typed  # 強い型付けの場合、foreachでソースの明示的キャストを優先
 
-dotnet_naming_style.begins_with_i.required_prefix = I
-dotnet_naming_style.begins_with_i.required_suffix = 
-dotnet_naming_style.begins_with_i.word_separator = 
-dotnet_naming_style.begins_with_i.capitalization = pascal_case
+# 推論された名前の設定
+dotnet_style_prefer_inferred_anonymous_type_member_names = true  # 匿名型メンバー名の推論を優先
+dotnet_style_prefer_inferred_tuple_names = true                 # タプル名の推論を優先
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true  # 参照等価メソッドよりnullチェックを優先
+
+# ブール式の設定
+dotnet_style_prefer_simplified_boolean_expressions = true  # 簡略化されたブール式を優先
+dotnet_style_prefer_simplified_interpolation = true       # 簡略化された補間を優先
+
+# フィールドの設定
+dotnet_style_readonly_field = true  # 読み取り専用フィールドを優先
+
+# パラメータの設定
+dotnet_code_quality_unused_parameters = all:silent  # 未使用パラメータの警告を抑制
+
+# 抑制の設定
+dotnet_remove_unnecessary_suppression_exclusions = none  # 不要な抑制除外を削除しない
+
+# 改行の設定
+dotnet_style_allow_multiple_blank_lines_experimental = true  # 複数の空行を許可（実験的）
+dotnet_style_allow_statement_immediately_after_block_experimental = true  # ブロック直後のステートメントを許可（実験的）
+
+#### C#コーディング規則 ####
+
+# var の設定
+csharp_style_var_elsewhere = false                    # その他の場所でvarを使用しない
+csharp_style_var_for_built_in_types = false          # 組み込み型でvarを使用しない
+csharp_style_var_when_type_is_apparent = false       # 型が明らかな場合でもvarを使用しない
+
+# 式形式のメンバー設定
+csharp_style_expression_bodied_accessors = true       # アクセサーで式本体を使用
+csharp_style_expression_bodied_constructors = false   # コンストラクターで式本体を使用しない
+csharp_style_expression_bodied_indexers = true       # インデクサーで式本体を使用
+csharp_style_expression_bodied_lambdas = true        # ラムダで式本体を使用
+csharp_style_expression_bodied_local_functions = false  # ローカル関数で式本体を使用しない
+csharp_style_expression_bodied_methods = false        # メソッドで式本体を使用しない
+csharp_style_expression_bodied_operators = false      # 演算子で式本体を使用しない
+csharp_style_expression_bodied_properties = true      # プロパティで式本体を使用
+
+# パターンマッチングの設定
+csharp_style_pattern_matching_over_as_with_null_check = true  # nullチェック付きasよりパターンマッチングを優先
+csharp_style_pattern_matching_over_is_with_cast_check = true  # キャストチェック付きisよりパターンマッチングを優先
+csharp_style_prefer_extended_property_pattern = true          # 拡張プロパティパターンを優先
+csharp_style_prefer_not_pattern = true                       # notパターンを優先
+csharp_style_prefer_pattern_matching = true                  # パターンマッチングを優先
+csharp_style_prefer_switch_expression = true                 # switch式を優先
+
+# nullチェックの設定
+csharp_style_conditional_delegate_call = true  # 条件付きデリゲート呼び出しを使用
+
+# 修飾子の順序と設定
+csharp_preferred_modifier_order = public,private,protected,internal,file,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,required,volatile,async  # 修飾子の優先順序
+csharp_prefer_static_local_function = true  # 静的ローカル関数を優先
+csharp_style_prefer_readonly_struct = true  # 読み取り専用構造体を優先
+csharp_style_prefer_readonly_struct_member = true  # 読み取り専用構造体メンバーを優先
+
+# コードブロックの設定
+csharp_prefer_braces = true  # 中括弧を優先
+csharp_prefer_simple_using_statement = true  # 簡略化されたusing文を優先
+csharp_style_namespace_declarations = block_scoped  # 名前空間宣言をブロックスコープで行う
+csharp_style_prefer_method_group_conversion = true  # メソッドグループ変換を優先
+csharp_style_prefer_primary_constructors = true    # プライマリコンストラクターを優先
+csharp_style_prefer_top_level_statements = true    # トップレベルステートメントを優先
+
+# 式レベルの設定
+csharp_prefer_simple_default_expression = true  # 単純なデフォルト式を優先
+csharp_style_deconstructed_variable_declaration = true  # 分解変数宣言を使用
+csharp_style_implicit_object_creation_when_type_is_apparent = true  # 型が明らかな場合は暗黙的オブジェクト生成を使用
+csharp_style_inlined_variable_declaration = true  # インライン変数宣言を使用
+csharp_style_prefer_index_operator = true  # インデックス演算子を優先
+csharp_style_prefer_local_over_anonymous_function = true  # 匿名関数よりローカル関数を優先
+csharp_style_prefer_null_check_over_type_check = true  # 型チェックよりnullチェックを優先
+csharp_style_prefer_range_operator = true  # 範囲演算子を優先
+csharp_style_prefer_tuple_swap = true  # タプルスワップを優先
+csharp_style_prefer_utf8_string_literals = true  # UTF8文字列リテラルを優先
+csharp_style_throw_expression = true  # throw式を使用
+csharp_style_unused_value_assignment_preference = discard_variable  # 未使用値の代入は破棄変数を使用
+csharp_style_unused_value_expression_statement_preference = discard_variable  # 未使用値の式文は破棄変数を使用
+
+# usingディレクティブの配置設定
+csharp_using_directive_placement = outside_namespace  # using宣言を名前空間の外に配置
+
+# 実験的な改行設定
+csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = true  # コンストラクター初期化子のコロン後の空行を許可
+csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = true  # アロー式句のトークン後の空行を許可
+csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = true   # 条件式のトークン後の空行を許可
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = true            # 連続する中括弧間の空行を許可
+csharp_style_allow_embedded_statements_on_same_line_experimental = true                  # 埋め込みステートメントの同一行配置を許可
+
+#### C#フォーマット規則 ####
+
+# 改行の設定
+csharp_new_line_before_catch = true  # catch前で改行
+csharp_new_line_before_else = true   # else前で改行
+csharp_new_line_before_finally = true  # finally前で改行
+csharp_new_line_before_members_in_anonymous_types = true  # 匿名型メンバー前で改行
+csharp_new_line_before_members_in_object_initializers = true  # オブジェクト初期化子メンバー前で改行
+csharp_new_line_before_open_brace = all  # 開き中括弧前で常に改行
+csharp_new_line_between_query_expression_clauses = true  # クエリ式句間で改行
+
+# インデントの設定
+csharp_indent_block_contents = true  # ブロックコンテンツをインデント
+csharp_indent_braces = false        # 中括弧はインデントしない
+csharp_indent_case_contents = true  # case内容をインデント
+csharp_indent_case_contents_when_block = true  # caseブロック内容をインデント
+csharp_indent_labels = one_less_than_current  # ラベルを現在より1つ少なくインデント
+csharp_indent_switch_labels = true  # switchラベルをインデント
+
+# スペースの設定
+csharp_space_after_cast = false  # キャスト後にスペースを入れない
+csharp_space_after_colon_in_inheritance_clause = true  # 継承句のコロン後にスペースを入れる
+csharp_space_after_comma = true  # カンマ後にスペースを入れる
+csharp_space_after_dot = false  # ドット後にスペースを入れない
+csharp_space_after_keywords_in_control_flow_statements = true  # 制御フロー文のキーワード後にスペースを入れる
+csharp_space_after_semicolon_in_for_statement = true  # for文のセミコロン後にスペースを入れる
+csharp_space_around_binary_operators = before_and_after  # 二項演算子の前後にスペースを入れる
+csharp_space_around_declaration_statements = false  # 宣言文の周りにスペースを入れない
+csharp_space_before_colon_in_inheritance_clause = true  # 継承句のコロン前にスペースを入れる
+csharp_space_before_comma = false  # カンマ前にスペースを入れない
+csharp_space_before_dot = false  # ドット前にスペースを入れない
+csharp_space_before_open_square_brackets = false  # 開き角括弧前にスペースを入れない
+csharp_space_before_semicolon_in_for_statement = false  # for文のセミコロン前にスペースを入れない
+csharp_space_between_empty_square_brackets = false  # 空の角括弧間にスペースを入れない
+csharp_space_between_method_call_empty_parameter_list_parentheses = false  # メソッド呼び出しの空パラメータリストの括弧間にスペースを入れない
+csharp_space_between_method_call_name_and_opening_parenthesis = false  # メソッド呼び出し名と開き括弧の間にスペースを入れない
+csharp_space_between_method_call_parameter_list_parentheses = false  # メソッド呼び出しのパラメータリストの括弧間にスペースを入れない
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false  # メソッド宣言の空パラメータリストの括弧間にスペースを入れない
+csharp_space_between_method_declaration_name_and_open_parenthesis = false  # メソッド宣言名と開き括弧の間にスペースを入れない
+csharp_space_between_method_declaration_parameter_list_parentheses = false  # メソッド宣言のパラメータリストの括弧間にスペースを入れない
+csharp_space_between_parentheses = false  # 括弧間にスペースを入れない
+csharp_space_between_square_brackets = false  # 角括弧間にスペースを入れない
+
+# 折り返しの設定
+csharp_preserve_single_line_blocks = true  # 単一行ブロックを保持
+csharp_preserve_single_line_statements = true  # 単一行ステートメントを保持
+
+#### 命名スタイル ####
+
+# 命名規則
+
+# インターフェースはIで始める
+dotnet_naming_rule.interface_should_be_begins_with_i.severity = suggestion  # 重要度は提案
+dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface  # インターフェースに適用
+dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i  # Iで始まるスタイルを使用
+
+# 型はパスカルケースを使用
+dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion  # 重要度は提案
+dotnet_naming_rule.types_should_be_pascal_case.symbols = types  # 型に適用
+dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case  # パスカルケースを使用
+
+# フィールド以外のメンバーはパスカルケースを使用
+dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = suggestion  # 重要度は提案
+dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members  # フィールド以外のメンバーに適用
+dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case  # パスカルケースを使用
+
+# シンボル指定
+
+# インターフェースの適用範囲
+dotnet_naming_symbols.interface.applicable_kinds = interface  # インターフェースに適用
+dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected  # すべてのアクセシビリティに適用
+dotnet_naming_symbols.interface.required_modifiers =  # 修飾子要件なし
+
+# 型の適用範囲
+dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum  # クラス、構造体、インターフェース、列挙型に適用
+dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected  # すべてのアクセシビリティに適用
+dotnet_naming_symbols.types.required_modifiers =  # 修飾子要件なし

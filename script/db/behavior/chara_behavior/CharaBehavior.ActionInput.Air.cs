@@ -60,4 +60,4 @@ public partial class CharaBehavior
             HoldBall(false, false);
         }
     }
-} 
+}
