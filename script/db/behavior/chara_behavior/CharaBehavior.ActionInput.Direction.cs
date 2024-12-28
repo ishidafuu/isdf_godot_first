@@ -200,6 +200,128 @@ public partial class CharaBehavior
     }
 
     /// <summary>
+    /// 向きのフラグから角度を取得します
+    /// </summary>
+    /// <param name="isLeft">左向きフラグ</param>
+    /// <param name="isRight">右向きフラグ</param>
+    /// <param name="isBack">後ろ向きフラグ</param>
+    /// <param name="isFront">前向きフラグ</param>
+    /// <returns>12時方向の角度</returns>
+    private int GetMukiAgl(bool isLeft, bool isRight, bool isBack, bool isFront)
+    {
+        if (isLeft)
+        {
+            if (isFront) return 9;  // 9時
+            if (isBack) return 5;   // 5時
+            return 7;               // 7時
+        }
+
+        if (isRight)
+        {
+            if (isFront) return 11; // 11時
+            if (isBack) return 3;   // 3時
+            return 1;               // 1時
+        }
+
+        if (isFront) return 10;     // 10時
+        if (isBack) return 4;       // 4時
+        return 0;                   // 12時
+    }
+
+    /// <summary>
+    /// フィールドタイプに基づいて向きから角度を取得します
+    /// 現在の向きから12時方向の角度を計算します
+    /// </summary>
+    /// <returns>12時方向の角度</returns>
+    private int GetMukiAglFromFieldType()
+    {
+        switch (Order.GetOrderFieldType())
+        {
+            case OrderFieldType.Infield:
+                if (Coordinate.DirectionX == DirectionXType.Right)
+                {
+                    if (Coordinate.DirectionZ == DirectionZType.Forward)
+                    {
+                        return 11; //11 0 1 2
+                    }
+
+                    if (Coordinate.DirectionZ == DirectionZType.Backward)
+                    {
+                        return 3; //3 4 5 6
+                    }
+                    return 1; //1 2 3 4
+                }
+
+                if (Coordinate.DirectionX == DirectionXType.Left)
+                {
+                    if (Coordinate.DirectionZ == DirectionZType.Forward)
+                    {
+                        return 9; //9 10 11 0
+                    }
+
+                    if (Coordinate.DirectionZ == DirectionZType.Backward)
+                    {
+                        return 5; //5 6 7 8
+                    }
+                    return 7; //7 8 9 10
+                }
+                break;
+            case OrderFieldType.Outfield2:
+                if (Coordinate.DirectionX == DirectionXType.Left)
+                {
+                    return 5; //5678
+                }
+
+                if (Coordinate.DirectionX == DirectionXType.Right)
+                {
+                    return 3; //3456
+                }
+                break;
+            case OrderFieldType.Outfield3:
+                if (Coordinate.DirectionX == DirectionXType.Left)
+                {
+                    return 9; //9 10 11 0
+                }
+
+                if (Coordinate.DirectionX == DirectionXType.Right)
+                {
+                    return 11; //11 0 1 2
+                }
+                break;
+            case OrderFieldType.Outfield4:
+                if (MySideIndex == 0)
+                {
+                    if (Coordinate.DirectionZ == DirectionZType.Forward)
+                    {
+                        return 9; //9 10 11 0
+                    }
+
+                    if (Coordinate.DirectionZ == DirectionZType.Backward)
+                    {
+                        return 5; //5 6 7 8
+                    }
+                    return 7; //7 8 9 10
+                }
+
+                if (Coordinate.DirectionZ == DirectionZType.Forward)
+                {
+                    return 11; //11 0 1 2
+                }
+
+                if (Coordinate.DirectionZ == DirectionZType.Backward)
+                {
+                    return 3; //3 4 5 6
+                }
+                return 1; //1 2 3 4
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        // 来ない想定
+        return 0;
+    }
+
+    /// <summary>
     /// ターゲットの方向を向く処理を行います
     /// パスやシュート時のターゲットに対する向きを設定します
     /// </summary>
