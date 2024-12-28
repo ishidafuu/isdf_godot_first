@@ -505,260 +505,366 @@ public partial class CharaBehavior
     /// <returns>選択されたパスターゲットのオーダーインデックス</returns>
     private OrderIndexType GetGaiyaPassTag()
     {
-        var passTarget = OrderIndexType.Disabled; //パスタゲ
+        var state = InitializeGaiyaPassTagState();
+        var keyState = GetPassTagKeyState();
 
-        var infieldDirectionX = MySideIndex == 0
-            ? DirectionXType.Left
-            : DirectionXType.Right;
+        // 通常パスターゲットの処理
+        var passTarget = GetInitialGaiyaPassTarget(state, keyState);
 
-        //ダッシュマンへパス
-        var isDashmanPass = MyTeam.Position.DashmanNum > 0;
-
-        var passDirectionX = Coordinate.DirectionX;
-        var passDirectionZ = Coordinate.DirectionZ;
-
-        var lastXKey = Input.LastXKey;
-
-        var isLeftKey = false;
-        var isRightKey = false;
-        var isUpKey = false;
-        var isDownKey = false;
-
-        if (Composite.IsSelfControl)
-        {
-            isLeftKey = Pad.KeyLeft.IsPressed; //パス方向入力
-            isRightKey = Pad.KeyRight.IsPressed;
-            isUpKey = Pad.KeyUp.IsPressed;
-            isDownKey = Pad.KeyDown.IsPressed;
-        }
-
-        //内野向きが押されてる
-        var isInfieldKey = (MySideIndex == 0 && isLeftKey) || (MySideIndex == 1 && isRightKey);
-
-        var isNoneXKey = isLeftKey == false && isRightKey == false;
-        var isNoneZKey = isUpKey == false && isDownKey == false;
-
-        //十字入ってない
-        var isNeutralKey = (isLeftKey || isRightKey || isUpKey || isDownKey) == false;
-
-        var postMan = MyTeam.Position.Postman;
-
-        //とりあえずパスタゲを出す
-        switch (Order.OrderIndex)
-        {
-            case OrderIndexType.Outfield2:
-                if (lastXKey == DirectionXType.Neutral)
-                {
-                    if (isDownKey && isNoneXKey)
-                    {
-                        passTarget = OrderIndexType.Outfield3;
-                    }
-                    else
-                    {
-                        passTarget = passDirectionX == infieldDirectionX
-                            ? postMan
-                            : OrderIndexType.Outfield4;
-                    }
-                }
-                else
-                {
-                    passTarget = lastXKey == infieldDirectionX
-                        ? postMan
-                        : OrderIndexType.Outfield4;
-                }
-                break;
-
-            case OrderIndexType.Outfield3:
-                if (lastXKey == DirectionXType.Neutral)
-                {
-                    if (isUpKey && isNoneXKey)
-                    {
-                        passTarget = OrderIndexType.Outfield2;
-                    }
-                    else
-                    {
-                        passTarget = passDirectionX == infieldDirectionX
-                            ? postMan
-                            : OrderIndexType.Outfield4;
-                    }
-                }
-                else
-                {
-                    passTarget = lastXKey == infieldDirectionX
-                        ? postMan
-                        : OrderIndexType.Outfield4;
-                }
-                break;
-
-            case OrderIndexType.Outfield4:
-
-                if (isInfieldKey && isNoneZKey) //内野方向入ってたら内野
-                {
-                    passTarget = postMan;
-                }
-                else
-                {
-                    switch (passDirectionZ)
-                    {
-                        case DirectionZType.Backward:
-                            passTarget = OrderIndexType.Outfield2;
-                            break;
-                        case DirectionZType.Forward:
-                            passTarget = OrderIndexType.Outfield3;
-                            break;
-                        default:
-                            {
-                                var distO2 = Math.Abs(Coordinate.Z - Defines.DBCRT_BL);
-                                var distO3 = Math.Abs(Coordinate.Z - Defines.DBCRT_FL);
-
-                                passTarget = distO2 < distO3
-                                    ? OrderIndexType.Outfield2
-                                    : OrderIndexType.Outfield3;
-                            }
-                            break;
-                    }
-                }
-                break;
-        }
-
-        //ダッシュマンいるとき(十字ニュートラルも)
-        if (!isDashmanPass || (passTarget != postMan && !isNeutralKey))
+        // ダッシュマンパス処理
+        if (!state.isDashmanPass || (passTarget != state.postMan && !keyState.isNeutralKey))
         {
             return passTarget;
         }
 
-        var isNoneTarget = true; //タゲが居ない
-        TmpStateManager.Instance.TmpState.Clear();
-        var targetX = TmpStateManager.Instance.TmpState.targetX;
-        var targetDist = TmpStateManager.Instance.TmpState.targetDist;
-        var isSelectTarget = TmpStateManager.Instance.TmpState.isSelectTarget;
-        var targetOrder = TmpStateManager.Instance.TmpState.targetOrder;
-        var sortValue = TmpStateManager.Instance.TmpState.sortValue;
+        return GetDashmanGaiyaPassTarget(state, keyState, passTarget);
+    }
 
-        //内野全員との角度を取る
+    /// <summary>
+    /// 外野パスターゲットの状態を管理する構造体
+    /// </summary>
+    private struct GaiyaPassTagState
+    {
+        /// <summary>内野方向のX座標</summary>
+        public DirectionXType infieldDirectionX;
+        /// <summary>ダッシュマンへのパス状態</summary>
+        public bool isDashmanPass;
+        /// <summary>パスの方向（X軸）</summary>
+        public DirectionXType passDirectionX;
+        /// <summary>パスの方向（Z軸）</summary>
+        public DirectionZType passDirectionZ;
+        /// <summary>最後のX方向キー入力</summary>
+        public DirectionXType lastXKey;
+        /// <summary>ポストマンの位置</summary>
+        public OrderIndexType postMan;
+    }
+
+    /// <summary>
+    /// 外野パスターゲットの状態を初期化します
+    /// </summary>
+    /// <returns>初期化された外野パスターゲットの状態</returns>
+    private GaiyaPassTagState InitializeGaiyaPassTagState()
+    {
+        return new GaiyaPassTagState
+        {
+            infieldDirectionX = MySideIndex == 0 ? DirectionXType.Left : DirectionXType.Right,
+            isDashmanPass = MyTeam.Position.DashmanNum > 0,
+            passDirectionX = Coordinate.DirectionX,
+            passDirectionZ = Coordinate.DirectionZ,
+            lastXKey = Input.LastXKey,
+            postMan = MyTeam.Position.Postman
+        };
+    }
+
+    /// <summary>
+    /// 初期の外野パスターゲットを取得します
+    /// </summary>
+    /// <param name="state">外野パスターゲットの状態</param>
+    /// <param name="keyState">キー入力の状態</param>
+    /// <returns>選択されたパスターゲットのオーダーインデックス</returns>
+    private OrderIndexType GetInitialGaiyaPassTarget(GaiyaPassTagState state, PassTagKeyState keyState)
+    {
+        var isInfieldKey = (MySideIndex == 0 && keyState.isLeftKey) || (MySideIndex == 1 && keyState.isRightKey);
+        var isNoneZKey = !keyState.isUpKey && !keyState.isDownKey;
+
+        switch (Order.OrderIndex)
+        {
+            case OrderIndexType.Outfield2:
+                return GetOutfield2PassTarget(state, keyState);
+            case OrderIndexType.Outfield3:
+                return GetOutfield3PassTarget(state, keyState);
+            case OrderIndexType.Outfield4:
+                return GetOutfield4PassTarget(state, keyState, isInfieldKey, isNoneZKey);
+            default:
+                return OrderIndexType.Disabled;
+        }
+    }
+
+    /// <summary>
+    /// 外野2番手のパスターゲットを取得します
+    /// </summary>
+    private OrderIndexType GetOutfield2PassTarget(GaiyaPassTagState state, PassTagKeyState keyState)
+    {
+        if (state.lastXKey == DirectionXType.Neutral)
+        {
+            if (keyState.isDownKey && !keyState.isLeftKey && !keyState.isRightKey)
+            {
+                return OrderIndexType.Outfield3;
+            }
+
+            return state.passDirectionX == state.infieldDirectionX
+                ? state.postMan
+                : OrderIndexType.Outfield4;
+        }
+
+        return state.lastXKey == state.infieldDirectionX
+            ? state.postMan
+            : OrderIndexType.Outfield4;
+    }
+
+    /// <summary>
+    /// 外野3番手のパスターゲットを取得します
+    /// </summary>
+    private OrderIndexType GetOutfield3PassTarget(GaiyaPassTagState state, PassTagKeyState keyState)
+    {
+        if (state.lastXKey == DirectionXType.Neutral)
+        {
+            if (keyState.isUpKey && !keyState.isLeftKey && !keyState.isRightKey)
+            {
+                return OrderIndexType.Outfield2;
+            }
+
+            return state.passDirectionX == state.infieldDirectionX
+                ? state.postMan
+                : OrderIndexType.Outfield4;
+        }
+
+        return state.lastXKey == state.infieldDirectionX
+            ? state.postMan
+            : OrderIndexType.Outfield4;
+    }
+
+    /// <summary>
+    /// 外野4番手のパスターゲットを取得します
+    /// </summary>
+    private OrderIndexType GetOutfield4PassTarget(GaiyaPassTagState state, PassTagKeyState keyState, bool isInfieldKey, bool isNoneZKey)
+    {
+        if (isInfieldKey && isNoneZKey)
+        {
+            return state.postMan;
+        }
+
+        return GetOutfield4DirectionalTarget(state);
+    }
+
+    /// <summary>
+    /// 外野4番手の方向に基づいたパスターゲットを取得します
+    /// </summary>
+    private OrderIndexType GetOutfield4DirectionalTarget(GaiyaPassTagState state)
+    {
+        switch (state.passDirectionZ)
+        {
+            case DirectionZType.Backward:
+                return OrderIndexType.Outfield2;
+            case DirectionZType.Forward:
+                return OrderIndexType.Outfield3;
+            default:
+                var distO2 = Math.Abs(Coordinate.Z - Defines.DBCRT_BL);
+                var distO3 = Math.Abs(Coordinate.Z - Defines.DBCRT_FL);
+                return distO2 < distO3 ? OrderIndexType.Outfield2 : OrderIndexType.Outfield3;
+        }
+    }
+
+    /// <summary>
+    /// ダッシュマン用の外野パスターゲットを取得します
+    /// </summary>
+    private OrderIndexType GetDashmanGaiyaPassTarget(GaiyaPassTagState state, PassTagKeyState keyState, OrderIndexType defaultTarget)
+    {
+        var dashmanTargets = PrepareDashmanTargets(keyState);
+        if (dashmanTargets.isNoneTarget)
+        {
+            return defaultTarget;
+        }
+
+        return GetSortedDashmanTarget(dashmanTargets, keyState);
+    }
+
+    /// <summary>
+    /// ダッシュマンターゲットの情報を管理する構造体
+    /// </summary>
+    private struct DashmanTargetInfo
+    {
+        public bool isNoneTarget;
+        public int[] targetX;
+        public int[] targetDist;
+        public enNaiyaTag[] isSelectTarget;
+        public OrderIndexType[] targetOrder;
+        public int[] sortValue;
+    }
+
+    /// <summary>
+    /// ダッシュマンターゲットの準備を行います
+    /// </summary>
+    private DashmanTargetInfo PrepareDashmanTargets(PassTagKeyState keyState)
+    {
+        TmpStateManager.Instance.TmpState.Clear();
+        var info = new DashmanTargetInfo
+        {
+            isNoneTarget = true,
+            targetX = TmpStateManager.Instance.TmpState.targetX,
+            targetDist = TmpStateManager.Instance.TmpState.targetDist,
+            isSelectTarget = TmpStateManager.Instance.TmpState.isSelectTarget,
+            targetOrder = TmpStateManager.Instance.TmpState.targetOrder,
+            sortValue = TmpStateManager.Instance.TmpState.sortValue
+        };
+
         for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
             var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
 
-            if (chara.Composite.IsDashman
-                && (OrderIndexType)order != MyOrderIndex //自分
-                && IsCheckLandEnPos(order) == false) //外野からのときは敵コート着地キャラはなしに
+            if (IsDashmanTargetValid(chara, order))
             {
-                isSelectTarget[order] = enNaiyaTag.TGOK;
-                isNoneTarget = false; //一人でも向き方向にタゲが見つかった
+                info.isSelectTarget[order] = enNaiyaTag.TGOK;
+                info.isNoneTarget = false;
             }
             else
             {
-                isSelectTarget[order] = enNaiyaTag.TGNG;
+                info.isSelectTarget[order] = enNaiyaTag.TGNG;
             }
 
-            //X距離外野はGetLeftCrtX()が左コートなので絶対値を使う
-            targetX[order] = chara.Composite.LeftCourtX; //自分より右に居れば＋
-            //Z距離
-            var targetZ = Math.Abs(chara.Coordinate.Z - Coordinate.Z); //自分より上にいれば＋
-            //距離
-            targetDist[order] = Defines.Hypot(targetX[order], targetZ);
+            CalculateTargetDistances(chara, order, info);
         }
 
-        //ダッシュマンいるけど敵コートに着地しちゃう場合もある
-        //NoTagのときはそのままポストマンに
-        if (isNoneTarget)
-        {
-            return passTarget;
-        }
+        return info;
+    }
 
-        //優先順位初期化
+    /// <summary>
+    /// ダッシュマンターゲットが有効かどうかを判定します
+    /// </summary>
+    private bool IsDashmanTargetValid(CharaBehavior chara, int order)
+    {
+        return chara.Composite.IsDashman
+            && (OrderIndexType)order != MyOrderIndex
+            && !IsCheckLandEnPos(order);
+    }
+
+    /// <summary>
+    /// ターゲットまでの距離を計算します
+    /// </summary>
+    private void CalculateTargetDistances(CharaBehavior chara, int order, DashmanTargetInfo info)
+    {
+        info.targetX[order] = chara.Composite.LeftCourtX;
+        var targetZ = Math.Abs(chara.Coordinate.Z - Coordinate.Z);
+        info.targetDist[order] = Defines.Hypot(info.targetX[order], targetZ);
+    }
+
+    /// <summary>
+    /// ソートされたダッシュマンターゲットを取得します
+    /// </summary>
+    private OrderIndexType GetSortedDashmanTarget(DashmanTargetInfo info, PassTagKeyState keyState)
+    {
+        InitializeTargetOrder(info.targetOrder);
+        var targetCount = PrepareTargetsForDashmanSort(info, keyState);
+        SortDashmanTargets(targetCount, info);
+        return info.targetOrder[0];
+    }
+
+    /// <summary>
+    /// ターゲットの順序を初期化します
+    /// </summary>
+    private void InitializeTargetOrder(OrderIndexType[] targetOrder)
+    {
         for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
             targetOrder[order] = OrderIndexType.Disabled;
         }
+    }
 
-        var f = 0;
+    /// <summary>
+    /// ダッシュマンターゲットのソート準備を行います
+    /// </summary>
+    private int PrepareTargetsForDashmanSort(DashmanTargetInfo info, PassTagKeyState keyState)
+    {
+        var targetCount = 0;
 
         for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
-            sortValue[order] = 0; //初期化
+            info.sortValue[order] = 0;
 
-            if (isSelectTarget[order] != enNaiyaTag.TGOK)
+            if (info.isSelectTarget[order] != enNaiyaTag.TGOK)
             {
                 continue;
             }
 
-            if (isNeutralKey) //ニュートラル
+            if (keyState.isNeutralKey)
             {
-                sortValue[order] = -targetX[order]; //外野からのときは右（先頭を走ってる人）
+                info.sortValue[order] = -info.targetX[order];
             }
             else
             {
-                var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
-
-                //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
-                var tgZ = chara.Dashman.TargetZ;
-
-                //上
-                if (isUpKey)
-                {
-                    sortValue[order] = -tgZ; //Ｚのマイナス（上ほど優先）
-                }
-                else if (isDownKey) //下
-                {
-                    sortValue[order] = +tgZ; //Ｚ（下ほど優先）
-                }
-
-                if (isLeftKey) //左
-                {
-                    sortValue[order] += chara.Coordinate.X; //Ｘ（左ほど優先）
-                }
-                else if (isRightKey) //右
-                {
-                    sortValue[order] -= chara.Coordinate.X; //Ｘのマイナス（右ほど優先）
-                }
+                CalculateDashmanSortValue(order, info, keyState);
             }
 
-            targetOrder[f++] = (OrderIndexType)order;
+            info.targetOrder[targetCount++] = (OrderIndexType)order;
         }
 
-        //ソート
-        for (var i = 0; i < Defines.DBMEMBER_INF - 1; ++i)
+        return targetCount;
+    }
+
+    /// <summary>
+    /// ダッシュマンターゲットのソート値を計算します
+    /// </summary>
+    private void CalculateDashmanSortValue(int order, DashmanTargetInfo info, PassTagKeyState keyState)
+    {
+        var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
+        var tgZ = chara.Dashman.TargetZ;
+
+        if (keyState.isUpKey)
         {
-            for (var i2 = 0; i2 < Defines.DBMEMBER_INF - 1; i2++)
+            info.sortValue[order] = -tgZ;
+        }
+        else if (keyState.isDownKey)
+        {
+            info.sortValue[order] = +tgZ;
+        }
+
+        if (keyState.isLeftKey)
+        {
+            info.sortValue[order] += chara.Coordinate.X;
+        }
+        else if (keyState.isRightKey)
+        {
+            info.sortValue[order] -= chara.Coordinate.X;
+        }
+    }
+
+    /// <summary>
+    /// ダッシュマンターゲットをソートします
+    /// </summary>
+    private void SortDashmanTargets(int targetCount, DashmanTargetInfo info)
+    {
+        for (var i = 0; i < targetCount - 1; ++i)
+        {
+            for (var i2 = 0; i2 < targetCount - 1; i2++)
             {
-                if (i == i2
-                    || targetOrder[i] == OrderIndexType.Disabled
-                    || targetOrder[i2] == OrderIndexType.Disabled)
+                if (ShouldSkipSort(i, i2, info.targetOrder))
                 {
                     continue;
                 }
 
-                var orderA = (int)targetOrder[i];
-                var orderB = (int)targetOrder[i2];
-
-                var dist = Math.Abs(sortValue[orderA] - sortValue[orderB]);
-
-                var isSwitch = false;
-
-                if (dist <= Defines.Percent)
+                if (ShouldSwapTargets(i, i2, info))
                 {
-                    // ほぼ同じ場合(1dot以内)は絶対距離で判断
-                    if (targetDist[orderA] < targetDist[orderB]) //小さい方優先
-                    {
-                        isSwitch = true;
-                    }
-                }
-                else if (sortValue[orderA] < sortValue[orderB]) //小さい方優先
-                {
-                    isSwitch = true;
-                }
-
-                if (isSwitch)
-                {
-                    (targetOrder[i2], targetOrder[i]) = (targetOrder[i], targetOrder[i2]);
+                    (info.targetOrder[i2], info.targetOrder[i]) = (info.targetOrder[i], info.targetOrder[i2]);
                 }
             }
         }
+    }
 
-        //ソート１位
-        return targetOrder[0];
+    /// <summary>
+    /// ソートをスキップすべきかどうかを判定します
+    /// </summary>
+    private bool ShouldSkipSort(int i, int i2, OrderIndexType[] targetOrder)
+    {
+        return i == i2
+            || targetOrder[i] == OrderIndexType.Disabled
+            || targetOrder[i2] == OrderIndexType.Disabled;
+    }
+
+    /// <summary>
+    /// ターゲットを交換すべきかどうかを判定します
+    /// </summary>
+    private bool ShouldSwapTargets(int i, int i2, DashmanTargetInfo info)
+    {
+        var orderA = (int)info.targetOrder[i];
+        var orderB = (int)info.targetOrder[i2];
+        var dist = Math.Abs(info.sortValue[orderA] - info.sortValue[orderB]);
+
+        if (dist <= Defines.Percent)
+        {
+            return info.targetDist[orderA] < info.targetDist[orderB];
+        }
+
+        return info.sortValue[orderA] < info.sortValue[orderB];
     }
 
     /// <summary>
