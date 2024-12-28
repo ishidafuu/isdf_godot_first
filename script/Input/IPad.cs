@@ -107,95 +107,33 @@ public static class IPadExtensions
 
 
     //ダッシュ入力
-    public static bool IsDash(this IPad pad, bool ball_f)
+    public static bool IsDash(this IPad pad)
     {
-        if (ball_f)
-        {
-            return (IsDashLR(dxL) || IsDashLR(dxR) || IsDashAuto());
-        }
-        else
-        {
-            return (IsDashLR(dxL) || IsDashLR(dxR));
-        }
+        return pad.IsDash(DirectionCrossType.Left) || pad.IsDash(DirectionCrossType.Right);
     }
 
     //ダッシュ方向（斜めダッシュも必要であればそういう）
-    public static bool IsDashLR(this IPad pad, DirectionCrossType crs)
+    public static bool IsDash(this IPad pad, DirectionCrossType crs)
     {
-        switch (pad.GetPadType())
+        return crs switch
         {
-            case enPadType_DXL: res = (stPad_.nowDHKeyLR_ == crs); break;
-            case enPadType_MT: res = GenIsFlicVecCrs(TRUE, FALSE, crs); break;//左下
-            case enPadType_FC: res = GenIsFlicVecCrs(TRUE, FALSE, crs); break;//左下
-            case enPadType_SP: res = GenIsFlicVecCrs(TRUE, FALSE, crs); break;//左下
-            case enPadType_AT: break;
-            default: break;
-        }
-
-        return res;
+            DirectionCrossType.Left => pad.KeyLeft.IsDoubleTapped,
+            DirectionCrossType.Right => pad.KeyRight.IsDoubleTapped,
+            _ => false
+        };
     }
-
-    BOOL TMgPad::IsDashAuto()
-    {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: break;
-            case enPadType_MT: break;
-            case enPadType_FC: break;
-            case enPadType_SP: res = (ppad_->IsBit(tbBL_r) && (ppad_->IsBitL2(tbBL_b) == FALSE)); break;
-            case enPadType_AT: break;
-            default: break;
-        }
-
-        return res;
-    }
-    //BOOL TMgPad::IsCaCounter()
-    //{
-    //  BOOL res = FALSE;
-    //  switch (GetPadType())
-    //  {
-    //  case enPadType_DXL: break;
-    //  case enPadType_MT: break;
-    //  case enPadType_FC: break;
-    //  case enPadType_SP: res = ppad_->IsBit2(tbBL_b); break;
-    //  case enPadType_AT: break;
-    //  default: break;
-    //  }
-
-    //  return res;
-    //}
 
     //ダッシュ加速入力
-    BOOL TMgPad::IsDashAcc(enCrsType needcrs)
+    public static bool IsDashAcc(this IPad pad, DirectionCrossType crs)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
+        return crs switch
         {
-            case enPadType_DXL: res = ppad_->IsCrs2_DXL(needcrs); break;
-            case enPadType_MT: res = GenIsVecCrs(TRUE, FALSE, needcrs); break;//左下
-            case enPadType_FC: res = GenIsVecCrs(TRUE, FALSE, needcrs); break;//左下
-            case enPadType_SP: res = GenIsVecCrs(TRUE, FALSE, needcrs); break;//左下
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
+            DirectionCrossType.Left => pad.KeyLeft.IsPressed,
+            DirectionCrossType.Right => pad.KeyRight.IsPressed,
+            _ => false
+        };
     }
-    //ダッシュストップ
-    BOOL TMgPad::IsDashStop(enCrsType needcrs)
-    {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: break;
-            case enPadType_MT: ppad_->IsBitL(tbBL_b); break;//左下長押し
-            case enPadType_FC: break;
-            case enPadType_SP: res = GenIsFlicVecCrs(TRUE, FALSE, needcrs); break;//左下
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
-    }
+
 
     //ジャンプ入力
     BOOL TMgPad::IsJump()//ジャンプ
@@ -219,6 +157,8 @@ public static class IPadExtensions
         }
         return res;
     }
+
+
     BOOL TMgPad::IsJumpLongTouch()//ジャンプ
     {
         BOOL res = FALSE;

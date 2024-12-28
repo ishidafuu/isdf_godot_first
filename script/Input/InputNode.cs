@@ -24,14 +24,12 @@ public partial class InputNode : Node, IPad
         public bool IsPressed { get; private set; }
         public bool IsJustPressed { get; private set; }
         public bool IsJustReleased { get; private set; }
+        public bool IsDoubleTapped { get; private set; }
 
         // 過去10フレームのJustPressed履歴を保持する配列
         private bool[] _justPressedHistory;
         private const int MAX_DOUBLE_TAP_FRAMES = 10;
         private int _currentHistoryIndex = 0;
-
-        // 連打判定用のプロパティ
-        public bool IsDoubleTapped { get; private set; }
 
         public Button(KeyType keyType)
         {

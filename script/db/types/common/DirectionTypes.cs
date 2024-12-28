@@ -20,7 +20,6 @@ public enum DirectionZType
     Backward = +1
 }
 
-
 /// <summary>
 /// 十字方向
 /// </summary>
@@ -31,4 +30,36 @@ public enum DirectionCrossType
     Down = 2,
     Left = 3,
     Right = 4
+}
+
+/// <summary>
+/// DirectionTypes拡張メソッド
+/// </summary>
+public static class DirectionTypesExtensions
+{
+    /// <summary>
+    /// X軸方向を十字方向に変換
+    /// </summary>
+    public static DirectionCrossType ToCrossType(this DirectionXType type)
+    {
+        return type switch
+        {
+            DirectionXType.Left => DirectionCrossType.Left,
+            DirectionXType.Right => DirectionCrossType.Right,
+            _ => DirectionCrossType.Neutral,
+        };
+    }
+
+    /// <summary>
+    /// Z軸方向を十字方向に変換
+    /// </summary>
+    public static DirectionCrossType ToCrossType(this DirectionZType type)
+    {
+        return type switch
+        {
+            DirectionZType.Forward => DirectionCrossType.Up,
+            DirectionZType.Backward => DirectionCrossType.Down,
+            _ => DirectionCrossType.Neutral,
+        };
+    }
 }
