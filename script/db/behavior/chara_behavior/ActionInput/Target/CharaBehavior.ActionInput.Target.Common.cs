@@ -301,4 +301,290 @@ public partial class CharaBehavior
 
         return PassTargetType.Dashman; // デフォルトはダッシュマン
     }
+
+    /// <summary>
+    /// シュートターゲットを設定します
+    /// </summary>
+    /// <param name="orderIndex">設定するオーダーインデックス</param>
+    private void SetShootTarget(OrderIndexType orderIndex)
+    {
+        if (IsNGPassTag(orderIndex))
+        {
+            if (MyOrderIndex != OrderIndexType.Outfield4 && IsNGPassTag(OrderIndexType.Outfield4) == false)
+            {
+                orderIndex = OrderIndexType.Outfield4;
+            }
+            else if (MyOrderIndex != OrderIndexType.Outfield3 && IsNGPassTag(OrderIndexType.Outfield3) == false)
+            {
+                orderIndex = OrderIndexType.Outfield3;
+            }
+            else if (MyOrderIndex != OrderIndexType.Outfield2 && IsNGPassTag(OrderIndexType.Outfield2) == false)
+            {
+                orderIndex = OrderIndexType.Outfield2;
+            }
+            else
+            {
+                if (MyTeam.Position.PassAbleCount > 0
+                    && MyOrderIndex != MyTeam.Position.Postman
+                    && IsNGPassTag(MyTeam.Position.Postman) == false)
+                {
+                    orderIndex = MyTeam.Position.Postman;
+                }
+                else
+                {
+                    orderIndex = OrderIndexType.Outfield4;
+                }
+            }
+        }
+
+        Ball.CallChangePassTarget(MySideIndex, orderIndex);
+    }
+
+    /// <summary>
+    /// パスターゲットを設定します
+    /// </summary>
+    /// <param name="orderIndex">設定するオーダーインデックス</param>
+    private void SetPassTarget(OrderIndexType orderIndex)
+    {
+        if (IsNGPassTag(orderIndex))
+        {
+            if (MyOrderIndex != OrderIndexType.Outfield4 && IsNGPassTag(OrderIndexType.Outfield4) == false)
+            {
+                orderIndex = OrderIndexType.Outfield4;
+            }
+            else if (MyOrderIndex != OrderIndexType.Outfield3 && IsNGPassTag(OrderIndexType.Outfield3) == false)
+            {
+                orderIndex = OrderIndexType.Outfield3;
+            }
+            else if (MyOrderIndex != OrderIndexType.Outfield2 && IsNGPassTag(OrderIndexType.Outfield2) == false)
+            {
+                orderIndex = OrderIndexType.Outfield2;
+            }
+            else
+            {
+                if (MyTeam.Position.PassAbleCount > 0
+                    && MyOrderIndex != MyTeam.Position.Postman
+                    && IsNGPassTag(MyTeam.Position.Postman) == false)
+                {
+                    orderIndex = MyTeam.Position.Postman;
+                }
+                else
+                {
+                    orderIndex = OrderIndexType.Outfield4;
+                }
+            }
+        }
+
+        Ball.CallChangePassTarget(MySideIndex, orderIndex);
+    }
+
+    /// <summary>
+    /// パスカットターゲットを設定します
+    /// </summary>
+    /// <param name="orderIndex">設定するオーダーインデックス</param>
+    private void PaCtTagSet(OrderIndexType orderIndex)
+    {
+        //パスカットキャラセット
+        var passTargetChara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, orderIndex);
+        var passTargetCharaX = passTargetChara.Coordinate.X;
+        var passTargetCharaZ = passTargetChara.Coordinate.Z;
+
+        var passCutOrderIndex = OrderIndexType.Disabled;
+        var maxDist = int.MaxValue;
+
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+        {
+            var targetX = passTargetCharaX - EnemySideOrders[order].Coordinate.X;
+            var targetZ = Defines.PercentageOf(passTargetCharaZ - EnemySideOrders[order].Coordinate.Z, Defines.ZPER);
+            var dist = Defines.Hypot(targetX, targetZ);
+
+            if (dist >= maxDist)
+            {
+                continue;
+            }
+
+            maxDist = dist;
+            passCutOrderIndex = (OrderIndexType)order;
+        }
+
+        Ball.CallChangePassTarget(MySideIndex, passCutOrderIndex);
+    }
+
+    /// <summary>
+    /// パスターゲットとして無効かどうかをチェックします
+    /// 指定されたオーダーがパスターゲットとして有効かを判定します
+    /// </summary>
+    /// <param name="order">チェック対象のオーダー</param>
+    /// <returns>パスターゲットとして無効な場合はtrue</returns>
+    private bool IsNGPassTag(OrderIndexType order)
+    {
+        if (order == MyOrderIndex || order == OrderIndexType.Disabled)
+        {
+            return true; //パス不可
+        }
+
+        var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
+
+        //★ダッシュマンはだいじょぶ
+        if (chara.Composite.IsDashman)
+        //&& ((st_.pmgMyTm_.st_.pmgMyCh_[pos].MyCoordinate.dY >= (-XYMAG))
+        //  || (MyMirPass_c > 0)))//下降ではない
+        {
+            return false;
+        }
+
+        //空中の人はパスタゲにならないように
+        return chara.Composite.IsFree(true) == false || chara.Motion.HasFlag(CharaMotionFlag.Ar);
+    }
+
+    /// <summary>
+    /// パスターゲットとして無効かどうかをチェックします（int版）
+    /// </summary>
+    /// <param name="order">チェック対象のオーダー番号</param>
+    /// <returns>パスターゲットとして無効な場合はtrue</returns>
+    private bool IsNGPassTag(int order)
+    {
+        return IsNGPassTag((OrderIndexType)order);
+    }
+
+    /// <summary>
+    /// 指定された角度が現在の向きに対して有効かチェックします
+    /// キャラクターの向きと目標位置の角度関係を判定します
+    /// </summary>
+    /// <param name="targetX">目標X座標</param>
+    /// <param name="targetZ">目標Z座標</param>
+    /// <returns>角度が有効でない場合はtrue</returns>
+    private bool IsCheckNoAgl(int targetX, int targetZ)
+    {
+        var isInAngle = Coordinate.DirectionZ switch
+        {
+            DirectionZType.Forward => targetZ < Coordinate.Z,
+            DirectionZType.Neutral => true,
+            DirectionZType.Backward => targetZ > Coordinate.Z,
+            _ => throw new ArgumentOutOfRangeException(),
+        };
+
+        if (isInAngle)
+        {
+            isInAngle = Coordinate.DirectionX switch
+            {
+                DirectionXType.Left => targetX < Coordinate.X,
+                DirectionXType.Neutral => true,
+                DirectionXType.Right => targetX > Coordinate.X,
+                _ => throw new ArgumentOutOfRangeException(),
+            };
+        }
+
+        return isInAngle == false;
+    }
+
+    /// <summary>
+    /// 敵コートに着地するかどうかをチェックします
+    /// キャラクターの着地位置が敵コートになるかを判定します
+    /// </summary>
+    /// <param name="order">チェック対象のオーダーインデックス</param>
+    /// <returns>敵コートに着地する場合はtrue</returns>
+    private bool IsCheckLandEnPos(int order)
+    {
+        var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
+
+        var tLandX = MySideIndex == 0
+            ? chara.Air.LandX
+            : Defines.DBCRT_CL - (chara.Air.LandX - Defines.DBCRT_CL);
+
+        return chara.Order.IsInfield && tLandX > Defines.DBCRT_CLI;
+    }
+
+    /// <summary>
+    /// 向きから角度を取得します
+    /// 現在の向きから12時方向の角度を計算します
+    /// </summary>
+    /// <returns>12時方向の角度</returns>
+    private int GetMukiAglFromDirection()
+    {
+        switch (Order.GetOrderFieldType())
+        {
+            case OrderFieldType.Infield:
+                if (Coordinate.DirectionX == DirectionXType.Right)
+                {
+                    if (Coordinate.DirectionZ == DirectionZType.Forward)
+                    {
+                        return 11; //11 0 1 2
+                    }
+
+                    if (Coordinate.DirectionZ == DirectionZType.Backward)
+                    {
+                        return 3; //3 4 5 6
+                    }
+                    return 1; //1 2 3 4
+                }
+
+                if (Coordinate.DirectionX == DirectionXType.Left)
+                {
+                    if (Coordinate.DirectionZ == DirectionZType.Forward)
+                    {
+                        return 9; //9 10 11 0
+                    }
+
+                    if (Coordinate.DirectionZ == DirectionZType.Backward)
+                    {
+                        return 5; //5 6 7 8
+                    }
+                    return 7; //7 8 9 10
+                }
+                break;
+            case OrderFieldType.Outfield2:
+                if (Coordinate.DirectionX == DirectionXType.Left)
+                {
+                    return 5; //5678
+                }
+
+                if (Coordinate.DirectionX == DirectionXType.Right)
+                {
+                    return 3; //3456
+                }
+                break;
+            case OrderFieldType.Outfield3:
+                if (Coordinate.DirectionX == DirectionXType.Left)
+                {
+                    return 9; //9 10 11 0
+                }
+
+                if (Coordinate.DirectionX == DirectionXType.Right)
+                {
+                    return 11; //11 0 1 2
+                }
+                break;
+            case OrderFieldType.Outfield4:
+                if (MySideIndex == 0)
+                {
+                    if (Coordinate.DirectionZ == DirectionZType.Forward)
+                    {
+                        return 9; //9 10 11 0
+                    }
+
+                    if (Coordinate.DirectionZ == DirectionZType.Backward)
+                    {
+                        return 5; //5 6 7 8
+                    }
+                    return 7; //7 8 9 10
+                }
+
+                if (Coordinate.DirectionZ == DirectionZType.Forward)
+                {
+                    return 11; //11 0 1 2
+                }
+
+                if (Coordinate.DirectionZ == DirectionZType.Backward)
+                {
+                    return 3; //3 4 5 6
+                }
+                return 1; //1 2 3 4
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        // 来ない想定
+        return 0;
+    }
 }
