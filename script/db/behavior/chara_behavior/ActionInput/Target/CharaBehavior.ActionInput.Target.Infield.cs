@@ -47,8 +47,8 @@ public partial class CharaBehavior
     /// <summary>
     /// 内野のパスターゲットを取得します
     /// </summary>
-    /// <returns>パスターゲットの配列</returns>
-    private OrderIndexType[] GetNaiyaPassTarget()
+    /// <returns>パスターゲットのオーダーインデックス</returns>
+    private OrderIndexType GetNaiyaPassTarget()
     {
         var keyState = GetPassTargetKeyState();
         var positionState = InitializePositionState();
@@ -59,8 +59,8 @@ public partial class CharaBehavior
             UpdatePositionState(chara, ref positionState);
         }
 
-        var targets = GetPassTargetsFromKeyState(keyState, positionState);
-        return ConvertToOrderIndex(targets);
+        var target = GetPassTargetFromKeyState(keyState, positionState);
+        return ConvertToOrderIndex(target);
     }
 
     /// <summary>

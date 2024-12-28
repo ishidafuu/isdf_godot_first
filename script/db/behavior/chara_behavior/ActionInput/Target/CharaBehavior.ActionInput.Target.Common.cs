@@ -258,71 +258,47 @@ public partial class CharaBehavior
     /// <summary>
     /// パスターゲットタイプをオーダーインデックスに変換します
     /// </summary>
-    /// <param name="passTargets">パスターゲットタイプの配列</param>
-    /// <returns>オーダーインデックスの配列</returns>
-    private OrderIndexType[] ConvertToOrderIndex(PassTargetType[] passTargets)
+    /// <param name="passTarget">パスターゲットタイプ</param>
+    /// <returns>オーダーインデックス</returns>
+    private OrderIndexType ConvertToOrderIndex(PassTargetType passTarget)
     {
-        if (passTargets.Length == 0) return Array.Empty<OrderIndexType>();
-
-        var count = 0;
-        foreach (var target in passTargets)
+        foreach (var chara in GetTeamCharas())
         {
-            foreach (var chara in GetTeamCharas())
+            if (chara == null) continue;
+            if (Order.IsInfield ? chara.GetNaiyaTarget() == passTarget : chara.GetGaiyaTag() == passTarget)
             {
-                if (chara.GetNaiyaTarget() == target)
-                {
-                    ResultPassTags[count++] = chara.Order.OrderIndex;
-                    break;
-                }
+                return chara.Order.OrderIndex;
             }
         }
 
-        if (count == 0) return Array.Empty<OrderIndexType>();
-        if (count == 1)
-        {
-            ResultSingleTag[0] = ResultPassTags[0];
-            return ResultSingleTag;
-        }
-
-        var result = new OrderIndexType[count];
-        Array.Copy(ResultPassTags, result, count);
-        return result;
+        return OrderIndexType.Disabled;
     }
 
     /// <summary>
     /// キー入力状態からパスターゲットを取得します
     /// </summary>
-    private PassTargetType[] GetPassTargetsFromKeyState(PassTargetKeyState keyState, PositionState positionState)
+    private PassTargetType GetPassTargetFromKeyState(PassTargetKeyState keyState, PositionState positionState)
     {
-        var count = 0;
-
         // ダッシュマンパス
         if (keyState.isNeutralKey)
         {
-            MultiPassTags[count++] = PassTargetType.Dashman;
+            return PassTargetType.Dashman;
         }
 
         // 通常パス
         if (keyState.isLeftKey || keyState.isRightKey)
         {
-            MultiPassTags[count++] = PassTargetType.Side;
+            return PassTargetType.Side;
         }
         if (keyState.isUpKey)
         {
-            MultiPassTags[count++] = PassTargetType.Front;
+            return PassTargetType.Front;
         }
         if (keyState.isDownKey)
         {
-            MultiPassTags[count++] = PassTargetType.Back;
+            return PassTargetType.Back;
         }
 
-        if (count == 0) return EmptyPassTags;
-        if (count == 1)
-        {
-            SinglePassTag[0] = MultiPassTags[0];
-            return SinglePassTag;
-        }
-
-        return MultiPassTags;
+        return PassTargetType.Dashman; // デフォルトはダッシュマン
     }
 }
