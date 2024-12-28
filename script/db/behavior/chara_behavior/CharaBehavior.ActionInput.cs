@@ -353,8 +353,8 @@ public partial class CharaBehavior
         //外野の可能性もでるのでなんとかする
         //ShTagSet(false); //拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
         var passTargetOrderIndex = Order.IsInfield
-            ? GetNaiyaPassTag()
-            : GetGaiyaPassTag();
+            ? GetNaiyaPassTarget()
+            : GetGaiyaPassTarget();
 
         SetPassTarget(passTargetOrderIndex);
 
