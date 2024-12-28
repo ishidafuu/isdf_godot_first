@@ -1,0 +1,14 @@
+ルール１
+GCを避けるため、
+Array.Empty<enPassTag>()の呼び出しを禁止
+new List<enPassTag>()の生成を禁止
+List<T>.ToArray()の呼び出しを禁止
+FirstOrDefault()でのLINQ使用を禁止
+
+代わりに、以下のような対策を行ってください
+配列を事前に確保して再利用
+List<T>の代わりに固定長配列を使用
+LINQを使用せず、forループで実装
+
+ルール２
+メソッドにはコメントを日本語で付けてください。
