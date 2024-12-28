@@ -16,6 +16,18 @@ public interface IPad
 
 public static class IPadExtensions
 {
+    public static bool IsPressedCrs(this IPad pad, DirectionCrossType crs)
+    {
+        switch (crs)
+        {
+            case DirectionCrossType.Up: return pad.KeyUp.IsPressed;
+            case DirectionCrossType.Down: return pad.KeyDown.IsPressed;
+            case DirectionCrossType.Left: return pad.KeyLeft.IsPressed;
+            case DirectionCrossType.Right: return pad.KeyRight.IsPressed;
+        }
+        return false;
+    }
+
     public static bool IsPressedAnyCross(this IPad pad)
     {
         return pad.KeyUp.IsPressed || pad.KeyDown.IsPressed || pad.KeyLeft.IsPressed || pad.KeyRight.IsPressed;
@@ -134,323 +146,77 @@ public static class IPadExtensions
         };
     }
 
-
-    //ジャンプ入力
-    BOOL TMgPad::IsJump()//ジャンプ
+    public static bool IsJump(this IPad pad)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL:
-                res = (ppad_->IsBtn2_DXL(dxA) && ppad_->IsBtn_DXL(dxB))
-                    || ((ppad_->IsBtn2_DXL(dxB) && ppad_->IsBtn_DXL(dxA)));
-                break;
-            case enPadType_MT: res = GenIsFlicVecCrs(TRUE, TRUE, dxU); break;//右下 上フリック
-            case enPadType_FC:
-                res = (GenIsFlicVecCrs(TRUE, FALSE, dxU) || ppad_->IsBit(tbTL_b)); //左下 上フリックか左上タッチ
-                break;
-            case enPadType_SP:
-                res = (GenIsFlicVecCrs(TRUE, FALSE, dxU));//上フリック
-                break;
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
+        return pad.IsJustPressedAbButton();
     }
 
-
-    BOOL TMgPad::IsJumpLongTouch()//ジャンプ
-    {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL:
-                break;
-            case enPadType_MT:
-                break;
-            case enPadType_FC:
-                break;
-            case enPadType_SP:
-                res = (ppad_->IsBitL(tbBL_b) && (ppad_->IsVec_TBL(TRUE, FALSE) == FALSE));//長押し＆方向はいらず
-                break;
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
-    }
-    BOOL TMgPad::IsDsJumpLongTouch()//ダッシュ中スワイプジャンプ
-    {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL:
-                break;
-            case enPadType_MT:
-                break;
-            case enPadType_FC:
-                break;
-            case enPadType_SP:
-                res = (ppad_->IsBitL(tbBL_b));//長押し＆方向はいらず
-                break;
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
-    }
-
-    //オートジャンプ入力
-    BOOL TMgPad::IsJump2()//ジャンプ
-    {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: break;
-            case enPadType_MT: break;
-            case enPadType_FC:
-                res = ppad_->IsBit2(tbTL_b);
-                break;
-            case enPadType_SP:
-                res = ppad_->IsBit2(tbBL_b);//押してる
-                break;
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
-    }
     //十字入力ジャンプ
-    BOOL TMgPad::IsJumpMv(enCrsType crs)
+    public static bool IsJumpMvp(this IPad pad, DirectionCrossType crs)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: res = ppad_->IsCrs2_DXL(crs); break;
-            case enPadType_MT: res = GenIsVecCrs(TRUE, FALSE, crs); break;//左下
-            case enPadType_FC: break;
-            case enPadType_SP: break;
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
+        return pad.IsPressedCrs(crs);
     }
 
     //パス入力
-    BOOL TMgPad::IsPass()
+    public static bool IsPass(this IPad pad)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: res = ppad_->IsBtn_DXL(dxA); break;
-            case enPadType_MT:
-                res = ((ppad_->IsBit(tbTR_r) && (ppad_->IsBitL2(tbTR_b) == FALSE))
-                    || ppad_->IsVec_TBL(FALSE, TRUE)
-                    || ppad_->IsBitL(tbTR_b));//右上短リリースか方向か長押し
-                break;
-            case enPadType_FC: res = ppad_->IsBit(tbTR_b); break;//右上押された瞬間か
-            case enPadType_SP:
-                res = ((ppad_->IsBit(tbTR_r) && (ppad_->IsBitL2(tbTR_b) == FALSE))
-                    || ppad_->IsBitL(tbTR_b));//右上短リリースか長押し
-                break;
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
+        return pad.ButtonA.IsJustPressed;
     }
     //パス入力おしっぱ（ミラーパス）
-    BOOL TMgPad::IsPass2()
+    public static bool IsPass2(this IPad pad)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: res = ppad_->IsBtn2_DXL(dxA); break;
-            case enPadType_MT: res = ppad_->IsBit2(tbTR_b); break;//右上
-            case enPadType_FC: res = ppad_->IsBit2(tbTR_b); break;//右上
-            case enPadType_SP: res = ppad_->IsBit2(tbTR_b); break;//右上
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
+        return pad.ButtonA.IsPressed;
     }
     //パス方向
-    BOOL TMgPad::IsPassCrs(enCrsType crs)
+    public static bool IsPassCrs(this IPad pad, DirectionCrossType crs)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: res = ppad_->IsCrs2_DXL(crs); break;
-            case enPadType_MT: res = GenIsVecCrs(FALSE, TRUE, crs); break;//右上
-            case enPadType_FC: res = GenIsVecCrs(TRUE, FALSE, crs); break;//左下
-            case enPadType_SP: res = GenIsVecCrs(FALSE, TRUE, crs); break;//右上
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
+        return pad.IsPressedCrs(crs);
     }
 
     //自動タゲ向き（ニュートラル）
-    BOOL TMgPad::IsAutoLook()
+    public static bool IsAutoLook(this IPad pad)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: res = (ppad_->IsAnyCrs2_DXL() == FALSE); break;
-            case enPadType_MT: res = (ppad_->IsVec_TBL(TRUE, FALSE) == FALSE); break;//左下
-            case enPadType_FC: res = (ppad_->IsVec_TBL(TRUE, FALSE) == FALSE); break;//左下
-            case enPadType_SP: res = TRUE; break;//自動タゲ
-            case enPadType_AT: res = TRUE; break;//自動タゲ
-            default: break;
-        }
-        return res;
+        return pad.IsPressedAnyCross() == false;
     }
 
     //シュート
-    BOOL TMgPad::IsShot()
+    public static bool IsShot(this IPad pad)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: res = ppad_->IsBtn_DXL(dxB); break;
-            case enPadType_MT: res = ppad_->IsBit(tbBR_b); break;//右下
-            case enPadType_FC: res = ppad_->IsBit(tbBR_b); break;//右下
-            case enPadType_SP: res = (ppad_->IsBit(tbBL_r) && (ppad_->IsBitL2(tbBL_b) == FALSE) && (ppad_->IsVec_TBL(TRUE, FALSE) == FALSE)); break;//左下短押し
-            case enPadType_AT: res = GenIsUIBit(uiTouch); break;//タッチ
-            default: break;
-        }
-
-        return res;
-
+        return pad.ButtonB.IsJustPressed;
     }
     //シュート
-    BOOL TMgPad::IsJumpShot()
+    public static bool IsJumpShot(this IPad pad)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: res = ppad_->IsBtn_DXL(dxB); break;
-            case enPadType_MT: res = ppad_->IsBit(tbBR_b); break;//右下
-            case enPadType_FC: res = ppad_->IsBit(tbBR_b); break;//右下
-            case enPadType_SP: res = ppad_->IsBit(tbBL_b); break;//左下
-            case enPadType_AT: res = GenIsUIBit(uiTouch); break;//タッチ
-            default: break;
-        }
-
-        return res;
-
+        return pad.ButtonB.IsJustPressed;
     }
     //シュートおしっぱ（ミラーパスからのシュート）
-    BOOL TMgPad::IsShot2()
+    public static bool IsShot2(this IPad pad)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: res = ppad_->IsBtn2_DXL(dxB); break;
-            case enPadType_MT: res = ppad_->IsBit2(tbBR_b); break;//右下
-            case enPadType_FC: res = ppad_->IsBit2(tbBR_b); break;//右下
-            case enPadType_SP: res = ppad_->IsBit2(tbBL_b); break;//左下
-            case enPadType_AT: res = GenIsUIBit2(uiTouch); break;//タッチ
-            default: break;
-        }
-        return res;
+        return pad.ButtonB.IsPressed;
     }
 
-    //ダッシュシュート
-    BOOL TMgPad::IsDsShot(enCrsType crs)
-    {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: break;
-            case enPadType_MT: break;
-            case enPadType_FC: break;
-            case enPadType_SP: res = GenIsFlicVecCrs(TRUE, FALSE, crs); break;//左下
-            case enPadType_AT: break;
-            default: break;
-        }
-
-        return res;
-    }
 
     //キャッチ入力
-    BOOL TMgPad::IsCatch()
+    public static bool IsCatch(this IPad pad)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: res = ppad_->IsBtn_DXL(dxB); break;
-            case enPadType_MT: res = ppad_->IsBit(tbBR_b); break;//右下
-            case enPadType_FC: res = ppad_->IsBit(tbBR_b); break;//右下
-            case enPadType_SP: res = ppad_->IsBit(tbBL_b); break;//左下
-            case enPadType_AT: res = GenIsUIBit(uiTouch); break;//タッチ
-            default: break;
-        }
-        return res;
+        return pad.ButtonB.IsJustPressed;
     }
-
-    //キャッチ入力（リリース）
-    BOOL TMgPad::IsCatch3()
-    {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: break;
-            case enPadType_MT: break;
-            case enPadType_FC: break;
-            case enPadType_SP:
-                res = ((ppad_->IsBit(tbBL_r) && (ppad_->IsBitL2(tbBL_b) == FALSE))
-                    //|| ppad_->IsBitL(tbTR_b)
-                    );//左下短リリースか長押し
-                break;
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
-    }
-
 
     //キャッチ後ダッシュ継続入力
-    BOOL TMgPad::IsCatchDash(enCrsType needcrs)
+    public static bool IsCatchDash(this IPad pad, DirectionCrossType needcrs)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: res = ppad_->IsCrs2_DXL(needcrs); break;
-            case enPadType_MT: res = GenIsVecCrs(TRUE, FALSE, needcrs); break;//左下
-            case enPadType_FC: res = GenIsVecCrs(TRUE, FALSE, needcrs); break;
-            case enPadType_SP: break;
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
+        return pad.IsPressedCrs(needcrs);
     }
 
     //よけ入力
-    BOOL TMgPad::IsDodge()
+    public static bool IsDodge(this IPad pad)
     {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: res = ppad_->IsBtn_DXL(dxA); break;
-            case enPadType_MT: res = ppad_->IsBit(tbTR_b); break;//右上
-            case enPadType_FC: res = ppad_->IsBit(tbTR_b); break;//右上
-            case enPadType_SP: res = ppad_->IsBit(tbTR_b); break;//右上
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
-    }
-    //よけ入力おしっぱ
-    BOOL TMgPad::IsDodge2()
-    {
-        BOOL res = FALSE;
-        switch (GetPadType())
-        {
-            case enPadType_DXL: res = ppad_->IsBtn2_DXL(dxA); break;
-            case enPadType_MT: res = ppad_->IsBit2(tbTR_b); break;//右上
-            case enPadType_FC: res = ppad_->IsBit2(tbTR_b); break;//右上
-            case enPadType_SP: res = ppad_->IsBit2(tbTR_b); break;//右上
-            case enPadType_AT: break;
-            default: break;
-        }
-        return res;
+        return pad.ButtonA.IsJustPressed;
     }
 
+    //よけ入力おしっぱ
+    public static bool IsDodge2(this IPad pad)
+    {
+        return pad.ButtonA.IsPressed;
+    }
 }
