@@ -352,62 +352,65 @@ public partial class CharaBehavior
         //最初のタゲを敵の操作キャラに
         //外野の可能性もでるのでなんとかする
         //ShTagSet(false); //拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
-        var passTargetOrderIndex = Order.IsInfield
+        var passTargets = Order.IsInfield
             ? GetNaiyaPassTarget()
             : GetGaiyaPassTarget();
 
-        SetPassTarget(passTargetOrderIndex);
-
-        // 拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
-        if (EnemyTeam.IsAllOut == false)
+        // 最初のターゲットを設定
+        if (passTargets.Length > 0)
         {
-            //シュートタゲは向き反映
-            var orderIndex = GetShootTarget(Shoot.Angle12, false);
+            SetPassTarget(passTargetOrderIndex);
 
-            if (orderIndex == OrderIndexType.Disabled)
+            // 拾った時点でタゲ無しの時はタゲだけ無理矢理近いキャラから取った方が無難かも
+            if (EnemyTeam.IsAllOut == false)
             {
-                if (Composite.IsSelfControl == false)
+                //シュートタゲは向き反映
+                var orderIndex = GetShootTarget(Shoot.Angle12, false);
+
+                if (orderIndex == OrderIndexType.Disabled)
                 {
-                    //CPUだけ無理矢理。後で外すかも
-                    Ball.CallChangeShootTarget(EnemySideIndex, EnemyTeam.Main.ControlOrderIndex);
+                    if (Composite.IsSelfControl == false)
+                    {
+                        //CPUだけ無理矢理。後で外すかも
+                        Ball.CallChangeShootTarget(EnemySideIndex, EnemyTeam.Main.ControlOrderIndex);
+                    }
+                }
+                else
+                {
+                    Ball.CallChangeShootTarget(EnemySideIndex, orderIndex);
+                }
+
+                //カーソルは強制的に内野
+                var enemyControlOrderIndex = GetShootTarget(Shoot.Angle12, true);
+
+                if (enemyControlOrderIndex != OrderIndexType.Disabled) //ないとはおもうが
+                {
+                    EnemyTeam.CallChangeControl(enemyControlOrderIndex);
                 }
             }
-            else
-            {
-                Ball.CallChangeShootTarget(EnemySideIndex, orderIndex);
-            }
-
-            //カーソルは強制的に内野
-            var enemyControlOrderIndex = GetShootTarget(Shoot.Angle12, true);
-
-            if (enemyControlOrderIndex != OrderIndexType.Disabled) //ないとはおもうが
-            {
-                EnemyTeam.CallChangeControl(enemyControlOrderIndex);
-            }
+            // #ifdef __K_DEBUG_SHIAI__
+            //         kdebug::DebugSystem* pDs = kdebug::DebugSystem::GetInstance();
+            //         if (pDs.IsReturnBall())
+            //         {
+            //             if (st_.posNo_ != 0)
+            //             {
+            //                 // ボールが手元に帰ってくる処理
+            //                 pmgGO_.pmgBa_.baCommon_.ResetRefPos_Prev(false);
+            //
+            //                 // 操作キャラを強制的にボール持ってる人に
+            //                 //st_.pmgTm_[SIDE0].st_.pmgMyTm_.SetCtrlBallGet(0);
+            //             }
+            //
+            //             // 自動シュート状態を取得
+            //             int step = pDs.GetAutoShootStep();
+            //             if (step == kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_WAIT)
+            //             {
+            //                 pDs.SetReturnBallFlg(false); // フラグを落とす
+            //                 pDs.SetAutoShootStep(kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_CHOOSE);
+            //             }
+            //         }
+            // #endif // #ifdef __K_DEBUG_SHIAI__
         }
-        // #ifdef __K_DEBUG_SHIAI__
-        //         kdebug::DebugSystem* pDs = kdebug::DebugSystem::GetInstance();
-        //         if (pDs.IsReturnBall())
-        //         {
-        //             if (st_.posNo_ != 0)
-        //             {
-        //                 // ボールが手元に帰ってくる処理
-        //                 pmgGO_.pmgBa_.baCommon_.ResetRefPos_Prev(false);
-        //
-        //                 // 操作キャラを強制的にボール持ってる人に
-        //                 //st_.pmgTm_[SIDE0].st_.pmgMyTm_.SetCtrlBallGet(0);
-        //             }
-        //
-        //             // 自動シュー��状態を取得
-        //             int step = pDs.GetAutoShootStep();
-        //             if (step == kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_WAIT)
-        //             {
-        //                 pDs.SetReturnBallFlg(false); // フラグを落とす
-        //                 pDs.SetAutoShootStep(kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_CHOOSE);
-        //             }
-        //         }
-        // #endif // #ifdef __K_DEBUG_SHIAI__
-    }
 
 
     private void SetShootTarget(OrderIndexType orderIndex)
@@ -833,7 +836,7 @@ public partial class CharaBehavior
                 if (dgbtn2_f && Composite.IsBallHolder == false)
                 {
                     // ほかとアニメーション継続の形を合わせる
-                    // MyAnime.Ani_c = 0; //こんなんでいいのだろうか
+                    // MyAnime.Ani_c = 0; //こんなんでいのだろうか
                 }
                 break;
         }
@@ -897,13 +900,13 @@ public partial class CharaBehavior
         //         #ifdef __K_DEBUG_SHIAI__
         //         kdebug::DebugSystem* pDs = kdebug::DebugSystem::GetInstance();
         //         bool isAutoShot = false;
-        //         // ���動シュート状態を取得
+        //         // 動シュート状態を取得
         //         int step = pDs.GetAutoShootStep();
         //         if (step == kdebug::AUTO_SHOOT_SYSTEM::ASS_STEP_STANDBY)
         //         {
         //             // この状態で手元にボールがないのがおかしいので
         //             // 強制的に手元に戻す
-        //             // なのでこのif文���は例外処理
+        //             // なのでこのif文は例外処理
         //             if ((pmgSG_.stBa_.Motion != bmHold)
         //                 || (pmgSG_.stBa_.HoldTNo != 0)
         //                 || (pmgSG_.stBa_.HoldPNo != 0))

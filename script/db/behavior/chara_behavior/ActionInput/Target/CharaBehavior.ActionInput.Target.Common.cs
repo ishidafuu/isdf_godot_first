@@ -20,11 +20,16 @@ public partial class CharaBehavior
         Back
     }
 
-    // 再利用する配列
+    // 再利用する配列（内部処理用）
     private static readonly PassTargetType[] EmptyPassTags = Array.Empty<PassTargetType>();
     private static readonly PassTargetType[] SinglePassTag = new PassTargetType[1];
     private static readonly PassTargetType[] MultiPassTags = new PassTargetType[4];
     private static readonly float[] DistanceBuffer = new float[4];
+    private static readonly CharaBehavior[] TeamCharas = new CharaBehavior[Defines.DBMEMBER_INF];
+
+    // 再利用する配列（結果用）
+    private static readonly OrderIndexType[] ResultPassTags = new OrderIndexType[4];
+    private static readonly OrderIndexType[] ResultSingleTag = new OrderIndexType[1];
 
     /// <summary>
     /// キー入力の状態を管理する構造体
@@ -212,27 +217,17 @@ public partial class CharaBehavior
     /// <returns>チームのキャラクター配列</returns>
     private CharaBehavior[] GetTeamCharas()
     {
-        var result = new CharaBehavior[Defines.DBMEMBER_INF];
         for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
             if ((OrderIndexType)order == MyOrderIndex)
             {
+                TeamCharas[order] = null;
                 continue;
             }
 
-            result[order] = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
+            TeamCharas[order] = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
         }
-        return result;
-    }
-
-    /// <summary>
-    /// パスタグが無効かどうかをチェックします
-    /// </summary>
-    /// <param name="order">チェック対象のオーダー</param>
-    /// <returns>パスタグが無効な場合はtrue</returns>
-    private bool IsNGPassTag(int order)
-    {
-        return (OrderIndexType)order == MyOrderIndex || IsCheckLandEnPos(order);
+        return TeamCharas;
     }
 
     /// <summary>
@@ -258,5 +253,76 @@ public partial class CharaBehavior
         var angle = MathF.Atan2(z, x);
         if (angle < 0) angle += PI2;
         return (int)(angle * 6 / MathF.PI);
+    }
+
+    /// <summary>
+    /// パスターゲットタイプをオーダーインデックスに変換します
+    /// </summary>
+    /// <param name="passTargets">パスターゲットタイプの配列</param>
+    /// <returns>オーダーインデックスの配列</returns>
+    private OrderIndexType[] ConvertToOrderIndex(PassTargetType[] passTargets)
+    {
+        if (passTargets.Length == 0) return Array.Empty<OrderIndexType>();
+
+        var count = 0;
+        foreach (var target in passTargets)
+        {
+            foreach (var chara in GetTeamCharas())
+            {
+                if (chara.GetNaiyaTarget() == target)
+                {
+                    ResultPassTags[count++] = chara.Order.OrderIndex;
+                    break;
+                }
+            }
+        }
+
+        if (count == 0) return Array.Empty<OrderIndexType>();
+        if (count == 1)
+        {
+            ResultSingleTag[0] = ResultPassTags[0];
+            return ResultSingleTag;
+        }
+
+        var result = new OrderIndexType[count];
+        Array.Copy(ResultPassTags, result, count);
+        return result;
+    }
+
+    /// <summary>
+    /// キー入力状態からパスターゲットを取得します
+    /// </summary>
+    private PassTargetType[] GetPassTargetsFromKeyState(PassTargetKeyState keyState, PositionState positionState)
+    {
+        var count = 0;
+
+        // ダッシュマンパス
+        if (keyState.isNeutralKey)
+        {
+            MultiPassTags[count++] = PassTargetType.Dashman;
+        }
+
+        // 通常パス
+        if (keyState.isLeftKey || keyState.isRightKey)
+        {
+            MultiPassTags[count++] = PassTargetType.Side;
+        }
+        if (keyState.isUpKey)
+        {
+            MultiPassTags[count++] = PassTargetType.Front;
+        }
+        if (keyState.isDownKey)
+        {
+            MultiPassTags[count++] = PassTargetType.Back;
+        }
+
+        if (count == 0) return EmptyPassTags;
+        if (count == 1)
+        {
+            SinglePassTag[0] = MultiPassTags[0];
+            return SinglePassTag;
+        }
+
+        return MultiPassTags;
     }
 }

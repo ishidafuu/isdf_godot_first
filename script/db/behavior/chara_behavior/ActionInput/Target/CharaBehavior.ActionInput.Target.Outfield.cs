@@ -33,18 +33,22 @@ public partial class CharaBehavior
 
 
     /// <summary>
-    /// 外野パスのターゲットを取得します
+    /// 外野のパスターゲットを取得します
     /// </summary>
-    /// <returns>外野パスの対象ターゲット配列</returns>
-    private PassTargetType[] GetGaiyaPassTarget()
+    /// <returns>パスターゲットの配列</returns>
+    private OrderIndexType[] GetGaiyaPassTarget()
     {
-        var state = InitializeGaiyaPassTargetState();
         var keyState = GetPassTargetKeyState();
+        var positionState = InitializePositionState();
 
-        ProcessGaiyaDashmanPass(ref state, keyState);
-        ProcessGaiyaNormalPass(ref state, keyState);
+        foreach (var chara in GetTeamCharas())
+        {
+            if (chara == null) continue;
+            UpdatePositionState(chara, ref positionState);
+        }
 
-        return state.sortedPassTargets;
+        var targets = GetPassTargetsFromKeyState(keyState, positionState);
+        return ConvertToOrderIndex(targets);
     }
 
     /// <summary>

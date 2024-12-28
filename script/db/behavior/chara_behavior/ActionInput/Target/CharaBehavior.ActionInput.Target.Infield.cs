@@ -45,18 +45,59 @@ public partial class CharaBehavior
     }
 
     /// <summary>
-    /// 内野パスのターゲットを取得します
+    /// 内野のパスターゲットを取得します
     /// </summary>
-    /// <returns>内野パスの対象ターゲット配列</returns>
-    private PassTargetType[] GetNaiyaPassTarget()
+    /// <returns>パスターゲットの配列</returns>
+    private OrderIndexType[] GetNaiyaPassTarget()
     {
-        var state = InitializePassTargetState();
         var keyState = GetPassTargetKeyState();
+        var positionState = InitializePositionState();
 
-        ProcessDashmanPass(ref state, keyState);
-        ProcessNormalPass(ref state, keyState);
+        foreach (var chara in GetTeamCharas())
+        {
+            if (chara == null) continue;
+            UpdatePositionState(chara, ref positionState);
+        }
 
-        return state.sortedPassTargets;
+        var targets = GetPassTargetsFromKeyState(keyState, positionState);
+        return ConvertToOrderIndex(targets);
+    }
+
+    /// <summary>
+    /// パスターゲットを取得します
+    /// </summary>
+    private PassTargetType[] GetPassTargets(PassTargetKeyState keyState, PositionState positionState)
+    {
+        var count = 0;
+
+        // ダッシュマンパス
+        if (keyState.isNeutralKey)
+        {
+            MultiPassTags[count++] = PassTargetType.Dashman;
+        }
+
+        // 通常パス
+        if (keyState.isLeftKey || keyState.isRightKey)
+        {
+            MultiPassTags[count++] = PassTargetType.Side;
+        }
+        if (keyState.isUpKey)
+        {
+            MultiPassTags[count++] = PassTargetType.Front;
+        }
+        if (keyState.isDownKey)
+        {
+            MultiPassTags[count++] = PassTargetType.Back;
+        }
+
+        if (count == 0) return EmptyPassTags;
+        if (count == 1)
+        {
+            SinglePassTag[0] = MultiPassTags[0];
+            return SinglePassTag;
+        }
+
+        return MultiPassTags;
     }
 
     /// <summary>
