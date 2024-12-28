@@ -97,4 +97,25 @@ public partial class CharaBehavior
             ? subTargetOrderIndex
             : targetOrderIndex;
     }
+
+    /// <summary>
+    /// シュートターゲットの存在をチェックします
+    /// 有効なシュートターゲットが存在するかを確認します
+    /// </summary>
+    /// <returns>シュートターゲットが存在しない場合はtrue</returns>
+    private bool IsShTag()
+    {
+        return Ball.Main.ShotTargetSide != MySideIndex
+               || Ball.Main.ShotTargetOrder == OrderIndexType.Disabled;
+    }
+
+    /// <summary>
+    /// シュートターゲットの設定を行います
+    /// 現在の角度に基づいてシュートターゲットを設定します
+    /// </summary>
+    /// <param name="isIgnoreDirection">向きを無視するかどうか</param>
+    private void SetShTagFromMyShootAngle12(bool isIgnoreDirection)
+    {
+        Ball.CallChangeShootTarget(EnemySideIndex, GetShootTarget(Shoot.Angle12, isIgnoreDirection));
+    }
 }
