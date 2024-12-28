@@ -12,54 +12,356 @@ public partial class CharaBehavior
     /// <returns>選択されたパスターゲットのオーダーインデックス</returns>
     private OrderIndexType GetNaiyaPassTag()
     {
-        var isNoneTarget = true; //完全にタゲが居ない
-        var isNoneAngleTarget = true; //向き方向にタゲが居ない
+        var state = InitializePassTagState();
+        var keyState = GetPassTagKeyState();
+        var positionState = InitializePositionState();
 
-        var passDirectionX = Coordinate.DirectionX;
-        var passDirectionZ = Coordinate.DirectionZ;
+        // ダッシュマンパス処理
+        if (state.isDashmanPass)
+        {
+            if (ProcessDashmanPass(state, keyState, positionState))
+            {
+                return GetDashmanPassTarget(state, keyState, positionState);
+            }
+        }
 
-        var isLeftKey = false;
-        var isRightKey = false;
-        var isUpKey = false;
-        var isDownKey = false;
+        // 通常パス処理
+        if (ProcessNormalPass(state, keyState, positionState))
+        {
+            return GetOutfieldPassTarget(state, keyState, positionState);
+        }
 
+        return GetSortedPassTarget(state, keyState);
+    }
+
+    /// <summary>
+    /// パスターゲットの状態を管理する構造体
+    /// </summary>
+    private struct PassTagState
+    {
+        /// <summary>完全にターゲットが存在しない状態</summary>
+        public bool isNoneTarget;
+        /// <summary>向き方向にターゲットが存在しない状態</summary>
+        public bool isNoneAngleTarget;
+        /// <summary>ダッシュマンへのパス状態</summary>
+        public bool isDashmanPass;
+        /// <summary>パスの方向（X軸）</summary>
+        public DirectionXType passDirectionX;
+        /// <summary>パスの方向（Z軸）</summary>
+        public DirectionZType passDirectionZ;
+        /// <summary>内野方向を向いているかどうか</summary>
+        public bool isInfieldDirection;
+        /// <summary>敵コート方向のキー入力があるかどうか</summary>
+        public bool isEnemyCourtKey;
+    }
+
+    /// <summary>
+    /// キー入力の状態を管理する構造体
+    /// </summary>
+    private struct PassTagKeyState
+    {
+        /// <summary>左キーが押されているかどうか</summary>
+        public bool isLeftKey;
+        /// <summary>右キーが押されているかどうか</summary>
+        public bool isRightKey;
+        /// <summary>上キーが押されているかどうか</summary>
+        public bool isUpKey;
+        /// <summary>下キーが押されているかどうか</summary>
+        public bool isDownKey;
+        /// <summary>方向キーが押されていない状態かどうか</summary>
+        public bool isNeutralKey;
+    }
+
+    /// <summary>
+    /// プレイヤーの位置状態を管理する構造体
+    /// </summary>
+    private struct PositionState
+    {
+        /// <summary>最前列のポジションにいるかどうか</summary>
+        public bool isTopPosition;
+        /// <summary>最前方のポジションにいるかどうか</summary>
+        public bool isFrontPosition;
+        /// <summary>最後方のポジションにいるかどうか</summary>
+        public bool isBackwardPosition;
+    }
+
+    /// <summary>
+    /// パスターゲットの状態を初期化します
+    /// </summary>
+    /// <returns>初期化されたパスターゲットの状態</returns>
+    private PassTagState InitializePassTagState()
+    {
+        return new PassTagState
+        {
+            isNoneTarget = true,
+            isNoneAngleTarget = true,
+            isDashmanPass = MyTeam.Position.DashmanNum > 0,
+            passDirectionX = Coordinate.DirectionX,
+            passDirectionZ = Coordinate.DirectionZ,
+            isInfieldDirection = GetInfieldDirection(Coordinate.DirectionX),
+            isEnemyCourtKey = (MySideIndex == 0 && Pad.KeyRight.IsPressed) || (MySideIndex == 1 && Pad.KeyLeft.IsPressed)
+        };
+    }
+
+    /// <summary>
+    /// キー入力の状態を取得します
+    /// </summary>
+    /// <returns>現在のキー入力状態</returns>
+    private PassTagKeyState GetPassTagKeyState()
+    {
+        var (isLeftKey, isRightKey, isUpKey, isDownKey) = GetKeyInputs();
         if (Composite.IsSelfControl)
         {
-            isLeftKey = Pad.KeyLeft.IsPressed; //パス方向入力
+            isLeftKey = Pad.KeyLeft.IsPressed;
             isRightKey = Pad.KeyRight.IsPressed;
             isUpKey = Pad.KeyUp.IsPressed;
             isDownKey = Pad.KeyDown.IsPressed;
         }
 
-        //内野方向を向いてる
-        var isInfieldDirection = MySideIndex == 0
-            ? passDirectionX == DirectionXType.Left
-            : passDirectionX == DirectionXType.Right;
+        return new PassTagKeyState
+        {
+            isLeftKey = isLeftKey,
+            isRightKey = isRightKey,
+            isUpKey = isUpKey,
+            isDownKey = isDownKey,
+            isNeutralKey = !(isLeftKey || isRightKey || isUpKey || isDownKey)
+        };
+    }
 
-        var isEnemyCourtKey = (MySideIndex == 0 && isRightKey) || (MySideIndex == 1 && isLeftKey);
+    /// <summary>
+    /// 位置状態を初期化します
+    /// </summary>
+    /// <returns>初期化された位置状態</returns>
+    private PositionState InitializePositionState()
+    {
+        return new PositionState
+        {
+            isTopPosition = true,
+            isFrontPosition = true,
+            isBackwardPosition = true
+        };
+    }
 
-        //十字入ってない
-        var isNeutralKey = (isLeftKey || isRightKey || isUpKey || isDownKey) == false;
+    /// <summary>
+    /// ダッシュマンパスの処理を行います
+    /// </summary>
+    /// <param name="state">パスターゲットの状態</param>
+    /// <param name="keyState">キー入力の状態</param>
+    /// <param name="positionState">位置の状態</param>
+    /// <returns>ダッシュマンパスが可能な場合はtrue</returns>
+    private bool ProcessDashmanPass(PassTagState state, PassTagKeyState keyState, PositionState positionState)
+    {
+        TmpStateManager.Instance.TmpState.Clear();
+        var isSelectTarget = TmpStateManager.Instance.TmpState.isSelectTarget;
 
-        //左コート時、内野内で一番右にいる
-        var isTopPosition = true;
-        var isFrontPosition = true; //一番手前にいる
-        var isBackwardPosition = true; //一番奥にいる
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+        {
+            if ((OrderIndexType)order == MyOrderIndex)
+            {
+                continue;
+            }
 
-        //ダッシュマンへパス
-        var isDashmanPass = MyTeam.Position.DashmanNum > 0;
+            var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
 
-        var distO2 = Math.Abs(Coordinate.Z - Defines.DBCRT_BL);
-        var distO3 = Math.Abs(Coordinate.Z - Defines.DBCRT_FL);
-        var isNearO2 = distO2 < distO3;
+            if (!chara.Composite.IsDashman)
+            {
+                continue;
+            }
 
+            isSelectTarget[order] = enNaiyaTag.TGOK;
+            state.isNoneAngleTarget = false;
+
+            UpdatePositionState(chara, ref positionState);
+        }
+
+        return !state.isNoneAngleTarget;
+    }
+
+    /// <summary>
+    /// キャラクターの位置状態を更新します
+    /// </summary>
+    /// <param name="chara">更新対象のキャラクター</param>
+    /// <param name="state">更新する位置状態</param>
+    private void UpdatePositionState(CharaBehavior chara, ref PositionState state)
+    {
+        if (chara.Composite.LeftCourtX > Composite.LeftCourtX)
+        {
+            state.isTopPosition = false;
+        }
+
+        if (chara.Coordinate.Z > Coordinate.Z)
+        {
+            state.isBackwardPosition = false;
+        }
+
+        if (chara.Coordinate.Z < Coordinate.Z)
+        {
+            state.isFrontPosition = false;
+        }
+    }
+
+    /// <summary>
+    /// 通常パスの処理を行います
+    /// </summary>
+    /// <param name="state">パスターゲットの状態</param>
+    /// <param name="keyState">キー入力の状態</param>
+    /// <param name="positionState">位置の状態</param>
+    /// <returns>外野パスが必要な場合はtrue</returns>
+    private bool ProcessNormalPass(PassTagState state, PassTagKeyState keyState, PositionState positionState)
+    {
+        TmpStateManager.Instance.TmpState.Clear();
+        var isSelectTarget = TmpStateManager.Instance.TmpState.isSelectTarget;
+
+        for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
+        {
+            if (IsNGPassTag(order))
+            {
+                isSelectTarget[order] = enNaiyaTag.TGNG;
+                continue;
+            }
+
+            state.isNoneTarget = false;
+            var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
+
+            isSelectTarget[order] = IsCheckNoAgl(chara.Coordinate.X, chara.Coordinate.Z)
+                ? enNaiyaTag.TGNOAGL
+                : enNaiyaTag.TGOK;
+
+            if (isSelectTarget[order] == enNaiyaTag.TGOK)
+            {
+                state.isNoneAngleTarget = false;
+            }
+
+            UpdatePositionState(chara, ref positionState);
+        }
+
+        return state.isNoneTarget || ((state.isInfieldDirection == false && positionState.isTopPosition));
+    }
+
+    /// <summary>
+    /// ダッシュマンへのパスターゲットを取得します
+    /// </summary>
+    /// <param name="state">パスターゲットの状態</param>
+    /// <param name="keyState">キー入力の状態</param>
+    /// <param name="positionState">位置の状態</param>
+    /// <returns>選択されたパスターゲットのオーダーインデックス</returns>
+    private OrderIndexType GetDashmanPassTarget(PassTagState state, PassTagKeyState keyState, PositionState positionState)
+    {
+        if (positionState.isTopPosition && state.isEnemyCourtKey)
+        {
+            if (keyState.isUpKey)
+            {
+                return OrderIndexType.Outfield2;
+            }
+
+            if (keyState.isDownKey)
+            {
+                return OrderIndexType.Outfield3;
+            }
+
+            var distO2 = Math.Abs(Coordinate.Z - Defines.DBCRT_BL);
+            var distO3 = Math.Abs(Coordinate.Z - Defines.DBCRT_FL);
+            return distO2 < distO3 ? OrderIndexType.Outfield2 : OrderIndexType.Outfield3;
+        }
+
+        if (positionState.isFrontPosition && keyState.isDownKey)
+        {
+            return OrderIndexType.Outfield3;
+        }
+
+        if (positionState.isBackwardPosition && keyState.isUpKey)
+        {
+            return OrderIndexType.Outfield2;
+        }
+
+        return GetSortedPassTarget(state, keyState);
+    }
+
+    /// <summary>
+    /// 外野へのパスターゲットを取得します
+    /// </summary>
+    /// <param name="state">パスターゲットの状態</param>
+    /// <param name="keyState">キー入力の状態</param>
+    /// <param name="positionState">位置の状態</param>
+    /// <returns>選択されたパスターゲットのオーダーインデックス</returns>
+    private OrderIndexType GetOutfieldPassTarget(PassTagState state, PassTagKeyState keyState, PositionState positionState)
+    {
+        if (Motion.MotionType == CharaMotionType.Ds)
+        {
+            if (Composite.IsSelfControl)
+            {
+                if (keyState.isUpKey) return OrderIndexType.Outfield2;
+                if (keyState.isDownKey) return OrderIndexType.Outfield3;
+                if (state.isEnemyCourtKey) return OrderIndexType.Outfield4;
+
+                var distO2 = Math.Abs(Coordinate.Z - Defines.DBCRT_BL);
+                var distO3 = Math.Abs(Coordinate.Z - Defines.DBCRT_FL);
+                return distO2 < distO3 ? OrderIndexType.Outfield2 : OrderIndexType.Outfield3;
+            }
+
+            return Auto.DirectionZ switch
+            {
+                DirectionZType.Backward => OrderIndexType.Outfield2,
+                DirectionZType.Forward => OrderIndexType.Outfield3,
+                _ => OrderIndexType.Outfield4,
+            };
+        }
+
+        return GetOutfieldPassTargetByDirection(state);
+    }
+
+    /// <summary>
+    /// 方向に基づいて外野パスターゲットを取得します
+    /// </summary>
+    /// <param name="state">パスターゲットの状態</param>
+    /// <returns>選択されたパスターゲットのオーダーインデックス</returns>
+    private OrderIndexType GetOutfieldPassTargetByDirection(PassTagState state)
+    {
+        switch (state.passDirectionZ)
+        {
+            case DirectionZType.Backward:
+                return OrderIndexType.Outfield2;
+            case DirectionZType.Forward:
+                return OrderIndexType.Outfield3;
+            default:
+                if (state.isEnemyCourtKey)
+                {
+                    return OrderIndexType.Outfield4;
+                }
+
+                var distO2 = Math.Abs(Coordinate.Z - Defines.DBCRT_BL);
+                var distO3 = Math.Abs(Coordinate.Z - Defines.DBCRT_FL);
+                return distO2 < distO3 ? OrderIndexType.Outfield2 : OrderIndexType.Outfield3;
+        }
+    }
+
+    /// <summary>
+    /// ソートされたパスターゲットを取得します
+    /// </summary>
+    /// <param name="state">パスターゲットの状態</param>
+    /// <param name="keyState">キー入力の状態</param>
+    /// <returns>優先順位が最も高いパスターゲットのオーダーインデックス</returns>
+    private OrderIndexType GetSortedPassTarget(PassTagState state, PassTagKeyState keyState)
+    {
         TmpStateManager.Instance.TmpState.Clear();
         var targetDist = TmpStateManager.Instance.TmpState.targetDist;
         var isSelectTarget = TmpStateManager.Instance.TmpState.isSelectTarget;
         var targetOrder = TmpStateManager.Instance.TmpState.targetOrder;
         var sortValue = TmpStateManager.Instance.TmpState.sortValue;
 
-        //内野全員との距離を取る
+        CalculateTargetDistances(targetDist);
+        var targetCount = PrepareTargetsForSort(state, keyState, isSelectTarget, targetOrder, sortValue);
+        SortTargets(targetCount, targetOrder, sortValue);
+
+        return targetOrder[0];
+    }
+
+    /// <summary>
+    /// ターゲットまでの距離を計算します
+    /// </summary>
+    /// <param name="targetDist">距離を格納する配列</param>
+    private void CalculateTargetDistances(int[] targetDist)
+    {
         for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
             if ((OrderIndexType)order == MyOrderIndex)
@@ -69,237 +371,86 @@ public partial class CharaBehavior
 
             targetDist[order] = Coordinate.DistanceXZ(MySideOrders[order].Coordinate);
         }
+    }
 
-        //パスが出せるダッシュマンがいるか
-        if (isDashmanPass) //ダッシュマンへパス
-        {
-            //内野全員との角度を取る
-            for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
-            {
-                if ((OrderIndexType)order == MyOrderIndex)
-                {
-                    continue;
-                }
-
-                var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
-
-                if (chara.Composite.IsDashman == false)
-                {
-                    continue;
-                }
-
-                //向き方向に居る
-                isSelectTarget[order] = enNaiyaTag.TGOK;
-
-                isNoneAngleTarget = false; //一人でも向き方向にタゲが見つかった
-
-                //右にダッシュマンがいる
-                if (chara.Composite.LeftCourtX > Composite.LeftCourtX)
-                {
-                    isTopPosition = false;
-                }
-
-                //奥にダッシュマンがいる
-                if (chara.Coordinate.Z > Coordinate.Z)
-                {
-                    isBackwardPosition = false;
-                }
-
-                //手前にダッシュマンがいる
-                if (chara.Coordinate.Z < Coordinate.Z)
-                {
-                    isFrontPosition = false;
-                }
-            }
-
-            //パスが出せるダッシュマンがいない
-            if (isNoneAngleTarget)
-            {
-                isDashmanPass = false;
-            }
-        }
-
-        //最終的にダッシュマンいない
-        if (isDashmanPass == false)
-        {
-            //内野全員との角度を取る
-            for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
-            {
-                if (IsNGPassTag(order))
-                {
-                    isSelectTarget[order] = enNaiyaTag.TGNG;
-                    continue;
-                }
-                isNoneTarget = false; //一応タゲ可能は人はいる
-
-                var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
-
-                if (IsCheckNoAgl(chara.Coordinate.X, chara.Coordinate.Z))
-                {
-                    //向きに居ない
-                    isSelectTarget[order] = enNaiyaTag.TGNOAGL;
-                }
-                else
-                {
-                    //向き方向に居る
-                    isSelectTarget[order] = enNaiyaTag.TGOK;
-                    isNoneAngleTarget = false; //一人でも向き方向にタゲが見つかった
-                }
-
-                //誰か右にいる
-                if (chara.Composite.LeftCourtX > Composite.LeftCourtX)
-                {
-                    isTopPosition = false;
-                }
-
-                //奥にいる
-                if (chara.Coordinate.Z > Coordinate.Z)
-                {
-                    isBackwardPosition = false;
-                }
-
-                //手前にいる
-                if (chara.Coordinate.Z < Coordinate.Z)
-                {
-                    isFrontPosition = false;
-                }
-            }
-        }
-
-        //ダッシュマンいるとき
-        if (isDashmanPass)
-        {
-            if (isTopPosition && isEnemyCourtKey) //先頭で右→が入ってるのときのみ
-            {
-                if (isUpKey)
-                {
-                    return OrderIndexType.Outfield2; //右上
-                }
-
-                if (isDownKey)
-                {
-                    return OrderIndexType.Outfield3; //右下
-                }
-
-                //右のみ
-                return isNearO2
-                    ? OrderIndexType.Outfield2
-                    : OrderIndexType.Outfield3;
-            }
-
-            if (isFrontPosition) //一番手前に居る
-            {
-                if (isDownKey)
-                {
-                    return OrderIndexType.Outfield3; //右下
-                }
-            }
-
-            if (isBackwardPosition) //一番奥に居る
-            {
-                if (isUpKey)
-                {
-                    return OrderIndexType.Outfield2; //右下
-                }
-            }
-        }
-        else if ((isInfieldDirection == false && isTopPosition) || isNoneTarget) //右向き時しかも先頭もしくは孤立(→外野パス)
-        {
-            if (Motion.MotionType == CharaMotionType.Ds) //ダッシュ中
-            {
-                if (Composite.IsSelfControl)
-                {
-                    if (isUpKey) return OrderIndexType.Outfield2; //上
-                    if (isDownKey) return OrderIndexType.Outfield3; //下
-                    if (isEnemyCourtKey) return OrderIndexType.Outfield4; //右
-
-                    return isNearO2
-                        ? OrderIndexType.Outfield2
-                        : OrderIndexType.Outfield3;
-                }
-
-                return Auto.DirectionZ switch
-                {
-                    DirectionZType.Backward => OrderIndexType.Outfield2,
-                    DirectionZType.Forward => OrderIndexType.Outfield3,
-                    _ => OrderIndexType.Outfield4,
-                };
-            }
-
-            switch (passDirectionZ)
-            {
-                case DirectionZType.Backward:
-                    return OrderIndexType.Outfield2;
-                case DirectionZType.Forward:
-                    return OrderIndexType.Outfield3;
-                default:
-                    if (isEnemyCourtKey)
-                    {
-                        return OrderIndexType.Outfield4;
-                    }
-
-                    return isNearO2
-                        ? OrderIndexType.Outfield2
-                        : OrderIndexType.Outfield3;
-            }
-        }
-
-        var f = 0;
+    /// <summary>
+    /// ソート用のターゲットを準備します
+    /// </summary>
+    /// <param name="state">パスターゲットの状態</param>
+    /// <param name="keyState">キー入力の状態</param>
+    /// <param name="isSelectTarget">選択可能なターゲットの配列</param>
+    /// <param name="targetOrder">ターゲットの順序配列</param>
+    /// <param name="sortValue">ソート用の値配列</param>
+    /// <returns>有効なターゲットの数</returns>
+    private int PrepareTargetsForSort(PassTagState state, PassTagKeyState keyState, enNaiyaTag[] isSelectTarget, OrderIndexType[] targetOrder, int[] sortValue)
+    {
+        var targetCount = 0;
 
         for (var order = 0; order < Defines.DBMEMBER_INF; ++order)
         {
-            //向き方向に人なしのとき
-
-            if (isSelectTarget[order] != enNaiyaTag.TGOK
-                && (!isNoneAngleTarget || isSelectTarget[order] == enNaiyaTag.TGNG))
+            if (isSelectTarget[order] != enNaiyaTag.TGOK && (!state.isNoneAngleTarget || isSelectTarget[order] == enNaiyaTag.TGNG))
             {
-                targetOrder[f] = OrderIndexType.Disabled;
+                targetOrder[targetCount] = OrderIndexType.Disabled;
                 continue;
             }
 
-            if (isNeutralKey) //ニュートラル
-            {
-                sortValue[order] = targetDist[order]; //内野間は距離が近い人
-            }
-            else
-            {
-                var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
-
-                //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
-                var tgZ = isDashmanPass
-                    ? chara.Dashman.TargetZ
-                    : chara.Coordinate.Z;
-
-                //上
-                if (isUpKey)
-                {
-                    sortValue[order] = -tgZ; //Ｚのマイナス（上ほど優先）
-                }
-                else if (isDownKey) //下
-                {
-                    sortValue[order] = +tgZ; //Ｚ（下ほど優先）
-                }
-
-                //上下が入ってるとき用に合計値
-                if (isLeftKey) //左
-                {
-                    sortValue[order] += chara.Coordinate.X; //Ｘ（左ほど優先）
-                }
-                else if (isRightKey) //右
-                {
-                    sortValue[order] -= chara.Coordinate.X; //Ｘのマイナス（右ほど優先）
-                }
-            }
-
-            targetOrder[f] = (OrderIndexType)order;
-
-            f++;
+            var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
+            sortValue[order] = CalculateSortValue(keyState, chara, order);
+            targetOrder[targetCount++] = (OrderIndexType)order;
         }
 
-        //ソート
-        for (var i = 0; i < Defines.DBMEMBER_INF - 1; ++i)
+        return targetCount;
+    }
+
+    /// <summary>
+    /// ターゲットのソート値を計算します
+    /// </summary>
+    /// <param name="keyState">キー入力の状態</param>
+    /// <param name="chara">対象のキャラクター</param>
+    /// <param name="order">キャラクターの順序</param>
+    /// <returns>計算されたソート値</returns>
+    private int CalculateSortValue(PassTagKeyState keyState, CharaBehavior chara, int order)
+    {
+        if (keyState.isNeutralKey)
         {
-            for (var i2 = 0; i2 < Defines.DBMEMBER_INF - 1; i2++)
+            return TmpStateManager.Instance.TmpState.targetDist[order];
+        }
+
+        var tgZ = chara.Coordinate.Z;
+        var value = 0;
+
+        if (keyState.isUpKey)
+        {
+            value = -tgZ;
+        }
+        else if (keyState.isDownKey)
+        {
+            value = +tgZ;
+        }
+
+        if (keyState.isLeftKey)
+        {
+            value += chara.Coordinate.X;
+        }
+        else if (keyState.isRightKey)
+        {
+            value -= chara.Coordinate.X;
+        }
+
+        return value;
+    }
+
+    /// <summary>
+    /// ターゲットをソートします
+    /// </summary>
+    /// <param name="targetCount">ソート対象の数</param>
+    /// <param name="targetOrder">ターゲットの順序配列</param>
+    /// <param name="sortValue">ソート用の値配列</param>
+    private void SortTargets(int targetCount, OrderIndexType[] targetOrder, int[] sortValue)
+    {
+        for (var i = 0; i < targetCount - 1; ++i)
+        {
+            for (var i2 = 0; i2 < targetCount - 1; i2++)
             {
                 if (i == i2
                     || targetOrder[i] == OrderIndexType.Disabled
@@ -308,17 +459,44 @@ public partial class CharaBehavior
                     continue;
                 }
 
-                if (sortValue[(int)targetOrder[i]] < sortValue[(int)targetOrder[i2]]) //小さい方優先
+                if (sortValue[(int)targetOrder[i]] < sortValue[(int)targetOrder[i2]])
                 {
                     (targetOrder[i2], targetOrder[i]) = (targetOrder[i], targetOrder[i2]);
                 }
             }
         }
-
-        //ソート１位
-        return targetOrder[0];
     }
 
+    /// <summary>
+    /// キー入力の状態を取得します
+    /// </summary>
+    /// <returns>各方向キーの入力状態をタプルで返します</returns>
+    private (bool isLeftKey, bool isRightKey, bool isUpKey, bool isDownKey) GetKeyInputs()
+    {
+        if (!Composite.IsSelfControl)
+        {
+            return (false, false, false, false);
+        }
+
+        return (
+            Pad.KeyLeft.IsPressed,
+            Pad.KeyRight.IsPressed,
+            Pad.KeyUp.IsPressed,
+            Pad.KeyDown.IsPressed
+        );
+    }
+
+    /// <summary>
+    /// 内野方向を判定します
+    /// </summary>
+    /// <param name="passDirectionX">パスのX方向</param>
+    /// <returns>内野方向の場合はtrue</returns>
+    private bool GetInfieldDirection(DirectionXType passDirectionX)
+    {
+        return MySideIndex == 0
+            ? passDirectionX == DirectionXType.Left
+            : passDirectionX == DirectionXType.Right;
+    }
 
     /// <summary>
     /// 外野のパスターゲットを取得します
@@ -514,10 +692,6 @@ public partial class CharaBehavior
             {
                 var chara = CharaBehaviorManager.Instance.GetOrderChara(MySideIndex, order);
 
-                // //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
-                // var tgZ = isDashmanPass
-                //     ? chara.MyState.Dashman.TargetZ
-                //     : chara.MyCoordinate.Z;
                 //ダッシュマンが居るときは現在Ｚではなく、目標Ｚ
                 var tgZ = chara.Dashman.TargetZ;
 
@@ -539,11 +713,6 @@ public partial class CharaBehavior
                 {
                     sortValue[order] -= chara.Coordinate.X; //Ｘのマイナス（右ほど優先）
                 }
-                //else//ニュートラル
-                //{
-                //  //sortValue[i] = (var)sltgXZ[i];//距離
-                //  sortValue[i] = (var)sltgX[i];//先頭を走ってる人
-                //}
             }
 
             targetOrder[f++] = (OrderIndexType)order;
@@ -591,7 +760,6 @@ public partial class CharaBehavior
         //ソート１位
         return targetOrder[0];
     }
-
 
     /// <summary>
     /// COMダッシュマンのパスターゲットを設定します
@@ -870,7 +1038,6 @@ public partial class CharaBehavior
             : targetOrderIndex;
     }
 
-
     /// <summary>
     /// シュートターゲットの存在をチェックします
     /// 有効なシュートターゲットが存在するかを確認します
@@ -882,7 +1049,6 @@ public partial class CharaBehavior
                || Ball.Main.ShotTargetOrder == OrderIndexType.Disabled;
     }
 
-
     /// <summary>
     /// シュートターゲットの設定を行います
     /// 現在の角度に基づいてシュートターゲットを設定します
@@ -892,5 +1058,4 @@ public partial class CharaBehavior
     {
         Ball.CallChangeShootTarget(EnemySideIndex, GetShootTarget(Shoot.Angle12, isIgnoreDirection));
     }
-
 }
