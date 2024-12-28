@@ -9,73 +9,64 @@ public partial class CharaBehavior
     //ダッシュ
     private void MvDs()
     {
-
         //加速カウンタ
         if ((Auto.AutoType == AutoType.Return)
           || (Auto.AutoType == AutoType.KgReturn)
           || (Auto.AutoType == AutoType.Get)
-          || ((Auto.AutoType == AutoType.CPUShPa) && MyTeam.AiMain.QuickF))
+          || ((Auto.AutoType == AutoType.CPUShPa) && MyTeam.AiMain.QuickF)
+          || Pad.IsDashAcc(Coordinate.DashDirection.ToCrossType()))
         {
             MoveSet.DashAccelCount.Add();
         }
-        else if (Pad.IsDashAcc())
-        {
-            ++st_.pstMyCh_->DsAcc_c;
-        }
         else
         {
-            lib_num::AprTo0(&st_.pstMyCh_->DsAcc_c);
+            MoveSet.DashAccelCount.Set(0);
         }
 
-        s32 dsx = pmgEO_->mgDt_.dtSet_.GetDtCourt(setDashX);
+        var dsx = GetSettingCourt(SetingCourtType.DashX);
 
-
-        st_.pstMyCh_->Zahyou.dX = (st_.pstMyCh_->Zahyou.DsMuki == mL)
-          ? -dsx
-          : +dsx;
+        CoordinateSet.VelocityX = (Coordinate.DashDirection == DirectionXType.Left)
+            ? -dsx
+            : +dsx;
 
         //Z
-        if (pCommon_->GetMoveMukiZ(FALSE) != mzaN)
+        if (GetMoveMukiZ(false) != DirectionZType.Neutral)
         {
-            s32 dsz = pmgEO_->mgDt_.dtSet_.GetDtCourt(setDashZ);
-            st_.pstMyCh_->Zahyou.dZ = (pCommon_->GetMoveMukiZ(FALSE) != mzaF)
+            var dsz = GetSettingCourt(SetingCourtType.DashZ);
+            CoordinateSet.VelocityZ = (GetMoveMukiZ(false) != DirectionZType.Forward)
               ? +dsz
               : -dsz;
         }
         else
         {
-            st_.pstMyCh_->Zahyou.dZ = 0;
+            CoordinateSet.VelocityZ = 0;
         }
 
-        //加速
-
-        s32 tacc = (st_.pstMyCh_->DsAcc_c * RankSpeed(rkDashAcc));
+        var tacc = (MoveSet.DashAccelCount.Value * GetSpeedRank(RankSpeedType.DashAcc));
 
         //限界加速
-        if ((st_.pstMyCh_->NextAuto.AutoType == dbatReturn)
-          || (st_.pstMyCh_->NextAuto.AutoType == dbatKgReturn)
-          || (tacc > RankSpeed(rkDashMAXAcc)))
+        if ((Auto.AutoType == AutoType.Return)
+          || (Auto.AutoType == AutoType.KgReturn)
+          || (tacc > GetSpeedRank(RankSpeedType.DashMAXAcc)))
         {
-            //            if (BackDs_f() == FALSE)//バックダッシュ以外を切ってみる//オートバックダッシュ
-            {
-                st_.pstMyCh_->DsAcc_c = RankSpeed(rkDashMAXAcc) / RankSpeed(rkDashAcc);
-                tacc = RankSpeed(rkDashMAXAcc);
-            }
+
+            MoveSet.DashAccelCount.Set(GetSpeedRank(RankSpeedType.DashMAXAcc) / GetSpeedRank(RankSpeedType.DashAcc));
+            tacc = GetSpeedRank(RankSpeedType.DashMAXAcc);
         }
 
-        if (st_.pstMyCh_->DsAcc_c > 0)
+        if (MoveSet.DashAccelCount.Value > 0)
         {
-            st_.pstMyCh_->Zahyou.dX = (st_.pstMyCh_->Zahyou.dX + (lib_num::Sign(st_.pstMyCh_->Zahyou.dX) * (tacc)));
+            CoordinateSet.VelocityX = Coordinate.VelocityX + (Coordinate.VelocityX > 0 ? 1 : -1) * tacc;
         }
 
         ////ぬかるみ★
         //if (pmgEO_->mgStSn_.EtcSS.MudCourt_f())
         //{
-        //    const s32 LOSPER = pmgEO_->mgDt_.dtSet_.GetDtCourt(setDsLossPer);
-        //    const s32 MADMAX = (100 / LOSPER);
+        //    const var LOSPER = pmgEO_->mgDt_.dtSet_.GetDtCourt(setDsLossPer);
+        //    const var MADMAX = (100 / LOSPER);
         //    if (st_.pstMyCh_->MadStep_c < MADMAX)
         //    {
-        //        s32 nowlosper = LOSPER * st_.pstMyCh_->MadStep_c;
+        //        var nowlosper = LOSPER * st_.pstMyCh_->MadStep_c;
         //        st_.pstMyCh_->Zahyou.dX = lib_num::Percent(st_.pstMyCh_->Zahyou.dX, nowlosper);
         //        st_.pstMyCh_->Zahyou.dZ = lib_num::Percent(st_.pstMyCh_->Zahyou.dZ, nowlosper);
         //    }
