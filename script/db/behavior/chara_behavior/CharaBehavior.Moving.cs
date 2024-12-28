@@ -227,37 +227,5 @@ public partial class CharaBehavior
         }
     }
 
-//       s32 TChCommon::GetWkX()
-//   {
-//     return RankSpeed(rkWkX);
-//   }
-//   s32 TChCommon::GetWkZ()
-//   {
-//     return lib_num::Percent(RankSpeed(rkWkX), pmgEO_->mgDt_.dtSet_.GetDtCourt(setWkZPer));
-//   }
-//   s32 TChCommon::GetNWkX()
-//   {
-//     return lib_num::Percent(RankSpeed(rkWkX), pmgEO_->mgDt_.dtSet_.GetDtCourt(setNWkXPer));
-//   }
-//   s32 TChCommon::GetNWkZ()
-//   {
-//     return lib_num::Percent(RankSpeed(rkWkX), pmgEO_->mgDt_.dtSet_.GetDtCourt(setNWkZPer));
-//   }
-//   s32 TChCommon::GetWkJpX()
-//   {
-//     return RankSpeed(rkWkJPX);
-//   }
-//   s32 TChCommon::GetWkJpZ()
-//   {
-//     return lib_num::Percent(RankSpeed(rkWkJPX), pmgEO_->mgDt_.dtSet_.GetDtCourt(setWkZPer));
-//   }
-//   s32 TChCommon::GetNWkJpX()
-//   {
-//     return lib_num::Percent(RankSpeed(rkWkJPX), pmgEO_->mgDt_.dtSet_.GetDtCourt(setNWkXPer));
 
-//   }
-//   s32 TChCommon::GetNWkJpZ()
-//   {
-//     return lib_num::Percent(RankSpeed(rkWkJPX), pmgEO_->mgDt_.dtSet_.GetDtCourt(setNWkZPer));
-//   }
 }
